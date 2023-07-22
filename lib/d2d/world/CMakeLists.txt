@@ -1,0 +1,7 @@
+set(SOURCE
+	${SOURCE}
+	${CMAKE_CURRENT_SOURCE_DIR}/collision_tile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/map.cpp
+	PARENT_SCOPE
+)
+

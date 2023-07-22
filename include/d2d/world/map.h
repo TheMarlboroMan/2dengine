@@ -7,8 +7,6 @@
 
 namespace d2d { namespace world {
 
-class map_loader;
-
 class map {
 
 	public:

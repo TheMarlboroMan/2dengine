@@ -37,4 +37,4 @@ struct collision_tile:
 };
 
 std::ostream& operator<<(std::ostream&, const collision_tile&);
-}
+}}
