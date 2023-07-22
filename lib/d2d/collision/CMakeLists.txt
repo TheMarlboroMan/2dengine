@@ -1,0 +1,10 @@
+set(SOURCE
+	${SOURCE}
+	${CMAKE_CURRENT_SOURCE_DIR}/checker.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/spatiable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tools.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/solver.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/shaper.cpp
+	PARENT_SCOPE
+)
+

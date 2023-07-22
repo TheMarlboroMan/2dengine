@@ -1,0 +1,10 @@
+objects/*
+logs/*
+*.exe
+*.out
+*.dll
+makefile
+build
+*.swp
+*~
+.vscode
