@@ -1,0 +1,6 @@
+set(SOURCE
+	${SOURCE}
+	${CMAKE_CURRENT_SOURCE_DIR}/map_loader.cpp
+	PARENT_SCOPE
+)
+
