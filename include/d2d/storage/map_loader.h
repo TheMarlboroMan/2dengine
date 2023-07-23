@@ -16,7 +16,7 @@ class map_loader {
 */
 	void                                load_from_file_into_map(
 	                                        const std::string&,
-											d2d::world::map&,
+	                                        d2d::world::map&,
 	                                        d2d::collision::shaper&
 	                                    );
 

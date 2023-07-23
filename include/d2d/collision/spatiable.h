@@ -1,10 +1,22 @@
 #pragma once
 
 #include "definitions.h"
+#include <ldv/color.h>
 
 namespace d2d { namespace collision {
 
+using color=ldv::rgba_color;
+
 struct spatiable {
+
+/**
+*must return a color with which to draw the outline in debug mode
+*/
+	virtual color           get_debug_outline_color() const {return ldv::rgba8(0,0,0,0);}
+/**
+*must return a color with which to fill the outline in debug mode
+*/
+	virtual color           get_debug_fill_color() const {return ldv::rgba8(128, 128, 128, 255);}
 
 	virtual                 ~spatiable()=0;
 

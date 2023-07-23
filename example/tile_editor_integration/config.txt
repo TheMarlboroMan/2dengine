@@ -1,0 +1,28 @@
+beginmapproperties
+	file map_properties.txt
+endmapproperties
+
+begintileset
+	file logic-tiles.txt
+	id 1
+	image logic-tiles.png
+	name logic
+endtileset
+
+beginsession
+	thingcenter bottomleft
+	bgcolor 200 200 200 255
+	fontcolor 70 70 70 255
+endsession
+
+begingridsettings
+	id 1
+	name logic
+	gridsize 24
+	gridvruler 16
+	gridhruler 20
+	gridcolor 128 128 128 255
+	gridrulercolor 32 32 32 255
+	gridorigincolor 0 0 255 255
+endgridsettings
+

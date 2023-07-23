@@ -26,7 +26,7 @@ class shaper {
 		tile_quarter_top_right
 	};
 
-	                        shaper();
+	                        shaper(int, int);
 
 	/**
 	* Retrieves and repositions a prototype box according to type, x and y (in
@@ -34,6 +34,8 @@ class shaper {
 	*/
 
 	d2d::collision::box&         get_box(int, int, int);
+	const int                    tile_w;
+	const int                    tile_h;
 
 	private:
 

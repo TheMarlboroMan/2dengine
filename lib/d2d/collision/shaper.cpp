@@ -5,18 +5,16 @@
 
 using namespace d2d::collision;
 
-int tile_w=32;
-int tile_h=32;
-
-shaper::shaper()
-	:
+shaper::shaper(
+	int _tile_w,
+	int _tile_h
+):
+	tile_w{_tile_w}, tile_h{_tile_h},
 	full_box{0, 0, tile_w, tile_h},
 	half_box_wide{0, 0, tile_w, tile_h / 2},
 	half_box_tall{0, 0, tile_w / 2, tile_h},
 	quarter_box{0, 0, tile_w / 2, tile_h / 2}
-{
-
-}
+{}
 
 d2d::collision::box& shaper::get_box(
 	int _type,

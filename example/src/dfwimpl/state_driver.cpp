@@ -1,0 +1,282 @@
+#include "dfwimpl/state_driver.h"
+//#include "input/input.h"
+//#include "controller/states.h"
+
+#include <algorithm>
+#include <filesystem>
+
+using namespace dfwimpl;
+
+state_driver::state_driver(
+	dfw::kernel& kernel,
+	dfwimpl::config& c,
+	const app::env& _env
+):
+	state_driver_interface(0), //controller::t_states::state_main_menu),
+	config(c),
+	log(kernel.get_log()),
+	env{_env}
+{
+	lm::log(log).info()<<"setting state check function..."<<std::endl;
+
+	states.set_function([](int v){
+		return v > controller::state_min && v < controller::state_max;
+	});
+
+	lm::log(log).info()<<"init state driver building: preparing video..."<<std::endl;
+	prepare_video(kernel);
+
+	lm::log(log).info()<<"preparing audio..."<<std::endl;
+	prepare_audio(kernel);
+
+	lm::log(log).info()<<"preparing input..."<<std::endl;
+	prepare_input(kernel);
+
+	lm::log(log).info()<<"preparing resources..."<<std::endl;
+	prepare_resources(kernel);
+	load_resources();
+
+	lm::log(log).info()<<"registering controllers..."<<std::endl;
+	register_controllers(kernel);
+
+	lm::log(log).info()<<"virtualizing input..."<<std::endl;
+	virtualize_input(kernel.get_input());
+
+	lm::log(log).info()<<"state driver fully constructed"<<std::endl;
+
+	start_app(kernel.get_arg_manager());
+}
+
+void state_driver::prepare_video(dfw::kernel& kernel) {
+
+	kernel.init_video_system({
+		config.int_from_path("video:window_w_px"),
+		config.int_from_path("video:window_h_px"),
+		480,
+		384,
+		"I have a title for this",
+		false,
+		config.get_screen_vsync()
+	});
+
+	auto& screen=kernel.get_screen();
+	screen.set_fullscreen(config.bool_from_path("video:fullscreen"));
+}
+
+void state_driver::prepare_audio(dfw::kernel& kernel) {
+
+	kernel.init_audio_system({
+		config.get_audio_ratio(),
+		config.get_audio_out(),
+		config.get_audio_buffers(),
+		config.get_audio_channels(),
+		config.get_audio_volume(),
+		config.get_music_volume()
+	});
+}
+
+void state_driver::prepare_input(dfw::kernel& kernel) {
+
+	using namespace dfw;
+
+	std::vector<input_pair> pairs{
+		{{input_description::types::keyboard, SDL_SCANCODE_ESCAPE, 0}, input::escape},
+		{input_description_from_config_token(config.token_from_path("input:left")), input::left},
+		{input_description_from_config_token(config.token_from_path("input:right")), input::right},
+		{input_description_from_config_token(config.token_from_path("input:up")), input::up},
+		{input_description_from_config_token(config.token_from_path("input:down")), input::down},
+	};
+
+	kernel.init_input_system(pairs);
+}
+
+void state_driver::prepare_resources(
+	dfw::kernel& _kernel
+) {
+
+	dfw::resource_loader r_loader(_kernel.get_video_resource_manager(), _kernel.get_audio_resource_manager(), env.get_app_path());
+
+	//r_loader.generate_textures(tools::explode_lines_from_file(env.get_app_path()+"data/lists/textures.txt"));
+	//Some surfaces need to be loaded, for later manipulation into composite backgrounds.
+	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.get_app_path()+"data/lists/surfaces.txt"));
+	//r_loader.generate_sounds(tools::explode_lines_from_file(env.get_app_path()+"data/lists/sounds.txt"));
+	//r_loader.generate_music(tools::explode_lines_from_file(env.get_app_path()+std::string("data/lists/music.txt")));
+}
+
+void state_driver::register_controllers(
+	dfw::kernel& _kernel
+) {
+/*
+	auto reg=[this](ptr_controller& _ptr, int _i, dfw::controller_interface * _ci) {
+		_ptr.reset(_ci);
+		register_controller(_i, *_ptr);
+	};
+
+	reg(
+		c_main,
+		controller::t_states::state_main,
+		new controller::main(
+			*dependency_injector,
+			game_state,
+			_kernel.get_screen().get_rect()
+		)
+	);
+	reg(
+		c_show_text,
+		controller::t_states::state_show_text,
+		new controller::show_text(
+			*dependency_injector
+		)
+	);
+	reg(
+		c_status,
+		controller::t_states::state_status,
+		new controller::status(
+			*dependency_injector,
+			//TODO: This is terrible... sounds like the inventory should be owned by this.s
+			game_state.get_inventory()
+		)
+	);
+	reg(
+		c_main_menu,
+		controller::t_states::state_main_menu,
+		new controller::main_menu(*dependency_injector)
+	);
+	reg(
+		c_settings_menu,
+		controller::t_states::state_settings_menu,
+		new controller::settings_menu(*dependency_injector, _kernel.get_screen(), _kernel.get_input(), config)
+	);
+	reg(
+		c_select_slot_menu,
+		controller::t_states::state_select_slot_menu,
+		new controller::select_slot_menu(
+			*dependency_injector
+		)
+	);
+*/
+	//[new-controller-mark]
+}
+
+void state_driver::prepare_state(
+	int /*_next*/,
+	int /*_current*/
+) {
+
+}
+
+void state_driver::common_pre_loop_input(dfw::input& input, float /*delta*/) {
+
+	if(input().is_event_joystick_connected()) {
+		lm::log(log).info()<<"New joystick detected..."<<std::endl;
+		virtualize_input(input);
+	}
+}
+
+void state_driver::common_loop_input(dfw::input& /*input*/, float /*delta*/) {
+
+}
+
+void state_driver::common_pre_loop_step(float /*delta*/) {
+
+}
+
+void state_driver::common_loop_step(float /*delta*/) {
+
+}
+
+void state_driver::virtualize_input(dfw::input& input) {
+
+	lm::log(log).info()<<"trying to virtualize "<<input().get_joysticks_size()<<" controllers..."<<std::endl;
+
+	for(size_t i=0; i < input().get_joysticks_size(); ++i) {
+		input().virtualize_joystick_hats(i);
+		input().virtualize_joystick_axis(i, 15000);
+		lm::log(log).info()<<"Joystick virtualized "<<i<<std::endl;
+	}
+}
+
+void state_driver::start_app(
+	const tools::arg_manager& _argman
+) {
+/*
+#ifndef NDEBUG
+	if(_argman.exists("-s")) {
+
+		static_cast<controller::main&>(*c_main).debug_start_step_control();
+	}
+
+	if(_argman.exists("-map")) {
+
+		int entry_id=1;
+
+		if(_argman.exists("-eid")) {
+
+			entry_id=std::stoi(_argman.get_following("-eid"));
+		}
+
+		game_state.reset();
+		//no threading needed, this is debug mode :D.
+		static_cast<controller::main&>(*c_main).perform_map_change(_argman.get_following("-map"), entry_id, {0,0});
+		states.set(controller::t_states::state_main);
+	}
+#endif
+*/
+}
+
+void state_driver::load_resources() {
+
+/*
+	auto &ttf_manager=dependency_injector->get_ttf_manager();
+
+	ttf_manager.insert(
+		app::debug_font_name,
+		app::debug_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::action_font_name,
+		app::action_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::show_text_font_name,
+		app::show_text_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::ingame_text_font_name,
+		app::ingame_text_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::status_description_font_name,
+		app::status_description_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::status_status_font_name,
+		app::status_status_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	ttf_manager.insert(
+		app::main_menu_font_name,
+		app::main_menu_font_size,
+		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+	);
+
+	auto& spritesheets=dependency_injector->get_spritesheet_manager();
+
+	spritesheets.container[app::tex_inventory_item]=ldtools::sprite_table(env.get_app_path()+"data/sheets/inventory.txt");
+	spritesheets.container[app::tex_background]=ldtools::sprite_table(env.get_app_path()+"data/sheets/background.txt");
+	spritesheets.container[app::tex_decoration]=ldtools::sprite_table(env.get_app_path()+"data/sheets/decoration.txt");
+	spritesheets.container[app::tex_block]=ldtools::sprite_table(env.get_app_path()+"data/sheets/blocks.txt");
+	spritesheets.container[app::tex_character]=ldtools::sprite_table(env.get_app_path()+"data/sheets/main_character.txt");
+*/
+}
