@@ -56,6 +56,9 @@ if(${BUILD_EXAMPLE})
 
 	add_executable(example-app example/src/main.cpp)
 	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+
+	add_custom_target(setup_files ALL)
+	add_custom_command(TARGET setup_files POST_BUILD COMMAND cp -r ../example/resources .)
 endif()
 
 if(${BUILD_TESTS})
@@ -69,8 +72,4 @@ endif()
 
 #Configure the executable, we want it into the "build directory" and we want all resources copied
 #to the build directory.
-#add_custom_target(setup_files ALL)
-#add_custom_command(TARGET setup_files POST_BUILD COMMAND cp -r ../resources/* ./)
-#add_custom_command(TARGET setup_files POST_BUILD COMMAND cp ../integration/background-tiles.txt ../resources/data/sheets/background.txt)
-#add_custom_command(TARGET setup_files POST_BUILD COMMAND cp ../integration/background-tiles.png ../resources/data/bitmap/background.png)
 

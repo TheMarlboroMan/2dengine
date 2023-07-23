@@ -1,4 +1,5 @@
 #include "controller/main.h"
+#include "app/input.h"
 
 using namespace controller;
 
@@ -22,19 +23,16 @@ void main::loop(
 	const dfw::loop_iteration_data& _lid
 ) {
 
-/*
 	if(_input().is_exit_signal()) {
 		set_leave(true);
 		return;
 	}
 
-	if(_input.is_input_down(input::escape)) {
+	if(_input.is_input_down(app::input::escape)) {
 
-		game_music.disable();
-		set_state(t_states::state_main_menu);
+		set_leave(true);
 		return;
 	}
-*/
 }
 
 void main::draw(

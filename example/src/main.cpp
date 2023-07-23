@@ -1,6 +1,7 @@
 #include "dfwimpl/config.h"
 #include "dfwimpl/state_driver.h"
 #include "app/env.h"
+#include "controller/controller_states.h"
 
 /*#include <lm/file_logger.h>*/
 #include <lm/ostream_logger.h>
@@ -50,7 +51,8 @@ int main(int argc, char ** argv)
 		dfwimpl::config config(env);
 
 		lm::log(log_app).info()<<"create state driver..."<<std::endl;
-		dfwimpl::state_driver sd(kernel, config, env);
+		int initial_state=controller::state_main;
+		dfwimpl::state_driver sd(kernel, config, env, initial_state);
 
 		lm::log(log_app).info()<<"init state driver..."<<std::endl;
 		sd.init(kernel);

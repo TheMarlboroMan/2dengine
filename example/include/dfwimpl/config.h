@@ -36,7 +36,7 @@ class config:
 
 	private:
 
-	std::string get_file_path() const {return env.get_usr_path()+"/runtime/config.json";}
+	std::string get_file_path() const {return env.get_usr_path()+"/resources/runtime/config.json";}
 
 	const app::env&             env;
 };

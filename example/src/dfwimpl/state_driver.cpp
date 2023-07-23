@@ -1,6 +1,6 @@
 #include "dfwimpl/state_driver.h"
-//#include "input/input.h"
-//#include "controller/states.h"
+#include "app/input.h"
+#include "controller/controller_states.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -10,9 +10,10 @@ using namespace dfwimpl;
 state_driver::state_driver(
 	dfw::kernel& kernel,
 	dfwimpl::config& c,
-	const app::env& _env
+	const app::env& _env,
+	int _initial_state
 ):
-	state_driver_interface(0), //controller::t_states::state_main_menu),
+	state_driver_interface(_initial_state),
 	config(c),
 	log(kernel.get_log()),
 	env{_env}
@@ -54,7 +55,7 @@ void state_driver::prepare_video(dfw::kernel& kernel) {
 		config.int_from_path("video:window_h_px"),
 		480,
 		384,
-		"I have a title for this",
+		"Title for this project",
 		false,
 		config.get_screen_vsync()
 	});
@@ -80,11 +81,12 @@ void state_driver::prepare_input(dfw::kernel& kernel) {
 	using namespace dfw;
 
 	std::vector<input_pair> pairs{
-		{{input_description::types::keyboard, SDL_SCANCODE_ESCAPE, 0}, input::escape},
-		{input_description_from_config_token(config.token_from_path("input:left")), input::left},
-		{input_description_from_config_token(config.token_from_path("input:right")), input::right},
-		{input_description_from_config_token(config.token_from_path("input:up")), input::up},
-		{input_description_from_config_token(config.token_from_path("input:down")), input::down},
+		{{input_description::types::keyboard, SDL_SCANCODE_ESCAPE, 0}, app::input::escape},
+		{input_description_from_config_token(config.token_from_path("input:left")), app::input::left},
+		{input_description_from_config_token(config.token_from_path("input:right")), app::input::right},
+		{input_description_from_config_token(config.token_from_path("input:up")), app::input::up},
+		{input_description_from_config_token(config.token_from_path("input:down")), app::input::down},
+		{input_description_from_config_token(config.token_from_path("input:jump")), app::input::jump},
 	};
 
 	kernel.init_input_system(pairs);
@@ -106,56 +108,18 @@ void state_driver::prepare_resources(
 void state_driver::register_controllers(
 	dfw::kernel& _kernel
 ) {
-/*
+
 	auto reg=[this](ptr_controller& _ptr, int _i, dfw::controller_interface * _ci) {
+
 		_ptr.reset(_ci);
 		register_controller(_i, *_ptr);
 	};
 
 	reg(
 		c_main,
-		controller::t_states::state_main,
-		new controller::main(
-			*dependency_injector,
-			game_state,
-			_kernel.get_screen().get_rect()
-		)
+		controller::state_main,
+		new controller::main()
 	);
-	reg(
-		c_show_text,
-		controller::t_states::state_show_text,
-		new controller::show_text(
-			*dependency_injector
-		)
-	);
-	reg(
-		c_status,
-		controller::t_states::state_status,
-		new controller::status(
-			*dependency_injector,
-			//TODO: This is terrible... sounds like the inventory should be owned by this.s
-			game_state.get_inventory()
-		)
-	);
-	reg(
-		c_main_menu,
-		controller::t_states::state_main_menu,
-		new controller::main_menu(*dependency_injector)
-	);
-	reg(
-		c_settings_menu,
-		controller::t_states::state_settings_menu,
-		new controller::settings_menu(*dependency_injector, _kernel.get_screen(), _kernel.get_input(), config)
-	);
-	reg(
-		c_select_slot_menu,
-		controller::t_states::state_select_slot_menu,
-		new controller::select_slot_menu(
-			*dependency_injector
-		)
-	);
-*/
-	//[new-controller-mark]
 }
 
 void state_driver::prepare_state(
@@ -197,7 +161,7 @@ void state_driver::virtualize_input(dfw::input& input) {
 }
 
 void state_driver::start_app(
-	const tools::arg_manager& _argman
+	const tools::arg_manager& /*_argman*/
 ) {
 /*
 #ifndef NDEBUG
