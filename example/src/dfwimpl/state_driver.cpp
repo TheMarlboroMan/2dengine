@@ -8,18 +8,22 @@
 using namespace dfwimpl;
 
 state_driver::state_driver(
-	dfw::kernel& kernel,
 	dfwimpl::config& c,
+	lm::logger& _logger,
 	const app::env& _env,
 	int _initial_state
 ):
 	state_driver_interface(_initial_state),
 	config(c),
-	log(kernel.get_log()),
+	log{_logger},
 	env{_env}
-{
-	lm::log(log).info()<<"setting state check function..."<<std::endl;
+{ }
 
+void state_driver::init(
+	dfw::kernel& kernel
+) {
+
+	lm::log(log).info()<<"setting state check function..."<<std::endl;
 	states.set_function([](int v){
 		return v > controller::state_min && v < controller::state_max;
 	});
@@ -239,7 +243,7 @@ void state_driver::load_resources() {
 
 	spritesheets.container[app::tex_inventory_item]=ldtools::sprite_table(env.get_app_path()+"data/sheets/inventory.txt");
 	spritesheets.container[app::tex_background]=ldtools::sprite_table(env.get_app_path()+"data/sheets/background.txt");
-	spritesheets.container[app::tex_decoration]=ldtools::sprite_table(env.get_app_path()+"data/sheets/decoration.txt");
+	spritesheets.container[app::tex_decoration]=ldtools::sprite_table(env.get_app_path()+"dfwimpl/sheets/decoration.txt");
 	spritesheets.container[app::tex_block]=ldtools::sprite_table(env.get_app_path()+"data/sheets/blocks.txt");
 	spritesheets.container[app::tex_character]=ldtools::sprite_table(env.get_app_path()+"data/sheets/main_character.txt");
 */

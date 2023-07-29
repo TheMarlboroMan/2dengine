@@ -3,13 +3,11 @@
 using namespace dfwimpl;
 
 config::config(
-	const app::env& _env
+	const std::string& _usr_path
 )
-	:dfw::base_config(get_file_path()),
-	env{_env}
-{
-
-}
+	:dfw::base_config(_usr_path),
+	usr_path{_usr_path}
+{ }
 
 dfw::input_description dfwimpl::input_description_from_config_token(const rapidjson::Value& tok)
 {

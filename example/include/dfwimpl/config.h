@@ -1,11 +1,9 @@
 #pragma once
-
-#include "app/env.h"
-
 #include <dfw/base_config.h>
 #include <dfw/input.h>
 
 #include <iostream>
+#include <string>
 
 namespace dfwimpl {
 
@@ -16,7 +14,7 @@ class config:
 
 	public:
 
-	config(const app::env&);
+	config(const std::string&);
 
 	//Fullfillment of the kernel interface.
 
@@ -36,9 +34,9 @@ class config:
 
 	private:
 
-	std::string get_file_path() const {return env.get_usr_path()+"/resources/runtime/config.json";}
+	std::string get_file_path() const {return usr_path+"/resources/runtime/config.json";}
 
-	const app::env&             env;
+	const std::string           usr_path;
 };
 
 dfw::input_description          input_description_from_config_token(const rapidjson::Value&);

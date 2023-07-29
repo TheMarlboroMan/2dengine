@@ -19,7 +19,7 @@ class state_driver:
 	public dfw::state_driver_interface {
 
 	public:
-	                                state_driver(dfw::kernel& kernel, dfwimpl::config& config, const app::env&, int);
+	                                state_driver(dfwimpl::config& config, lm::logger&, const app::env&, int);
 
 	virtual void                    common_pre_loop_input(dfw::input& input, float delta);
 	virtual void                    common_pre_loop_step(float delta);
@@ -27,6 +27,7 @@ class state_driver:
 	virtual void                    common_loop_step(float delta);
 	virtual void                    prepare_state(int, int);
 	virtual float                   get_max_timestep() const {return 0.03f;}
+	virtual	void					init(dfw::kernel&);
 
 	private:
 
