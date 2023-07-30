@@ -3,10 +3,9 @@
 using namespace dfwimpl;
 
 config::config(
-	const std::string& _usr_path
+	const std::string& _conf_path
 )
-	:dfw::base_config(_usr_path),
-	usr_path{_usr_path}
+	:dfw::base_config(_conf_path)
 { }
 
 dfw::input_description dfwimpl::input_description_from_config_token(const rapidjson::Value& tok)

@@ -16,7 +16,8 @@ state_driver::state_driver(
 	state_driver_interface(_initial_state),
 	config(c),
 	log{_logger},
-	env{_env}
+	env{_env},
+	service_provider{env, config, log}
 { }
 
 void state_driver::init(
@@ -122,7 +123,7 @@ void state_driver::register_controllers(
 	reg(
 		c_main,
 		controller::state_main,
-		new controller::main()
+		new controller::main(service_provider)
 	);
 }
 
@@ -194,6 +195,7 @@ void state_driver::start_app(
 
 void state_driver::load_resources() {
 
+	//TODO: Here we would do whatever the dependency injector needs
 /*
 	auto &ttf_manager=dependency_injector->get_ttf_manager();
 

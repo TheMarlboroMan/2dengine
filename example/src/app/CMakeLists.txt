@@ -1,6 +1,6 @@
 set(EXAMPLE_SOURCE
 	${EXAMPLE_SOURCE}
-	${CMAKE_CURRENT_SOURCE_DIR}/dummy.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/service_provider.cpp
 	PARENT_SCOPE
 )
 

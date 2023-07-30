@@ -26,15 +26,24 @@ class shaper {
 		tile_quarter_top_right
 	};
 
+/**
+*shaper constructor, receives width and height of the basic tile.
+*/
 	                        shaper(int, int);
 
 	/**
 	* Retrieves and repositions a prototype box according to type, x and y (in
 	* tile coordinates, not world coordinates) plus a variant.
 	*/
-
 	d2d::collision::box&         get_box(int, int, int);
+
+/**
+ * width of the tiles
+ */
 	const int                    tile_w;
+/**
+ * height of the tiles
+ */
 	const int                    tile_h;
 
 	private:

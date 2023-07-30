@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include "app/env.h"
+#include "app/service_provider.h"
 
 //Controllers.
 #include "controller/main.h"
@@ -44,6 +45,8 @@ class state_driver:
 	dfwimpl::config&                config;
 	lm::logger&                     log;
 	const app::env&                 env;
+	app::service_provider			service_provider;
+	
 
 	typedef std::unique_ptr<dfw::controller_interface>	ptr_controller;
 	ptr_controller                  c_main;

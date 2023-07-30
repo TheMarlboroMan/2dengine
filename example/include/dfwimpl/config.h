@@ -33,10 +33,6 @@ class config:
 	// Properties.
 
 	private:
-
-	std::string get_file_path() const {return usr_path+"/resources/runtime/config.json";}
-
-	const std::string           usr_path;
 };
 
 dfw::input_description          input_description_from_config_token(const rapidjson::Value&);
