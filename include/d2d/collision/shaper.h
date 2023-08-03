@@ -15,7 +15,7 @@ class shaper {
 	public:
 
 	enum tiles {
-		tile_full=0,
+		tile_full=1,
 		tile_half_bottom,
 		tile_half_top,
 		tile_half_left,

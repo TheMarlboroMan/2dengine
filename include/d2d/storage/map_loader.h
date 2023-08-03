@@ -2,6 +2,7 @@
 
 #include "d2d/world/map.h"
 #include "d2d/collision/shaper.h"
+#include "d2d/world/collision_tile_implementation.h"
 
 #include <rapidjson/document.h>
 #include <string>
@@ -17,7 +18,8 @@ class map_loader {
 	void                                load_from_file_into_map(
 	                                        const std::string&,
 	                                        d2d::world::map&,
-	                                        d2d::collision::shaper&
+	                                        d2d::collision::shaper&,
+											const d2d::world::collision_tile_implementation&
 	                                    );
 
 	private:

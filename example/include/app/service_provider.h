@@ -3,6 +3,7 @@
 #include <memory>
 //Sadly a forward declaration it not enough for the unique_ptr...
 #include <d2d/collision/shaper.h>
+#include "app/tile_impl.h"
 
 namespace lm {
 class logger;
@@ -32,6 +33,7 @@ class service_provider {
 	const dfwimpl::config&	get_config() const {return config;}
 	lm::logger&				get_logger() {return logger;}
 	d2d::collision::shaper& get_shaper();
+	const app::tile_impl&   get_tile_impl();
 
 	private:
 
@@ -39,5 +41,6 @@ class service_provider {
 	const dfwimpl::config&	config;
 	lm::logger&				logger;
 	std::unique_ptr<d2d::collision::shaper>	shaper{nullptr};
+	std::unique_ptr<app::tile_impl>	tile_impl{nullptr};
 };
 }

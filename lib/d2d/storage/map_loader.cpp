@@ -12,7 +12,8 @@ using namespace d2d::storage;
 void map_loader::load_from_file_into_map(
 	const std::string& _filename,
 	d2d::world::map& _map,
-	d2d::collision::shaper& _shaper
+	d2d::collision::shaper& _shaper,
+	const d2d::world::collision_tile_implementation& _tileimpl
 ) {
 	try {
 		const auto doc=tools::parse_json_string(
@@ -39,7 +40,8 @@ void map_loader::load_from_file_into_map(
 						pos.x,
 						pos.y,
 						type,
-						_shaper
+						_shaper,
+						_tileimpl
 					};
 
 					collision_tiles.push_back(tileitem);

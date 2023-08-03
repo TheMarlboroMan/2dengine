@@ -1,6 +1,7 @@
 #include "controller/main.h"
 #include "app/input.h"
 #include <d2d/storage/map_loader.h>
+#include <ldv/color.h>
 
 using namespace controller;
 
@@ -9,7 +10,9 @@ main::main(
 ):
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
-	shaper{_sp.get_shaper()}
+	shaper{_sp.get_shaper()},
+	tile_impl{_sp.get_tile_impl()},
+	dd{480, 384}
 { 
 	//Attempt to load the starter map.
 	
@@ -20,8 +23,11 @@ main::main(
 	loader.load_from_file_into_map(
 		map_path,
 		current_map,
-		shaper
+		shaper,
+		tile_impl
 	);
+
+	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
 }
 
 void main::awake(
@@ -54,7 +60,13 @@ void main::loop(
 
 void main::draw(
 	ldv::screen& _screen,
-	int _fps
+	int /*_fps*/
 ) {
 
+	dd.center_on(current_map.get_collision_tiles()[0]);
+	dd.clear(_screen);
+	for(const auto& cell : current_map.get_collision_tiles()) {
+
+		dd.draw(_screen, cell);
+	}
 }

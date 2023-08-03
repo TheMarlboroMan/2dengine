@@ -22,3 +22,13 @@ d2d::collision::shaper& service_provider::get_shaper() {
 	return *shaper;
 }
 
+const app::tile_impl& service_provider::get_tile_impl() {
+
+	if(nullptr==tile_impl.get()) {
+
+		tile_impl.reset(new app::tile_impl());
+	}
+
+	return *tile_impl;
+}
+

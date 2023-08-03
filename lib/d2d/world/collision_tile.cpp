@@ -1,4 +1,5 @@
 #include "d2d/world/collision_tile.h"
+#include <stdexcept>
 
 using namespace d2d::world;
 
@@ -6,12 +7,14 @@ collision_tile::collision_tile(
 	int _x, 
 	int _y, 
 	int _type,
-	d2d::collision::shaper& _shaper
+	d2d::collision::shaper& _shaper,
+	const d2d::world::collision_tile_implementation& _cimpl
 ):
 	x{_x},
 	y{_y},
 	type{_type},
-	shaper{&_shaper}
+	shaper{&_shaper},
+	cimpl{&_cimpl}
 {}
 
 std::ostream& d2d::world::operator<<(
