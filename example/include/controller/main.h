@@ -26,6 +26,8 @@ class main:
 
 	private:
 
+	void                        load_map(const std::string&);
+
 	const app::env&				env;
 	lm::logger&					logger;
 	d2d::collision::shaper&		shaper;

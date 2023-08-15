@@ -34,9 +34,10 @@ class debug_display {
  */
 	void						center_on(const d2d::collision::spatiable&);
 
+	ldv::camera					camera; 
+
 	private:
 
-	ldv::camera					camera; 
 	ldv::rgba_color				bgcolor;
 
 };
