@@ -2,12 +2,13 @@
 
 #include "app/service_provider.h"
 #include "app/env.h"
+#include "app/map.h"
 #include "app/tile_impl.h"
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
-#include <d2d/world/map.h>
 #include <d2d/video/debug_display.h>
 #include <lm/logger.h>
+#include <app/entity.h>
 
 namespace controller {
 
@@ -33,8 +34,10 @@ class main:
 	d2d::collision::shaper&		shaper;
 	const app::tile_impl&       tile_impl;
 
-	d2d::world::map				current_map;
+	app::map                    current_map;
 	d2d::video::debug_display	dd;
+	app::entity                 ent;
 };
+
 
 }

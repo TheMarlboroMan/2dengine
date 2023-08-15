@@ -6,16 +6,14 @@ using namespace d2d::video;
 
 void camera_map_limit::limit_to_collision_tiles(
 	ldv::camera& _camera,
-	const d2d::world::map& _map,
+	const std::vector<d2d::world::collision_tile>& _tiles,
 	int _w,
 	int _h,
 	lm::logger* _logger
 ) {
 
 	//TODO: must throw something of this library type.
-	const auto tiles=_map.get_collision_tiles();
-
-	if(!tiles.size()) {
+	if(!_tiles.size()) {
 
 		if(nullptr!=_logger) {
 
@@ -26,16 +24,16 @@ void camera_map_limit::limit_to_collision_tiles(
 	}
 
 	auto x=std::minmax_element(
-		std::begin(tiles),
-		std::end(tiles),
+		std::begin(_tiles),
+		std::end(_tiles),
 		[](const d2d::world::collision_tile& _a, const d2d::world::collision_tile& _b) {
 			return _a.x < _b.x;
 		}
 	);
 
 	auto y=std::minmax_element(
-		std::begin(tiles),
-		std::end(tiles),
+		std::begin(_tiles),
+		std::end(_tiles),
 		[](const d2d::world::collision_tile& _a, const d2d::world::collision_tile& _b) {
 			return _a.y < _b.y;
 		}

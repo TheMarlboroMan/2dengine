@@ -1,11 +1,11 @@
-#include "d2d/world/map.h"
+#include "app/map.h"
 #include "d2d/collision/tools.h"
 
 #include <iostream>
 
-using namespace d2d::world;
+using namespace app;
 
-std::ostream& d2d::world::operator<<(
+std::ostream& app::operator<<(
 	std::ostream& _stream,
 	const map& _map
 ) {

@@ -22,7 +22,8 @@ struct collision_tile_implementation {
 
 /**
 *what would the colors be for this tile? The tile itself is passed along so
-*we can use its properties.
+*we can use its properties. These colors would be only used for the debug
+*display.
 */
 	virtual color           get_outline_color(const collision_tile&) const=0;
 	virtual color           get_fill_color(const collision_tile&) const=0;

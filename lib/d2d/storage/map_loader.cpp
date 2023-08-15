@@ -9,44 +9,60 @@
 #include <iostream>
 using namespace d2d::storage;
 
-void map_loader::load_from_file_into_map(
-	const std::string& _filename,
-	d2d::world::map& _map,
+map_loader::map_loader(
+	const std::string& _filename
+) {
+
+	try {
+		doc=tools::parse_json_string(
+			tools::dump_file(_filename)
+		);
+	}
+	catch(std::exception& e) {
+
+		throw std::runtime_error(
+			std::string{"error loading map "}
+			+_filename
+			+" : "
+			+e.what()
+		);
+	}
+}
+
+void map_loader::load_collision_tiles(
+	std::vector<d2d::world::collision_tile>& _tiles,
 	d2d::collision::shaper& _shaper,
 	const d2d::world::collision_tile_implementation& _tileimpl
 ) {
-	try {
-		const auto doc=tools::parse_json_string(
-			tools::dump_file(_filename)
-		);
 
 /*
 		result.name=doc["attributes"]["name"].GetString();
 		result.music_id=doc["attributes"]["music_id"].GetInt();
 */
 
+	_tiles.clear();
 
-		for(const auto& layer : doc["layers"].GetArray() ) {
+	for(const auto& layer : doc["layers"].GetArray() ) {
 
-			if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"logic"}) {
+		if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"logic"}) {
 
-				auto& collision_tiles=_map.get_collision_tiles();
-				for(const auto& tile : layer["data"].GetArray()) {
+			for(const auto& tile : layer["data"].GetArray()) {
 
-					auto pos=parse_position(tile);
-					int type=tile["t"].GetInt();
+				auto pos=parse_position(tile);
+				int type=tile["t"].GetInt();
 
-					d2d::world::collision_tile tileitem{
-						pos.x,
-						pos.y,
-						type,
-						_shaper,
-						_tileimpl
-					};
+				d2d::world::collision_tile tileitem{
+					pos.x,
+					pos.y,
+					type,
+					_shaper,
+					_tileimpl
+				};
 
-					collision_tiles.push_back(tileitem);
-				}
+				_tiles.push_back(tileitem);
 			}
+		}
+	}
 /*
 			if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"background"}) {
 
@@ -121,17 +137,6 @@ void map_loader::load_from_file_into_map(
 				}
 			}
 */
-		};
-	}
-	catch(std::exception& e) {
-
-		throw std::runtime_error(
-			std::string{"error loading map "}
-			+_filename
-			+" : "
-			+e.what()
-		);
-	}
 }
 
 map_loader::position map_loader::parse_position(

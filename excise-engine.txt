@@ -14,17 +14,7 @@ d2d
 	storage
 		map_loader
 
-next step: create a test map and prepare the debug_drawing mode. This will
-give us enough information on how to proceed.
-	- The map loader should exist (I guess) when starting the main controller.
-	We will need a camera. Will it be a default camera or will it be something
-	else?. I guess the engine should allow for more than one camera because
-	that's actually cool, but well... Maybe we just... keep on going? There
-	are things that we need, such as a debug view mode, for example, and the
-	ability do debug move the camera too, right?
+next step: 
+	get the whole collision stuff working now
+	try collisions with other entities?
 
-Maybe we can think about "mobj" or "actor"... That's actually an spatiable
-and little more, right? If we had movement we would have a 2d vector assigned
-to it and that would be it. What I am actually stuck on is in thinking how 
-much should we stitch this together: a lot or maybe just provide a few
-functions and classes :/.
