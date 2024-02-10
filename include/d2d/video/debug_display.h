@@ -3,18 +3,22 @@
 #include <ldv/camera.h>
 #include <ldv/screen.h>
 #include <ldv/color.h>
+#include <ldv/box_representation.h>
 #include "d2d/collision/spatiable.h"
 #include <vector>
 
 namespace d2d { namespace video {
 
 /**
- * a ready-made class to draw stuff in debug mode-
+ * a ready-made class to draw stuff in debug mode, assuming a cartesian 
+ * coordinate system. Assumes the origin of things is the bottom-left.
+ * TODO: So far it assumes 
  */
 class debug_display {
 
 	public:
 
+	//TODO: Provide a method to indicate where the origin lies (bottom left? center?...)
 								debug_display(int, int);
 
 /**
@@ -39,6 +43,8 @@ class debug_display {
 	private:
 
 	ldv::rgba_color				bgcolor;
+	ldv::box_representation     outline,
+								fill;
 
 };
 

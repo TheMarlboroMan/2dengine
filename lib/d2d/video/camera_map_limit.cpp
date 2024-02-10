@@ -58,8 +58,8 @@ void camera_map_limit::limit_to_collision_tiles(
 	ldv::rect limit{
 		min_x * _w,
 		min_y * _h,
-		w,
-		h
+		(unsigned)w,
+		(unsigned)h
 	};
 
 	if(nullptr != _logger) {

@@ -1,9 +1,12 @@
 #include "controller/main.h"
 #include "app/input.h"
 #include "app/player_input.h"
+#include "app/thing_loader.h"
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/motion/mover.h>
+#include <d2d/collision/checker.h>
+#include <d2d/collision/solver.h>
 #include <ldv/color.h>
 #include <sstream>
 #include <iostream>
@@ -27,7 +30,7 @@ main::main(
 
 void main::load_map(
 	const std::string& _map_name
-) {	
+) {
 	std::stringstream ss;
 	ss<<env.get_app_path()+"resources/maps/"<<_map_name;
 
@@ -42,10 +45,15 @@ void main::load_map(
 		tile_impl
 	);
 
+	app::thing_loader tl{current_map.solid_blocks};
+	loader.load_thing_layer("things", tl);
+
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
 	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.tile_w, shaper.tile_h, &logger);
 
+	//We can also position the entity in the starting point.
+	ent.set_origin({(double)tl.starting_position.x, (double)tl.starting_position.y});
 }
 
 void main::awake(
@@ -99,21 +107,56 @@ void main::loop(
 
 		//TODO: Who takes responsibility for the previous position and stuff?
 		d2d::motion::mover mover{};
-		const double speed=60.0;
+		const double speed=170.0;
+
+		auto collision_finder=d2d::collision::checker{};
+		auto collision_solver=d2d::collision::solver{};
 
 		if(pli.x) {
 
 			mover.apply_x(ent, speed*(double)pli.x, _lid.delta);
+
+			collision_finder.start(ent); 
+			bool has_collision=false;
+			for(const auto& tile : current_map.collision_tiles) {
+
+				has_collision|=collision_finder.add(tile);
+			}
+
+			for(const auto& block : current_map.solid_blocks) {
+
+				has_collision|=collision_finder.add(block);
+			}
+
+			if(has_collision) {
+
+				//TODO: Notice we have COMPLEX solutions too!
+				collision_solver.horizontal(ent, collision_finder.end());
+			}
 		}
 
 		if(pli.y) {
 
 			mover.apply_y(ent, speed*(double)pli.y, _lid.delta);
-		}
 
-		//TODO:
-		//Sure, what about collisions now??? That would be the next step,
-		//I guess.
+			collision_finder.start(ent); 
+			bool has_collision=false;
+			for(const auto& tile : current_map.collision_tiles) {
+
+				has_collision|=collision_finder.add(tile);
+			}
+
+			for(const auto& block : current_map.solid_blocks) {
+
+				has_collision|=collision_finder.add(block);
+			}
+
+			if(has_collision) {
+
+				//TODO: Notice we have complex solutions too!
+				collision_solver.vertical(ent, collision_finder.end());
+			}
+		}
 	}
 }
 
@@ -122,12 +165,19 @@ void main::draw(
 	int /*_fps*/
 ) {
 	
+	//TODO: This is what fucks shit up... Thing is, IT SHOULD NOT
+	//so it must be a bug in the camera itself.
 	dd.center_on(ent);
-
 	dd.clear(_screen);
+
 	for(const auto& cell : current_map.collision_tiles) {
 
 		dd.draw(_screen, cell);
+	}
+
+	for(const auto& block : current_map.solid_blocks) {
+
+		dd.draw(_screen, block);
 	}
 
 	dd.draw(_screen, ent);

@@ -17,12 +17,12 @@ struct tile_impl:
 
 	virtual ldv::rgba_color get_outline_color(const d2d::world::collision_tile&) const {
 
-		return ldv::rgba8(0,0,0,0);
+		return ldv::rgba8(0,0,255,255);
 	}
 
 	virtual ldv::rgba_color get_fill_color(const d2d::world::collision_tile&) const {
 
-		return ldv::rgba8(128, 128, 128, 0);
+		return ldv::rgba8(128, 128, 128, 255);
 	}
 };
 }

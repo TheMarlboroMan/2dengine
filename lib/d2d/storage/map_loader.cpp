@@ -1,12 +1,13 @@
 #include "d2d/storage/map_loader.h"
+#include "d2d/storage/thing_processor.h"
 
 #include <tools/json.h>
 #include <tools/file_utils.h>
 
 #include <stdexcept>
-#include <map>
-
+#include <sstream>
 #include <iostream>
+
 using namespace d2d::storage;
 
 map_loader::map_loader(
@@ -29,40 +30,93 @@ map_loader::map_loader(
 	}
 }
 
+bool map_loader::has_layer(
+	const std::string& _layer_type,
+	const std::string& _layer_id
+) const {
+
+	for(const auto& layer : doc["layers"].GetArray() ) {
+
+		if(!layer.IsObject()) {
+
+			throw std::runtime_error("all layers are expected to be objects");
+		}
+
+		if(layer["meta"]["type"].GetString()==_layer_type && layer["meta"]["id"].GetString()==_layer_id) {
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+const rapidjson::Value& map_loader::locate_layer(
+	const std::string& _layer_type,
+	const std::string& _layer_id
+) const {
+
+	for(const auto& layer : doc["layers"].GetArray() ) {
+
+		if(!layer.IsObject()) {
+
+			throw std::runtime_error("all layers are expected to be objects");
+		}
+
+		if(layer["meta"]["type"].GetString()==_layer_type && layer["meta"]["id"].GetString()==_layer_id) {
+
+			return layer;
+		}
+	}
+
+	std::stringstream ss;
+	ss<<"could not locate layer of type "<<_layer_type<<" with id "<<_layer_id;
+	throw std::runtime_error(ss.str());
+}
+
+void map_loader::load_thing_layer(
+	const std::string& _layer_id,
+	thing_processor& _processor
+) {
+
+	_processor.setup();
+
+	const auto& layer=locate_layer("things", _layer_id);
+	for(const auto& thing : layer["data"].GetArray()) {
+
+		auto pos=parse_position(thing);
+		int type=thing["t"].GetInt();
+		const auto& attr_map=map_attributes(thing["a"]);
+
+		_processor.load(pos, type, attr_map);
+	}
+}
+
 void map_loader::load_collision_tiles(
 	std::vector<d2d::world::collision_tile>& _tiles,
 	d2d::collision::shaper& _shaper,
 	const d2d::world::collision_tile_implementation& _tileimpl
 ) {
 
-/*
-		result.name=doc["attributes"]["name"].GetString();
-		result.music_id=doc["attributes"]["music_id"].GetInt();
-*/
-
 	_tiles.clear();
+	const auto& layer=locate_layer("tiles", "logic");
+	for(const auto& tile : layer["data"].GetArray()) {
 
-	for(const auto& layer : doc["layers"].GetArray() ) {
+		auto pos=parse_position(tile);
+		int type=tile["t"].GetInt();
 
-		if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"logic"}) {
+		d2d::world::collision_tile tileitem{
+			pos.x,
+			pos.y,
+			type,
+			_shaper,
+			_tileimpl
+		};
 
-			for(const auto& tile : layer["data"].GetArray()) {
-
-				auto pos=parse_position(tile);
-				int type=tile["t"].GetInt();
-
-				d2d::world::collision_tile tileitem{
-					pos.x,
-					pos.y,
-					type,
-					_shaper,
-					_tileimpl
-				};
-
-				_tiles.push_back(tileitem);
-			}
-		}
+		_tiles.push_back(tileitem);
 	}
+}
+
 /*
 			if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"background"}) {
 
@@ -137,13 +191,50 @@ void map_loader::load_collision_tiles(
 				}
 			}
 */
-}
 
-map_loader::position map_loader::parse_position(
-	const rapidjson::Value& _node
-) {
+position map_loader::parse_position(
+	const rapidjson::Value& _node) {
 
 	const auto pos=_node["p"].GetArray();
 	return {pos[0].GetInt(), pos[1].GetInt()};
+}
+
+std::map<std::string, attribute> map_loader::map_attributes(
+	const rapidjson::Value& _attributes
+) {
+
+	if(!_attributes.IsObject()) {
+
+		throw std::runtime_error("attributes is expected to be an object!");
+	}
+
+	std::map<std::string, attribute> result;
+	for(const auto& _node : _attributes.GetObject()) {
+
+		const std::string name=_node.name.GetString();
+
+		if(_node.value.IsInt()) {
+
+			result.emplace(std::make_pair(name, attribute{_node.value.GetInt()}));
+			continue;
+		}
+
+		if(_node.value.IsString()) {
+
+			result.emplace(std::make_pair(name, attribute{std::string{_node.value.GetString()}}));
+			continue;
+		}
+
+		if(_node.value.IsBool()) {
+
+			result.emplace(std::make_pair(name, attribute{_node.value.GetBool()}));
+			continue;
+		}
+
+		throw std::runtime_error("invalid type in attribute, only integers, booleans and strings are supported");
+
+	}
+
+	return result;
 }
 

@@ -9,7 +9,9 @@ debug_display::debug_display(
 	int _h
 )
 	:camera({0,0,(unsigned)_w,(unsigned)_h}, {0,0}),
-	bgcolor{ldv::rgba_color(0,0,0,255)}
+	bgcolor{ldv::rgba_color(0,0,0,255)},
+	outline{{0,0,0,0}, ldv::rgba_color(0,0,0,255), ldv::box_representation::type::line},
+	fill{{0,0,0,0}, ldv::rgba_color(0,0,0,255), ldv::box_representation::type::fill}
 { 
 
 	camera.set_coordinate_system(ldv::camera::tsystem::cartesian);
@@ -28,15 +30,14 @@ void debug_display::draw(
 ) {
 
 	int multiplier=-1; //see camera.h, we are using a cartesian system. we must do this.
+	int y=multiplier*(int)_item.get_y()-(int)_item.get_h();
 
-	//TODO: These should be properties.
-	ldv::box_representation outline({0,0,0,0}, ldv::rgba_color(0,0,0,0), ldv::box_representation::type::line);
-	ldv::box_representation fill({0,0,0,0}, ldv::rgba_color(0,0,0,0), ldv::box_representation::type::fill);
-
-	fill.set_location({_item.get_x(), multiplier*_item.get_y(), _item.get_w(), _item.get_h()});
+	fill.set_location({(int)_item.get_x(), y, (unsigned)_item.get_w(), (unsigned)_item.get_h()});
+	fill.set_color(_item.get_debug_fill_color());
 	fill.draw(_screen, camera);
 
-	outline.set_location({_item.get_x(), multiplier*-_item.get_y(), _item.get_w(), _item.get_h()});
+	outline.set_location({(int)_item.get_x(), y, (unsigned)_item.get_w(), (unsigned)_item.get_h()});
+	outline.set_color(_item.get_debug_outline_color());
 	outline.draw(_screen, camera);
 }
 
@@ -45,19 +46,9 @@ void debug_display::draw(
 	const std::vector<d2d::collision::spatiable>& _items
 ) {
 
-	int multiplier=-1; //see camera.h, we are using a cartesian system. we must do this.
-
-	ldv::box_representation outline({0,0,0,0}, ldv::rgba_color(0,0,0,0), ldv::box_representation::type::line);
-	ldv::box_representation fill({0,0,0,0}, ldv::rgba_color(0,0,0,0), ldv::box_representation::type::fill);
-
 	for(const auto& item : _items) {
 
-		//TODO: fix narrowing...
-		fill.set_location({item.get_x(), multiplier*-item.get_y(), item.get_w(), item.get_h()});
-		fill.draw(_screen, camera);
-
-		outline.set_location({item.get_x(), multiplier*-item.get_y(), item.get_w(), item.get_h()});
-		outline.draw(_screen, camera);
+		draw(_screen, item);
 	}
 }
 

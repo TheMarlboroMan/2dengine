@@ -11,9 +11,14 @@ std::ostream& app::operator<<(
 ) {
 
 	_stream<<"map: ["<<std::endl
-		<<"	collision_tiles:["<<std::endl;
+		<<"\n\tcollision_tiles:["<<std::endl;
 	for(const auto& tile : _map.collision_tiles ) {
 		_stream<<tile<<","<<std::endl;
+	}
+
+	_stream<<"\n\tsolid_blocks:[\n";
+	for(const auto& block : _map.solid_blocks) {
+		_stream<<block<<","<<std::endl;
 	}
 
 	_stream<<"]";
@@ -24,4 +29,5 @@ std::ostream& app::operator<<(
 void map::clear() {
 
 	collision_tiles.clear();
+	solid_blocks.clear();
 }

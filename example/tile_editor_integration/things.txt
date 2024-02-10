@@ -1,0 +1,29 @@
+beginobject
+	id 1
+	name start
+	w 24
+	h 24
+	color 0 0 255 255
+endobject
+
+beginobject
+	id 3
+	name solid_box
+	w 24
+	h 24
+	color 64 128 64 255
+	beginproperty
+		name width
+		type int
+		default 24
+		comment entry width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 24
+		comment entry height.
+		linkedto h
+	endproperty
+endobject

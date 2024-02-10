@@ -3,6 +3,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/service_provider.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/map.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/solid_block.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/thing_loader.cpp
 	PARENT_SCOPE
 )
 

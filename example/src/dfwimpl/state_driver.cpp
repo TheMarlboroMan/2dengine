@@ -111,7 +111,7 @@ void state_driver::prepare_resources(
 }
 
 void state_driver::register_controllers(
-	dfw::kernel& _kernel
+	dfw::kernel& 
 ) {
 
 	auto reg=[this](ptr_controller& _ptr, int _i, dfw::controller_interface * _ci) {

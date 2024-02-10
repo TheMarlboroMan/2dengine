@@ -14,7 +14,15 @@ d2d
 	storage
 		map_loader
 
-next step: 
-	get the whole collision stuff working now
-	try collisions with other entities?
+next step:
+	other entities drawing is failing. I guess shit is not inverted.
+	try collisions with other entities
+
+	add more types of tiles...
+	try collisions with special rules
+		- passable from bottom
+		- passable from bottom entities
+		- ends game
+	try gravity
+	use the whole "margin for the center in entity thing"
 

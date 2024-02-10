@@ -7,12 +7,15 @@ namespace d2d { namespace collision {
 
 using color=ldv::rgba_color;
 
+/**
+ *a spatiable is something that exists in a cartesian space.
+*/
 struct spatiable {
 
 /**
 *must return a color with which to draw the outline in debug mode
 */
-	virtual color           get_debug_outline_color() const {return ldv::rgba8(0,0,0,0);}
+	virtual color           get_debug_outline_color() const {return ldv::rgba8(32,32,32,255);}
 /**
 *must return a color with which to fill the outline in debug mode
 */

@@ -15,6 +15,12 @@ beginsession
 	fontcolor 70 70 70 255
 endsession
 
+beginobjectset
+	file things.txt
+	id 1
+	name things
+endobjectset
+
 begingridsettings
 	id 1
 	name logic
