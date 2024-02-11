@@ -15,6 +15,7 @@ d2d
 		map_loader
 
 next step:
+	figure out what to do with the debug headers... 
 	other entities drawing is failing. I guess shit is not inverted.
 	try collisions with other entities
 
