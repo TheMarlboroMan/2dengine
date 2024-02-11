@@ -53,6 +53,7 @@ void main::load_map(
 	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.tile_w, shaper.tile_h, &logger);
 
 	//We can also position the entity in the starting point.
+	lm::log(logger).info()<<"setting starting point at "<<tl.starting_position.x<<", "<<tl.starting_position.y<<"\n";
 	ent.set_origin({(double)tl.starting_position.x, (double)tl.starting_position.y});
 }
 
@@ -167,6 +168,11 @@ void main::draw(
 	
 	//TODO: This is what fucks shit up... Thing is, IT SHOULD NOT
 	//so it must be a bug in the camera itself.
+	
+	std::stringstream ss;
+	ss<<"will attempt to center on "<<ent<<"\n";
+	lm::log(logger).info()<<ss.str();
+
 	dd.center_on(ent);
 	dd.clear(_screen);
 

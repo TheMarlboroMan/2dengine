@@ -58,8 +58,8 @@ void camera_map_limit::limit_to_collision_tiles(
 	ldv::rect limit{
 		min_x * _w,
 		min_y * _h,
-		(unsigned)w,
-		(unsigned)h
+		(unsigned)w+_w, //These additions account for the fact that the last coordinate starts at the "zero" point of the tile.
+		(unsigned)h+_h
 	};
 
 	if(nullptr != _logger) {

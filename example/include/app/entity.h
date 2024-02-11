@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d2d/collision/spatiable.h>
+#include <iostream>
 
 namespace app {
 
@@ -32,4 +33,5 @@ class entity:
 	d2d::collision::box                 collision_box;
 };
 
+std::ostream& operator<<(std::ostream&, const entity&);
 }
