@@ -1,6 +1,5 @@
 #include "controller/main.h"
 #include "app/input.h"
-#include "app/player_input.h"
 #include "app/thing_loader.h"
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
@@ -106,59 +105,9 @@ void main::loop(
 
 	if(pli) {
 
-		//TODO: Who takes responsibility for the previous position and stuff?
-		d2d::motion::mover mover{};
-		const double speed=170.0;
-
-		auto collision_finder=d2d::collision::checker{};
-		auto collision_solver=d2d::collision::solver{};
-
-		if(pli.x) {
-
-			mover.apply_x(ent, speed*(double)pli.x, _lid.delta);
-
-			collision_finder.start(ent); 
-			bool has_collision=false;
-			for(const auto& tile : current_map.collision_tiles) {
-
-				has_collision|=collision_finder.add(tile);
-			}
-
-			for(const auto& block : current_map.solid_blocks) {
-
-				has_collision|=collision_finder.add(block);
-			}
-
-			if(has_collision) {
-
-				//TODO: Notice we have COMPLEX solutions too!
-				collision_solver.horizontal(ent, collision_finder.end());
-			}
-		}
-
-		if(pli.y) {
-
-			mover.apply_y(ent, speed*(double)pli.y, _lid.delta);
-
-			collision_finder.start(ent); 
-			bool has_collision=false;
-			for(const auto& tile : current_map.collision_tiles) {
-
-				has_collision|=collision_finder.add(tile);
-			}
-
-			for(const auto& block : current_map.solid_blocks) {
-
-				has_collision|=collision_finder.add(block);
-			}
-
-			if(has_collision) {
-
-				//TODO: Notice we have complex solutions too!
-				collision_solver.vertical(ent, collision_finder.end());
-			}
-		}
+		collision_phase(pli, _lid.delta);
 	}
+
 }
 
 void main::draw(
@@ -187,4 +136,73 @@ void main::draw(
 	}
 
 	dd.draw(_screen, ent);
+}
+
+void main::collision_phase(
+	app::player_input _pli,
+	float _delta
+) {
+	d2d::motion::mover mover{};
+	const double speed=170.0;
+
+	auto collision_finder=d2d::collision::checker{};
+	auto collision_solver=d2d::collision::solver{};
+
+/*
+a small dissertation is needed here: we can work out the whole thing so that
+the engine filters out "magic" collision types for us or we can leave that be
+in the client code.
+
+The other is to have the collision finder overloaded with tiles and add that
+information to the tiles themselves... Which does not seem that bad, actually.
+We would need to add the "previous position" to the finder (which seems 
+mostly fine) and some more methods to the tiles. Which, again, seems reasonable.
+
+
+*/
+	if(_pli.x) {
+
+		mover.apply_x(ent, speed*(double)_pli.x, _delta);
+
+		collision_finder.start(ent); 
+		bool has_collision=false;
+		for(const auto& tile : current_map.collision_tiles) {
+
+			has_collision|=collision_finder.add(tile);
+		}
+
+		for(const auto& block : current_map.solid_blocks) {
+
+			has_collision|=collision_finder.add(block);
+		}
+
+		if(has_collision) {
+
+			//TODO: Notice we have COMPLEX solutions too!
+			collision_solver.horizontal(ent, collision_finder.end());
+		}
+	}
+
+	if(_pli.y) {
+
+		mover.apply_y(ent, speed*(double)_pli.y, _delta);
+
+		collision_finder.start(ent); 
+		bool has_collision=false;
+		for(const auto& tile : current_map.collision_tiles) {
+
+			has_collision|=collision_finder.add(tile);
+		}
+
+		for(const auto& block : current_map.solid_blocks) {
+
+			has_collision|=collision_finder.add(block);
+		}
+
+		if(has_collision) {
+
+			//TODO: Notice we have complex solutions too!
+			collision_solver.vertical(ent, collision_finder.end());
+		}
+	}
 }

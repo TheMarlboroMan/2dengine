@@ -2,15 +2,15 @@
 
 #include <ldv/color.h>
 
-namespace d2d { namespace world {
+namespace d2d { namespace collision {
 
 using color=ldv::rgba_color;
 
-struct collision_tile;
+struct tile;
 /**
  * a little interface to tell our tiles how to behave
  */
-struct collision_tile_implementation {
+struct tile_implementation {
 	public:
 
 /**
@@ -18,15 +18,15 @@ struct collision_tile_implementation {
  * application shaper corresponds to it? Both parts communicate through the
  * integer primitive.
  */
-	virtual int             to_shape(const collision_tile&) const=0;
+	virtual int             to_shape(const tile&) const=0;
 
 /**
 *what would the colors be for this tile? The tile itself is passed along so
 *we can use its properties. These colors would be only used for the debug
 *display.
 */
-	virtual color           get_outline_color(const collision_tile&) const=0;
-	virtual color           get_fill_color(const collision_tile&) const=0;
+	virtual color           get_outline_color(const tile&) const=0;
+	virtual color           get_fill_color(const tile&) const=0;
 };
 
 }}

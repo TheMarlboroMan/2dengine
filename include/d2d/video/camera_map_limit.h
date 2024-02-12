@@ -1,6 +1,6 @@
 #pragma once
 
-#include "d2d/world/collision_tile.h"
+#include "d2d/collision/tile.h"
 #include <ldv/camera.h>
 #include <lm/logger.h>
 #include <vector>
@@ -18,7 +18,7 @@ class camera_map_limit {
 /**
  * these two integers are the width and height of each tile.
  */
-	void            limit_to_collision_tiles(ldv::camera&, const std::vector<d2d::world::collision_tile>&, int, int, lm::logger* =nullptr);
+	void            limit_to_collision_tiles(ldv::camera&, const std::vector<d2d::collision::tile>&, int, int, lm::logger* =nullptr);
 };
 
 }}

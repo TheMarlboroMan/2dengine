@@ -12,6 +12,7 @@ std::vector<spatiable const * > checker::get_collisions(
 	std::vector<spatiable const*> result{};
 
 	for(const auto& obstacle : _boxes) {
+
 		if(collides_with(obstacle, _box)) {
 			result.push_back(&obstacle);
 		}
@@ -62,6 +63,11 @@ bool checker::add(
 	}
 
 	if(collides_with(_obstacle, subject)) {
+
+//TODO: Any extra callbacks would go here... but of course, we are mostly
+//fucked up by now because these are spatiables and their public interfaces
+//do not allow for things like "are you solid from this side?" besides,
+//we don't even know about sides yet.
 		results.push_back(&_obstacle);
 		return true;
 	}

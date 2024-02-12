@@ -4,8 +4,8 @@
 #include "definitions.h"
 #include "thing_processor.h"
 #include "d2d/collision/shaper.h"
-#include "d2d/world/collision_tile.h"
-#include "d2d/world/collision_tile_implementation.h"
+#include "d2d/collision/tile.h"
+#include "d2d/collision/tile_implementation.h"
 
 #include <rapidjson/document.h>
 #include <string>
@@ -25,9 +25,9 @@ class map_loader {
 *loads data from file into the vector. Collision tiles will be cleared.
 */
 	void                                load_collision_tiles(
-											std::vector<d2d::world::collision_tile>&,
+											std::vector<d2d::collision::tile>&,
 	                                        d2d::collision::shaper&,
-											const d2d::world::collision_tile_implementation&
+											const d2d::collision::tile_implementation&
 	                                    );
 
 /**

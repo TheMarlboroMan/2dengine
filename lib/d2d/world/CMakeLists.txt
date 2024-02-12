@@ -1,6 +1,0 @@
-set(SOURCE
-	${SOURCE}
-	${CMAKE_CURRENT_SOURCE_DIR}/collision_tile.cpp
-	PARENT_SCOPE
-)
-

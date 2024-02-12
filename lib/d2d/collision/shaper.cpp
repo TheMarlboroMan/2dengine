@@ -5,6 +5,7 @@
 
 using namespace d2d::collision;
 
+//TODO: One thing here, there is no way to use a custom shaper...
 shaper::shaper(
 	int _tile_w,
 	int _tile_h

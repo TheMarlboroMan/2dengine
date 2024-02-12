@@ -9,6 +9,7 @@
 #include <d2d/video/debug_display.h>
 #include <lm/logger.h>
 #include <app/entity.h>
+#include "app/player_input.h"
 
 namespace controller {
 
@@ -28,6 +29,7 @@ class main:
 	private:
 
 	void                        load_map(const std::string&);
+	void                        collision_phase(app::player_input, float);
 
 	const app::env&				env;
 	lm::logger&					logger;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "solid_block.h"
-#include <d2d/world/collision_tile.h>
+#include <d2d/collision/tile.h>
 #include <vector>
 #include <ostream>
 
@@ -14,8 +14,8 @@ class map {
 	void                                    clear();
 
 	//100% public, no need to hide it.
-	std::vector<d2d::world::collision_tile>             collision_tiles;
-	std::vector<solid_block>                            solid_blocks;
+	std::vector<d2d::collision::tile>       collision_tiles;
+	std::vector<solid_block>                solid_blocks;
 
 	private:
 

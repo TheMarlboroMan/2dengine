@@ -93,9 +93,9 @@ void map_loader::load_thing_layer(
 }
 
 void map_loader::load_collision_tiles(
-	std::vector<d2d::world::collision_tile>& _tiles,
+	std::vector<d2d::collision::tile>& _tiles,
 	d2d::collision::shaper& _shaper,
-	const d2d::world::collision_tile_implementation& _tileimpl
+	const d2d::collision::tile_implementation& _tileimpl
 ) {
 
 	_tiles.clear();
@@ -105,7 +105,7 @@ void map_loader::load_collision_tiles(
 		auto pos=parse_position(tile);
 		int type=tile["t"].GetInt();
 
-		d2d::world::collision_tile tileitem{
+		d2d::collision::tile tileitem{
 			pos.x,
 			pos.y,
 			type,
