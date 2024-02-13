@@ -35,4 +35,8 @@ thing is named collision_tile for fuck's sake...
 	add the ability to use custom shapers.
 	I guess slopes
 
+---------------------
 
+Ok... I could do that overload thing but... Spatiable would need some more
+stuff, and that's complex. I guess we could talk about "passable_edges" and
+that would make sense within the whole interface. 

@@ -41,6 +41,41 @@ struct tile_impl:
 		throw std::runtime_error("bad tile type");
 	}
 
+	virtual bool is_passable_edge(
+		const d2d::collision::tile& _tile,
+		d2d::collision::box_edge _edge
+	) const {
+
+		switch(_tile.type) {
+			case tile_full:
+			case tile_harm:
+			case tile_half_bottom:
+			case tile_half_top:
+			case tile_half_left:
+			case tile_half_right:
+			case tile_quarter_bottom_left:
+			case tile_quarter_bottom_right:
+			case tile_quarter_top_left:
+			case tile_quarter_top_right:
+				return false;
+
+			case tile_half_bottom_passable:
+			case tile_half_top_passable:
+
+				switch(_edge) {
+
+					case d2d::collision::box_edge::top:
+					case d2d::collision::box_edge::right:
+					case d2d::collision::box_edge::left:
+						return false;
+					case d2d::collision::box_edge::bottom:
+						return true;
+				}
+		}
+
+		throw std::runtime_error("bad tile type");
+	}
+
 	virtual ldv::rgba_color get_outline_color(const d2d::collision::tile&) const {
 
 		return ldv::rgba8(0,0,255,255);

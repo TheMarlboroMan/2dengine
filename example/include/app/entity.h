@@ -23,6 +23,7 @@ class entity:
 	virtual double                      get_y() const {return collision_box.origin.y;}
 	virtual int                         get_w() const {return collision_box.w;}
 	virtual int                         get_h() const {return collision_box.h;}
+	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
 	//virtual color                       get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	//virtual color                       get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
 

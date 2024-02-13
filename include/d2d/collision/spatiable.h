@@ -7,6 +7,10 @@ namespace d2d { namespace collision {
 
 using color=ldv::rgba_color;
 
+enum class box_edge {
+	top, right, bottom ,left
+};
+
 /**
  *a spatiable is something that exists in a cartesian space.
 */
@@ -71,6 +75,11 @@ struct spatiable {
 	* to directly access this property without passing through the box getter.
 	*/
 	virtual int             get_h() const=0;
+
+	/**
+	* Must return if the box is passable from the given edge.
+	*/
+	virtual bool            is_passable_edge(box_edge) const=0;
 
 	/**
 	* Returns the y component plus the box height.

@@ -35,6 +35,7 @@ struct tile:
 	virtual double          get_y() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin.y;}
 	virtual int             get_w() const {return shaper->get_box(cimpl->to_shape(*this), x, y).w;}
 	virtual int             get_h() const {return shaper->get_box(cimpl->to_shape(*this), x, y).h;}
+	virtual bool            is_passable_edge(box_edge _edge) const {return cimpl->is_passable_edge(*this, _edge);}
 	virtual color           get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	virtual color           get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
 	//end implementation of spatiable

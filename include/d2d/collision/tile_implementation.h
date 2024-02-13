@@ -21,6 +21,11 @@ struct tile_implementation {
 	virtual int             to_shape(const tile&) const=0;
 
 /**
+ * given a tile, is it passable from the given edge?
+ */
+	virtual bool            is_passable_edge(const tile&, box_edge) const=0;
+
+/**
 *what would the colors be for this tile? The tile itself is passed along so
 *we can use its properties. These colors would be only used for the debug
 *display.
