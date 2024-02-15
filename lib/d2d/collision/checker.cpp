@@ -38,23 +38,52 @@ std::vector<spatiable const *> checker::get_collisions(
 }
 
 void checker::start(
-	const d2d::collision::box& _box
+	const d2d::collision::box& _box,
+	phases _phase
 ) {
 
+	phase=_phase;
 	subject=_box;
+	previous_position=_box;
+	with_previous=false;
 	results.clear();
 	started=true;
 }
 
 void checker::start(
-	const d2d::collision::spatiable& _subject
+	const d2d::collision::box& _box,
+	const d2d::collision::box& _previous,
+	phases _phase
 ) {
 
-	start(_subject.get_box());
+	phase=_phase;
+	subject=_box;
+	previous_position=_previous;
+	with_previous=true;
+	results.clear();
+	started=true;
+}
+
+void checker::start(
+	const d2d::collision::spatiable& _subject,
+	phases _phase
+) {
+
+	start(_subject.get_box(), _phase);
+}
+
+void checker::start(
+	const d2d::collision::spatiable& _subject,
+	const d2d::collision::box& _previous,
+	phases _phase
+) {
+
+	start(_subject.get_box(), _previous, _phase);
 }
 
 bool checker::add(
-	const d2d::collision::spatiable& _obstacle
+	const d2d::collision::spatiable& _obstacle,
+	int _flags
 ) {
 
 	if(!started) {
@@ -64,12 +93,41 @@ bool checker::add(
 
 	if(collides_with(_obstacle, subject)) {
 
-//TODO: Any extra callbacks would go here... but of course, we are mostly
-//fucked up by now because these are spatiables and their public interfaces
-//do not allow for things like "are you solid from this side?" besides,
-//we don't even know about sides yet.
-		results.push_back(&_obstacle);
-		return true;
+		if(_flags & flag_skip_passable_side_check) {
+
+			results.push_back(&_obstacle);
+			return true;
+		}
+
+		switch(phase) {
+
+			case phases::horizontal: {
+
+				auto edge=is_right_of(_obstacle, previous_position)
+					? box_edge::left
+					: box_edge::right;
+
+				if(!_obstacle.is_passable_edge(edge)) {
+
+					results.push_back(&_obstacle);
+					return true;
+				}
+			}
+			break;
+			case phases::vertical: {
+
+				auto edge=is_below(_obstacle, previous_position)
+					? box_edge::top
+					: box_edge::bottom;
+
+				if(!_obstacle.is_passable_edge(edge)) {
+
+					results.push_back(&_obstacle);
+					return true;
+				}
+			}
+			break;
+		}
 	}
 
 	return false;

@@ -17,6 +17,7 @@ d2d
 next step:
 	try collisions with special rules
 		 - passable from bottom
+		//TODO -> take care of the previous position thingy!!
 
 		This would be a new method for the tile_impl (something like
 is_passable_from_below) and changes to the collision finder (overload for 
@@ -37,6 +38,3 @@ thing is named collision_tile for fuck's sake...
 
 ---------------------
 
-Ok... I could do that overload thing but... Spatiable would need some more
-stuff, and that's complex. I guess we could talk about "passable_edges" and
-that would make sense within the whole interface. 

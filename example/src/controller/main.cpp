@@ -164,7 +164,7 @@ mostly fine) and some more methods to the tiles. Which, again, seems reasonable.
 
 		mover.apply_x(ent, speed*(double)_pli.x, _delta);
 
-		collision_finder.start(ent); 
+		collision_finder.start(ent, d2d::collision::checker::phases::horizontal);
 		bool has_collision=false;
 		for(const auto& tile : current_map.collision_tiles) {
 
@@ -187,7 +187,7 @@ mostly fine) and some more methods to the tiles. Which, again, seems reasonable.
 
 		mover.apply_y(ent, speed*(double)_pli.y, _delta);
 
-		collision_finder.start(ent); 
+		collision_finder.start(ent, d2d::collision::checker::phases::vertical);
 		bool has_collision=false;
 		for(const auto& tile : current_map.collision_tiles) {
 
