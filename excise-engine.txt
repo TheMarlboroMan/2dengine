@@ -16,20 +16,7 @@ d2d
 
 next step:
 	try collisions with special rules
-		 - passable from bottom
-		//TODO -> take care of the previous position thingy!!
-
-		This would be a new method for the tile_impl (something like
-is_passable_from_below) and changes to the collision finder (overload for 
-tiles and getting the previous position as a parameter, I guess? This raises
-more questions: do we overload the one-step things too?
-		However, this creates a dependency between the collision checker and
-the files... Is that a good idea? Well, the whole "world" namespace makes
-little sense because they are... collision thingies. But, what if they are
-decorative tiles? That would be another subset, right? Anyway, the whole 
-thing is named collision_tile for fuck's sake...
-
-	passable from bottom entities
+		passable from bottom entities <- I guess this is not so difficult now.
 
 	try gravity
 	use the whole "margin for the center in entity thing"

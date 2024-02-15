@@ -65,9 +65,9 @@ struct tile_impl:
 				switch(_edge) {
 
 					case d2d::collision::box_edge::top:
+						return false;
 					case d2d::collision::box_edge::right:
 					case d2d::collision::box_edge::left:
-						return false;
 					case d2d::collision::box_edge::bottom:
 						return true;
 				}

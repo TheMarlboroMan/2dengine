@@ -2,8 +2,6 @@
 #include "d2d/collision/tools.h"
 
 #include <cassert>
-
-//TODO:
 #include <sstream>
 #include <iostream>
 
@@ -11,30 +9,30 @@ using namespace d2d::collision;
 
 void response::solve(spatiable& _subject) {
 
-		if(edges & top) {
+	if(edges & top) {
 
-			collision::snap_to_top_of(_subject, *obstacle);
-			return;
-		}
-
-		if(edges & bottom) {
-
-			collision::snap_to_bottom_of(_subject, *obstacle);
-			return;
-		}
-
-		if(edges & left) {
-
-			collision::snap_to_left_of(_subject, *obstacle);
-			return;
-		}
-
-		if(edges & right) {
-
-			collision::snap_to_right_of(_subject, *obstacle);
-			return;
-		}
+		collision::snap_to_top_of(_subject, *obstacle);
+		return;
 	}
+
+	if(edges & bottom) {
+
+		collision::snap_to_bottom_of(_subject, *obstacle);
+		return;
+	}
+
+	if(edges & left) {
+
+		collision::snap_to_left_of(_subject, *obstacle);
+		return;
+	}
+
+	if(edges & right) {
+
+		collision::snap_to_right_of(_subject, *obstacle);
+		return;
+	}
+}
 
 void solver::horizontal(
 	collision::spatiable& _box,

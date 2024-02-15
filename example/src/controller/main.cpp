@@ -148,18 +148,6 @@ void main::collision_phase(
 	auto collision_finder=d2d::collision::checker{};
 	auto collision_solver=d2d::collision::solver{};
 
-/*
-a small dissertation is needed here: we can work out the whole thing so that
-the engine filters out "magic" collision types for us or we can leave that be
-in the client code.
-
-The other is to have the collision finder overloaded with tiles and add that
-information to the tiles themselves... Which does not seem that bad, actually.
-We would need to add the "previous position" to the finder (which seems 
-mostly fine) and some more methods to the tiles. Which, again, seems reasonable.
-
-
-*/
 	if(_pli.x) {
 
 		mover.apply_x(ent, speed*(double)_pli.x, _delta);
@@ -205,4 +193,6 @@ mostly fine) and some more methods to the tiles. Which, again, seems reasonable.
 			collision_solver.vertical(ent, collision_finder.end());
 		}
 	}
+
+	ent.sync_boxes();
 }

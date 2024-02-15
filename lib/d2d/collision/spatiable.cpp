@@ -2,6 +2,22 @@
 
 using namespace d2d::collision;
 
+std::ostream& d2d::collision::operator<<(
+	std::ostream& _stream, 
+	const box_edge& _edge
+) {
+
+	switch(_edge) {
+
+		case box_edge::top:     _stream<<"box_edge::top"; break;
+		case box_edge::right:   _stream<<"box_edge::right"; break;
+		case box_edge::bottom:  _stream<<"box_edge::bottom"; break;
+		case box_edge::left:    _stream<<"box_edge::left"; break;
+	}
+
+	return _stream;
+}
+
 spatiable::~spatiable() {
 
 }

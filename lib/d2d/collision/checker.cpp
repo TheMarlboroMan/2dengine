@@ -1,6 +1,7 @@
 #include "d2d/collision/checker.h"
 #include "d2d/collision/tools.h"
 #include <stdexcept>
+#include <iostream>
 
 using namespace d2d::collision;
 
@@ -42,43 +43,23 @@ void checker::start(
 	phases _phase
 ) {
 
+	results.clear();
 	phase=_phase;
 	subject=_box;
 	previous_position=_box;
-	with_previous=false;
-	results.clear();
 	started=true;
 }
 
 void checker::start(
-	const d2d::collision::box& _box,
-	const d2d::collision::box& _previous,
+	const d2d::collision::spatiable& _subject,
 	phases _phase
 ) {
 
+	results.clear();
 	phase=_phase;
-	subject=_box;
-	previous_position=_previous;
-	with_previous=true;
-	results.clear();
+	subject=_subject.get_box();
+	previous_position=_subject.get_previous_box();
 	started=true;
-}
-
-void checker::start(
-	const d2d::collision::spatiable& _subject,
-	phases _phase
-) {
-
-	start(_subject.get_box(), _phase);
-}
-
-void checker::start(
-	const d2d::collision::spatiable& _subject,
-	const d2d::collision::box& _previous,
-	phases _phase
-) {
-
-	start(_subject.get_box(), _previous, _phase);
 }
 
 bool checker::add(

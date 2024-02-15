@@ -2,6 +2,7 @@
 
 #include "definitions.h"
 #include <ldv/color.h>
+#include <ostream>
 
 namespace d2d { namespace collision {
 
@@ -10,6 +11,8 @@ using color=ldv::rgba_color;
 enum class box_edge {
 	top, right, bottom ,left
 };
+
+std::ostream& operator<<(std::ostream&, const box_edge&);
 
 /**
  *a spatiable is something that exists in a cartesian space.

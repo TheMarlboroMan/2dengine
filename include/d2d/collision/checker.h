@@ -36,9 +36,7 @@ class checker {
 	*below only, for example).
 	*/
 	void                            start(const d2d::collision::box&, phases);
-	void                            start(const d2d::collision::box&, const d2d::collision::box&, phases);
 	void                            start(const d2d::collision::spatiable&, phases);
-	void                            start(const d2d::collision::spatiable&, const d2d::collision::box&, phases);
 	/**
 	*adds a node to the sequence. returns true if there is a collision in 
 	*with the node allowing for - among others - early loop exits. The node is 
@@ -56,7 +54,6 @@ class checker {
 	d2d::collision::box             subject{};
 	d2d::collision::box             previous_position{};
 	bool                            started{false}; //for the sequential methods...
-	bool                            with_previous{false};
 	std::vector<spatiable const*>   results;
 	phases                          phase{phases::horizontal};
 };

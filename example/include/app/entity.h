@@ -11,12 +11,13 @@ class entity:
 	public:
 
 	                                    entity(int, int);
+	void                                sync_boxes();
 
 //Begin implementation of spatiable
 
 	virtual d2d::collision::box&             get_box() {return collision_box;}
 	virtual const d2d::collision::box&       get_box() const {return collision_box;}
-	virtual const d2d::collision::box&       get_previous_box() const {return collision_box;}
+	virtual const d2d::collision::box&       get_previous_box() const {return previous_box;}
 	virtual d2d::collision::point&           get_origin() {return collision_box.origin;}
 	virtual const d2d::collision::point&     get_origin() const {return collision_box.origin;}
 	virtual double                      get_x() const {return collision_box.origin.x;}
@@ -31,7 +32,8 @@ class entity:
 
 	private:
 
-	d2d::collision::box                 collision_box;
+	d2d::collision::box                 collision_box,
+										previous_box;
 };
 
 std::ostream& operator<<(std::ostream&, const entity&);
