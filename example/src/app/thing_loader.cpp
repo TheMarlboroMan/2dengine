@@ -4,15 +4,16 @@
 using namespace app;
 
 thing_loader::thing_loader(
-	std::vector<solid_block>& _solid_blocks
+	map& _map
 )
 	:starting_position{0,0},
-	solid_blocks{_solid_blocks}
+	curmap{_map}
 {}
 
 void thing_loader::setup() {
 
-	solid_blocks.clear();
+	curmap.solid_blocks.clear();
+	curmap.platform_blocks.clear();
 }
 
 void thing_loader::load(
@@ -25,11 +26,16 @@ void thing_loader::load(
 
 		case 1:
 			starting_position={_pos.x, _pos.y};
-		break;
+			return;
+		case 2:
+			curmap.platform_blocks.push_back(
+				{_pos.x, _pos.y, _attributes.at("width").get_int()}
+			);
+			return;
 		case 3:
-			solid_blocks.push_back(
+			curmap.solid_blocks.push_back(
 				{_pos.x, _pos.y, _attributes.at("width").get_int(), _attributes.at("height").get_int()}
 			);
-		break;
+			return;
 	}
 }

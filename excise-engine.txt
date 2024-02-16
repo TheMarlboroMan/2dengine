@@ -15,13 +15,12 @@ d2d
 		map_loader
 
 next step:
-	try collisions with special rules
-		passable from bottom entities <- I guess this is not so difficult now.
-
-	try gravity
+	Try gravity. The interesting part is "how do we integrate it?" A gravity
+class?
 	use the whole "margin for the center in entity thing"
 	add the ability to use custom shapers.
 	I guess slopes
+	Or moving blocks, which were originally there too.
 
 ---------------------
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "solid_block.h"
+#include "map.h"
 #include <d2d/storage/thing_processor.h>
 
 namespace app {
@@ -10,7 +10,7 @@ class thing_loader
 
 	public:
 
-						thing_loader(std::vector<solid_block>&);
+						thing_loader(map&);
 
 	void                setup();
 	void                load(d2d::storage::position, int, const std::map<std::string, d2d::storage::attribute>&);
@@ -19,6 +19,6 @@ class thing_loader
 
 	private:
 
-	std::vector<solid_block>&   solid_blocks;
+	map&                       curmap;
 };
 }

@@ -21,6 +21,11 @@ std::ostream& app::operator<<(
 		_stream<<block<<","<<std::endl;
 	}
 
+	_stream<<"\n\tplatform_blocks:[\n";
+	for(const auto& block : _map.platform_blocks) {
+		_stream<<block<<","<<std::endl;
+	}
+
 	_stream<<"]";
 
 	return _stream;
@@ -29,5 +34,6 @@ std::ostream& app::operator<<(
 void map::clear() {
 
 	collision_tiles.clear();
+	platform_blocks.clear();
 	solid_blocks.clear();
 }

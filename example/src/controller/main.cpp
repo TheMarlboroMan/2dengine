@@ -44,7 +44,7 @@ void main::load_map(
 		tile_impl
 	);
 
-	app::thing_loader tl{current_map.solid_blocks};
+	app::thing_loader tl{current_map};
 	loader.load_thing_layer("things", tl);
 
 	//After loading the map, tell the camera where the limits are.
@@ -54,6 +54,8 @@ void main::load_map(
 	//We can also position the entity in the starting point.
 	lm::log(logger).info()<<"setting starting point at "<<tl.starting_position.x<<", "<<tl.starting_position.y<<"\n";
 	ent.set_origin({(double)tl.starting_position.x, (double)tl.starting_position.y});
+
+	std::cout<<current_map<<std::endl;
 }
 
 void main::awake(
@@ -115,14 +117,6 @@ void main::draw(
 	int /*_fps*/
 ) {
 	
-	//TODO: This is what fucks shit up... Thing is, IT SHOULD NOT
-	//so it must be a bug in the camera itself.
-	
-	std::stringstream ss;
-	ss<<"will attempt to center on "<<ent<<"\n";
-	lm::log(logger).info()<<ss.str();
-
-	dd.center_on(ent);
 	dd.clear(_screen);
 
 	for(const auto& cell : current_map.collision_tiles) {
@@ -131,6 +125,11 @@ void main::draw(
 	}
 
 	for(const auto& block : current_map.solid_blocks) {
+
+		dd.draw(_screen, block);
+	}
+
+	for(const auto& block : current_map.platform_blocks) {
 
 		dd.draw(_screen, block);
 	}
@@ -147,6 +146,7 @@ void main::collision_phase(
 
 	auto collision_finder=d2d::collision::checker{};
 	auto collision_solver=d2d::collision::solver{};
+	bool must_recenter=false;
 
 	if(_pli.x) {
 
@@ -164,10 +164,16 @@ void main::collision_phase(
 			has_collision|=collision_finder.add(block);
 		}
 
+		for(const auto& block : current_map.platform_blocks) {
+
+			has_collision|=collision_finder.add(block);
+		}
+
 		if(has_collision) {
 
 			//TODO: Notice we have COMPLEX solutions too!
 			collision_solver.horizontal(ent, collision_finder.end());
+			must_recenter=true;
 		}
 	}
 
@@ -187,12 +193,23 @@ void main::collision_phase(
 			has_collision|=collision_finder.add(block);
 		}
 
+		for(const auto& block : current_map.platform_blocks) {
+
+			has_collision|=collision_finder.add(block);
+		}
+
 		if(has_collision) {
 
 			//TODO: Notice we have complex solutions too!
 			collision_solver.vertical(ent, collision_finder.end());
+			must_recenter=true;
 		}
 	}
 
 	ent.sync_boxes();
+
+	if(must_recenter) {
+
+		dd.center_on(ent);
+	}
 }

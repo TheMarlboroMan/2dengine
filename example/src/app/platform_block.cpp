@@ -1,19 +1,18 @@
-#include "app/solid_block.h"
+#include "app/platform_block.h"
 
 using namespace app;
 
-solid_block::solid_block(
+platform_block::platform_block(
 	int _x,
 	int _y,
-	int _w, 
-	int _h
+	int _w 
 ):
-	collision_box{{(double)_x, (double)_y}, _w, _h}
+	collision_box{{(double)_x, (double)_y}, _w, 12}
 {}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,
-	const solid_block& _block
+	const platform_block& _block
 ) {
 
 	_stream<<_block.get_box();

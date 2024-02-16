@@ -7,6 +7,21 @@ beginobject
 endobject
 
 beginobject
+	id 2
+	name below passable box
+	w 24
+	h 12
+	color 128 128 64 255
+	beginproperty
+		name width
+		type int
+		default 24
+		comment entry width.
+		linkedto w
+	endproperty
+endobject
+
+beginobject
 	id 3
 	name solid_box
 	w 24

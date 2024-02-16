@@ -5,12 +5,15 @@
 
 namespace app {
 
-class solid_block:
+/**
+ * a platform that is passable from below, fixed height.
+ */
+class platform_block:
 	public d2d::collision::spatiable {
 
 	public:
 
-	                                        solid_block(int, int, int, int);
+	                                        platform_block(int, int, int);
 
 //Begin implementation of spatiable
 
@@ -23,8 +26,8 @@ class solid_block:
 	virtual double                          get_y() const {return collision_box.origin.y;}
 	virtual int                             get_w() const {return collision_box.w;}
 	virtual int                             get_h() const {return collision_box.h;}
-	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
-	virtual d2d::collision::color           get_debug_outline_color() const {return ldv::rgba8(255,0,64,255);}
+	virtual bool                            is_passable_edge(d2d::collision::box_edge _edge) const {return d2d::collision::box_edge::top!=_edge;}
+	virtual d2d::collision::color           get_debug_outline_color() const {return ldv::rgba8(255,32,64,255);}
 	virtual d2d::collision::color           get_debug_fill_color() const {return ldv::rgba8(128, 0, 64, 255);}
 
 
@@ -35,5 +38,5 @@ class solid_block:
 	d2d::collision::box                 collision_box;
 };
 
-std::ostream& operator<<(std::ostream&, const solid_block&);
+std::ostream& operator<<(std::ostream&, const platform_block&);
 }
