@@ -6,6 +6,8 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/solver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/shaper.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/phase_horizontal.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/phase_vertical.cpp
 	PARENT_SCOPE
 )
 

@@ -4,8 +4,9 @@
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/motion/mover.h>
+#include <d2d/collision/phase_horizontal.h>
+#include <d2d/collision/phase_vertical.h>
 #include <d2d/collision/checker.h>
-#include <d2d/collision/solver.h>
 #include <ldv/color.h>
 #include <sstream>
 #include <iostream>
@@ -105,11 +106,43 @@ void main::loop(
 		pli.x=1;
 	}
 
-	if(pli) {
 
-		collision_phase(pli, _lid.delta);
+	//TODO: Actually, ply.x and y would affect the state and velocity
+	//without entering collision phase. 
+	bool must_recenter_view=false;
+	
+	if(motion_phase_horizontal(pli, _lid.delta)) {
+
+		must_recenter_view=true;
+		d2d::collision::phase_horizontal cph(ent);
+		cph.detect_all(current_map.collision_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		//cph.detect_all(current_map.platform_blocks); All passable from the side.
+		if(cph.has_collision()) {
+
+			cph.response_generic(); //but of course, the response in this case is sooo generic xD
+		}
 	}
 
+	if(motion_phase_vertical(pli, _lid.delta)) {
+
+		d2d::collision::phase_vertical cpv(ent);
+		cpv.detect_all(current_map.collision_tiles);
+		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cpv.detect_all(current_map.platform_blocks);
+		if(cpv.has_collision()) {
+
+			cpv.response_generic(); //but of course, the response in this case is sooo generic xD
+		}
+	}
+
+	//TODO: Would this be part of some interface???
+	//Always, I guess... 
+	ent.sync_boxes();
+	if(must_recenter_view) {
+
+		dd.center_on(ent);
+	}
 }
 
 void main::draw(
@@ -137,79 +170,42 @@ void main::draw(
 	dd.draw(_screen, ent);
 }
 
-void main::collision_phase(
+bool main::motion_phase_horizontal(
 	app::player_input _pli,
 	float _delta
 ) {
+
+	if(!_pli.x) {
+
+		return false;
+	}
+
 	d2d::motion::mover mover{};
-	const double speed=170.0;
+	const double velocity=170.0;
+	mover.apply_x(ent, velocity*(double)_pli.x, _delta);
+	return true;
+}
 
-	auto collision_finder=d2d::collision::checker{};
-	auto collision_solver=d2d::collision::solver{};
-	bool must_recenter=false;
+bool main::motion_phase_vertical(
+	app::player_input _pli,
+	float _delta
+) {
 
-	if(_pli.x) {
+	//TODO: Does gravity go here? I guess so. We can always apply... to
+	//apply conditionally we would have to do some magic like "check the tile
+	//below the entity and all possible objects"... And guess what? We cannot
+	//do that. Our options here are:
+	//- have a super nice container for the tiles that can do the x-y thingy and USE it.
+	//- fuck off and iterate like crazy.
+	//- always apply and use local states in collisionable entities.
 
-		mover.apply_x(ent, speed*(double)_pli.x, _delta);
+	if(!_pli.y) {
 
-		collision_finder.start(ent, d2d::collision::checker::phases::horizontal);
-		bool has_collision=false;
-		for(const auto& tile : current_map.collision_tiles) {
-
-			has_collision|=collision_finder.add(tile);
-		}
-
-		for(const auto& block : current_map.solid_blocks) {
-
-			has_collision|=collision_finder.add(block);
-		}
-
-		for(const auto& block : current_map.platform_blocks) {
-
-			has_collision|=collision_finder.add(block);
-		}
-
-		if(has_collision) {
-
-			//TODO: Notice we have COMPLEX solutions too!
-			collision_solver.horizontal(ent, collision_finder.end());
-			must_recenter=true;
-		}
+		return false;
 	}
 
-	if(_pli.y) {
-
-		mover.apply_y(ent, speed*(double)_pli.y, _delta);
-
-		collision_finder.start(ent, d2d::collision::checker::phases::vertical);
-		bool has_collision=false;
-		for(const auto& tile : current_map.collision_tiles) {
-
-			has_collision|=collision_finder.add(tile);
-		}
-
-		for(const auto& block : current_map.solid_blocks) {
-
-			has_collision|=collision_finder.add(block);
-		}
-
-		for(const auto& block : current_map.platform_blocks) {
-
-			has_collision|=collision_finder.add(block);
-		}
-
-		if(has_collision) {
-
-			//TODO: Notice we have complex solutions too!
-			collision_solver.vertical(ent, collision_finder.end());
-			must_recenter=true;
-		}
-	}
-
-	ent.sync_boxes();
-
-	if(must_recenter) {
-
-		dd.center_on(ent);
-	}
+	d2d::motion::mover mover{};
+	const double velocity=170.0;
+	mover.apply_y(ent, velocity*(double)_pli.y, _delta);
+	return true;
 }

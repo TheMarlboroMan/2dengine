@@ -15,6 +15,8 @@ d2d
 		map_loader
 
 next step:
+	Container for tiles with the whole x-y thing and "point to tile
+coordinates" because we never know :).
 	Try gravity. The interesting part is "how do we integrate it?" A gravity
 class?
 	use the whole "margin for the center in entity thing"
@@ -24,3 +26,43 @@ class?
 
 ---------------------
 
+struct gravity {
+
+	d2d::motion::motion_vector force;
+	void apply_to(d2d::motion::motion_vector&, float); 
+}
+
+	and... is there something else, actually? all it takes is to add this
+	vector to the velocity of an actor properly integrated with the delta
+	time and voilá.
+
+	I think it is much more difficult to control when a collision happens due
+	to gravity and stuff, when to ignore it, etc. We had it right in the 
+	previous game, with all this "state" things...
+
+	I guess there is also a question here of "how much can we integrate
+	here with the rest of the engine as to avoid repeating work?". Maybe
+	asking that question shows us a different approach to this matter.
+
+	Having a constant pull downwards in the Y axis is not a problem per-se:
+	the collision detection will quickly correct that, is the myriad of 
+	little problems that arise from this and end adding up:
+
+		- if colliding with the floor resets Y momentum to zero, when do
+		we apply upwards momentum to jump? It should be before the collision
+		phase.
+
+		- if colliding with the floor triggers something, how can we avoid
+		triggering it constantly? Well, our solution has always been to know
+		if we are "on ground". Maybe there are other avenues to explore here:
+			e.g. is the final position the SAME we were in? Then we are not
+			colliding with the floor.
+			- and how exactly could we integrate this in the engine? This is
+			the part where shit gets usually all tangled up.
+
+		- actually, checking for a collision before applying corrections
+		and stuff could save some cycles.
+
+
+
+}

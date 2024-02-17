@@ -29,7 +29,14 @@ class main:
 	private:
 
 	void                        load_map(const std::string&);
-	void                        collision_phase(app::player_input, float);
+/**
+ * returns true if there was motion
+ */
+	bool                        motion_phase_horizontal(app::player_input, float);
+/**
+ * returns true if there was motion
+ */
+	bool                        motion_phase_vertical(app::player_input, float);
 
 	const app::env&				env;
 	lm::logger&					logger;

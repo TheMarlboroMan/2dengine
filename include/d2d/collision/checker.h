@@ -44,6 +44,29 @@ class checker {
 	*/
 	bool                            add(const d2d::collision::spatiable&, int=0);
 	/**
+    *adds SOMETHING to the sequence. returns true in case of collision, can
+	*perform early exit. Adds any collisions to the collision buffer.
+	*/
+	template<typename T> 
+	bool                            add_all(const T& _nodes, int _flags=0, bool _exit_on_collision=false) {
+
+		bool had_collision=false;
+		for(const auto& node : _nodes) {
+
+			if(add(node, _flags)) {
+
+				had_collision=true;
+				if(_exit_on_collision) {
+
+					break;
+				}
+			}
+		}
+
+		return had_collision;
+	}
+
+	/**
     *finishes the sequence and returns the collision buffer. Can only 
 	*be called once for each "start" call. 
 	*/

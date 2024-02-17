@@ -15,6 +15,7 @@ class map {
 	void                                    clear();
 
 	//100% public, no need to hide it.
+	//TODO: Interestingly we cannot check a certain point x,y by using a grid for collisions. That's odd.
 	std::vector<d2d::collision::tile>       collision_tiles;
 	std::vector<solid_block>                solid_blocks;
 	std::vector<platform_block>             platform_blocks;

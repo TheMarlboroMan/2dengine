@@ -47,7 +47,8 @@ void solver::horizontal(
 	//tic are never so fast so as to allow one box to move through and object
 	//almost completely.
 	double right=_box.get_x() + _box.get_w();
-	if(right > obstacle.get_x()
+	if(
+		right > obstacle.get_x()
 		&& right < obstacle.get_x() + obstacle.get_w()
 	) {
 
@@ -70,7 +71,8 @@ void solver::vertical(
 
 	//collision with the bottom part of obstacle...
 	auto top=_box.get_y() + _box.get_h();
-	if(top > obstacle.get_y()
+	if(
+		top > obstacle.get_y()
 		&& top < obstacle.get_y()+obstacle.get_h()
 	) {
 
