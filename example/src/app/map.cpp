@@ -2,6 +2,7 @@
 #include "d2d/collision/tools.h"
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace app;
 
@@ -36,4 +37,11 @@ void map::clear() {
 	collision_tiles.clear();
 	platform_blocks.clear();
 	solid_blocks.clear();
+	tile_finder.clear();
+}
+
+void map::sync_tile_finder() {
+
+	tile_finder.clear();
+	tile_finder.load(collision_tiles);
 }

@@ -57,6 +57,7 @@ struct gravity {
 		if we are "on ground". Maybe there are other avenues to explore here:
 			e.g. is the final position the SAME we were in? Then we are not
 			colliding with the floor.
+			- check the Y difference with the previous position. Boom. Done.
 			- and how exactly could we integrate this in the engine? This is
 			the part where shit gets usually all tangled up.
 

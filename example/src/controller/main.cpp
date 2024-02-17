@@ -45,6 +45,8 @@ void main::load_map(
 		tile_impl
 	);
 
+	current_map.sync_tile_finder();
+
 	app::thing_loader tl{current_map};
 	loader.load_thing_layer("things", tl);
 

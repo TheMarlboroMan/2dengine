@@ -8,6 +8,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/tile.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/phase_horizontal.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/phase_vertical.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tile_finder_matrix.cpp
 	PARENT_SCOPE
 )
 
