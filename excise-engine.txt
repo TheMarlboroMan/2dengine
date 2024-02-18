@@ -15,8 +15,6 @@ d2d
 		map_loader
 
 next step:
-	Container for tiles with the whole x-y thing and "point to tile
-coordinates" because we never know :).
 	Try gravity. The interesting part is "how do we integrate it?" A gravity
 class?
 	use the whole "margin for the center in entity thing"
@@ -64,6 +62,3 @@ struct gravity {
 		- actually, checking for a collision before applying corrections
 		and stuff could save some cycles.
 
-
-
-}

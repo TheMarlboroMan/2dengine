@@ -6,10 +6,10 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/solver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/shaper.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/phase_horizontal.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/phase_vertical.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/phase.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile_finder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile_finder_matrix.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tiles_in_box.cpp
 	PARENT_SCOPE
 )
 

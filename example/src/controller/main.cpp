@@ -4,12 +4,13 @@
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/motion/mover.h>
-#include <d2d/collision/phase_horizontal.h>
-#include <d2d/collision/phase_vertical.h>
+#include <d2d/collision/phase.h>
 #include <d2d/collision/checker.h>
+#include <d2d/collision/tiles_in_box.h>
 #include <ldv/color.h>
 #include <sstream>
 #include <iostream>
+#include <cmath>
 
 using namespace controller;
 
@@ -22,7 +23,7 @@ main::main(
 	tile_impl{_sp.get_tile_impl()},
 	dd{480, 384},
 	ent{80, -120}
-{ 
+{
 	//Attempt to load the starter map.
 	load_map("map.json");
 	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
@@ -108,38 +109,59 @@ void main::loop(
 		pli.x=1;
 	}
 
-
-	//TODO: Actually, ply.x and y would affect the state and velocity
-	//without entering collision phase. 
 	bool must_recenter_view=false;
-	
+
+	//TODO: The horror, 24, 24
+	d2d::collision::tiles_in_box adapter(24, 24);
+
+	//TODO: The moment we introduce moving things this will change.
 	if(motion_phase_horizontal(pli, _lid.delta)) {
 
 		must_recenter_view=true;
-		d2d::collision::phase_horizontal cph(ent);
-		cph.detect_all(current_map.collision_tiles, d2d::collision::checker::flag_skip_passable_side_check);
-		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		//cph.detect_all(current_map.platform_blocks); All passable from the side.
-		if(cph.has_collision()) {
+		d2d::collision::phase cp(ent, d2d::collision::checker::phases::horizontal);
 
-			cph.response_generic(); //but of course, the response in this case is sooo generic xD
+		auto current_tiles=adapter.find(ent, current_map.tile_finder);
+
+		//We only want the really solid ones for the horizontal pass.
+		auto ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
+
+			return _tile->type != app::tile_half_bottom_passable
+				&& _tile->type != app::tile_half_top_passable;
+		};
+
+		decltype(current_tiles) valid_tiles;
+		std::copy_if(
+			std::begin(current_tiles),
+			std::end(current_tiles),
+			std::back_inserter(valid_tiles),
+			ignore_passable
+		);
+
+		cp.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+		cp.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+
+		if(cp.has_collision()) {
+
+			cp.response_generic(); //but of course, the response in this case is sooo generic xD
 		}
 	}
 
 	if(motion_phase_vertical(pli, _lid.delta)) {
 
-		d2d::collision::phase_vertical cpv(ent);
-		cpv.detect_all(current_map.collision_tiles);
-		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		cpv.detect_all(current_map.platform_blocks);
-		if(cpv.has_collision()) {
+		d2d::collision::phase cp(ent, d2d::collision::checker::phases::vertical);
 
-			cpv.response_generic(); //but of course, the response in this case is sooo generic xD
+       auto current_tiles=adapter.find(ent, current_map.tile_finder);
+		cp.detect_all(current_tiles);
+		cp.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cp.detect_all(current_map.platform_blocks);
+
+		if(cp.has_collision()) {
+
+			cp.response_generic(); //but of course, the response in this case is sooo generic xD
 		}
 	}
 
-	//TODO: Would this be part of some interface???
-	//Always, I guess... 
+	//Always, I guess...
 	ent.sync_boxes();
 	if(must_recenter_view) {
 
@@ -151,7 +173,7 @@ void main::draw(
 	ldv::screen& _screen,
 	int /*_fps*/
 ) {
-	
+
 	dd.clear(_screen);
 
 	for(const auto& cell : current_map.collision_tiles) {

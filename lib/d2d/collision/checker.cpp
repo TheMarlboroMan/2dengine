@@ -15,6 +15,7 @@ std::vector<spatiable const * > checker::get_collisions(
 	for(const auto& obstacle : _boxes) {
 
 		if(collides_with(obstacle, _box)) {
+
 			result.push_back(&obstacle);
 		}
 	}
@@ -30,7 +31,9 @@ std::vector<spatiable const *> checker::get_collisions(
 	std::vector<spatiable const*> result{};
 
 	for(const auto& obstacle : _boxes) {
+
 		if(collides_with(*obstacle, _box)) {
+
 			result.push_back(obstacle);
 		}
 	}
@@ -38,6 +41,49 @@ std::vector<spatiable const *> checker::get_collisions(
 	return result;
 }
 
+bool checker::check(
+	const d2d::collision::spatiable& _subject,
+	const d2d::collision::spatiable& _obstacle,
+	phases _phase,
+	int _flags
+) const {
+
+	if(!collides_with(_obstacle, _subject)) {
+
+		return false;
+	}
+
+	if(_flags & flag_skip_passable_side_check) {
+
+		return true;
+	}
+
+	switch(_phase) {
+
+		case phases::horizontal: {
+
+			auto edge=is_right_of(_obstacle, _subject.get_previous_box())
+				? box_edge::left
+				: box_edge::right;
+
+			return !_obstacle.is_passable_edge(edge);
+		}
+		break;
+		case phases::vertical: {
+
+			auto edge=is_below(_obstacle, _subject.get_previous_box())
+				? box_edge::top
+				: box_edge::bottom;
+
+			return !_obstacle.is_passable_edge(edge);
+		}
+		break;
+	}
+
+	return false; //never gonna happen.
+}
+
+/*
 void checker::start(
 	const d2d::collision::box& _box,
 	phases _phase
@@ -124,3 +170,4 @@ std::vector<spatiable const *> checker::end() {
 	started=false;
 	return results;
 }
+*/
