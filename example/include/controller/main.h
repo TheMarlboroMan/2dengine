@@ -33,10 +33,7 @@ class main:
  * returns true if there was motion
  */
 	bool                        motion_phase_horizontal(app::player_input, float);
-/**
- * returns true if there was motion
- */
-	bool                        motion_phase_vertical(app::player_input, float);
+	void                        motion_phase_vertical(app::player_input, float);
 
 	const app::env&				env;
 	lm::logger&					logger;

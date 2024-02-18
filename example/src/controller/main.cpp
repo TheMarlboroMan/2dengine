@@ -7,10 +7,12 @@
 #include <d2d/collision/phase.h>
 #include <d2d/collision/checker.h>
 #include <d2d/collision/tiles_in_box.h>
+#include <d2d/collision/tile_filter.h>
 #include <ldv/color.h>
 #include <sstream>
 #include <iostream>
 #include <cmath>
+#include <functional>
 
 using namespace controller;
 
@@ -95,7 +97,7 @@ void main::loop(
 
 		pli.y=-1;
 	}
-	else if(_input.is_input_pressed(app::input::up)) {
+	else if(_input.is_input_down(app::input::up)) {
 
 		pli.y=1;
 	}
@@ -111,54 +113,72 @@ void main::loop(
 
 	bool must_recenter_view=false;
 
+	//TODO: gravity goes here!
+	struct gravity {
+
+		d2d::motion::motion_vector force{0.0, 0.0};
+
+		void apply_to(d2d::motion::motion_vector& _target, float _delta) {
+
+			auto pull=force*=_delta;
+			_target+=pull;
+
+			if(_target.y < -600.0) {
+
+				_target.y=-600; //maximum velocity!
+			}
+		}
+	};
+
+	gravity grav;
+	//TODO: Debug this shit.
+	grav.force={0.0, -10.0};
+	grav.apply_to(ent.velocity, _lid.delta);
+
 	//TODO: The horror, 24, 24
 	d2d::collision::tiles_in_box adapter(24, 24);
 
-	//TODO: The moment we introduce moving things this will change.
+	//TODO: The moment we introduce moving things this will change, maybe 
+	//there is no need for the motion phase to return true in order to do
+	//this sort of thing.
 	if(motion_phase_horizontal(pli, _lid.delta)) {
 
 		must_recenter_view=true;
 		d2d::collision::phase cp(ent, d2d::collision::checker::phases::horizontal);
 
+		//This filters the map files and returns only those that would
+		//collisde with the current position.
 		auto current_tiles=adapter.find(ent, current_map.tile_finder);
 
-		//We only want the really solid ones for the horizontal pass.
-		auto ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
+		std::function<bool(const d2d::collision::tile*)> ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
 
 			return _tile->type != app::tile_half_bottom_passable
 				&& _tile->type != app::tile_half_top_passable;
 		};
 
-		decltype(current_tiles) valid_tiles;
-		std::copy_if(
-			std::begin(current_tiles),
-			std::end(current_tiles),
-			std::back_inserter(valid_tiles),
-			ignore_passable
-		);
+		auto valid_tiles=d2d::collision::filter_tiles(current_tiles, ignore_passable);
 
 		cp.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cp.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 
 		if(cp.has_collision()) {
 
-			cp.response_generic(); //but of course, the response in this case is sooo generic xD
+			cp.response_generic();
 		}
 	}
 
-	if(motion_phase_vertical(pli, _lid.delta)) {
+	motion_phase_vertical(pli, _lid.delta);
 
-		d2d::collision::phase cp(ent, d2d::collision::checker::phases::vertical);
+	d2d::collision::phase cp(ent, d2d::collision::checker::phases::vertical);
 
-       auto current_tiles=adapter.find(ent, current_map.tile_finder);
-		cp.detect_all(current_tiles);
-		cp.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		cp.detect_all(current_map.platform_blocks);
+	auto current_tiles=adapter.find(ent, current_map.tile_finder);
+	cp.detect_all(current_tiles);
+	cp.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	cp.detect_all(current_map.platform_blocks);
 
-		if(cp.has_collision()) {
+	if(cp.has_collision()) {
 
-			cp.response_generic(); //but of course, the response in this case is sooo generic xD
-		}
+		cp.response_generic();
 	}
 
 	//Always, I guess...
@@ -210,26 +230,17 @@ bool main::motion_phase_horizontal(
 	return true;
 }
 
-bool main::motion_phase_vertical(
+void main::motion_phase_vertical(
 	app::player_input _pli,
 	float _delta
 ) {
 
-	//TODO: Does gravity go here? I guess so. We can always apply... to
-	//apply conditionally we would have to do some magic like "check the tile
-	//below the entity and all possible objects"... And guess what? We cannot
-	//do that. Our options here are:
-	//- have a super nice container for the tiles that can do the x-y thingy and USE it.
-	//- fuck off and iterate like crazy.
-	//- always apply and use local states in collisionable entities.
+	if(_pli.y >= 0) {
 
-	if(!_pli.y) {
-
-		return false;
+		//THis is a bad jump xD
+		ent.velocity.y+=500.0;
 	}
 
 	d2d::motion::mover mover{};
-	const double velocity=170.0;
-	mover.apply_y(ent, velocity*(double)_pli.y, _delta);
-	return true;
+	mover.apply_y(ent, ent.velocity.y, _delta);
 }

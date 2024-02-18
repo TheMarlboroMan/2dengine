@@ -2,6 +2,7 @@
 
 #include <d2d/collision/spatiable.h>
 #include <d2d/collision/checker.h>
+#include <d2d/tools/to_ref.h>
 
 namespace d2d { namespace collision {
 
@@ -23,7 +24,7 @@ class phase{
 		std::size_t l=_nodes.size(); 
 		for(std::size_t i=0; i<l; i++) {
 
-			if(detect_one(to_ref(_nodes[i]), _flags)) {
+			if(detect_one(d2d::tools::to_ref(_nodes[i]), _flags)) {
 
 				had_collision=true;
 				if(_exit_on_collision) {
@@ -49,8 +50,6 @@ class phase{
  * to reference helpers to detect all can be called with any kind of vectors,
  * pointers or not.
  */
-	template<typename T> const T& to_ref(const T& _v) {return _v;}
-	template<typename T> const T& to_ref(T const * _v) {return *_v;}
 
 	bool                            collision_found{false};
 	d2d::collision::checker::phases collision_phase;
