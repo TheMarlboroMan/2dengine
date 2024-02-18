@@ -13,6 +13,7 @@ class map {
 
 	public:
 
+	                                        map();
 	void                                    clear();
 
 	//100% public, no need to hide it.

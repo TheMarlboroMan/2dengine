@@ -6,6 +6,11 @@
 
 using namespace app;
 
+map::map():
+	//TODO: These 24 are contained inside the shaper. Perhaps we could do something about it.
+	tile_finder{24, 24}
+{}
+
 std::ostream& app::operator<<(
 	std::ostream& _stream,
 	const map& _map

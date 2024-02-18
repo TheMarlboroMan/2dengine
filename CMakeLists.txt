@@ -5,6 +5,7 @@ option(BUILD_DEBUG "Build a debug release" ON)
 option(BUILD_SHARED "Build a shared library" ON)
 option(BUILD_STATIC "Build a static library" OFF)
 option(BUILD_EXAMPLE "Build example" "ON")
+option(BUILD_TESTS "Build test code" "ON")
 
 #library version
 set(MAJOR_VERSION 0)
@@ -87,15 +88,8 @@ if(${BUILD_SHARED})
 	message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-shared")
 endif()
 
-if(${BUILD_EXAMPLE})
-
-	message("Will build example")
-
-	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
-	set(EXAMPLE_SOURCE "")
-	add_subdirectory("${PROJECT_SOURCE_DIR}/example/src")
-	add_library(exlib SHARED ${EXAMPLE_SOURCE})
-	set_target_properties(exlib PROPERTIES OUTPUT_NAME exlib)
+#setup libraries for example and tests.
+if(${BUILD_EXAMPLE} OR ${BUILD_TESTS})
 
 	#add the framework dependencies
 	add_library(lm SHARED IMPORTED)
@@ -118,9 +112,21 @@ if(${BUILD_EXAMPLE})
 		set_target_properties(dfw PROPERTIES IMPORTED_LOCATION /usr/local/lib/libdfw.so)
 	endif()
 
+endif()
+
+if(${BUILD_EXAMPLE})
+
+	message("will build example")
+
+	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
+	set(EXAMPLE_SOURCE "")
+	add_subdirectory("${PROJECT_SOURCE_DIR}/example/src")
+	add_library(exlib SHARED ${EXAMPLE_SOURCE})
+	set_target_properties(exlib PROPERTIES OUTPUT_NAME exlib)
+
 	add_executable(example-app example/src/main.cpp)
 
-	if(${BUILD_DEBUG})
+	if(${build_debug})
 
 		target_compile_definitions(example-app PUBLIC "-DLIBDANSDL2_DEBUG")
 	endif()
@@ -129,4 +135,21 @@ if(${BUILD_EXAMPLE})
 
 	add_custom_target(setup_files ALL)
 	add_custom_command(TARGET setup_files POST_BUILD COMMAND cp -r ../example/resources .)
+endif()
+
+if(${BUILD_TESTS}) 
+
+	message("Will build tests")
+
+	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
+	set(EXAMPLE_SOURCE "")
+	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
+
+	if(${build_debug})
+
+		target_compile_definitions(tile_finder_matrix PUBLIC "-DLIBDANSDL2_DEBUG")
+	endif()
+
+	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+
 endif()

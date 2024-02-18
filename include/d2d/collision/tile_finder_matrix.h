@@ -13,8 +13,11 @@ class tile_finder_matrix:
 
 	public:
 
+	                                    tile_finder_matrix(int, int);
+
 /**
- *loads tiles into the lookup data structure.
+ *loads tiles into the lookup data structure. Needs the width and height of
+*a full tile to be able to calculate positions.
  */
 	void                                load(const std::vector<tile>&);
 
@@ -25,16 +28,20 @@ class tile_finder_matrix:
 
 //begin implementation of tile_finder.
 
-	virtual d2d::collision::tile*       get(int, int) const;
-
+	virtual const d2d::collision::tile* get(int, int) const;
+	virtual d2d::collision::tile*       get(int, int);
 	virtual bool                        has(int, int) const;
+	virtual limits                      get_limits() const {return limit;}
 
 //end implementation of tile finder.
 
 	private:
 
-	std::vector<d2d::collision::spatiable *> data;
+	std::vector<d2d::collision::tile *> data;
 	int                                 offset_x{0},
-										offset_y{0};
+	                                    offset_y{0},
+	                                    tile_w{0},
+	                                    tile_h{0};
+	limits                              limit{0,0,0,0,0,0};
 };
 }}

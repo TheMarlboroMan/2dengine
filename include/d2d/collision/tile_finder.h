@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include <ostream>
 
 namespace d2d { namespace collision {
 
@@ -13,13 +14,26 @@ class tile_finder {
 
 	public:
 
+	struct limits{
+		int left, right, //leftmost and rightmost x indexes, inclusive.
+	        bottom, top, //bottommost and topmost y indexes, inclusive.
+	        w, h;
+	};
+
 /**
  * must return the tile at x,y, null if no tile is in that position
  */
-	virtual d2d::collision::tile*       get(int, int) const=0;
+	virtual const d2d::collision::tile* get(int, int)const=0;
+	virtual d2d::collision::tile*       get(int, int)=0;
 /**
  * must return true if there is a tile at x,y
  */
-	virtual bool                        has(int, int) const=0;
+	virtual bool                        has(int, int)const=0;
+/**
+ * must return a limits struct.
+ */
+	virtual limits                      get_limits() const=0;
 };
+
+std::ostream& operator<<(std::ostream&, const tile_finder::limits&);
 }}

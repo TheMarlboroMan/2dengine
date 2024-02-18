@@ -27,7 +27,7 @@ class map_loader {
 	void                                load_collision_tiles(
 											std::vector<d2d::collision::tile>&,
 	                                        d2d::collision::shaper&,
-											const d2d::collision::tile_implementation&
+	                                        const d2d::collision::tile_implementation&
 	                                    );
 
 /**
