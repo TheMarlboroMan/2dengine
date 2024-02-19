@@ -5,11 +5,9 @@
 namespace d2d { namespace collision {
 
 /**
-* Tile shapes are repeated over and over. This class holds a collection of 
-* common shapes that tiles can retrieve so we don't have to deal with the memory
-* of hundreds of boxes, just with their common shapes.
-*/
-
+ * interface for a class that holds and can return the boxes of different
+ * tile types.
+ */
 class shaper {
 
 	public:
@@ -26,32 +24,22 @@ class shaper {
 		tile_quarter_top_right
 	};
 
-/**
-*shaper constructor, receives width and height of the basic tile.
-*/
-	                        shaper(int, int);
+	virtual                         ~shaper() {}
 
 	/**
 	* Retrieves and repositions a prototype box according to type, x and y (in
 	* tile coordinates, not world coordinates) plus a variant.
 	*/
-	d2d::collision::box&         get_box(int, int, int);
+	virtual d2d::collision::box&    box(int, int, int)=0;
 
 /**
  * width of the tiles
  */
-	const int                    tile_w;
+	virtual int                     get_tile_w() const=0;
 /**
  * height of the tiles
  */
-	const int                    tile_h;
-
-	private:
-
-	d2d::collision::box          full_box,
-	                        half_box_wide,
-	                        half_box_tall,
-	                        quarter_box;
+	virtual int                     get_tile_h() const=0;
 };
 
 }}

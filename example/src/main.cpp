@@ -7,14 +7,20 @@
 
 int main(int argc, char ** argv)
 {
-	app::env env;
 		
 	//Init application log.
 	//std::string log_path{env.get_app_path()+"logs/app.log"};
 	//lm::fileapp_log app_log(log_path.c_str());
 	lm::ostream_logger app_log(std::cout);
 
+	app::env env(app_log);
+
 	try {
+
+#ifdef IS_DEBUG_BUILD
+
+		lm::log(app_log).info()<<"setting up config..."<<std::endl;
+#endif
 
 		//Setup the application configuration
 		lm::log(app_log).info()<<"setting up config..."<<std::endl;

@@ -8,6 +8,8 @@ enum input {
 	right,
 	up,
 	jump,
-	down
+	down,
+	tic,
+	reload_values
 };
 }

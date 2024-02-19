@@ -92,6 +92,8 @@ void state_driver::prepare_input(dfw::kernel& kernel) {
 		{input_description_from_config_token(config.token_from_path("input:up")), app::input::up},
 		{input_description_from_config_token(config.token_from_path("input:down")), app::input::down},
 		{input_description_from_config_token(config.token_from_path("input:jump")), app::input::jump},
+		{input_description_from_config_token(config.token_from_path("input:tic")), app::input::tic},
+		{input_description_from_config_token(config.token_from_path("input:reload_values")), app::input::reload_values}
 	};
 
 	kernel.init_input_system(pairs);

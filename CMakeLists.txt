@@ -97,6 +97,7 @@ if(${BUILD_EXAMPLE} OR ${BUILD_TESTS})
 	add_library(ldtools SHARED IMPORTED)
 	add_library(dansdl2 SHARED IMPORTED)
 	add_library(dfw SHARED IMPORTED)
+	add_library(env SHARED IMPORTED)
 
 	if(${BUILD_DEBUG})
 		set_target_properties(lm PROPERTIES IMPORTED_LOCATION /usr/local/lib/liblm_debug.so)
@@ -104,12 +105,14 @@ if(${BUILD_EXAMPLE} OR ${BUILD_TESTS})
 		set_target_properties(dansdl2 PROPERTIES IMPORTED_LOCATION /usr/local/lib/libdansdl2_debug.so)
 		set_target_properties(ldtools PROPERTIES IMPORTED_LOCATION /usr/local/lib/libldtools_debug.so)
 		set_target_properties(dfw PROPERTIES IMPORTED_LOCATION /usr/local/lib/libdfw_debug.so)
+		set_target_properties(env PROPERTIES IMPORTED_LOCATION /usr/local/lib/libappenv_debug.so)
 	else()
 		set_target_properties(lm PROPERTIES IMPORTED_LOCATION /usr/local/lib/liblm.so)
 		set_target_properties(tools PROPERTIES IMPORTED_LOCATION /usr/local/lib/libtools.so)
 		set_target_properties(dansdl2 PROPERTIES IMPORTED_LOCATION /usr/local/lib/libdansdl2.so)
 		set_target_properties(ldtools PROPERTIES IMPORTED_LOCATION /usr/local/lib/libldtools.so)
 		set_target_properties(dfw PROPERTIES IMPORTED_LOCATION /usr/local/lib/libdfw.so)
+		set_target_properties(env PROPERTIES IMPORTED_LOCATION /usr/local/lib/libappenv.so)
 	endif()
 
 endif()
@@ -126,12 +129,18 @@ if(${BUILD_EXAMPLE})
 
 	add_executable(example-app example/src/main.cpp)
 
-	if(${build_debug})
+	if(${BUILD_DEBUG})
 
+		message("example will be built as debug")
+		#TODO: Is this even needed????
 		target_compile_definitions(example-app PUBLIC "-DLIBDANSDL2_DEBUG")
+		target_compile_definitions(example-app PUBLIC "-DIS_DEBUG_BUILD")
+
+		target_compile_definitions(exlib PUBLIC "-DLIBDANSDL2_DEBUG")
+		target_compile_definitions(exlib PUBLIC "-DIS_DEBUG_BUILD")
 	endif()
 
-	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 
 	add_custom_target(setup_files ALL)
 	add_custom_command(TARGET setup_files POST_BUILD COMMAND cp -r ../example/resources .)
@@ -145,11 +154,11 @@ if(${BUILD_TESTS})
 	set(EXAMPLE_SOURCE "")
 	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
 
-	if(${build_debug})
+	if(${BUILD_DEBUG})
 
 		target_compile_definitions(tile_finder_matrix PUBLIC "-DLIBDANSDL2_DEBUG")
 	endif()
 
-	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 
 endif()

@@ -1,12 +1,11 @@
-#include "d2d/collision/shaper.h"
+#include "d2d/collision/shaper_default.h"
 
 #include <stdexcept>
 #include <string>
 
 using namespace d2d::collision;
 
-//TODO: One thing here, there is no way to use a custom shaper...
-shaper::shaper(
+shaper_default::shaper_default(
 	int _tile_w,
 	int _tile_h
 ):
@@ -17,7 +16,7 @@ shaper::shaper(
 	quarter_box{0, 0, tile_w / 2, tile_h / 2}
 {}
 
-d2d::collision::box& shaper::get_box(
+d2d::collision::box& shaper_default::get_box(
 	int _type,
 	int _x,
 	int _y
