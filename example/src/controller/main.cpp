@@ -107,6 +107,11 @@ void main::loop(
 		pli.y=1;
 	}
 
+	if(_input.is_input_down(app::input::jump)) {
+
+		pli.jump=true;
+	}
+
 	if(_input.is_input_pressed(app::input::left)) {
 
 		pli.x=-1;
@@ -173,6 +178,11 @@ void main::loop(
 		pli.x=1;
 	}
 
+	if(_input.is_input_down(app::input::jump) {
+
+		pli.jump=true;
+	}
+
 	tic(_lid.delta, pli);
 #endif
 }
@@ -227,15 +237,15 @@ void main::tic(
 
 			cpv.response_generic();
 			ent.velocity.y=0.0;
+			//TODO: Only when touching the floor!
+			can_jump=true;
 		}
 	}
 
 	//aftermath
-	//TODO: Check if the boxes changed, if so must_recenter_view=true
-	bool must_recenter_view=true;
-	ent.sync_boxes();
-	if(must_recenter_view) {
-
+	if(ent.get_origin() != ent.get_previous_box().origin) {
+	
+		ent.sync_boxes();
 		dd.center_on(ent);
 	}
 }
@@ -285,10 +295,11 @@ void main::motion_phase_vertical(
 	float _delta
 ) {
 
-	if(_pli.y > 0) {
+	if(_pli.jump && can_jump) {
 
 		//THis is a bad jump xD
 		ent.velocity.y+=jump_force;
+		can_jump=false;
 	}
 
 	d2d::motion::mover mover{};

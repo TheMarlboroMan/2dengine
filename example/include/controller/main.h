@@ -51,6 +51,7 @@ class main:
 	app::entity                 ent;
 	d2d::motion::gravity        gravity;
 	double                      jump_force{120.0};
+	bool                        can_jump{false}; //We will get it better.
 
 #ifdef IS_DEBUG_BUILD
 
