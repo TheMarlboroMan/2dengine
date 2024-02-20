@@ -10,6 +10,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/tile_finder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile_finder_matrix.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tiles_in_box.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/motion_axis_limiter.cpp
 	PARENT_SCOPE
 )
 

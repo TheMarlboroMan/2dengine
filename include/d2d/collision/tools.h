@@ -22,6 +22,8 @@ bool           is_left_of(const box&, const box&);
 bool           is_right_of(const spatiable&, const spatiable&);
 bool           is_right_of(const spatiable&, const box&);
 bool           is_right_of(const box&, const box&);
+
+//These should be read as do_funcname to first arg using second arg as reference.
 void           snap_to_right_of(spatiable&, const spatiable&);
 void           snap_to_left_of(spatiable&, const spatiable&);
 void           snap_to_top_of(spatiable&, const spatiable&);
