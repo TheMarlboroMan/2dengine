@@ -58,7 +58,7 @@ void main::load_map(
 
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
-	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.tile_w, shaper.tile_h, &logger);
+	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 
 	//We can also position the entity in the starting point.
 	lm::log(logger).info()<<"setting starting point at "<<tl.starting_position.x<<", "<<tl.starting_position.y<<"\n";
@@ -181,56 +181,58 @@ void main::tic(
 	float _delta,
 	app::player_input _pli
 ) {
-	bool must_recenter_view=false;
-
 	gravity.apply_to(ent.velocity, _delta);
 
-	const auto& shaper=service_provider.get_shaper();
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
 	//horizontal phase...
-	motion_phase_horizontal(_pli, _delta);
+	{
+		motion_phase_horizontal(_pli, _delta);
 
-	must_recenter_view=true;
-	d2d::collision::phase cph(ent, d2d::collision::checker::phases::horizontal);
+		d2d::collision::phase cph(ent, d2d::collision::checker::phases::horizontal);
 
-	//This filters the map files and returns only those that would
-	//collisde with the current position.
-	auto current_tiles=adapter.find(ent, current_map.tile_finder);
+		//This filters the map files and returns only those that would
+		//collisde with the current position.
+		auto current_tiles=adapter.find(ent, current_map.tile_finder);
 
-	std::function<bool(const d2d::collision::tile*)> ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
+		std::function<bool(const d2d::collision::tile*)> ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
 
-		return _tile->type != app::tile_half_bottom_passable
-			&& _tile->type != app::tile_half_top_passable;
-	};
+			return _tile->type != app::tile_half_bottom_passable
+				&& _tile->type != app::tile_half_top_passable;
+		};
 
-	auto valid_tiles=d2d::collision::filter_tiles(current_tiles, ignore_passable);
+		auto valid_tiles=d2d::collision::filter_tiles(current_tiles, ignore_passable);
 
-	cph.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
-	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cph.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 
-	if(cph.has_collision()) {
+		if(cph.has_collision()) {
 
-		cph.response_generic();
+			cph.response_generic();
+		}
 	}
 
 	//vertical phase.
-	motion_phase_vertical(_pli, _delta);
+	{
+		motion_phase_vertical(_pli, _delta);
 
-	d2d::collision::phase cpv(ent, d2d::collision::checker::phases::vertical);
+		d2d::collision::phase cpv(ent, d2d::collision::checker::phases::vertical);
 
-	auto current_tiles=adapter.find(ent, current_map.tile_finder);
-	cpv.detect_all(current_tiles);
-	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-	cpv.detect_all(current_map.platform_blocks);
+		auto current_tiles=adapter.find(ent, current_map.tile_finder);
+		cpv.detect_all(current_tiles);
+		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cpv.detect_all(current_map.platform_blocks);
 
-	if(cpv.has_collision()) {
+		if(cpv.has_collision()) {
 
-		cpv.response_generic();
-		ent.velocity.y=0.0;
+			cpv.response_generic();
+			ent.velocity.y=0.0;
+		}
 	}
 
 	//aftermath
+	//TODO: Check if the boxes changed, if so must_recenter_view=true
+	bool must_recenter_view=true;
 	ent.sync_boxes();
 	if(must_recenter_view) {
 

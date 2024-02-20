@@ -3,7 +3,7 @@
 #include "definitions.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_implementation.h>
-#include <d2d/collision/shaper.h>
+#include <d2d/collision/shaper_default.h>
 #include <ldv/color.h>
 
 namespace app {
@@ -17,25 +17,25 @@ struct tile_impl:
 		switch(_tile.type) {
 			case tile_full:
 			case tile_harm:
-				return d2d::collision::shaper::tiles::tile_full;
+				return d2d::collision::shaper_default::tiles::tile_full;
 			case tile_half_bottom:
 			case tile_half_bottom_passable:
-				return d2d::collision::shaper::tiles::tile_half_bottom;
+				return d2d::collision::shaper_default::tiles::tile_half_bottom;
 			case tile_half_top:
 			case tile_half_top_passable:
-				return d2d::collision::shaper::tiles::tile_half_top;
+				return d2d::collision::shaper_default::tiles::tile_half_top;
 			case tile_half_left:
-				return d2d::collision::shaper::tiles::tile_half_left;
+				return d2d::collision::shaper_default::tiles::tile_half_left;
 			case tile_half_right:
-				return d2d::collision::shaper::tiles::tile_half_right;
+				return d2d::collision::shaper_default::tiles::tile_half_right;
 			case tile_quarter_bottom_left:
-				return d2d::collision::shaper::tiles::tile_quarter_bottom_left;
+				return d2d::collision::shaper_default::tiles::tile_quarter_bottom_left;
 			case tile_quarter_bottom_right:
-				return d2d::collision::shaper::tiles::tile_quarter_bottom_right;
+				return d2d::collision::shaper_default::tiles::tile_quarter_bottom_right;
 			case tile_quarter_top_left:
-				return d2d::collision::shaper::tiles::tile_quarter_top_left;
+				return d2d::collision::shaper_default::tiles::tile_quarter_top_left;
 			case tile_quarter_top_right:
-				return d2d::collision::shaper::tiles::tile_quarter_top_right;
+				return d2d::collision::shaper_default::tiles::tile_quarter_top_right;
 		}
 
 		throw std::runtime_error("bad tile type");

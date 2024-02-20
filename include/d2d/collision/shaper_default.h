@@ -15,8 +15,6 @@ class shaper_default:
 
 	public:
 
-	//TODO: this... how to provide this? different shapers might have
-	//different enumeration types.
 	enum tiles {
 		tile_full=1,
 		tile_half_bottom,

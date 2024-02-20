@@ -4,6 +4,7 @@
 #include <d2d/storage/map_loader.h>
 #include <app/tile_impl.h>
 #include <d2d/collision/tile_finder_matrix.h>
+#include <d2d/collision/shaper_default.h>
 
 int main(
 	int _argc,
@@ -20,11 +21,11 @@ int main(
 
 	std::vector<d2d::collision::tile> tiles;
 	app::tile_impl tile_impl;
-	d2d::collision::shaper shaper(24, 24);
+	d2d::collision::shaper_default shaper_default(24, 24);
 
 	ml.load_collision_tiles(
 		tiles,
-		shaper,
+		shaper_default,
 		tile_impl
 	);
 
