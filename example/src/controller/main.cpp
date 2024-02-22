@@ -289,6 +289,8 @@ void main::tic_regular(
 
 		d2d::collision::phase cpv(ent, d2d::collision::checker::phases::vertical);
 
+		//TODO: I think the bug is here. The previous position already 
+		//had a collision! We can use the tic thing and have fun with that.
 		auto current_tiles=adapter.find(ent, current_map.tile_finder);
 		cpv.detect_all(current_tiles);
 		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
@@ -296,10 +298,14 @@ void main::tic_regular(
 
 		if(cpv.has_collision()) {
 
-			cpv.response_generic();
 			ent.velocity.y=0.0;
-			//TODO: Only when touching the floor!
-			can_jump=true;
+			const auto response=cpv.response_complex();
+
+			//Only when colliding when the top of a box can we jump again.
+			if(response.edges & d2d::collision::response::tedges::top) {
+
+				can_jump=true;
+			}
 		}
 	}
 }

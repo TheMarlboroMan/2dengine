@@ -2,6 +2,7 @@
 
 #include <d2d/collision/spatiable.h>
 #include <d2d/collision/checker.h>
+#include <d2d/collision/solver.h>
 #include <d2d/tools/to_ref.h>
 
 namespace d2d { namespace collision {
@@ -43,6 +44,12 @@ class phase{
  * nothing if there was no collision. 
  */
 	void                        response_generic();
+
+/**
+ * attempts to return the complex response. Will throw if
+ * there was no collision!
+ */
+	d2d::collision::response    response_complex();
 
 	private:
 

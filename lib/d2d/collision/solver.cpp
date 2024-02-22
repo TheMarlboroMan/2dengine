@@ -156,7 +156,7 @@ response solver::vertical_complex(
 	const std::vector<collision::spatiable const *>& _obstacles
 ) {
 
-		assert(_obstacles.size());
+	assert(_obstacles.size());
 
 	response res;
 	for(const auto obstacle : _obstacles) {
@@ -192,8 +192,9 @@ response solver::vertical_complex(
 		}
 		else {
 			std::stringstream ss;
-			ss<<"error in vertical pass, obstacle was nor above, nor below, nor colliding, subject prev position: "
+			ss<<"error in vertical pass, obstacle was nor above, nor below, nor colliding with subject prev position: "
 				<<_subject.get_previous_box()
+				<<", subject position: "<<_subject.get_box()
 				<<", obstacle prev position: "<<(*obstacle).get_previous_box();
 
 			throw response_exception{ss.str()};

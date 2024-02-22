@@ -1,5 +1,5 @@
 #include <d2d/collision/phase.h>
-#include <d2d/collision/solver.h>
+#include <stdexcept>
 
 using namespace d2d::collision;
 
@@ -43,4 +43,23 @@ void phase::response_generic() {
 			collision_solver.vertical(subject, results);
 			return;
 	}
+}
+
+d2d::collision::response phase::response_complex() {
+
+	if(!collision_found) {
+
+		throw std::runtime_error("cannot get complex response where no collisions exist");
+	}
+
+	auto collision_solver=d2d::collision::solver{};
+
+	switch(collision_phase) {
+		case d2d::collision::checker::phases::horizontal:
+			return collision_solver.horizontal_complex(subject, results);
+		case d2d::collision::checker::phases::vertical:
+			return collision_solver.vertical_complex(subject, results);
+	}
+
+	throw std::runtime_error("shut up compiler");
 }
