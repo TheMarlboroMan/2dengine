@@ -40,6 +40,7 @@ class main:
 	void                        grab_ladder(const app::ladder&);
 	void                        leave_ladder();
 
+	void                        setup_camera(int, int);
 /**
  * sets up static values for physics and others.
  */

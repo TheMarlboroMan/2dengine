@@ -38,6 +38,12 @@ class debug_display {
  */
 	void						center_on(const d2d::collision::spatiable&);
 
+/**
+ * sets up the camera margin.
+ */
+	void                        set_center_margin(const ldv::rect& _rect) {camera.set_center_margin(_rect);}
+
+
 	ldv::camera					camera; 
 
 	private:

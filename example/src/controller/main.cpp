@@ -1,6 +1,7 @@
 #include "controller/main.h"
 #include "app/input.h"
 #include "app/thing_loader.h"
+#include "dfwimpl/config.h"
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/motion/mover.h>
@@ -29,6 +30,13 @@ main::main(
 {
 	reload_values();
 	setup_timeouts();
+
+	const auto& config=_sp.get_config();
+
+	setup_camera(
+		config.int_from_path("video:window_w_px"),
+		config.int_from_path("video:window_h_px")
+	);
 
 	//Attempt to load the starter map.
 	load_map("map.json");
@@ -319,8 +327,9 @@ void main::tic_ladder(
 
 		//There can be no ladder exit if there are collisions.
 		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-
-		if(adapter.find(ent, current_map.tile_finder).size()) {
+		const auto tiles_to_check=adapter.find(ent, current_map.tile_finder);
+		d2d::collision::checker cc;
+		if(!cc.has_collision(ent, tiles_to_check)) {
 
 			//TODO: Also jump in the direction we indicated!
 			leave_ladder();
@@ -450,4 +459,20 @@ void main::leave_ladder() {
 void main::setup_timeouts() {
 
 	timeouts.add(timeout_ladder, 0.5f, 0.0f);
+}
+
+void main::setup_camera(
+	int _screen_w,
+	int _screen_h
+) {
+
+	//Let's use a buffer half the size of
+	//the screen...
+	unsigned w=_screen_w /2;
+	unsigned h=_screen_h /2;
+	int x=_screen_w /4;
+	int y=_screen_w /4;
+
+	ldv::rect margin{x, y, w, h};
+	dd.set_center_margin(margin);
 }

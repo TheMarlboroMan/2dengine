@@ -59,6 +59,20 @@ class checker {
 		return false;
 	}
 
+	template<typename T>
+	bool                            has_collision(const d2d::collision::spatiable& _target, const std::vector<const T*>& _nodes) const {
+
+		for(const auto& node : _nodes) {
+
+			if(d2d::collision::collides_with(_target, *node)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 /**
 *returns true if there is a collision, takes phases and flags into account.
 *assumes the subject and obstacle are both spatiables so the previous
