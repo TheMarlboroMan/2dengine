@@ -28,6 +28,7 @@ main::main(
 	ent{80, -120}
 {
 	reload_values();
+	setup_timeouts();
 
 	//Attempt to load the starter map.
 	load_map("map.json");
@@ -192,6 +193,8 @@ void main::tic(
 	app::player_input _pli
 ) {
 
+	timeouts.tic(_delta);
+
 	switch(player_state) {
 
 		case player_states::regular:
@@ -216,20 +219,15 @@ void main::tic_regular(
 	app::player_input _pli
 ) {
 
-	//Attempt to grab a ladder..
-	//TODO: Grab ladder timeout, of course.
-
-	if(1==_pli.y) {
-
+	//Attempt to grab a ladder with up or down.
+	if(0!=_pli.y && timeouts.is_ok(timeout_ladder)) {
+	
 		d2d::collision::checker cc;
-		//TODO: Bad, no magic template :/.
-		const auto ladders=cc.get_collisions(ent.get_box(), current_map.ladders);
+		const auto ladders=cc.get_collisions(ent, current_map.ladders);
 
 		if(ladders.size()) {
 
-			//TODO: Better a function for this changes state and sets the ladder and timeout!
-			//grab_ladder();
-			player_state=player_states::ladder;
+			grab_ladder(*ladders[0]);
 			tic_ladder(_delta, _pli);
 			return;
 		}
@@ -303,18 +301,30 @@ void main::tic_ladder(
 	app::player_input _pli
 ) {
 
+	//While in a ladder all collisions with the world are ignored.
+	
 	if(_pli.y) {
 
-		//TODO: Move inside ladder and shit.
-		//
-		//TODO: apply the ladder constraint to the entity.
+		//TODO: Should be a configurable value.
+		const double velocity=60.0;
+		d2d::motion::mover mover{};
+		mover.apply_y(ent, velocity*(double)_pli.y, _delta);
+
+		//apply the ladder movement constraints.
+		current_ladder.apply(ent);
 	}
 	
-	//TODO: jump out.
+	//Jump out.
 	if(_pli.jump && _pli.x) {
 
-		//TODO: Better a function to leave the ladder, right?
-		player_state=player_states::regular;
+		//There can be no ladder exit if there are collisions.
+		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+
+		if(adapter.find(ent, current_map.tile_finder).size()) {
+
+			//TODO: Also jump in the direction we indicated!
+			leave_ladder();
+		}
 	}
 }
 
@@ -419,4 +429,25 @@ void main::reload_values() {
 	jump_force=120.0;
 
 #endif
+}
+
+void main::grab_ladder(
+	const app::ladder& _ladder
+) {
+
+	player_state=player_states::ladder;
+	current_ladder=_ladder;
+}
+
+void main::leave_ladder() {
+
+	player_state=player_states::regular;
+	//TODO:  I wonder, will this be susceptible to collisions???
+	current_ladder={0,0,0};
+	timeouts.reset(timeout_ladder);
+}
+
+void main::setup_timeouts() {
+
+	timeouts.add(timeout_ladder, 0.5f, 0.0f);
 }

@@ -1,5 +1,6 @@
 #include <d2d/collision/motion_axis_limiter.h>
 #include <d2d/collision/tools.h>
+#include <iostream>
 
 using namespace d2d::collision;
 
@@ -24,11 +25,11 @@ void motion_axis_limiter::apply(
 
 		case motion_axis_limiter::axes::x:
 
-			if(is_left_of(_target, *this)) {
+			if(is_partially_left_of(_target, *this)) {
 
 				match_left_of(_target, *this);
 			}
-			else if(is_right_of(_target, *this)) {
+			else if(is_partially_right_of(_target, *this)) {
 
 				match_right_of(_target, *this);
 			}
@@ -51,11 +52,11 @@ void motion_axis_limiter::apply(
 		break;
 		case motion_axis_limiter::axes::y:
 
-			if(is_below(_target, *this)) {
+			if(is_partially_below(_target, *this)) {
 
 				match_bottom_of(_target, *this);
 			}
-			else if(is_above(_target, *this)) {
+			else if(is_partially_above(_target, *this)) {
 
 				match_top_of(_target, *this);
 			}

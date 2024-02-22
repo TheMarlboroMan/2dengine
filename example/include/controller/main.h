@@ -3,6 +3,8 @@
 #include "app/service_provider.h"
 #include "app/env.h"
 #include "app/map.h"
+#include "app/ladder.h"
+#include "app/timeouts.h"
 #include "app/tile_impl.h"
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -32,12 +34,17 @@ class main:
 	void                        tic(float, app::player_input);
 	void                        tic_regular(float, app::player_input);
 	void                        tic_ladder(float, app::player_input);
+
 	void                        load_map(const std::string&);
+
+	void                        grab_ladder(const app::ladder&);
+	void                        leave_ladder();
 
 /**
  * sets up static values for physics and others.
  */
 	void                        reload_values();
+	void                        setup_timeouts();
 
 	enum class player_states {
 		regular,
@@ -49,12 +56,22 @@ class main:
 	d2d::collision::shaper&		shaper;
 	const app::tile_impl&       tile_impl;
 
-	app::map                    current_map;
 	d2d::video::debug_display	dd;
-	app::entity                 ent;
+
+	//game vars. //TODO: should be constants in production.
 	d2d::motion::gravity        gravity;
 	double                      jump_force{120.0};
 	bool                        can_jump{false}; //We will get it better.
+
+	//game state stuff.
+	app::map                    current_map;
+	app::entity                 ent;
+	app::ladder                 current_ladder{0,0,0};
+	app::timeouts               timeouts;
+
+	enum timeout_indexes {
+		timeout_ladder=0
+	};
 
 #ifdef IS_DEBUG_BUILD
 

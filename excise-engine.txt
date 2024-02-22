@@ -1,11 +1,4 @@
 next step:
-	ladder:
-		press up to grab one and fill a local var with it.
-		changes state to "in ladder"
-		this state has different everything.
-		exit by jumping to one side
-		should have a cooldown for grabbing.
-
 	use the whole "margin for the center in entity thing"
 	I guess slopes
 	Or moving blocks, which were originally there too.

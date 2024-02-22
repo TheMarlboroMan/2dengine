@@ -1,4 +1,5 @@
 #include "d2d/collision/tools.h"
+#include <iostream>
 
 using namespace d2d::collision;
 
@@ -214,3 +215,107 @@ void d2d::collision::center_vertically(
 
 	_a.center_vertically(_b);
 }
+
+bool d2d::collision::is_partially_above(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
+
+	return is_partially_above(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_partially_above(
+	const spatiable& _a, 
+	const box& _b) {
+
+	return is_partially_above(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_above(
+	const box& _a, 
+	const box& _b
+) {
+
+	const auto b_top=_b.origin.y+_b.h;
+
+	return _a.origin.y+_a.h > b_top
+		&& _a.origin.y < b_top; 
+}
+
+bool d2d::collision::is_partially_below(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
+
+	return is_partially_below(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_partially_below(
+	const spatiable& _a, 
+	const box& _b
+) {
+	
+	return is_partially_below(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_below(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.y < _b.origin.y
+		&& _a.origin.y+_a.h > _b.origin.y;
+}
+
+bool d2d::collision::is_partially_left_of(
+	const spatiable& _a,
+	const spatiable& _b
+) {
+
+	return is_partially_left_of(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_partially_left_of(
+	const spatiable& _a, 
+	const box& _b
+) {
+
+	return is_partially_left_of(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_left_of(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.x < _b.origin.x
+		&& _a.origin.x+_a.w > _b.origin.x;
+}
+
+bool d2d::collision::is_partially_right_of(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
+
+	return is_partially_right_of(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_partially_right_of(
+	const spatiable& _a, 
+	const box& _b
+) {
+
+	return is_partially_right_of(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_right_of(
+	const box& _a, 
+	const box& _b
+) {
+
+	const auto b_right=_b.origin.x+_b.w;
+
+	return _a.origin.x+_a.w > b_right
+		&& _a.origin.x < b_right;
+}
+

@@ -1,45 +1,8 @@
 #include "d2d/collision/checker.h"
-#include "d2d/collision/tools.h"
 #include <stdexcept>
 #include <iostream>
 
 using namespace d2d::collision;
-
-std::vector<spatiable const * > checker::get_collisions(
-	const collision::box& _box,
-	const std::vector<spatiable>& _boxes
-) {
-
-	std::vector<spatiable const*> result{};
-
-	for(const auto& obstacle : _boxes) {
-
-		if(collides_with(obstacle, _box)) {
-
-			result.push_back(&obstacle);
-		}
-	}
-
-	return result;
-}
-
-std::vector<spatiable const *> checker::get_collisions(
-	const box& _box,
-	const std::vector<spatiable const*>& _boxes
-) {
-
-	std::vector<spatiable const*> result{};
-
-	for(const auto& obstacle : _boxes) {
-
-		if(collides_with(*obstacle, _box)) {
-
-			result.push_back(obstacle);
-		}
-	}
-
-	return result;
-}
 
 bool checker::check(
 	const d2d::collision::spatiable& _subject,
@@ -48,7 +11,7 @@ bool checker::check(
 	int _flags
 ) const {
 
-	if(!collides_with(_obstacle, _subject)) {
+	if(!d2d::collision::collides_with(_obstacle, _subject)) {
 
 		return false;
 	}
@@ -62,7 +25,7 @@ bool checker::check(
 
 		case phases::horizontal: {
 
-			auto edge=is_right_of(_obstacle, _subject.get_previous_box())
+			auto edge=d2d::collision::is_right_of(_obstacle, _subject.get_previous_box())
 				? box_edge::left
 				: box_edge::right;
 
@@ -71,7 +34,7 @@ bool checker::check(
 		break;
 		case phases::vertical: {
 
-			auto edge=is_below(_obstacle, _subject.get_previous_box())
+			auto edge=d2d::collision::is_below(_obstacle, _subject.get_previous_box())
 				? box_edge::top
 				: box_edge::bottom;
 
