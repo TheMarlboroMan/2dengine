@@ -61,7 +61,9 @@ class main:
 
 	//game vars. //TODO: should be constants in production.
 	d2d::motion::gravity        gravity;
-	double                      jump_force{120.0};
+	double                      jump_force{120.0},
+	                            walk_max_velocity{170.},
+	                            ladder_max_velocity{60.};
 	bool                        can_jump{false}; //We will get it better.
 
 	//game state stuff.

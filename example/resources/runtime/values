@@ -1,5 +1,7 @@
 gravity_force_x=0.0
 gravity_force_y=-500.0
-gravity_max_velocity=-600.0;
+gravity_max_velocity=-600.0
+walking_max_velocity=170.0
+ladder_max_velocity=60.0
 jump_force=260.0
 

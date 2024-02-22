@@ -3,6 +3,10 @@ next step:
 	Or moving blocks, which were originally there too.
 	Documentation and doxygen.
 
+fixes and misc:
+	jump=false should only be on vertical collisions with the floor.
+	leave ladder jumping
+	leave ladder walking
 ---------------------
 
 

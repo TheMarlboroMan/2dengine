@@ -248,9 +248,9 @@ void main::tic_regular(
 	//horizontal phase...
 	{
 		d2d::motion::mover mover{};
-		//TODO: Should be one of the values that can be loaded
-		const double velocity=170.0;
-		mover.apply_x(ent, velocity*(double)_pli.x, _delta);
+
+		//Instant acceleration.
+		mover.apply_x(ent, walk_max_velocity*(double)_pli.x, _delta);
 
 		d2d::collision::phase cph(ent, d2d::collision::checker::phases::horizontal);
 
@@ -313,10 +313,8 @@ void main::tic_ladder(
 	
 	if(_pli.y) {
 
-		//TODO: Should be a configurable value.
-		const double velocity=60.0;
 		d2d::motion::mover mover{};
-		mover.apply_y(ent, velocity*(double)_pli.y, _delta);
+		mover.apply_y(ent, ladder_max_velocity*(double)_pli.y, _delta);
 
 		//apply the ladder movement constraints.
 		current_ladder.apply(ent);
@@ -334,6 +332,11 @@ void main::tic_ladder(
 			//TODO: Also jump in the direction we indicated!
 			leave_ladder();
 		}
+	}
+
+	//TODO: Attempt to WALK OUT.
+	if(_pli.x) {
+
 	}
 }
 
@@ -418,6 +421,14 @@ void main::reload_values() {
 		else if(name=="jump_force") {
 
 			jump_force=std::stod(value);
+		}
+		else if(name=="walk_max_velocity") {
+
+			walk_max_velocity=std::stod(value);
+		}
+		else if(name=="ladder_max_velocity") {
+
+			ladder_max_velocity=std::stod(value);
 		}
 		else {
 
