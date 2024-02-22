@@ -27,6 +27,9 @@ class checker {
 	std::vector<spatiable const *>  get_collisions(const d2d::collision::box&, const std::vector<spatiable>&);
 	std::vector<spatiable const *>  get_collisions(const d2d::collision::box&, const std::vector<spatiable const *>&);
 
+//TODO: can we have some templates here so we can check any kind of stuff?
+//TODO: maybe check enable_if??
+
 /**
 *returns true if there is a collision, takes phases and flags into account.
 *assumes the subject and obstacle are both spatiables so the previous

@@ -6,6 +6,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/solid_block.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/platform_block.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/thing_loader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ladder.cpp
 	PARENT_SCOPE
 )
 

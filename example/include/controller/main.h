@@ -30,16 +30,19 @@ class main:
 	private:
 
 	void                        tic(float, app::player_input);
+	void                        tic_regular(float, app::player_input);
+	void                        tic_ladder(float, app::player_input);
 	void                        load_map(const std::string&);
-/**
- * returns true if there was motion
- */
-	void                        motion_phase_horizontal(app::player_input, float);
-	void                        motion_phase_vertical(app::player_input, float);
+
 /**
  * sets up static values for physics and others.
  */
 	void                        reload_values();
+
+	enum class player_states {
+		regular,
+		ladder
+	}                           player_state{player_states::regular};
 
 	const app::env&				env;
 	lm::logger&					logger;

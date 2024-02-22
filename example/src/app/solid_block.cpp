@@ -16,6 +16,6 @@ std::ostream& app::operator<<(
 	const solid_block& _block
 ) {
 
-	_stream<<_block.get_box();
+	_stream<<"solid_block["<<_block.get_box()<<"]";
 	return _stream;
 }

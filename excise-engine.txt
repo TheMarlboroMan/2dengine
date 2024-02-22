@@ -1,7 +1,11 @@
 next step:
-	one_axis_limiter... a spatiable which centers in one axis, and limits
-range in the other. Ladders, for example, and limits range in the other.
-Ladders, for example. This needs a good name, of course.
+	ladder:
+		press up to grab one and fill a local var with it.
+		changes state to "in ladder"
+		this state has different everything.
+		exit by jumping to one side
+		should have a cooldown for grabbing.
+
 	use the whole "margin for the center in entity thing"
 	I guess slopes
 	Or moving blocks, which were originally there too.

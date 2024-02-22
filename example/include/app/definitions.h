@@ -2,6 +2,9 @@
 
 namespace app {
 
+static const int tile_w=24;
+static const int tile_h=24;
+
 enum tile_types {
 		tile_full=1,
 		tile_half_bottom=2,

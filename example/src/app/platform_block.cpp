@@ -15,6 +15,6 @@ std::ostream& app::operator<<(
 	const platform_block& _block
 ) {
 
-	_stream<<_block.get_box();
+	_stream<<"platform_block["<<_block.get_box()<<"]";
 	return _stream;
 }

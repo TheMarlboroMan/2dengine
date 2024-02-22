@@ -2,6 +2,7 @@
 
 #include "solid_block.h"
 #include "platform_block.h"
+#include "ladder.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <vector>
@@ -20,6 +21,7 @@ class map {
 	std::vector<d2d::collision::tile>       collision_tiles;
 	std::vector<solid_block>                solid_blocks;
 	std::vector<platform_block>             platform_blocks;
+	std::vector<ladder>                     ladders;
 	d2d::collision::tile_finder_matrix      tile_finder;
 
 /**

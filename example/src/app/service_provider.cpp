@@ -1,4 +1,5 @@
 #include "app/service_provider.h"
+#include "app/definitions.h"
 #include <d2d/collision/shaper_default.h>
 
 using namespace app;
@@ -17,8 +18,7 @@ d2d::collision::shaper& service_provider::get_shaper() {
 
 	if(nullptr==shaper.get()) {
 
-//TODO: These 24 by 24 again... Please, use some definition.
-		shaper.reset(new d2d::collision::shaper_default(24, 24));
+		shaper.reset(new d2d::collision::shaper_default(app::tile_w, app::tile_h));
 	}
 
 	return *shaper;

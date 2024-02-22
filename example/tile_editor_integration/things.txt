@@ -42,3 +42,18 @@ beginobject
 		linkedto h
 	endproperty
 endobject
+
+beginobject
+	id 4
+	name ladder
+	w 24
+	h 48
+	color 64 128 64 255
+	beginproperty
+		name height
+		type int
+		default 2
+		comment entry height in tiles!
+		linkedto h
+	endproperty
+endobject

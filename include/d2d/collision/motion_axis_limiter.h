@@ -48,8 +48,8 @@ class motion_axis_limiter
 	virtual int                             get_w() const {return collision_box.w;}
 	virtual int                             get_h() const {return collision_box.h;}
 	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return true;}
-	virtual color                           get_debug_outline_color() const {return color{32, 32, 32, 255};}
-	virtual color                           get_debug_fill_color() const {return color{180,180,180, 64};}
+	virtual color                           get_debug_outline_color() const {return color{0, 0, 0, 255};}
+	virtual color                           get_debug_fill_color() const {return color{128,128,128, 64};}
 
 //End implementation of spatiable
 

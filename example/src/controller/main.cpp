@@ -191,13 +191,60 @@ void main::tic(
 	float _delta,
 	app::player_input _pli
 ) {
+
+	switch(player_state) {
+
+		case player_states::regular:
+			tic_regular(_delta, _pli);
+		break;
+
+		case player_states::ladder:
+			tic_ladder(_delta, _pli);
+		break;
+	}
+
+	//aftermath
+	if(ent.get_origin() != ent.get_previous_box().origin) {
+	
+		ent.sync_boxes();
+		dd.center_on(ent);
+	}
+}
+
+void main::tic_regular(
+	float _delta,
+	app::player_input _pli
+) {
+
+	//Attempt to grab a ladder..
+	//TODO: Grab ladder timeout, of course.
+
+	if(1==_pli.y) {
+
+		d2d::collision::checker cc;
+		//TODO: Bad, no magic template :/.
+		const auto ladders=cc.get_collisions(ent.get_box(), current_map.ladders);
+
+		if(ladders.size()) {
+
+			//TODO: Better a function for this changes state and sets the ladder and timeout!
+			//grab_ladder();
+			player_state=player_states::ladder;
+			tic_ladder(_delta, _pli);
+			return;
+		}
+	}
+
 	gravity.apply_to(ent.velocity, _delta);
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
 	//horizontal phase...
 	{
-		motion_phase_horizontal(_pli, _delta);
+		d2d::motion::mover mover{};
+		//TODO: Should be one of the values that can be loaded
+		const double velocity=170.0;
+		mover.apply_x(ent, velocity*(double)_pli.x, _delta);
 
 		d2d::collision::phase cph(ent, d2d::collision::checker::phases::horizontal);
 
@@ -224,7 +271,15 @@ void main::tic(
 
 	//vertical phase.
 	{
-		motion_phase_vertical(_pli, _delta);
+		if(_pli.jump && can_jump) {
+
+			//THis is a bad jump xD
+			ent.velocity.y+=jump_force;
+			can_jump=false;
+		}
+
+		d2d::motion::mover mover{};
+		mover.apply_y(ent, ent.velocity.y, _delta);
 
 		d2d::collision::phase cpv(ent, d2d::collision::checker::phases::vertical);
 
@@ -241,12 +296,25 @@ void main::tic(
 			can_jump=true;
 		}
 	}
+}
 
-	//aftermath
-	if(ent.get_origin() != ent.get_previous_box().origin) {
+void main::tic_ladder(
+	float _delta,
+	app::player_input _pli
+) {
+
+	if(_pli.y) {
+
+		//TODO: Move inside ladder and shit.
+		//
+		//TODO: apply the ladder constraint to the entity.
+	}
 	
-		ent.sync_boxes();
-		dd.center_on(ent);
+	//TODO: jump out.
+	if(_pli.jump && _pli.x) {
+
+		//TODO: Better a function to leave the ladder, right?
+		player_state=player_states::regular;
 	}
 }
 
@@ -272,43 +340,19 @@ void main::draw(
 		dd.draw(_screen, block);
 	}
 
+	for(const auto& ladder : current_map.ladders) {
+
+		dd.draw(_screen, ladder);
+	}
+
 	dd.draw(_screen, ent);
-}
-
-void main::motion_phase_horizontal(
-	app::player_input _pli,
-	float _delta
-) {
-
-	if(!_pli.x) {
-
-		return;
-	}
-
-	d2d::motion::mover mover{};
-	const double velocity=170.0;
-	mover.apply_x(ent, velocity*(double)_pli.x, _delta);
-}
-
-void main::motion_phase_vertical(
-	app::player_input _pli,
-	float _delta
-) {
-
-	if(_pli.jump && can_jump) {
-
-		//THis is a bad jump xD
-		ent.velocity.y+=jump_force;
-		can_jump=false;
-	}
-
-	d2d::motion::mover mover{};
-	mover.apply_y(ent, ent.velocity.y, _delta);
 }
 
 void main::reload_values() {
 
 #ifdef IS_DEBUG_BUILD
+
+	std::cout<<current_map<<std::endl;
 	
 	std::stringstream ss;
 	ss<<env.get_app_path()+"resources/runtime/values";

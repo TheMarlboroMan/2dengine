@@ -1,4 +1,5 @@
 #include "app/thing_loader.h"
+#include "app/definitions.h"
 #include <iostream>
 
 using namespace app;
@@ -14,6 +15,7 @@ void thing_loader::setup() {
 
 	curmap.solid_blocks.clear();
 	curmap.platform_blocks.clear();
+	curmap.ladders.clear();
 }
 
 void thing_loader::load(
@@ -35,6 +37,11 @@ void thing_loader::load(
 		case 3:
 			curmap.solid_blocks.push_back(
 				{_pos.x, _pos.y, _attributes.at("width").get_int(), _attributes.at("height").get_int()}
+			);
+			return;
+		case 4:
+			curmap.ladders.push_back(
+				{_pos.x, _pos.y, _attributes.at("height").get_int()*app::tile_h}
 			);
 			return;
 	}

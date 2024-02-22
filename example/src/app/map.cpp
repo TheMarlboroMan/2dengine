@@ -1,5 +1,6 @@
 #include "app/map.h"
 #include "d2d/collision/tools.h"
+#include "app/definitions.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -7,8 +8,7 @@
 using namespace app;
 
 map::map():
-	//TODO: These 24 are contained inside the shaper. Perhaps we could do something about it.
-	tile_finder{24, 24}
+	tile_finder{app::tile_w, app::tile_h}
 {}
 
 std::ostream& app::operator<<(
@@ -32,6 +32,10 @@ std::ostream& app::operator<<(
 		_stream<<block<<","<<std::endl;
 	}
 
+	_stream<<"\n\tladders:[\n";
+	for(const auto& ladder : _map.ladders) {
+		_stream<<ladder<<","<<std::endl;
+	}
 	_stream<<"]";
 
 	return _stream;
@@ -43,6 +47,7 @@ void map::clear() {
 	platform_blocks.clear();
 	solid_blocks.clear();
 	tile_finder.clear();
+	ladders.clear();
 }
 
 void map::sync_tile_finder() {
