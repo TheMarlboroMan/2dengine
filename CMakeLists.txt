@@ -67,7 +67,7 @@ if(${BUILD_STATIC})
 
 	if(${BUILD_DEBUG})
 
-		target_compile_definitions(d2d_static PUBLIC "-DLIBDANSDL2_DEBUG")
+		target_compile_definitions(d2d_static PUBLIC "-DIS_DEBUG_BUILD")
 	endif()
 
 	message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-static")
@@ -82,7 +82,7 @@ if(${BUILD_SHARED})
 
 	if(${BUILD_DEBUG})
 
-		target_compile_definitions(d2d_shared PUBLIC "-DLIBDANSDL2_DEBUG")
+		target_compile_definitions(d2d_shared PUBLIC "-DIS_DEBUG_BUILD")
 	endif()
 
 	message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-shared")
@@ -138,11 +138,7 @@ if(${BUILD_EXAMPLE})
 	if(${BUILD_DEBUG})
 
 		message("example will be built as debug")
-		#TODO: Is this even needed????
-		target_compile_definitions(example-app PUBLIC "-DLIBDANSDL2_DEBUG")
 		target_compile_definitions(example-app PUBLIC "-DIS_DEBUG_BUILD")
-
-		target_compile_definitions(exlib PUBLIC "-DLIBDANSDL2_DEBUG")
 		target_compile_definitions(exlib PUBLIC "-DIS_DEBUG_BUILD")
 	endif()
 
@@ -159,11 +155,6 @@ if(${BUILD_TESTS})
 	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
 	set(EXAMPLE_SOURCE "")
 	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
-
-	if(${BUILD_DEBUG})
-
-		target_compile_definitions(tile_finder_matrix PUBLIC "-DLIBDANSDL2_DEBUG")
-	endif()
 
 	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 

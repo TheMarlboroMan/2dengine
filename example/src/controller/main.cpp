@@ -249,12 +249,16 @@ void main::tic_regular(
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
+	//TODO: This would be a sequence of collisions against a STATIC world.
+	//vertical and horizontal might fail.
 	//horizontal phase...
+	if(_pli.x) 
 	{
 		d2d::motion::mover mover{};
 
 		//Instant acceleration.
 		mover.apply_x(ent, walk_max_velocity*(double)_pli.x, _delta);
+
 
 		d2d::collision::phase cph(ent, d2d::collision::checker::phases::horizontal);
 
@@ -280,6 +284,7 @@ void main::tic_regular(
 	}
 
 	//vertical phase.
+	//TODO: We should always check, there is always Y movement, such as gravity.
 	{
 		if(_pli.jump && can_jump) {
 
@@ -293,8 +298,6 @@ void main::tic_regular(
 
 		d2d::collision::phase cpv(ent, d2d::collision::checker::phases::vertical);
 
-		//TODO: I think the bug is here. The previous position already 
-		//had a collision! We can use the tic thing and have fun with that.
 		auto current_tiles=adapter.find(ent, current_map.tile_finder);
 		cpv.detect_all(current_tiles);
 		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
@@ -303,17 +306,16 @@ void main::tic_regular(
 		if(cpv.has_collision()) {
 
 			ent.velocity.y=0.0;
-			cpv.response_generic();
-/*
-			const auto response=cpv.response_complex();
+			//cpv.response_generic();
+
+			auto response=cpv.response_complex();
+			response.solve(ent);
 
 			//Only when colliding when the top of a box can we jump again.
 			if(response.edges & d2d::collision::response::tedges::top) {
 
 				can_jump=true;
 			}
-*/
-			can_jump=true;
 		}
 	}
 }
@@ -538,10 +540,93 @@ console::result main::execute_cmd(
 
 	if(_cmd=="help") {
 
-		return {0, "exit, tic, help"};
+		std::stringstream ss;
+		for(const auto& command : console->get_commands()) {
+
+			ss<<command.name<<", ";
+		}
+		return {0, ss.str()};
 	}
 
-	return {0, ""};
+	if(_cmd=="helpcmd") {
+
+		for(const auto& command : console->get_commands()) {
+
+			if(command.name==_args[0].get_string()) {
+
+				std::stringstream ss;
+				ss<<command;
+				return {0, ss.str()};
+			}
+		}
+
+		return {1, "command not found"};
+	}
+
+	if(_cmd=="tell") {
+
+		std::stringstream ss;
+		ss<<ent;
+		return{0, ss.str()};
+	}	
+
+	if(_cmd=="goto") {
+
+		double x=_args[0].get_int(),
+			y=_args[1].get_int();
+
+		ent.set_origin({x, y});
+		ent.sync_boxes();
+		dd.center_on(ent);
+
+		std::stringstream ss;
+		ss<<"moved to "<<x<<","<<y;
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="moveby") {
+
+		double x=_args[0].get_int(),
+			y=_args[1].get_int();
+
+		auto pt=ent.get_origin();
+		pt+={x, y};
+
+		ent.set_origin(pt);
+		ent.sync_boxes();
+		dd.center_on(ent);
+
+		std::stringstream ss;
+		ss<<"moved by "<<x<<","<<y;
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="get_collision_tiles") {
+
+		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+		lm::log(logger).debug()<<"will debug the collisions\n";
+		adapter.set_debug_enabled(true).set_logger(&logger);
+
+		auto current_tiles=adapter.find(ent, current_map.tile_finder);
+
+		if(!current_tiles.size()) {
+
+			return {0, "no collisions with tiles, check log for details"};
+		}
+
+		std::stringstream ss;
+		ss<<"total: "<<current_tiles.size()<<" check stdout and log for details";
+		for(const auto& node : current_tiles) {
+
+			std::cout<<*node<<", ";
+		}
+
+		std::cout<<std::endl;
+
+		return {0, ss.str()};
+	}
+
+	return {0, "..."};
 }
 
 void main::setup_console(
@@ -563,8 +648,16 @@ void main::setup_console(
 
 	console.reset(new console::console(*this));
 	console->connect_output(console_display->get_output());
+
+	//TODO: it would be nice to have some helper in the console library to 
+	//read these from a file, or something.
 	console->map_command("exit", {});
 	console->map_command("help", {});
+	console->map_command("helpcmd", {{console::types::string}});
 	console->map_command("tic", {});
+	console->map_command("tell", {});
+	console->map_command("get_collision_tiles", {});
+	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
+	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
 }
 #endif
