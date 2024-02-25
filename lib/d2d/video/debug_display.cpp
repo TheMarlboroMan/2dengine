@@ -15,6 +15,8 @@ debug_display::debug_display(
 { 
 
 	camera.set_coordinate_system(ldv::camera::tsystem::cartesian);
+	fill.set_blend(ldv::representation::blends::alpha);
+	outline.set_blend(ldv::representation::blends::alpha);
 }
 
 void debug_display::clear(

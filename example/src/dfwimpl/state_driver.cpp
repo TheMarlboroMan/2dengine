@@ -3,6 +3,7 @@
 #include "controller/controller_states.h"
 
 #include <ldtools/ttf_manager.h>
+#include <ldtools/sprite_table.h>
 #include <algorithm>
 #include <filesystem>
 
@@ -17,8 +18,7 @@ state_driver::state_driver(
 	state_driver_interface(_initial_state),
 	config(c),
 	log{_logger},
-	env{_env},
-	service_provider{env, config, log}
+	env{_env}
 { }
 
 void state_driver::init(
@@ -57,10 +57,12 @@ void state_driver::init(
 void state_driver::prepare_video(dfw::kernel& kernel) {
 
 	kernel.init_video_system({
+		//This is the physical size...
 		config.int_from_path("video:window_w_px"),
 		config.int_from_path("video:window_h_px"),
-		480,
-		384,
+		//And this is the LOGICAL size.
+		app::logic_screen_w,
+		app::logic_screen_h, 
 		"Title for this project",
 		false,
 		config.get_screen_vsync()
@@ -106,11 +108,16 @@ void state_driver::prepare_resources(
 
 	dfw::resource_loader r_loader(_kernel.get_video_resource_manager(), _kernel.get_audio_resource_manager(), env.get_app_path());
 
-	//r_loader.generate_textures(tools::explode_lines_from_file(env.get_app_path()+"data/lists/textures.txt"));
+	r_loader.generate_textures(tools::explode_lines_from_file(env.get_app_path()+"resources/lists/textures.txt"));
+
 	//Some surfaces need to be loaded, for later manipulation into composite backgrounds.
 	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.get_app_path()+"data/lists/surfaces.txt"));
 	//r_loader.generate_sounds(tools::explode_lines_from_file(env.get_app_path()+"data/lists/sounds.txt"));
 	//r_loader.generate_music(tools::explode_lines_from_file(env.get_app_path()+std::string("data/lists/music.txt")));
+	
+	service_provider.reset(
+		new app::service_provider{env, config, log, _kernel}
+	);
 }
 
 void state_driver::register_controllers(
@@ -126,7 +133,7 @@ void state_driver::register_controllers(
 	reg(
 		c_main,
 		controller::state_main,
-		new controller::main(service_provider)
+		new controller::main(*service_provider)
 	);
 }
 
@@ -198,8 +205,13 @@ void state_driver::start_app(
 
 void state_driver::load_resources() {
 
-	auto &ttf_manager=service_provider.get_ttf_manager();
+	auto& spritesheets=service_provider->get_spritesheet_manager();
+	spritesheets.add(
+		1, 
+		ldtools::sprite_table{env.get_app_path()+"resources/lists/tiles.txt"}
+	);
 
+	auto &ttf_manager=service_provider->get_ttf_manager();
 	ttf_manager.insert(
 		"console_font",
 		14,
@@ -243,12 +255,5 @@ void state_driver::load_resources() {
 		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
 	);
 
-	auto& spritesheets=dependency_injector->get_spritesheet_manager();
-
-	spritesheets.container[app::tex_inventory_item]=ldtools::sprite_table(env.get_app_path()+"data/sheets/inventory.txt");
-	spritesheets.container[app::tex_background]=ldtools::sprite_table(env.get_app_path()+"data/sheets/background.txt");
-	spritesheets.container[app::tex_decoration]=ldtools::sprite_table(env.get_app_path()+"dfwimpl/sheets/decoration.txt");
-	spritesheets.container[app::tex_block]=ldtools::sprite_table(env.get_app_path()+"data/sheets/blocks.txt");
-	spritesheets.container[app::tex_character]=ldtools::sprite_table(env.get_app_path()+"data/sheets/main_character.txt");
 */
 }

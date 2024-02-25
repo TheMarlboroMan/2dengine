@@ -32,8 +32,14 @@ main::main(
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
-	dd{480, 384},
-	ent{80, -120}
+	dd{app::logic_screen_w, app::logic_screen_h},
+	scenery_tile_draw{
+		app::tile_w, 
+		app::tile_h,
+		_sp.get_spritesheet_manager().at(app::ss_tiles),
+		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
+	},
+	ent{0, 0}
 {
 
 #ifdef IS_DEBUG_BUILD
@@ -45,11 +51,9 @@ main::main(
 	reload_values();
 	setup_timeouts();
 
-	const auto& config=_sp.get_config();
-
 	setup_camera(
-		config.int_from_path("video:window_w_px"),
-		config.int_from_path("video:window_h_px")
+		app::logic_screen_w,
+		app::logic_screen_h
 	);
 
 	//Attempt to load the starter map.
@@ -73,6 +77,8 @@ void main::load_map(
 		shaper,
 		tile_impl
 	);
+
+	loader.load_scenery_tiles(current_map.background_tiles, "background");
 
 	current_map.sync_tile_finder();
 
@@ -363,10 +369,15 @@ void main::draw(
 
 	dd.clear(_screen);
 
+	//TODO: Maybe some debug mode...
+/*
 	for(const auto& cell : current_map.collision_tiles) {
 
 		dd.draw(_screen, cell);
 	}
+*/
+
+	scenery_tile_draw.draw(_screen, dd.camera, current_map.background_tiles);
 
 	for(const auto& block : current_map.solid_blocks) {
 
@@ -378,9 +389,10 @@ void main::draw(
 		dd.draw(_screen, block);
 	}
 
+//TODO: Alpha is not working for these...
 	for(const auto& ladder : current_map.ladders) {
 
-		dd.draw(_screen, ladder);
+//		dd.draw(_screen, ladder);
 	}
 
 	dd.draw(_screen, ent);
@@ -506,7 +518,7 @@ void main::setup_camera(
 	unsigned w=_screen_w /2;
 	unsigned h=_screen_h /2;
 	int x=_screen_w /4;
-	int y=_screen_w /4;
+	int y=_screen_h /4;
 
 	ldv::rect margin{x, y, w, h};
 	dd.set_center_margin(margin);

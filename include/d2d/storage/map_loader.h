@@ -6,6 +6,7 @@
 #include "d2d/collision/shaper.h"
 #include "d2d/collision/tile.h"
 #include "d2d/collision/tile_implementation.h"
+#include "d2d/video/scenery_tile.h"
 
 #include <rapidjson/document.h>
 #include <string>
@@ -21,6 +22,7 @@ class map_loader {
  * constructs the loader and stores the document into memory
  */
 										map_loader(const std::string&);
+
 /**
 *loads data from file into the vector. Collision tiles will be cleared.
 */
@@ -28,6 +30,15 @@ class map_loader {
 											std::vector<d2d::collision::tile>&,
 	                                        d2d::collision::shaper&,
 	                                        const d2d::collision::tile_implementation&
+	                                    );
+
+/**
+*loads data from file into the vector. Scenery tiles will be cleared. The
+*string is used to locate the layer to be used.
+*/
+	void                                load_scenery_tiles(
+	                                        std::vector<d2d::video::scenery_tile>&,
+	                                        const std::string&
 	                                    );
 
 /**

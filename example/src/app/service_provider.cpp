@@ -8,12 +8,19 @@ using namespace app;
 service_provider::service_provider(
 	const app::env& _env, 
 	const dfwimpl::config& _config,
-	lm::logger& _logger
+	lm::logger& _logger,
+	dfw::kernel& _kernel
 ):
 	env{_env},
 	config{_config},
-	logger{_logger}
+	logger{_logger},
+	video_resource_manager{_kernel.get_video_resource_manager()}
 { }
+
+service_provider::~service_provider() {
+
+	ttf_manager.reset(nullptr);
+}
 
 d2d::collision::shaper& service_provider::get_shaper() {
 

@@ -1,10 +1,10 @@
 #include "d2d/storage/map_loader.h"
 #include "d2d/storage/thing_processor.h"
+#include "d2d/storage/exception.h"
 
 #include <tools/json.h>
 #include <tools/file_utils.h>
 
-#include <stdexcept>
 #include <sstream>
 #include <iostream>
 
@@ -21,7 +21,7 @@ map_loader::map_loader(
 	}
 	catch(std::exception& e) {
 
-		throw std::runtime_error(
+		throw exception(
 			std::string{"error loading map "}
 			+_filename
 			+" : "
@@ -39,7 +39,7 @@ bool map_loader::has_layer(
 
 		if(!layer.IsObject()) {
 
-			throw std::runtime_error("all layers are expected to be objects");
+			throw exception("all layers are expected to be objects");
 		}
 
 		if(layer["meta"]["type"].GetString()==_layer_type && layer["meta"]["id"].GetString()==_layer_id) {
@@ -60,7 +60,7 @@ const rapidjson::Value& map_loader::locate_layer(
 
 		if(!layer.IsObject()) {
 
-			throw std::runtime_error("all layers are expected to be objects");
+			throw exception("all layers are expected to be objects");
 		}
 
 		if(layer["meta"]["type"].GetString()==_layer_type && layer["meta"]["id"].GetString()==_layer_id) {
@@ -71,7 +71,7 @@ const rapidjson::Value& map_loader::locate_layer(
 
 	std::stringstream ss;
 	ss<<"could not locate layer of type "<<_layer_type<<" with id "<<_layer_id;
-	throw std::runtime_error(ss.str());
+	throw exception(ss.str());
 }
 
 void map_loader::load_thing_layer(
@@ -117,6 +117,23 @@ void map_loader::load_collision_tiles(
 	}
 }
 
+void map_loader::load_scenery_tiles(
+	std::vector<d2d::video::scenery_tile>& _tiles,
+	const std::string& _layername
+) {
+
+	_tiles.clear();
+	const auto& layer=locate_layer("tiles", _layername);
+	for(const auto& tile : layer["data"].GetArray()) {
+
+		auto pos=parse_position(tile);
+		int type=tile["t"].GetInt();
+
+		_tiles.push_back({
+			pos.x, pos.y, type
+		});
+	}
+}
 /*
 			if(layer["meta"]["type"].GetString()==std::string{"tiles"} && layer["meta"]["id"].GetString()==std::string{"background"}) {
 
@@ -205,7 +222,7 @@ std::map<std::string, attribute> map_loader::map_attributes(
 
 	if(!_attributes.IsObject()) {
 
-		throw std::runtime_error("attributes is expected to be an object!");
+		throw exception("attributes is expected to be an object!");
 	}
 
 	std::map<std::string, attribute> result;
@@ -231,7 +248,7 @@ std::map<std::string, attribute> map_loader::map_attributes(
 			continue;
 		}
 
-		throw std::runtime_error("invalid type in attribute, only integers, booleans and strings are supported");
+		throw exception("invalid type in attribute, only integers, booleans and strings are supported");
 
 	}
 

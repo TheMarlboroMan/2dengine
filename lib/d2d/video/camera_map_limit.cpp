@@ -1,4 +1,5 @@
 #include "d2d/video/camera_map_limit.h"
+#include "d2d/video/exception.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -12,7 +13,6 @@ void camera_map_limit::limit_to_collision_tiles(
 	lm::logger* _logger
 ) {
 
-	//TODO: must throw something of this library type.
 	if(!_tiles.size()) {
 
 		if(nullptr!=_logger) {
@@ -20,7 +20,7 @@ void camera_map_limit::limit_to_collision_tiles(
 			lm::log(*_logger).error()<<"collision tiles are empty, cannot use camera_map_limit::limit_to_collision_tiles, will throw\n";
 		}
 
-		throw std::runtime_error("cannot use camera_map_limit::limit_to_collision_tiles when collision tiles has no size");
+		throw exception("cannot use camera_map_limit::limit_to_collision_tiles when collision tiles has no size");
 	}
 
 	auto x=std::minmax_element(

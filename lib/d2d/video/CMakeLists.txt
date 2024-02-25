@@ -2,6 +2,9 @@ set(SOURCE
 	${SOURCE}
 	${CMAKE_CURRENT_SOURCE_DIR}/debug_display.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/camera_map_limit.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/scenery_tile_draw.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/spritesheet_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/scenery_tile.cpp
 	PARENT_SCOPE
 )
 

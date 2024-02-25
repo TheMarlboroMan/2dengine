@@ -1,5 +1,5 @@
 #include "d2d/collision/checker.h"
-#include <stdexcept>
+#include "d2d/collision/exception.h"
 #include <iostream>
 
 using namespace d2d::collision;
@@ -78,7 +78,7 @@ bool checker::add(
 
 	if(!started) {
 
-		throw std::runtime_error("cannot call checker::add before start");
+		throw exception("cannot call checker::add before start");
 	}
 
 	if(collides_with(_obstacle, subject)) {
@@ -127,7 +127,7 @@ std::vector<spatiable const *> checker::end() {
 
 	if(!started) {
 
-		throw std::runtime_error("cannot call checker::end before start");
+		throw exception("cannot call checker::end before start");
 	}
 
 	started=false;

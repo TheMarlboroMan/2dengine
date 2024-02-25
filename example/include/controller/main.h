@@ -11,13 +11,15 @@
 #include "app/ladder.h"
 #include "app/timeouts.h"
 #include "app/tile_impl.h"
+#include "app/player_input.h"
+#include <app/entity.h>
+
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
 #include <d2d/video/debug_display.h>
 #include <lm/logger.h>
-#include <app/entity.h>
-#include "app/player_input.h"
 #include <d2d/motion/gravity.h>
+#include <d2d/video/scenery_tile_draw.h>
 #include <memory>
 
 namespace controller {
@@ -67,7 +69,9 @@ class main:
 	d2d::collision::shaper&		shaper;
 	const app::tile_impl&       tile_impl;
 
+//TODO: Should be only in debug mode.
 	d2d::video::debug_display	dd;
+	d2d::video::scenery_tile_draw scenery_tile_draw;
 
 	//game vars. //TODO: should be constants in production.
 	d2d::motion::gravity        gravity;

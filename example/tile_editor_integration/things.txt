@@ -1,16 +1,16 @@
 beginobject
 	id 1
 	name start
-	w 24
-	h 24
+	w 16
+	h 16
 	color 0 0 255 255
 endobject
 
 beginobject
 	id 2
 	name below passable box
-	w 24
-	h 12
+	w 16 
+	h 8
 	color 128 128 64 255
 	beginproperty
 		name width
@@ -24,20 +24,20 @@ endobject
 beginobject
 	id 3
 	name solid_box
-	w 24
-	h 24
+	w 16
+	h 16
 	color 64 128 64 255
 	beginproperty
 		name width
 		type int
-		default 24
+		default 16
 		comment entry width.
 		linkedto w
 	endproperty
 	beginproperty
 		name height
 		type int
-		default 24
+		default 16
 		comment entry height.
 		linkedto h
 	endproperty
@@ -46,14 +46,14 @@ endobject
 beginobject
 	id 4
 	name ladder
-	w 24
-	h 48
+	w 16
+	h 16
 	color 64 128 64 255
 	beginproperty
 		name height
 		type int
 		default 2
 		comment entry height in tiles!
-		linkedto h
+		linkedto nothing
 	endproperty
 endobject

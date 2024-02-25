@@ -1,5 +1,5 @@
-#include <d2d/collision/phase.h>
-#include <stdexcept>
+#include "d2d/collision/phase.h"
+#include "d2d/collision/exception.h"
 
 using namespace d2d::collision;
 
@@ -49,7 +49,7 @@ d2d::collision::response phase::response_complex() {
 
 	if(!collision_found) {
 
-		throw std::runtime_error("cannot get complex response where no collisions exist");
+		throw exception("cannot get complex response where no collisions exist");
 	}
 
 	auto collision_solver=d2d::collision::solver{};
@@ -61,5 +61,5 @@ d2d::collision::response phase::response_complex() {
 			return collision_solver.vertical_complex(subject, results);
 	}
 
-	throw std::runtime_error("shut up compiler");
+	throw exception("shut up compiler");
 }

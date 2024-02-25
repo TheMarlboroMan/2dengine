@@ -9,6 +9,13 @@ begintileset
 	name logic
 endtileset
 
+begintileset
+	file scenery_tiles.txt
+	id 2
+	image scenery_tiles.png
+	name background
+endtileset
+
 beginsession
 	thingcenter bottomleft
 	bgcolor 200 200 200 255
@@ -24,9 +31,9 @@ endobjectset
 begingridsettings
 	id 1
 	name logic
-	gridsize 24
-	gridvruler 16
-	gridhruler 20
+	gridsize 16
+	gridvruler 14
+	gridhruler 18 
 	gridcolor 128 128 128 255
 	gridrulercolor 32 32 32 255
 	gridorigincolor 0 0 255 255

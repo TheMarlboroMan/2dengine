@@ -45,7 +45,7 @@ class state_driver:
 	dfwimpl::config&                config;
 	lm::logger&                     log;
 	const app::env&                 env;
-	app::service_provider			service_provider;
+	std::unique_ptr<app::service_provider>  service_provider{nullptr};
 	
 
 	typedef std::unique_ptr<dfw::controller_interface>	ptr_controller;

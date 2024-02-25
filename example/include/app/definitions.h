@@ -2,8 +2,19 @@
 
 namespace app {
 
-static const int tile_w=24;
-static const int tile_h=24;
+static const int tile_w=16;
+static const int tile_h=16;
+static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per screen.
+static const int logic_screen_h=224; //and these are 14 per screen.
+
+enum spritesheets {
+
+	ss_tiles=1
+};
+
+enum textures{
+	tex_tiles=1
+};
 
 enum tile_types {
 		tile_full=1,

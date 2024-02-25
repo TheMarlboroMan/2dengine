@@ -1,6 +1,6 @@
 #include "d2d/collision/shaper_default.h"
+#include "d2d/collision/exception.h"
 
-#include <stdexcept>
 #include <string>
 
 using namespace d2d::collision;
@@ -61,7 +61,7 @@ d2d::collision::box& shaper_default::get_box(
 			quarter_box.origin.y=_y*tile_h+(tile_h / 2);
 			return quarter_box;
 		default:
-			throw std::runtime_error(std::string{"unknown tile type"}+std::to_string(_type));
+			throw exception(std::string{"unknown tile type"}+std::to_string(_type));
 	}
 
 	return full_box; //Please compiler, just shut up.

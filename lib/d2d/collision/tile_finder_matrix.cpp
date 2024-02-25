@@ -1,7 +1,7 @@
-#include <d2d/collision/tile_finder_matrix.h>
+#include "d2d/collision/tile_finder_matrix.h"
+#include "d2d/collision/exception.h"
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 
 using namespace d2d::collision;
 
@@ -19,7 +19,7 @@ void tile_finder_matrix::load(
 
 	if(!_tiles.size()) {
 
-		throw std::runtime_error("cannot load empty map");
+		throw exception("cannot load empty map");
 	}
 
 	//find the smallest and largest x and y.
