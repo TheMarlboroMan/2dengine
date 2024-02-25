@@ -2,6 +2,7 @@
 #include "app/input.h"
 #include "controller/controller_states.h"
 
+#include <ldtools/ttf_manager.h>
 #include <algorithm>
 #include <filesystem>
 
@@ -197,16 +198,15 @@ void state_driver::start_app(
 
 void state_driver::load_resources() {
 
-	//TODO: Here we would do whatever the dependency injector needs
-/*
-	auto &ttf_manager=dependency_injector->get_ttf_manager();
+	auto &ttf_manager=service_provider.get_ttf_manager();
 
 	ttf_manager.insert(
-		app::debug_font_name,
-		app::debug_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
+		"console_font",
+		14,
+		env.get_app_path()+"resources/fonts/BebasNeue-Regular.ttf"
 	);
 
+/*
 	ttf_manager.insert(
 		app::action_font_name,
 		app::action_font_size,

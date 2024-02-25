@@ -1,6 +1,7 @@
 #include "app/service_provider.h"
 #include "app/definitions.h"
 #include <d2d/collision/shaper_default.h>
+#include <ldtools/ttf_manager.h>
 
 using namespace app;
 
@@ -34,3 +35,13 @@ const app::tile_impl& service_provider::get_tile_impl() {
 	return *tile_impl;
 }
 
+
+ldtools::ttf_manager& service_provider::get_ttf_manager() {
+
+	if(nullptr==ttf_manager.get()) {
+
+		ttf_manager.reset(new ldtools::ttf_manager{});
+	}
+
+	return *ttf_manager;
+}

@@ -1,5 +1,10 @@
 #pragma once
 
+#ifdef IS_DEBUG_BUILD
+#include <appconsole/console.h>
+#include <console/console.h>
+#endif
+
 #include "app/service_provider.h"
 #include "app/env.h"
 #include "app/map.h"
@@ -13,11 +18,16 @@
 #include <app/entity.h>
 #include "app/player_input.h"
 #include <d2d/motion/gravity.h>
+#include <memory>
 
 namespace controller {
 
 class main:
-	public dfw::controller_interface {
+	public dfw::controller_interface
+#ifdef IS_DEBUG_BUILD
+	,public console::console_environment
+#endif 
+	{
 
 	public:
 
@@ -78,7 +88,14 @@ class main:
 
 #ifdef IS_DEBUG_BUILD
 
-	bool                        tic_enabled{false};
+	void                        setup_console(app::service_provider&);
+	console::result execute_cmd(const std::string&, const std::vector<console::argument>&);
+
+	std::unique_ptr<console::console>   console{nullptr};
+	std::unique_ptr<appconsole::console> console_display{nullptr};
+	bool                        console_enabled{false};
+	void                        console_display_onenter(const std::string&);
+
 #endif
 };
 

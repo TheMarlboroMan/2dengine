@@ -10,11 +10,18 @@
 #include <d2d/collision/tiles_in_box.h>
 #include <d2d/collision/tile_filter.h>
 #include <tools/string_utils.h>
+#include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
 #include <sstream>
 #include <iostream>
 #include <cmath>
 #include <functional>
+
+#ifdef IS_DEBUG_BUILD
+
+#include <ldv/color.h>
+
+#endif
 
 using namespace controller;
 
@@ -28,6 +35,13 @@ main::main(
 	dd{480, 384},
 	ent{80, -120}
 {
+
+#ifdef IS_DEBUG_BUILD
+
+	setup_console(_sp);
+
+#endif
+
 	reload_values();
 	setup_timeouts();
 
@@ -102,6 +116,25 @@ void main::loop(
 
 #ifdef IS_DEBUG_BUILD
 
+	if(console_enabled) {
+
+		_input().start_text_input();
+		console_display->input(_input());
+		return;
+	}
+
+	if(_input.is_input_down(app::input::escape)) {
+
+		set_leave(true);
+		return;
+	}
+
+	if(_input.is_input_down(app::input::tic)) {
+
+		console_enabled=true;
+		return;
+	}
+
 	if(_input.is_input_down(app::input::reload_values)) {
 
 		reload_values();
@@ -130,36 +163,7 @@ void main::loop(
 		pli.x=1;
 	}
 
-	if(tic_enabled) {
-
-		if(_input.is_input_down(app::input::escape)) {
-
-			tic_enabled=false;
-			tic(_lid.delta, pli);
-		}
-
-		if(_input.is_input_down(app::input::tic)) {
-
-			tic(_lid.delta, pli);
-		}
-	}
-	else {
-
-		if(_input.is_input_down(app::input::escape)) {
-
-			set_leave(true);
-			return;
-		}
-
-		if(_input.is_input_down(app::input::tic)) {
-
-			tic_enabled=true;
-		}
-		else {
-
-			tic(_lid.delta, pli);
-		}
-	}
+	tic(_lid.delta, pli);
 
 #else
 
@@ -299,6 +303,8 @@ void main::tic_regular(
 		if(cpv.has_collision()) {
 
 			ent.velocity.y=0.0;
+			cpv.response_generic();
+/*
 			const auto response=cpv.response_complex();
 
 			//Only when colliding when the top of a box can we jump again.
@@ -306,6 +312,8 @@ void main::tic_regular(
 
 				can_jump=true;
 			}
+*/
+			can_jump=true;
 		}
 	}
 }
@@ -374,6 +382,14 @@ void main::draw(
 	}
 
 	dd.draw(_screen, ent);
+
+#ifdef IS_DEBUG_BUILD
+	
+	if(console_enabled) {
+
+		console_display->draw(_screen);
+	}
+#endif
 }
 
 void main::reload_values() {
@@ -493,3 +509,62 @@ void main::setup_camera(
 	ldv::rect margin{x, y, w, h};
 	dd.set_center_margin(margin);
 }
+
+#ifdef IS_DEBUG_BUILD
+
+void main::console_display_onenter(
+	const std::string& _command
+) {
+
+	console->send(_command);
+}
+
+console::result main::execute_cmd(
+	const std::string& _cmd, 
+	const std::vector<console::argument>& _args
+) {
+
+	if(_cmd=="exit") {
+
+		console_enabled=false;
+		return {0, "ok"};
+	}
+
+	if(_cmd=="tic") {
+
+		tic(0.01f, app::player_input{});
+		return {0, "ok"};
+	}
+
+	if(_cmd=="help") {
+
+		return {0, "exit, tic, help"};
+	}
+
+	return {0, ""};
+}
+
+void main::setup_console(
+	app::service_provider& _sp
+) {
+
+	std::function<void(const std::string&)> display_update=[&](const std::string& _cmd) -> void {
+
+		console_display_onenter(_cmd);
+	};
+
+	console_display.reset(
+		new appconsole::console{
+			{0,0,480, 100},
+			_sp.get_ttf_manager().get("console_font", 14),
+			display_update
+		}
+	);
+
+	console.reset(new console::console(*this));
+	console->connect_output(console_display->get_output());
+	console->map_command("exit", {});
+	console->map_command("help", {});
+	console->map_command("tic", {});
+}
+#endif
