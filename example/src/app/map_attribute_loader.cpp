@@ -1,0 +1,39 @@
+#include "app/map_attribute_loader.h"
+#include <vector>
+
+using namespace app;
+
+map_attribute_loader::map_attribute_loader(
+	ldv::rgba_color& _background_color
+):
+	background_color{_background_color}
+{}
+
+void map_attribute_loader::setup() {
+
+	background_color={0,0,0, 255};
+}
+
+void map_attribute_loader::load(
+	const std::map<std::string, d2d::storage::attribute>& _attr_map
+) {
+
+	struct pair {
+		const std::string name;
+		int     color{0};
+	};
+	
+	std::vector<pair> colors={{"bg_red", 0}, {"bg_green", 0}, {"bg_blue", 0}};
+
+	for(auto& color: colors) {
+
+		if(_attr_map.count(color.name)) {
+
+			color.color=_attr_map.at(color.name).get_int();
+		}
+	}
+
+	background_color.r=colors[0].color;
+	background_color.g=colors[1].color;
+	background_color.b=colors[2].color;
+}

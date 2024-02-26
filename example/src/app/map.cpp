@@ -43,6 +43,12 @@ std::ostream& app::operator<<(
 	}
 	_stream<<"]";
 
+	_stream<<"\n\tforeground_tiles:[\n";
+	for(const auto& tile : _map.foreground_tiles) {
+		_stream<<tile<<","<<std::endl;
+	}
+	_stream<<"]";
+
 	return _stream;
 }
 
@@ -54,6 +60,7 @@ void map::clear() {
 	tile_finder.clear();
 	ladders.clear();
 	background_tiles.clear();
+	foreground_tiles.clear();
 }
 
 void map::sync_tile_finder() {

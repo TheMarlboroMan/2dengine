@@ -56,10 +56,6 @@ int main(int argc, char ** argv)
 		lm::log(app_log).info()<<"start state driver..."<<std::endl;
 		sd.start(kernel);
 
-		lm::log(app_log).info()<<"finished main process, stopping sdl2..."<<std::endl;
-		ldt::sdl_shutdown();
-
-		return 0;
 	}
 	catch(std::exception& e) {
 
@@ -70,4 +66,11 @@ int main(int argc, char ** argv)
 
 		return 1;
 	}
+
+	//Do not shutdown the SDL systems until the kernel, driver and such
+	//are done with.
+	lm::log(app_log).info()<<"finished main process, stopping sdl2..."<<std::endl;
+	ldt::sdl_shutdown();
+
+	return 0;
 }

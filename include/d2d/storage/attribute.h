@@ -9,7 +9,7 @@ namespace d2d { namespace storage {
 //of detestable union way.
 struct attribute {
 
-	enum types{type_int, type_bool, type_str};
+	enum types{type_int, type_bool, type_str, type_double};
 
 	attribute(const std::string& _val) {
 
@@ -29,19 +29,28 @@ struct attribute {
 		type=type_bool;
 	}
 
+	attribute(double _val) {
+
+		doubleval=_val;
+		type=type_double;
+	}
+
 	bool        is_int() const {return type_int==type;}
 	bool        is_bool() const {return type_bool==type;}
 	bool        is_string() const {return type_str==type;}
+	bool        is_double() const {return type_double==type;}
 
 	int         get_int() const {return intval;}
 	bool        get_bool() const {return boolval;}
 	const std::string   get_string() const {return strval;}
+	double      get_double() const {return doubleval;}
 
 	private:
 
 	int         intval{0}, type{0};
 	bool        boolval{false};
 	std::string strval;
+	double      doubleval{0.0};
 };
 
 }}

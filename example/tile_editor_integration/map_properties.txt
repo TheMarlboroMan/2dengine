@@ -1,0 +1,29 @@
+beginproperty
+	name name
+	type string
+	default unnamed
+	comment Map name
+endproperty
+
+beginproperty
+	name bg_red
+	type int
+	default 0
+	comment background color red
+endproperty
+
+beginproperty
+	name bg_green
+	type int
+	default 0
+	comment background color green
+endproperty
+
+beginproperty
+	name bg_blue
+	type int
+	default 0
+	comment background color blue
+endproperty
+
+

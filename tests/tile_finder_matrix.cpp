@@ -24,6 +24,7 @@ int main(
 	d2d::collision::shaper_default shaper_default(24, 24);
 
 	ml.load_collision_tiles(
+		"logic",
 		tiles,
 		shaper_default,
 		tile_impl

@@ -1,6 +1,7 @@
 #include "controller/main.h"
 #include "app/input.h"
 #include "app/thing_loader.h"
+#include "app/map_attribute_loader.h"
 #include "dfwimpl/config.h"
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
@@ -98,17 +99,22 @@ void main::load_map(
 	d2d::storage::map_loader loader(map_path);
 
 	loader.load_collision_tiles(
+		"logic",
 		current_map.collision_tiles,
 		shaper,
 		tile_impl
 	);
 
-	loader.load_scenery_tiles(current_map.background_tiles, "background");
+	loader.load_scenery_tiles("foreground", current_map.foreground_tiles);
+	loader.load_scenery_tiles("background", current_map.background_tiles);
 
 	current_map.sync_tile_finder();
 
 	app::thing_loader tl{current_map};
 	loader.load_thing_layer("things", tl);
+
+	app::map_attribute_loader attrl{current_map.background_color};
+	loader.load_properties(attrl);
 
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
@@ -393,7 +399,8 @@ void main::draw(
 	int /*_fps*/
 ) {
 
-	dd.clear(_screen);
+	_screen.clear(current_map.background_color);
+	//dd.clear(_screen);
 
 	//TODO: Maybe some debug mode...
 /*
@@ -422,6 +429,8 @@ void main::draw(
 	}
 
 	dd.draw(_screen, ent);
+
+	scenery_tile_draw.draw(_screen, dd.camera, current_map.foreground_tiles);
 
 #ifdef IS_DEBUG_BUILD
 	

@@ -8,6 +8,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/thing_loader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ladder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/timeouts.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/map_attribute_loader.cpp
 	PARENT_SCOPE
 )
 

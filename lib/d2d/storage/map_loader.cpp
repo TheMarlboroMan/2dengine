@@ -74,6 +74,16 @@ const rapidjson::Value& map_loader::locate_layer(
 	throw exception(ss.str());
 }
 
+void map_loader::load_properties(
+	property_processor& _processor,
+	const std::string& _nodename
+) {
+
+	const auto& attr_map=map_attributes(doc[_nodename.c_str()]);
+	_processor.setup();
+	_processor.load(attr_map);
+}
+
 void map_loader::load_thing_layer(
 	const std::string& _layer_id,
 	thing_processor& _processor
@@ -93,13 +103,14 @@ void map_loader::load_thing_layer(
 }
 
 void map_loader::load_collision_tiles(
+	const std::string& _layername,
 	std::vector<d2d::collision::tile>& _tiles,
 	d2d::collision::shaper& _shaper,
 	const d2d::collision::tile_implementation& _tileimpl
 ) {
 
 	_tiles.clear();
-	const auto& layer=locate_layer("tiles", "logic");
+	const auto& layer=locate_layer("tiles", _layername);
 	for(const auto& tile : layer["data"].GetArray()) {
 
 		auto pos=parse_position(tile);
@@ -118,8 +129,8 @@ void map_loader::load_collision_tiles(
 }
 
 void map_loader::load_scenery_tiles(
-	std::vector<d2d::video::scenery_tile>& _tiles,
-	const std::string& _layername
+	const std::string& _layername,
+	std::vector<d2d::video::scenery_tile>& _tiles
 ) {
 
 	_tiles.clear();
@@ -248,7 +259,13 @@ std::map<std::string, attribute> map_loader::map_attributes(
 			continue;
 		}
 
-		throw exception("invalid type in attribute, only integers, booleans and strings are supported");
+		if(_node.value.IsDouble()) {
+
+			result.emplace(std::make_pair(name, attribute{_node.value.GetDouble()}));
+			continue;
+		}
+
+		throw exception("invalid type in attribute, only integers, booleans, doubles and strings are supported");
 
 	}
 

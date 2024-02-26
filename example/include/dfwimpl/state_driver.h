@@ -22,6 +22,7 @@ class state_driver:
 	public:
 	                                state_driver(dfwimpl::config& config, lm::logger&, const app::env&, int);
 
+
 	virtual void                    common_pre_loop_input(dfw::input& input, float delta);
 	virtual void                    common_pre_loop_step(float delta);
 	virtual void                    common_loop_input(dfw::input& input, float delta);

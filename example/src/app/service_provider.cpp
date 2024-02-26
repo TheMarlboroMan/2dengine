@@ -19,7 +19,6 @@ service_provider::service_provider(
 
 service_provider::~service_provider() {
 
-	ttf_manager.reset(nullptr);
 }
 
 d2d::collision::shaper& service_provider::get_shaper() {

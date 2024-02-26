@@ -3,6 +3,7 @@
 #include "attribute.h"
 #include "definitions.h"
 #include "thing_processor.h"
+#include "property_processor.h"
 #include "d2d/collision/shaper.h"
 #include "d2d/collision/tile.h"
 #include "d2d/collision/tile_implementation.h"
@@ -24,9 +25,20 @@ class map_loader {
 										map_loader(const std::string&);
 
 /**
+ * TODO:
+ */
+	void                                load_properties(
+	                                        property_processor&,
+	                                        const std::string& ={"attributes"}
+	);
+
+	//TODO: Map property processor now...
+
+/**
 *loads data from file into the vector. Collision tiles will be cleared.
 */
 	void                                load_collision_tiles(
+	                                        const std::string&,
 											std::vector<d2d::collision::tile>&,
 	                                        d2d::collision::shaper&,
 	                                        const d2d::collision::tile_implementation&
@@ -37,8 +49,8 @@ class map_loader {
 *string is used to locate the layer to be used.
 */
 	void                                load_scenery_tiles(
-	                                        std::vector<d2d::video::scenery_tile>&,
-	                                        const std::string&
+	                                        const std::string&,
+	                                        std::vector<d2d::video::scenery_tile>&
 	                                    );
 
 /**
@@ -72,6 +84,4 @@ class map_loader {
 		const rapidjson::Value&
 	);
 };
-
-
 }}

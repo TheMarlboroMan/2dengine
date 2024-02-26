@@ -1,19 +1,23 @@
 next step:
+
 	make the first example game.
+		plan the game.
 		maybe it's time to also put a protagonist there...
 		have a real camera, not all debug stuff...
-		plan the game.
+		separate debug view from the other view
 		leave ladder jumping
 		leave ladder walking
 
-	I guess slopes
-	Or moving blocks, which were originally there too.
-	tile graphics
-		maybe import the whole composer thingy.
-	Documentation and doxygen.
+	engine:
+		I guess slopes
+		Or moving blocks, which were originally there too.
+		tile graphics
+			maybe import the whole composer thingy.
+
+	docs:
+		Documentation and doxygen.
 
 fixes and misc:
-	fix whatever bug is causing a segfault when exiting the example
 ---------------------
 
 
