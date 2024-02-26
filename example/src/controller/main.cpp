@@ -33,11 +33,16 @@ main::main(
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
 	dd{app::logic_screen_w, app::logic_screen_h},
-	scenery_tile_draw{
-		app::tile_w, 
-		app::tile_h,
+	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
+	},
+	scenery_tile_draw{
+		_sp.get_spritesheet_manager().at(app::ss_tiles),
+		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
+		app::tile_w, 
+		app::tile_h,
+		_sp.get_animation_manager().at(app::anim_tiles)
 	},
 	ent{0, 0}
 {
@@ -50,6 +55,26 @@ main::main(
 
 	reload_values();
 	setup_timeouts();
+
+	//TODO: This kind of shit could come from any file.
+	scenery_tile_draw.set_is_animation_fn(
+		[](int _index) -> bool {
+			return _index==29 || _index==147;
+		}
+	);
+
+	//TODO: Same, this should come from a file.
+	scenery_tile_draw.set_index_to_animation_fn(
+		[](int _index) -> int {
+
+			switch(_index) {
+				case 29: return 2;
+				case 147: return 1;
+			}
+
+			return 0;
+		}
+	);
 
 	setup_camera(
 		app::logic_screen_w,
@@ -212,6 +237,7 @@ void main::tic(
 ) {
 
 	timeouts.tic(_delta);
+	scenery_tile_draw.tic(_delta);
 
 	switch(player_state) {
 

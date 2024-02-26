@@ -19,7 +19,8 @@
 #include <d2d/video/debug_display.h>
 #include <lm/logger.h>
 #include <d2d/motion/gravity.h>
-#include <d2d/video/scenery_tile_draw.h>
+#include <d2d/video/scenery_tile_draw_animated.h>
+#include <d2d/video/sprite_draw.h>
 #include <memory>
 
 namespace controller {
@@ -71,7 +72,8 @@ class main:
 
 //TODO: Should be only in debug mode.
 	d2d::video::debug_display	dd;
-	d2d::video::scenery_tile_draw scenery_tile_draw;
+	d2d::video::sprite_draw     sprite_draw;
+	d2d::video::scenery_tile_draw_animated scenery_tile_draw;
 
 	//game vars. //TODO: should be constants in production.
 	d2d::motion::gravity        gravity;

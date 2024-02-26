@@ -16,6 +16,10 @@ enum textures{
 	tex_tiles=1
 };
 
+enum animations{
+	anim_tiles=1
+};
+
 enum tile_types {
 		tile_full=1,
 		tile_half_bottom=2,

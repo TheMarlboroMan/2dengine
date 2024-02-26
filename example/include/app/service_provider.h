@@ -6,6 +6,7 @@
 #include "app/tile_impl.h"
 #include <ldtools/ttf_manager.h>
 #include <d2d/video/spritesheet_manager.h>
+#include <d2d/video/animation_manager.h>
 #include <ldv/resource_manager.h>
 #include <dfw/kernel.h>
 
@@ -45,6 +46,7 @@ class service_provider {
 	const app::tile_impl&   get_tile_impl();
 	ldtools::ttf_manager&   get_ttf_manager();
 	d2d::video::spritesheet_manager& get_spritesheet_manager() {return spritesheet_manager;}
+	d2d::video::animation_manager& get_animation_manager() {return animation_manager;}
 	ldv::resource_manager&  get_video_resource_manager() {return video_resource_manager;}
 
 	private:
@@ -57,5 +59,6 @@ class service_provider {
 	std::unique_ptr<app::tile_impl>	tile_impl{nullptr};
 	std::unique_ptr<ldtools::ttf_manager>	ttf_manager{nullptr};
 	d2d::video::spritesheet_manager spritesheet_manager;
+	d2d::video::animation_manager   animation_manager;
 };
 }
