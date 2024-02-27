@@ -1,12 +1,17 @@
 next step:
 
 	make the first example game.
+		animated sprite draw.
 		plan the game.
 		maybe it's time to also put a protagonist there...
 		have a real camera, not all debug stuff...
 		separate debug view from the other view
 		leave ladder jumping
 		leave ladder walking
+		should not be able to jump after leaving a ladder.
+		"doors" are a block that moves up
+		there should be switches, right?
+		gates in the background to enter hitting up.
 
 	engine:
 		I guess slopes

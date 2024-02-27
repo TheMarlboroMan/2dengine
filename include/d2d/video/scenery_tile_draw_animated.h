@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scenery_tile_draw_static.h"
+#include "scenery_tile_draw.h"
 #include <ldtools/animation_table.h>
 #include <functional>
 
@@ -23,7 +23,7 @@ class scenery_tile_draw_animated {
 
 
 	//100% public, for sure.
-	scenery_tile_draw_static        static_draw;
+	scenery_tile_draw               static_draw;
 
 /**
  * the timer must be fed from the outside.

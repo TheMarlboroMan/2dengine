@@ -42,6 +42,7 @@ void sprite_draw::draw(
 	bmp.set_clip({{_frame.box.origin.x, _frame.box.origin.y}, _frame.box.w, _frame.box.h});
 	auto pt=d2d::video::to_screen_coordinates(_point, _frame.box.h);
 	bmp.set_location({pt, _frame.box.w, _frame.box.h});
+	//TODO: What about the thing being flipped and stuff???
 	bmp.draw(_screen, _camera);
 }
 
@@ -54,6 +55,7 @@ void sprite_draw::draw(
 	bmp.set_clip({{_frame.box.origin.x, _frame.box.origin.y}, _frame.box.w, _frame.box.h});
 	auto pt=d2d::video::to_screen_coordinates(_point, _frame.box.h);
 	bmp.set_location({pt, _frame.box.w, _frame.box.h});
+	//TODO: What about the thing being flipped and stuff???
 	bmp.draw(_screen);
 }
 
@@ -64,6 +66,7 @@ void sprite_draw::draw(
 	int _index
 ) {
 
+	//TODO: What about the thing being flipped and stuff???
 	const auto& frame=sprite_table->get(_index);
 	draw(_screen, _camera, _point, frame);
 }
@@ -75,5 +78,8 @@ void sprite_draw::draw(
 ) {
 
 	const auto& frame=sprite_table->get(_index);
+
+	//TODO: sure, what about flipping shit my man???
+
 	draw(_screen, _point, frame);
 }

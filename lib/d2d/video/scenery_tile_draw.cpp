@@ -1,9 +1,9 @@
-#include "d2d/video/scenery_tile_draw_static.h"
+#include "d2d/video/scenery_tile_draw.h"
 #include "d2d/video/exception.h"
 
 using namespace d2d::video;
 
-scenery_tile_draw_static::scenery_tile_draw_static(
+scenery_tile_draw::scenery_tile_draw(
 	const ldtools::sprite_table& _sprite_table, 
 	const ldv::texture& _texture,
 	int _tile_w,
@@ -14,7 +14,7 @@ scenery_tile_draw_static::scenery_tile_draw_static(
 	tile_h{_tile_h}
 { }
 
-void scenery_tile_draw_static::draw(
+void scenery_tile_draw::draw(
 	ldv::screen& _screen,
 	const ldv::camera& _camera,
 	const scenery_tile& _tile
@@ -32,7 +32,7 @@ void scenery_tile_draw_static::draw(
 	}
 }
 
-void scenery_tile_draw_static::draw(
+void scenery_tile_draw::draw(
 	ldv::screen& _screen,
 	const scenery_tile& _tile
 ) {

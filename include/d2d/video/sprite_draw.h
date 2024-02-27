@@ -29,27 +29,6 @@ class sprite_draw {
 	void                            draw(ldv::screen&, ldv::point, int);
 
 /**
- * templated methods of the previous ones for ranged containers.
- */
-	template<typename T>
-	void            draw(ldv::screen& _screen, const ldv::camera& _camera, const T& _container) {
-
-		for(const auto& sprite : _container) {
-
-			draw(_screen, _camera, sprite);
-		}
-	}
-
-	template<typename T>
-	void            draw(ldv::screen& _screen, const T& _container) {
-
-		for(const auto& sprite : _container) {
-
-			draw(_screen, sprite);
-		}
-	}
-
-/**
  * replaces the current sprite table
  */
 	sprite_draw&                    reset_sprite_table(const ldtools::sprite_table&);

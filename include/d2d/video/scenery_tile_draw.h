@@ -9,11 +9,11 @@ namespace d2d { namespace video {
  * specialized class to draw scenery tiles. It owns the sprite draw but does
  * not own the texture and sprite_table it contains.
  */
-class scenery_tile_draw_static {
+class scenery_tile_draw{
 
 	public:
 
-	                    scenery_tile_draw_static(
+	                    scenery_tile_draw(
 	                        const ldtools::sprite_table&, 
 	                        const ldv::texture&, 
 	                        int, 
