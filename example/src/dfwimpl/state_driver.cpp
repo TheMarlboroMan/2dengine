@@ -213,9 +213,8 @@ void state_driver::load_resources() {
 
 	auto& animations=service_provider->get_animation_manager();
 	animations.add(
-		//TODO: Should be a defined const.
-		1, 
-		ldtools::animation_table{ spritesheets.at(1), env.get_app_path()+"resources/lists/animations.txt"}
+		app::animgr_tiles,
+		ldtools::animation_table{ spritesheets.at(app::ss_tiles), env.get_app_path()+"resources/lists/animations.txt"}
 	);
 
 	auto &ttf_manager=service_provider->get_ttf_manager();

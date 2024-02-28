@@ -16,8 +16,15 @@ enum textures{
 	tex_tiles=1
 };
 
+enum animation_groups{
+	animgr_tiles=1
+};
+
 enum animations{
-	anim_tiles=1
+	anim_climb=103,
+	anim_jump=102,
+	anim_walk=101,
+	anim_idle=100
 };
 
 enum tile_types {

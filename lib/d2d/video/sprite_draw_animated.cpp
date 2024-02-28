@@ -26,47 +26,453 @@ sprite_draw_animated& sprite_draw_animated::reset_animation(
 	return *this;
 }
 
+//with point, animation and camera.
 void sprite_draw_animated::draw(
 	ldv::screen& _screen,
-	const ldv::camera& _camera, 
-	ldv::point _pt, 
-	const ldtools::animation& _animation
+	const ldv::camera& _camera,
+	ldv::point _point,
+	const ldtools::animation& _animation,
+	float _timer,
+	sprite_draw::flags _flags
 ) {
 
-	draw(_screen, _camera, _pt, _animation, internal_timer);
+	const auto& line=_animation.get_for_time(_timer);
+
+	//The animation may ask for the frame to be flipped.
+	if(line.is_flipped_horizontally()) {
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.is_flipped_vertically()) {
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	//The frame ITSELF might be flipped too xD
+	if(line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	spr_draw.draw(_screen, _camera, _point, line.frame, _flags);
 }
 
 void sprite_draw_animated::draw(
 	ldv::screen& _screen,
-	ldv::point _pt,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	const ldtools::animation& _animation,
+	float _timer
+) {
+
+	draw(_screen, _camera, _point, _animation, _timer, {false, false});
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	const ldtools::animation& _animation,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _camera, _point, _animation, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
 	const ldtools::animation& _animation
 ) {
 
-	draw(_screen, _pt, _animation, internal_timer);
+	draw(_screen, _camera, _point, _animation, internal_timer);
+}
+
+//with point, index and camera
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera,
+	ldv::point _point,
+	int _index,
+	float _timer,
+	sprite_draw::flags _flags
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _camera, _point, animation, _timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	int _index,
+	float _timer
+) {
+
+	draw(_screen, _camera, _point, _index, _timer, {false, false});
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	int _index,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _camera, _point, _index, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	int _index
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _camera, _point, animation, internal_timer);
+}
+
+//with point, animation and NO camera.
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::point _point, 
+	const ldtools::animation& _animation,
+	float _timer, 
+	sprite_draw::flags _flags
+) {
+
+	const auto& line=_animation.get_for_time(_timer);
+
+	//The animation may ask for the frame to be flipped.
+	if(line.is_flipped_horizontally()) {
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.is_flipped_vertically()) {
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	//The frame ITSELF might be flipped too xD
+	if(line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	spr_draw.draw(_screen, _point, line.frame, _flags);
 }
 
 void sprite_draw_animated::draw(
 	ldv::screen& _screen, 
-	const ldv::camera& _camera, 
-	ldv::point _pt,
+	ldv::point _point, 
 	const ldtools::animation& _animation,
-	float _timer
+	sprite_draw::flags _flags
 ) {
 
-	//TODO: What about the thing being flipped and stuff???
-	const auto& line=_animation.get_for_time(_timer);
-	spr_draw.draw(_screen, _camera, _pt, line.frame);
+	draw(_screen, _point, _animation, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::point _point, 
+	const ldtools::animation& _animation
+) {
+
+	draw(_screen, _point, _animation, internal_timer);
 }
 
 void sprite_draw_animated::draw(
 	ldv::screen& _screen,
-	ldv::point _pt, 
+	ldv::point _point, 
 	const ldtools::animation& _animation,
 	float _timer
 ) {
 
-	//TODO: What about the thing being flipped and stuff???
-	const auto& line=_animation.get_for_time(_timer);
-	spr_draw.draw(_screen, _pt, line.frame);
+	draw(_screen, _point, _animation, _timer, {false, false});
 }
 
+//with point, index and NO camera.
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::point _point, 
+	int _index,
+	float _timer, 
+	sprite_draw::flags _flags
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _point, animation, _timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::point _point, 
+	int _index,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _point, _index, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::point _point, 
+	int _index
+) {
+
+	draw(_screen, _point, _index, internal_timer);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::point _point, 
+	int _index,
+	float _timer
+) {
+
+	draw(_screen, _point, _index, _timer, {false, false});
+}
+
+//The same again, but with RECTS.
+//with point, animation and camera.
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera,
+	ldv::rect _rect,
+	const ldtools::animation& _animation,
+	float _timer,
+	sprite_draw::flags _flags
+) {
+
+	const auto& line=_animation.get_for_time(_timer);
+
+	//The animation may ask for the frame to be flipped.
+	if(line.is_flipped_horizontally()) {
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.is_flipped_vertically()) {
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	//The frame ITSELF might be flipped too xD
+	if(line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	spr_draw.draw(_screen, _camera, _rect, line.frame, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	const ldtools::animation& _animation,
+	float _timer
+) {
+
+	draw(_screen, _camera, _rect, _animation, _timer, {false, false});
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	const ldtools::animation& _animation,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _camera, _rect, _animation, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	const ldtools::animation& _animation
+) {
+
+	draw(_screen, _camera, _rect, _animation, internal_timer);
+}
+
+//with rect, index and camera
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera,
+	ldv::rect _rect,
+	int _index,
+	float _timer,
+	sprite_draw::flags _flags
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _camera, _rect, animation, _timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	int _index,
+	float _timer
+) {
+
+	draw(_screen, _camera, _rect, _index, _timer, {false, false});
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	int _index,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _camera, _rect, _index, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::rect _rect, 
+	int _index
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _camera, _rect, animation, internal_timer);
+}
+
+//with rect, animation and NO camera.
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::rect _rect, 
+	const ldtools::animation& _animation,
+	float _timer, 
+	sprite_draw::flags _flags
+) {
+
+	const auto& line=_animation.get_for_time(_timer);
+
+	//The animation may ask for the frame to be flipped.
+	if(line.is_flipped_horizontally()) {
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.is_flipped_vertically()) {
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	//The frame ITSELF might be flipped too xD
+	if(line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
+
+		_flags.flip_horizontal=!_flags.flip_horizontal;
+	}
+
+	if(line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
+
+		_flags.flip_vertical=!_flags.flip_vertical;
+	}
+
+	spr_draw.draw(_screen, _rect, line.frame, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::rect _rect, 
+	const ldtools::animation& _animation,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _rect, _animation, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::rect _rect, 
+	const ldtools::animation& _animation
+) {
+
+	draw(_screen, _rect, _animation, internal_timer);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::rect _rect, 
+	const ldtools::animation& _animation,
+	float _timer
+) {
+
+	draw(_screen, _rect, _animation, _timer, {false, false});
+}
+
+//with rect, index and NO camera.
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::rect _rect, 
+	int _index,
+	float _timer, 
+	sprite_draw::flags _flags
+) {
+
+	const auto& animation=animation_table->get(_index);
+	draw(_screen, _rect, animation, _timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::rect _rect, 
+	int _index,
+	sprite_draw::flags _flags
+) {
+
+	draw(_screen, _rect, _index, internal_timer, _flags);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen, 
+	ldv::rect _rect, 
+	int _index
+) {
+
+	draw(_screen, _rect, _index, internal_timer);
+}
+
+void sprite_draw_animated::draw(
+	ldv::screen& _screen,
+	ldv::rect _rect, 
+	int _index,
+	float _timer
+) {
+
+	draw(_screen, _rect, _index, _timer, {false, false});
+}

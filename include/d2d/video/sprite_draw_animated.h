@@ -28,16 +28,42 @@ class sprite_draw_animated {
 	sprite_draw_animated&           reset_animation(const ldtools::animation_table&);
 
 /**
- * These methods use the internal timer.
+ * the methods with a float can use an external timer.
  */
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&);
-	void            draw(ldv::screen&, ldv::point, const ldtools::animation&);
-
-/**
- * draw versions to be called with an outside timer.
- */
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);
 	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, float);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, float, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, float);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, float, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, float);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, float, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, float);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, sprite_draw::flags);
+	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int);
+
+/** same as above, no camera */
+	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);
 	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, float);
+	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::point, const ldtools::animation&);
+	void            draw(ldv::screen&, ldv::point, int, float, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::point, int, float);
+	void            draw(ldv::screen&, ldv::point, int, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::point, int);
+	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, float, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, float);
+	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&);
+	void            draw(ldv::screen&, ldv::rect, int, float, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::rect, int, float);
+	void            draw(ldv::screen&, ldv::rect, int, sprite_draw::flags);
+	void            draw(ldv::screen&, ldv::rect, int);
 
 	private:
 

@@ -38,12 +38,17 @@ main::main(
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
 	},
+	sprite_draw_animated{
+		_sp.get_spritesheet_manager().at(app::ss_tiles),
+		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
+		_sp.get_animation_manager().at(app::animgr_tiles)
+	},
 	scenery_tile_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
 		app::tile_w, 
 		app::tile_h,
-		_sp.get_animation_manager().at(app::anim_tiles)
+		_sp.get_animation_manager().at(app::animgr_tiles)
 	},
 	ent{0, 0}
 {
@@ -244,6 +249,7 @@ void main::tic(
 
 	timeouts.tic(_delta);
 	scenery_tile_draw.tic(_delta);
+	sprite_draw_animated.tic(_delta);
 
 	switch(player_state) {
 
@@ -428,7 +434,18 @@ void main::draw(
 //		dd.draw(_screen, ladder);
 	}
 
-	dd.draw(_screen, ent);
+
+//	dd.draw(_screen, ent);
+	//TODO: How will we do this?? I guess we need a converter function.
+	auto pos=ent.get_box();
+
+	sprite_draw_animated.draw(
+		_screen, 
+		dd.camera, 
+		{{pos.origin.x, pos.origin.y}, pos.w, pos.h},
+//		{pos.origin.x, pos.origin.y},
+		app::anim_walk
+	);
 
 	scenery_tile_draw.draw(_screen, dd.camera, current_map.foreground_tiles);
 

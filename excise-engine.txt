@@ -1,9 +1,7 @@
 next step:
 
 	make the first example game.
-		animated sprite draw.
 		plan the game.
-		maybe it's time to also put a protagonist there...
 		have a real camera, not all debug stuff...
 		separate debug view from the other view
 		leave ladder jumping
