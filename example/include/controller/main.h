@@ -12,7 +12,7 @@
 #include "app/timeouts.h"
 #include "app/tile_impl.h"
 #include "app/player_input.h"
-#include <app/entity.h>
+#include <app/player.h>
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -46,13 +46,17 @@ class main:
 	private:
 
 	void                        tic(float, app::player_input);
-	void                        tic_regular(float, app::player_input);
+	void                        tic_ground(float, app::player_input);
 	void                        tic_ladder(float, app::player_input);
+	void                        tic_air(float, app::player_input);
+	void                        draw_player(ldv::screen&, const app::player&);
 
 	void                        load_map(const std::string&);
 
 	void                        grab_ladder(const app::ladder&);
-	void                        leave_ladder();
+	void                        jump();
+	void                        leave_ladder(const d2d::collision::tile&);
+	void                        jump_out_of_ladder(int);
 
 	void                        setup_camera(int, int);
 /**
@@ -60,11 +64,6 @@ class main:
  */
 	void                        reload_values();
 	void                        setup_timeouts();
-
-	enum class player_states {
-		regular,
-		ladder
-	}                           player_state{player_states::regular};
 
 	const app::env&				env;
 	lm::logger&					logger;
@@ -86,7 +85,7 @@ class main:
 
 	//game state stuff.
 	app::map                    current_map;
-	app::entity                 ent;
+	app::player                 player;
 	app::ladder                 current_ladder{0,0,0};
 	app::timeouts               timeouts;
 

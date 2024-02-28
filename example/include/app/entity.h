@@ -11,7 +11,7 @@ class entity:
 
 	public:
 
-	                                    entity(int, int);
+	                                    entity(int, int, unsigned, unsigned);
 	void                                sync_boxes();
 
 //Begin implementation of spatiable
@@ -28,9 +28,6 @@ class entity:
 	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
 	//virtual color                       get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	//virtual color                       get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
-	//
-	d2d::motion::motion_vector                  velocity{0.0, 0.0};
-
 //End implementation of spatiable
 
 	private:

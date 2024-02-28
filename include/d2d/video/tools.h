@@ -1,8 +1,16 @@
 #pragma once
 
+#include "../collision/definitions.h"
 #include <ldv/rect.h>
 
 namespace d2d { namespace video {
+
+/**
+ * converts a collision point to a screen point. This is done by casting
+ * the components to integers, rounded down.
+ */
+
+ldv::point to_screen(d2d::collision::point);
 
 /**
  * converts a logic point to screen coordinates from x, y and h.

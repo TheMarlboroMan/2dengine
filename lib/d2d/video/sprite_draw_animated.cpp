@@ -26,6 +26,56 @@ sprite_draw_animated& sprite_draw_animated::reset_animation(
 	return *this;
 }
 
+void sprite_draw_animated::draw_frame(
+	ldv::screen& _screen,
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	const ldtools::animation& _animation,
+	int _frame_index
+) {
+
+	//TODO: This could actually be the end for the draw() line of methods too...
+	const auto& line=_animation.get(_frame_index);
+
+	sprite_draw::flags flags{false, false};
+
+	//The animation may ask for the frame to be flipped.
+	if(line.is_flipped_horizontally()) {
+
+		flags.flip_horizontal=!flags.flip_horizontal;
+	}
+
+	if(line.is_flipped_vertically()) {
+
+		flags.flip_vertical=!flags.flip_vertical;
+	}
+
+	//The frame ITSELF might be flipped too xD
+	if(line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
+
+		flags.flip_horizontal=!flags.flip_horizontal;
+	}
+
+	if(line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
+
+		flags.flip_vertical=!flags.flip_vertical;
+	}
+
+	spr_draw.draw(_screen, _camera, _point, line.frame, flags);
+}
+
+void sprite_draw_animated::draw_frame(
+	ldv::screen& _screen, 
+	const ldv::camera& _camera, 
+	ldv::point _point, 
+	int _animation_index, 
+	int _frame_index
+) {
+
+	const auto& animation=animation_table->get(_animation_index);
+	draw_frame(_screen, _camera, _point, animation, _frame_index);
+}
+
 //with point, animation and camera.
 void sprite_draw_animated::draw(
 	ldv::screen& _screen,

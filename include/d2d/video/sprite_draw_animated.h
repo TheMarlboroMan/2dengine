@@ -28,6 +28,13 @@ class sprite_draw_animated {
 	sprite_draw_animated&           reset_animation(const ldtools::animation_table&);
 
 /**
+ * draws a single animation frame.
+ */
+	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, int);
+	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, int, int);
+//TODO: MIssing no camera, rect, with index and shit.
+
+/**
  * the methods with a float can use an external timer.
  */
 	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);
@@ -46,6 +53,7 @@ class sprite_draw_animated {
 	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, float);
 	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, sprite_draw::flags);
 	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int);
+
 
 /** same as above, no camera */
 	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);

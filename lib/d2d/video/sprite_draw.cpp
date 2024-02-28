@@ -60,6 +60,7 @@ void sprite_draw::draw(
 	const ldtools::sprite_frame& _frame
 ) {
 
+
 	draw(
 		_screen, _camera, _point, _frame, 
 		{

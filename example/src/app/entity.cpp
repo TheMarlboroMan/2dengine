@@ -4,9 +4,11 @@ using namespace app;
 
 entity::entity(
 	int _x,
-	int _y
+	int _y,
+	unsigned _w, 
+	unsigned _h
 ):
-	collision_box{{(double)_x, (double)_y}, 15, 24},
+	collision_box{{(double)_x, (double)_y}, _w, _h},
 	previous_box{collision_box}
 {}
 
