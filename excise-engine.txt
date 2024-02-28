@@ -8,6 +8,7 @@ next step:
 		leave ladder walking
 		should not be able to jump after leaving a ladder.
 		"doors" are a block that moves up
+			most of them can  be opened by placing a crystal in a slot.
 		there should be switches, right?
 		gates in the background to enter hitting up.
 
@@ -16,6 +17,8 @@ next step:
 		Or moving blocks, which were originally there too.
 		tile graphics
 			maybe import the whole composer thingy.
+		the tile drawer cannot do stuff like scale or more sophisticated
+			sprite scaling.
 
 	docs:
 		Documentation and doxygen.

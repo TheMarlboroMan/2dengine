@@ -442,8 +442,8 @@ void main::draw(
 	sprite_draw_animated.draw(
 		_screen, 
 		dd.camera, 
-		{{pos.origin.x, pos.origin.y}, pos.w, pos.h},
-//		{pos.origin.x, pos.origin.y},
+		//{{pos.origin.x, pos.origin.y}, pos.w, pos.h},
+		{pos.origin.x, pos.origin.y},
 		app::anim_walk
 	);
 

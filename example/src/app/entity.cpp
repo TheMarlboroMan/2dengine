@@ -6,7 +6,7 @@ entity::entity(
 	int _x,
 	int _y
 ):
-	collision_box{{(double)_x, (double)_y}, 8, 24},
+	collision_box{{(double)_x, (double)_y}, 15, 24},
 	previous_box{collision_box}
 {}
 
