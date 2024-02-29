@@ -9,6 +9,8 @@ next step:
 			most of them can  be opened by placing a crystal in a slot.
 		there should be switches, right?
 		gates in the background to enter hitting up.
+		change map
+			by doing ladders too!!
 
 	engine:
 		I guess slopes

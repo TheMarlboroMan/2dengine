@@ -55,6 +55,7 @@ class main:
 
 	void                        start_falling();
 	void                        land_on_ground();
+	void                        touch_ceiling();
 	void                        grab_ladder(const app::ladder&);
 	void                        jump();
 	void                        walk_out_of_ladder(const d2d::collision::tile&, int);
@@ -83,7 +84,6 @@ class main:
 	double                      jump_force{120.0},
 	                            walk_max_velocity{170.},
 	                            ladder_max_velocity{60.};
-	bool                        can_jump{false}; //We will get it better.
 
 	//game state stuff.
 	app::map                    current_map;

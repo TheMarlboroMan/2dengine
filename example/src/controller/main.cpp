@@ -306,6 +306,8 @@ void main::tic_ground(
 		--player_box_copy.origin.y;
 		auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder);
 
+		//TODO: We should check platforms too.
+
 		//We should ignore the passable that are now over feet level
 		std::function<bool(const d2d::collision::tile*)> ignore_passable=[this](const d2d::collision::tile * _tile) -> bool {
 
@@ -324,16 +326,15 @@ void main::tic_ground(
 		if(!cc.has_collision(player_box_copy, valid_tiles)) {
 
 			start_falling();
+			tic_air(_delta, _pli);
+			return;
 		}
 	}
 
-	//TODO: This would be a sequence of collisions against a STATIC world.
-	//vertical and horizontal might fail.
 	//horizontal phase...
-
 	if(!_pli.x)  {
 
-		//Player velocity is 100% tied to manual control... on the ground.
+		//Player velocity is 100% tied to manual control and goes 0-100.
 		player.velocity.x=0.0;
 	}
 	else {
@@ -371,41 +372,9 @@ void main::tic_ground(
 		}
 	}
 
-	if(_pli.jump && can_jump) {
+	if(_pli.jump) {
 
 		jump();
-	}
-
-	return;
-
-	//TODO: Do we really need this here???
-	gravity.apply_to(player.velocity, _delta);
-	//vertical phase.
-	{
-		d2d::motion::mover mover{};
-		mover.apply_y(player.ent, player.velocity.y, _delta);
-
-		d2d::collision::phase cpv(player.ent, d2d::collision::checker::phases::vertical);
-
-		auto current_tiles=adapter.find(player.ent, current_map.tile_finder);
-		cpv.detect_all(current_tiles);
-		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		cpv.detect_all(current_map.platform_blocks);
-
-		if(cpv.has_collision()) {
-
-			player.velocity.y=0.0;
-			//cpv.response_generic();
-
-			auto response=cpv.response_complex();
-			response.solve(player.ent);
-
-			//Only when colliding when the top of a box can we jump again.
-			if(response.edges & d2d::collision::response::tedges::top) {
-
-				can_jump=true;
-			}
-		}
 	}
 }
 
@@ -510,8 +479,9 @@ void main::tic_air(
 
 		if(cph.has_collision()) {
 
-			//TODO: should shorten the x velocity.
+			//TODO; A method would be nice.
 			cph.response_generic();
+			player.velocity.x/=2.;
 		}
 	}
 
@@ -542,8 +512,10 @@ void main::tic_air(
 
 				land_on_ground();
 			}
+			else if(response.edges & d2d::collision::response::tedges::bottom) {
 
-			//TODO: There should be some other interactions with edges here...
+				touch_ceiling();
+			}
 		}
 	}
 }
@@ -578,10 +550,12 @@ void main::draw(
 	}
 
 //TODO: Alpha is not working for these...
+/*
 	for(const auto& ladder : current_map.ladders) {
 
-//		dd.draw(_screen, ladder);
+		dd.draw(_screen, ladder);
 	}
+*/
 
 
 //	dd.draw(_screen, ent);
@@ -781,21 +755,25 @@ void main::jump_out_of_ladder(
 void main::jump() {
 
 	player.velocity.y=jump_force;
-	can_jump=false;
 	player.state=app::player::states::air;
 }
 
 void main::land_on_ground() {
 
 	player.velocity.y=0.;
-	can_jump=true;
 	player.state=app::player::states::ground;
+}
+
+void main::touch_ceiling() {
+
+	player.velocity.y=0.;
+	player.velocity.x/=2.;
 }
 
 void main::start_falling() {
 
-	can_jump=false;
 	player.state=app::player::states::air;
+	player.velocity.x/=2.; 
 }
 
 void main::setup_timeouts() {
