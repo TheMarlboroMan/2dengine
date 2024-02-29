@@ -20,6 +20,13 @@ bool d2d::collision::is_above(
 
 bool d2d::collision::is_above(
 	const box& _a, 
+	const spatiable& _b) {
+
+	return is_above(_a, _b.get_box());
+}
+
+bool d2d::collision::is_above(
+	const box& _a, 
 	const box& _b) {
 
 	return _a.origin.y >= _b.origin.y+_b.h;
@@ -39,6 +46,14 @@ bool d2d::collision::is_below(
 ) {
 	
 	return is_below(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_below(
+	const box& _a, 
+	const spatiable& _b
+) {
+	
+	return is_below(_a, _b.get_box());
 }
 
 bool d2d::collision::is_below(
@@ -67,6 +82,14 @@ bool d2d::collision::is_left_of(
 
 bool d2d::collision::is_left_of(
 	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_left_of(_a, _b.get_box());
+}
+
+bool d2d::collision::is_left_of(
+	const box& _a, 
 	const box& _b
 ) {
 
@@ -91,6 +114,14 @@ bool d2d::collision::is_right_of(
 
 bool d2d::collision::is_right_of(
 	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_right_of(_a, _b.get_box());
+}
+
+bool d2d::collision::is_right_of(
+	const box& _a, 
 	const box& _b
 ) {
 
@@ -111,6 +142,14 @@ bool d2d::collision::collides_with(
 ) {
 
 	return _a.get_box().collides_with(_b);
+}
+
+bool d2d::collision::collides_with(
+	const box& _a, 
+	const spatiable& _b
+) {
+
+	return _a.collides_with(_b.get_box());
 }
 
 bool d2d::collision::collides_with(
@@ -233,6 +272,13 @@ bool d2d::collision::is_partially_above(
 
 bool d2d::collision::is_partially_above(
 	const box& _a, 
+	const spatiable& _b) {
+
+	return is_partially_above(_a, _b.get_box());
+}
+
+bool d2d::collision::is_partially_above(
+	const box& _a, 
 	const box& _b
 ) {
 
@@ -256,6 +302,14 @@ bool d2d::collision::is_partially_below(
 ) {
 	
 	return is_partially_below(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_below(
+	const box& _a, 
+	const spatiable& _b
+) {
+	
+	return is_partially_below(_a, _b.get_box());
 }
 
 bool d2d::collision::is_partially_below(
@@ -285,6 +339,14 @@ bool d2d::collision::is_partially_left_of(
 
 bool d2d::collision::is_partially_left_of(
 	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_partially_left_of(_a, _b.get_box());
+}
+
+bool d2d::collision::is_partially_left_of(
+	const box& _a, 
 	const box& _b
 ) {
 
@@ -306,6 +368,14 @@ bool d2d::collision::is_partially_right_of(
 ) {
 
 	return is_partially_right_of(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_partially_right_of(
+	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_partially_right_of(_a, _b.get_box());
 }
 
 bool d2d::collision::is_partially_right_of(

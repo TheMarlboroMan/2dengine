@@ -53,9 +53,11 @@ class main:
 
 	void                        load_map(const std::string&);
 
+	void                        start_falling();
+	void                        land_on_ground();
 	void                        grab_ladder(const app::ladder&);
 	void                        jump();
-	void                        leave_ladder(const d2d::collision::tile&);
+	void                        walk_out_of_ladder(const d2d::collision::tile&, int);
 	void                        jump_out_of_ladder(int);
 
 	void                        setup_camera(int, int);

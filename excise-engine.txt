@@ -4,8 +4,6 @@ next step:
 		plan the game.
 		have a real camera, not all debug stuff...
 		separate debug view from the other view
-		leave ladder jumping
-		leave ladder walking
 		should not be able to jump after leaving a ladder.
 		"doors" are a block that moves up
 			most of them can  be opened by placing a crystal in a slot.
