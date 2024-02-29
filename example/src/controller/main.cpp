@@ -195,8 +195,12 @@ void main::loop(
 
 	if(_input.is_input_down(app::input::jump)) {
 
-
 		pli.jump=true;
+	}
+
+	if(_input.is_input_pressed(app::input::jump)) {
+
+		pli.hold_jump=true;
 	}
 
 	if(_input.is_input_pressed(app::input::left)) {
@@ -284,7 +288,8 @@ void main::tic_ground(
 ) {
 
 	//Attempt to grab a ladder with up or down.
-	if(0!=_pli.y && timeouts.is_ok(timeout_ladder)) {
+	//TODO: Repeatd.
+	if(_pli.y && timeouts.is_ok(timeout_ladder)) {
 	
 		d2d::collision::checker cc;
 		const auto ladders=cc.get_collisions(player.ent, current_map.ladders);
@@ -302,8 +307,13 @@ void main::tic_ground(
 	//Other thing that may happen: are we falling? Just try with a ghost box
 	//a bit below the entity and do the tile check.
 	{
+		//TODO: This crap could surely be encapsulated.
+		//
 		auto player_box_copy=player.ent.get_box();
 		--player_box_copy.origin.y;
+
+		//TODO: Maybe a third "filter" parameter??? a callable that
+		//gets the box and the current tile.
 		auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder);
 
 		//TODO: We should check platforms too.
@@ -349,6 +359,7 @@ void main::tic_ground(
 		//Instant acceleration.
 		mover.apply_x(player.ent, player.velocity.x, _delta);
 
+		//TODO: Quite a few lot of lines heres... could be shorter??
 		d2d::collision::phase cph(player.ent, d2d::collision::checker::phases::horizontal);
 
 		//This filters the map files and returns only those that would
@@ -394,14 +405,21 @@ void main::tic_ladder(
 		//apply the ladder movement constraints.
 		current_ladder.apply(player.ent);
 	}
+
+	//early exit.
+	if(!_pli.jump && !_pli.x) {
+
+		return;
+	}
 	
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	d2d::collision::checker cc;
+
 	//Jump out.
 	if(_pli.jump && _pli.x) {
 
 		//There can be no ladder exit if there are collisions.
-		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 		const auto tiles_to_check=adapter.find(player.ent, current_map.tile_finder);
-		d2d::collision::checker cc;
 		if(!cc.has_collision(player.ent, tiles_to_check)) {
 
 			jump_out_of_ladder(_pli.x);
@@ -413,9 +431,7 @@ void main::tic_ladder(
 
 		auto player_box_copy=player.ent.get_box();
 		player_box_copy.origin.y-=4;
-		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 		auto landing_candidates=adapter.find(player_box_copy, current_map.tile_finder);
-		d2d::collision::checker cc;
 		const auto& landing_tiles=cc.get_collisions(player_box_copy, landing_candidates);
 		if(landing_tiles.size()) {
 
@@ -429,8 +445,9 @@ void main::tic_air(
 	app::player_input _pli
 ) {
 
+	//TODO: This is actually repeating...
 	//Attempt to grab a ladder with up or down.
-	if(0!=_pli.y && timeouts.is_ok(timeout_ladder)) {
+	if(_pli.y && timeouts.is_ok(timeout_ladder)) {
 	
 		d2d::collision::checker cc;
 		const auto ladders=cc.get_collisions(player.ent, current_map.ladders);
@@ -449,17 +466,25 @@ void main::tic_air(
 	//Do the horizontal phase...
 	{
 
-		//Air control is limited.
-		//TODO: experiment a bit, maybe it makes sense making it mario like where you have to KEEP pushing right???
+		//Air control is limited, but one can attempt to do it.
 		if(_pli.x) {
 
 			tools::ranged_value<double> velocity{-walk_max_velocity, walk_max_velocity, player.velocity.x};
+
+			//TODO: Should be configurable.
 			velocity+=(double)_pli.x*2.0;
 			player.velocity.x=velocity;
+		}
+		//No horizontal input means slowing down by a tiny factor.
+		else {
+
+			//TODO: Should be configurable.
+			player.velocity.x/=1.02;
 		}
 
 		mover.apply_x(player.ent, player.velocity.x, _delta);
 
+		//TODO: This is an AWFUL LOT OF CODE for something that should be easier.
 		d2d::collision::phase cph(player.ent, d2d::collision::checker::phases::horizontal);
 
 		//This filters the map files and returns only those that would
@@ -485,9 +510,16 @@ void main::tic_air(
 		}
 	}
 
-	//TODO: Maybe letting go of jump shortens it???
 	//do the vertical phase.
 	{
+		//Letting go of the jump shortens it...
+		if(player.velocity.y > 0. && !_pli.hold_jump && !player.jump_shortened) {
+
+			//TODO: Should be some configurable factor.
+			player.velocity.y/=2.;
+			player.jump_shortened=true;
+		}
+
 		gravity.apply_to(player.velocity, _delta);
 		
 		mover.apply_y(player.ent, player.velocity.y, _delta);
@@ -520,48 +552,21 @@ void main::tic_air(
 	}
 }
 
-//TODO: We should separate debug draw and draw.
 void main::draw(
 	ldv::screen& _screen,
 	int /*_fps*/
 ) {
 
-	_screen.clear(current_map.background_color);
-	//dd.clear(_screen);
+#ifdef IS_DEBUG_BUILD
 
-	//TODO: Maybe some debug mode...
-/*
-	for(const auto& cell : current_map.collision_tiles) {
+	debug_draw 
+		? draw_debug(_screen)
+		: draw_scene(_screen);
 
-		dd.draw(_screen, cell);
-	}
-*/
+#else
 
-	scenery_tile_draw.draw(_screen, dd.camera, current_map.background_tiles);
-
-	for(const auto& block : current_map.solid_blocks) {
-
-		dd.draw(_screen, block);
-	}
-
-	for(const auto& block : current_map.platform_blocks) {
-
-		dd.draw(_screen, block);
-	}
-
-//TODO: Alpha is not working for these...
-/*
-	for(const auto& ladder : current_map.ladders) {
-
-		dd.draw(_screen, ladder);
-	}
-*/
-
-
-//	dd.draw(_screen, ent);
-
-	draw_player(_screen, player);
-	scenery_tile_draw.draw(_screen, dd.camera, current_map.foreground_tiles);
+	this.draw_scene(_screen);
+#endif
 
 #ifdef IS_DEBUG_BUILD
 	
@@ -571,6 +576,31 @@ void main::draw(
 	}
 #endif
 }
+
+void main::draw_scene(
+	ldv::screen& _screen
+) {
+
+	_screen.clear(current_map.background_color);
+	//TODO: Use a REAL camera.
+	scenery_tile_draw.draw(_screen, dd.camera, current_map.background_tiles);
+
+	//TODO:
+	for(const auto& block : current_map.solid_blocks) {
+
+		dd.draw(_screen, block);
+	}
+
+	//TODO:
+	for(const auto& block : current_map.platform_blocks) {
+
+		dd.draw(_screen, block);
+	}
+
+	draw_player(_screen, player);
+	scenery_tile_draw.draw(_screen, dd.camera, current_map.foreground_tiles);
+}
+
 
 void main::draw_player(
 	ldv::screen& _screen,
@@ -713,6 +743,7 @@ void main::reload_values() {
 #endif
 }
 
+
 void main::grab_ladder(
 	const app::ladder& _ladder
 ) {
@@ -756,6 +787,9 @@ void main::jump() {
 
 	player.velocity.y=jump_force;
 	player.state=app::player::states::air;
+
+	//TODO: I wonder if this goes somewhere else too...
+	player.jump_shortened=false;
 }
 
 void main::land_on_ground() {
@@ -799,150 +833,6 @@ void main::setup_camera(
 
 #ifdef IS_DEBUG_BUILD
 
-void main::console_display_onenter(
-	const std::string& _command
-) {
+#include "main.debug.cpp"
 
-	console->send(_command);
-}
-
-console::result main::execute_cmd(
-	const std::string& _cmd, 
-	const std::vector<console::argument>& _args
-) {
-
-	if(_cmd=="exit") {
-
-		console_enabled=false;
-		return {0, "ok"};
-	}
-
-	if(_cmd=="tic") {
-
-		tic(0.01f, app::player_input{});
-		return {0, "ok"};
-	}
-
-	if(_cmd=="help") {
-
-		std::stringstream ss;
-		for(const auto& command : console->get_commands()) {
-
-			ss<<command.name<<", ";
-		}
-		return {0, ss.str()};
-	}
-
-	if(_cmd=="helpcmd") {
-
-		for(const auto& command : console->get_commands()) {
-
-			if(command.name==_args[0].get_string()) {
-
-				std::stringstream ss;
-				ss<<command;
-				return {0, ss.str()};
-			}
-		}
-
-		return {1, "command not found"};
-	}
-
-	if(_cmd=="tell") {
-
-		std::stringstream ss;
-		ss<<player.ent;
-		return{0, ss.str()};
-	}	
-
-	if(_cmd=="goto") {
-
-		double x=_args[0].get_int(),
-			y=_args[1].get_int();
-
-		player.ent.set_origin({x, y});
-		player.ent.sync_boxes();
-		dd.center_on(player.ent);
-
-		std::stringstream ss;
-		ss<<"moved to "<<x<<","<<y;
-		return {0, ss.str()};
-	}
-
-	if(_cmd=="moveby") {
-
-		double x=_args[0].get_int(),
-			y=_args[1].get_int();
-
-		auto pt=player.ent.get_origin();
-		pt+={x, y};
-
-		player.ent.set_origin(pt);
-		player.ent.sync_boxes();
-		dd.center_on(player.ent);
-
-		std::stringstream ss;
-		ss<<"moved by "<<x<<","<<y;
-		return {0, ss.str()};
-	}
-
-	if(_cmd=="get_collision_tiles") {
-
-		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-		lm::log(logger).debug()<<"will debug the collisions\n";
-		adapter.set_debug_enabled(true).set_logger(&logger);
-
-		auto current_tiles=adapter.find(player.ent, current_map.tile_finder);
-
-		if(!current_tiles.size()) {
-
-			return {0, "no collisions with tiles, check log for details"};
-		}
-
-		std::stringstream ss;
-		ss<<"total: "<<current_tiles.size()<<" check stdout and log for details";
-		for(const auto& node : current_tiles) {
-
-			std::cout<<*node<<", ";
-		}
-
-		std::cout<<std::endl;
-
-		return {0, ss.str()};
-	}
-
-	return {0, "..."};
-}
-
-void main::setup_console(
-	app::service_provider& _sp
-) {
-
-	std::function<void(const std::string&)> display_update=[&](const std::string& _cmd) -> void {
-
-		console_display_onenter(_cmd);
-	};
-
-	console_display.reset(
-		new appconsole::console{
-			{0,0,480, 100},
-			_sp.get_ttf_manager().get("console_font", 14),
-			display_update
-		}
-	);
-
-	console.reset(new console::console(*this));
-	console->connect_output(console_display->get_output());
-
-	//TODO: it would be nice to have some helper in the console library to 
-	//read these from a file, or something.
-	console->map_command("exit", {});
-	console->map_command("help", {});
-	console->map_command("helpcmd", {{console::types::string}});
-	console->map_command("tic", {});
-	console->map_command("tell", {});
-	console->map_command("get_collision_tiles", {});
-	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
-	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
-}
 #endif

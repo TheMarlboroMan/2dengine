@@ -45,11 +45,14 @@ class main:
 
 	private:
 
+	void                        draw_scene(ldv::screen&);
+	void                        draw_debug(ldv::screen&);
+	void                        draw_player(ldv::screen&, const app::player&);
+
 	void                        tic(float, app::player_input);
 	void                        tic_ground(float, app::player_input);
 	void                        tic_ladder(float, app::player_input);
 	void                        tic_air(float, app::player_input);
-	void                        draw_player(ldv::screen&, const app::player&);
 
 	void                        load_map(const std::string&);
 
@@ -73,13 +76,18 @@ class main:
 	d2d::collision::shaper&		shaper;
 	const app::tile_impl&       tile_impl;
 
-//TODO: Should be only in debug mode.
+#ifdef IS_DEBUG_BUILD
+	bool                        debug_draw{false};
 	d2d::video::debug_display	dd;
+#endif
+
 	d2d::video::sprite_draw     sprite_draw;
 	d2d::video::sprite_draw_animated sprite_draw_animated;
 	d2d::video::scenery_tile_draw_animated scenery_tile_draw;
 
 	//game vars. //TODO: should be constants in production.
+	//TODO: Actually, these could be part of a large struct
+	//and could be made const.
 	d2d::motion::gravity        gravity;
 	double                      jump_force{120.0},
 	                            walk_max_velocity{170.},

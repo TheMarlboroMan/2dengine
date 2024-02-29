@@ -2,6 +2,8 @@ next step:
 
 	make the first example game.
 		plan the game.
+		crouch????
+		last chance to jump when state is set to falling, reflex-like.
 		have a real camera, not all debug stuff...
 		separate debug view from the other view
 		should not be able to jump after leaving a ladder.
