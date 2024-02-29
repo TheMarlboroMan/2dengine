@@ -14,6 +14,7 @@
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
+#include <tools/ranged_value.h>
 #include <sstream>
 #include <iostream>
 #include <cmath>
@@ -480,29 +481,12 @@ void main::tic_air(
 	{
 
 		//Air control is limited.
+		//TODO: experiment a bit, maybe it makes sense making it mario like where you have to KEEP pushing right???
 		if(_pli.x) {
 
-			//Assume right facing...
-			//TODO: almost... That was the velocity when the jump started :/.
-			//TODO: Arghhh, cannot exceed 0 in negative because it fabs again :/.
-			double max_velocity=player.velocity.x ? walk_max_velocity: walk_max_velocity / 2.;
-			double velocity=fabs(player.velocity.x);
-
+			tools::ranged_value<double> velocity{-walk_max_velocity, walk_max_velocity, player.velocity.x};
 			velocity+=(double)_pli.x*2.0;
-			if(velocity > max_velocity) {
-
-				velocity=max_velocity;
-			}
-
 			player.velocity.x=velocity;
-
-std::cout<<player.velocity.x<<std::endl;
-
-			//And turn it left if need be.
-			if(player.facing==app::faces::left) {
-
-				player.velocity.x=-velocity;
-			}
 		}
 
 		mover.apply_x(player.ent, player.velocity.x, _delta);

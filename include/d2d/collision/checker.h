@@ -25,10 +25,10 @@ class checker {
  * targets preserving their type. Does not take into account collision phase
  * at all, just checks if the nodes intersect with the target.
  */
-	template<typename T>
-	std::vector<T const *>          get_collisions(const d2d::collision::spatiable& _target, const std::vector<T>& _nodes) const {
+	template<typename T, typename O>
+	std::vector<O const *>          get_collisions(const T& _target, const std::vector<O>& _nodes) const {
 
-		std::vector<T const*> result{};
+		std::vector<O const*> result{};
 
 		for(const auto& node : _nodes) {
 
@@ -41,12 +41,28 @@ class checker {
 		return result;
 	}
 
+	template<typename T, typename O>
+	std::vector<O const *>          get_collisions(const T& _target, const std::vector<O*>& _nodes) const {
+
+		std::vector<O const*> result{};
+
+		for(const auto& node : _nodes) {
+
+			if(d2d::collision::collides_with(_target, *node)) {
+
+				result.push_back(node);
+			}
+		}
+
+		return result;
+	}
+
 /**
  * generic collision method that will return true if a collision is detected
  * and discard any other information.
  */
-	template<typename T>
-	bool                            has_collision(const d2d::collision::spatiable& _target, const std::vector<T>& _nodes) const {
+	template<typename T, typename O>
+	bool                            has_collision(const T& _target, const std::vector<O>& _nodes) const {
 
 		for(const auto& node : _nodes) {
 
@@ -59,8 +75,8 @@ class checker {
 		return false;
 	}
 
-	template<typename T>
-	bool                            has_collision(const d2d::collision::spatiable& _target, const std::vector<const T*>& _nodes) const {
+	template<typename T, typename O>
+	bool                            has_collision(const T& _target, const std::vector<const O*>& _nodes) const {
 
 		for(const auto& node : _nodes) {
 

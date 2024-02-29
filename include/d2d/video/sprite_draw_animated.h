@@ -30,7 +30,9 @@ class sprite_draw_animated {
 /**
  * draws a single animation frame.
  */
+	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, int, sprite_draw::flags);
 	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, int);
+	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, int, int, sprite_draw::flags);
 	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, int, int);
 //TODO: MIssing no camera, rect, with index and shit.
 
