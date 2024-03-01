@@ -1,7 +1,11 @@
 gravity_force_x=0.0
 gravity_force_y=-500.0
 gravity_max_velocity=-600.0
+jump_force=225.0
 walk_max_velocity=100.0
 ladder_max_velocity=60.0
-jump_force=225.0
+air_x_velocity_reduce_factor=1.02
+air_x_velocity_acceleration_value=2.0
+air_x_velocity_collision_reduce_factor=2.0
+air_y_velocity_jump_shorten_factor=2.0;
 

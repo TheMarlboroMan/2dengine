@@ -188,3 +188,151 @@ void main::draw_debug(
 
 	dd.draw(_screen, player.ent);
 }
+
+void main::loop_debug(
+	dfw::input& _input,
+	const dfw::loop_iteration_data& _lid
+) {
+
+	if(_input().is_exit_signal()) {
+		set_leave(true);
+		return;
+	}
+
+	app::player_input pli{};
+	if(console_enabled) {
+
+		_input().start_text_input();
+		console_display->input(_input());
+		return;
+	}
+
+	if(_input.is_input_down(app::input::escape)) {
+
+		set_leave(true);
+		return;
+	}
+
+	if(_input.is_input_down(app::input::tic)) {
+
+		console_enabled=true;
+		return;
+	}
+
+	if(_input.is_input_down(app::input::reload_values)) {
+
+		reload_values();
+	}
+
+	if(_input.is_input_pressed(app::input::down)) {
+
+		pli.y=-1;
+	}
+	else if(_input.is_input_pressed(app::input::up)) {
+
+		pli.y=1;
+	}
+
+	if(_input.is_input_down(app::input::jump)) {
+
+		pli.jump=true;
+	}
+
+	if(_input.is_input_pressed(app::input::jump)) {
+
+		pli.hold_jump=true;
+	}
+
+	if(_input.is_input_pressed(app::input::left)) {
+
+		pli.x=-1;
+	}
+	else if(_input.is_input_pressed(app::input::right)) {
+
+		pli.x=1;
+	}
+
+	tic(_lid.delta, pli);
+}
+
+
+void main::reload_values() {
+
+	std::cout<<current_map<<std::endl;
+	
+	std::stringstream ss;
+	ss<<env.get_app_path()+"resources/runtime/values";
+	std::cout<<"values file will be read from "<<ss.str()<<std::endl;
+
+	std::ifstream values_file{ss.str().c_str()};
+
+	if(!values_file.is_open()) {
+
+		throw std::runtime_error("could not open values file!");
+	}
+
+	while(true) {
+
+		std::string line;
+		std::getline(values_file, line);
+
+		if(values_file.eof()) {
+
+			break;
+		}
+
+		const auto pieces=tools::explode(line, '=', 2);
+		if(2 != pieces.size()) {
+
+			continue;
+		}
+
+		const auto& name=pieces[0];
+		const auto& value=pieces[1];
+
+		if(name=="gravity_force_x") {
+
+			simulation.gravity.force.x=std::stod(value);
+		}
+		else if(name=="gravity_force_y") {
+
+			simulation.gravity.force.y=std::stod(value);
+		}
+		else if(name=="gravity_max_velocity") {
+
+			simulation.gravity.max_velocity=std::stod(value);
+		}
+		else if(name=="jump_force") {
+
+			simulation.jump_force=std::stod(value);
+		}
+		else if(name=="walk_max_velocity") {
+
+			simulation.walk_max_velocity=std::stod(value);
+		}
+		else if(name=="ladder_max_velocity") {
+
+			simulation.ladder_max_velocity=std::stod(value);
+		}
+		else if(name=="air_x_velocity_reduce_factor") {
+
+			simulation.air_x_velocity_reduce_factor=std::stod(value);
+		}
+		else if(name=="air_x_velocity_acceleration_value") {
+
+			simulation.air_x_velocity_acceleration_value=std::stod(value);
+		}
+		else if(name=="air_x_velocity_collision_reduce_factor") {
+
+			simulation.air_x_velocity_collision_reduce_factor=std::stod(value);
+		}
+		else if(name=="air_y_velocity_jump_shorten_factor") {
+
+			simulation.air_y_velocity_jump_shorten_factor=std::stod(value);
+		}
+		else {
+
+			std::cout<<"bad name: "<<name<<std::endl;
+		}
+	}
+}

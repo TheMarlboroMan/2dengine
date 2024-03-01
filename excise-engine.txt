@@ -3,10 +3,9 @@ next step:
 	make the first example game.
 		plan the game.
 		crouch????
+		defeat state
 		last chance to jump when state is set to falling, reflex-like.
 		have a real camera, not all debug stuff...
-		separate debug view from the other view
-		should not be able to jump after leaving a ladder.
 		"doors" are a block that moves up
 			most of them can  be opened by placing a crystal in a slot.
 		there should be switches, right?

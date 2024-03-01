@@ -2,6 +2,8 @@
 #include "app/input.h"
 #include "app/thing_loader.h"
 #include "app/map_attribute_loader.h"
+#include "app/tile_filter.h"
+
 #include "dfwimpl/config.h"
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
@@ -10,7 +12,6 @@
 #include <d2d/collision/phase.h>
 #include <d2d/collision/checker.h>
 #include <d2d/collision/tiles_in_box.h>
-#include <d2d/collision/tile_filter.h>
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
@@ -35,7 +36,6 @@ main::main(
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
-	dd{app::logic_screen_w, app::logic_screen_h},
 	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
@@ -51,18 +51,21 @@ main::main(
 		app::tile_w, 
 		app::tile_h,
 		_sp.get_animation_manager().at(app::animgr_tiles)
-	},
-	player{{0, 0, app::player_w, app::player_h}, {0., 0.}}
+	}
+#ifdef IS_DEBUG_BUILD
+	,
+	dd{app::logic_screen_w, app::logic_screen_h}
+#endif
 {
 
 #ifdef IS_DEBUG_BUILD
 
 	setup_console(_sp);
+	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
+	reload_values();
 
 #endif
 
-	reload_values();
-	setup_timeouts();
 
 	//TODO: This kind of shit could come from any file.
 	scenery_tile_draw.set_is_animation_fn(
@@ -91,7 +94,6 @@ main::main(
 
 	//Attempt to load the starter map.
 	load_map("map.json");
-	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
 }
 
 void main::load_map(
@@ -150,71 +152,24 @@ void main::loop(
 	const dfw::loop_iteration_data& _lid
 ) {
 
+#ifdef IS_DEBUG_BUILD
+	loop_debug(_input, _lid);
+#else
+	loop_scene(_input, _lid);
+#endif
+}
+
+void main::loop_scene(
+	dfw::input& _input,
+	const dfw::loop_iteration_data& _lid
+) {
+
 	if(_input().is_exit_signal()) {
 		set_leave(true);
 		return;
 	}
 
-
 	app::player_input pli{};
-
-#ifdef IS_DEBUG_BUILD
-
-	if(console_enabled) {
-
-		_input().start_text_input();
-		console_display->input(_input());
-		return;
-	}
-
-	if(_input.is_input_down(app::input::escape)) {
-
-		set_leave(true);
-		return;
-	}
-
-	if(_input.is_input_down(app::input::tic)) {
-
-		console_enabled=true;
-		return;
-	}
-
-	if(_input.is_input_down(app::input::reload_values)) {
-
-		reload_values();
-	}
-
-	if(_input.is_input_pressed(app::input::down)) {
-
-		pli.y=-1;
-	}
-	else if(_input.is_input_pressed(app::input::up)) {
-
-		pli.y=1;
-	}
-
-	if(_input.is_input_down(app::input::jump)) {
-
-		pli.jump=true;
-	}
-
-	if(_input.is_input_pressed(app::input::jump)) {
-
-		pli.hold_jump=true;
-	}
-
-	if(_input.is_input_pressed(app::input::left)) {
-
-		pli.x=-1;
-	}
-	else if(_input.is_input_pressed(app::input::right)) {
-
-		pli.x=1;
-	}
-
-	tic(_lid.delta, pli);
-
-#else
 
 	if(_input.is_input_down(app::input::escape)) {
 
@@ -240,13 +195,17 @@ void main::loop(
 		pli.x=1;
 	}
 
-	if(_input.is_input_down(app::input::jump) {
+	if(_input.is_input_down(app::input::jump)) {
 
 		pli.jump=true;
 	}
 
+	if(_input.is_input_pressed(app::input::jump)) {
+
+		pli.hold_jump=true;
+	}
+
 	tic(_lid.delta, pli);
-#endif
 }
 
 void main::tic(
@@ -254,23 +213,22 @@ void main::tic(
 	app::player_input _pli
 ) {
 
-	timeouts.tic(_delta);
 	scenery_tile_draw.tic(_delta);
 	sprite_draw_animated.tic(_delta);
+	player.tic(_delta);
 
 	switch(player.state) {
 
 		case app::player::states::ground:
-			tic_ground(_delta, _pli);
+			tic_ground(_delta, player, _pli);
 		break;
 
 		case app::player::states::ladder:
-			tic_ladder(_delta, _pli);
+			tic_ladder(_delta, player, _pli);
 		break;
 
 		case app::player::states::air:
-
-			tic_air(_delta, _pli);
+			tic_air(_delta, player, _pli);
 		break;
 	}
 
@@ -284,97 +242,52 @@ void main::tic(
 
 void main::tic_ground(
 	float _delta,
+	app::player& _player,
 	app::player_input _pli
 ) {
 
 	//Attempt to grab a ladder with up or down.
-	//TODO: Repeatd.
-	if(_pli.y && timeouts.is_ok(timeout_ladder)) {
-	
-		d2d::collision::checker cc;
-		const auto ladders=cc.get_collisions(player.ent, current_map.ladders);
+	const app::ladder * ladderptr{nullptr};
+	if(_pli.y && can_grab_ladder(_player, ladderptr)) {
 
-		if(ladders.size()) {
-
-			grab_ladder(*ladders[0]);
-			tic_ladder(_delta, _pli);
-			return;
-		}
+		grab_ladder(_player, *ladderptr);
+		tic_ladder(_delta, _player, _pli);
+		return;
 	}
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
 	//Other thing that may happen: are we falling? Just try with a ghost box
 	//a bit below the entity and do the tile check.
-	{
-		//TODO: This crap could surely be encapsulated.
-		//
-		auto player_box_copy=player.ent.get_box();
-		--player_box_copy.origin.y;
+	if(is_on_air(_player)) {
 
-		//TODO: Maybe a third "filter" parameter??? a callable that
-		//gets the box and the current tile.
-		auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder);
-
-		//TODO: We should check platforms too.
-
-		//We should ignore the passable that are now over feet level
-		std::function<bool(const d2d::collision::tile*)> ignore_passable=[this](const d2d::collision::tile * _tile) -> bool {
-
-			if(_tile->type != app::tile_half_bottom_passable
-				&& _tile->type != app::tile_half_top_passable
-			) {
-
-				return true;
-			}
-
-			return _tile->get_y() < player.ent.get_origin().y;
-		};
-
-		auto valid_tiles=d2d::collision::filter_tiles(contacting_tiles, ignore_passable);
-		d2d::collision::checker cc;
-		if(!cc.has_collision(player_box_copy, valid_tiles)) {
-
-			start_falling();
-			tic_air(_delta, _pli);
-			return;
-		}
+		start_falling(_player);
+		tic_air(_delta, _player,_pli);
+		return;
 	}
 
 	//horizontal phase...
 	if(!_pli.x)  {
 
 		//Player velocity is 100% tied to manual control and goes 0-100.
-		player.velocity.x=0.0;
+		_player.velocity.x=0.0;
 	}
 	else {
 
+		//motion...
 		d2d::motion::mover mover{};
-		player.velocity.x=walk_max_velocity*(double)_pli.x;
+		_player.velocity.x=simulation.walk_max_velocity*(double)_pli.x;
 
-		player.facing=_pli.x > 0
+		_player.facing=_pli.x > 0
 			? app::faces::right
 			: app::faces::left;
 
-		//Instant acceleration.
-		mover.apply_x(player.ent, player.velocity.x, _delta);
+		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
 
-		//TODO: Quite a few lot of lines heres... could be shorter??
-		d2d::collision::phase cph(player.ent, d2d::collision::checker::phases::horizontal);
-
-		//This filters the map files and returns only those that would
-		//collisde with the current position.
-		auto current_tiles=adapter.find(player.ent, current_map.tile_finder);
-
-		std::function<bool(const d2d::collision::tile*)> ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
-
-			return _tile->type != app::tile_half_bottom_passable
-				&& _tile->type != app::tile_half_top_passable;
-		};
-
-		auto valid_tiles=d2d::collision::filter_tiles(current_tiles, ignore_passable);
-
-		cph.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+		//Collision...
+		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_one_way_tiles{});
+		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 
 		if(cph.has_collision()) {
@@ -385,12 +298,13 @@ void main::tic_ground(
 
 	if(_pli.jump) {
 
-		jump();
+		jump(_player);
 	}
 }
 
 void main::tic_ladder(
 	float _delta,
+	app::player& _player,
 	app::player_input _pli
 ) {
 
@@ -400,10 +314,10 @@ void main::tic_ladder(
 	if(_pli.y) {
 
 		d2d::motion::mover mover{};
-		mover.apply_y(player.ent, ladder_max_velocity*(double)_pli.y, _delta);
+		mover.apply_y(_player.ent, simulation.ladder_max_velocity*(double)_pli.y, _delta);
 
 		//apply the ladder movement constraints.
-		current_ladder.apply(player.ent);
+		player.current_ladder->apply(_player.ent);
 	}
 
 	//early exit.
@@ -418,46 +332,41 @@ void main::tic_ladder(
 	//Jump out.
 	if(_pli.jump && _pli.x) {
 
-		//There can be no ladder exit if there are collisions.
-		const auto tiles_to_check=adapter.find(player.ent, current_map.tile_finder);
-		if(!cc.has_collision(player.ent, tiles_to_check)) {
+		//There can be no ladder exit if there are collisions with tiles.
+		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
+		if(!cc.has_collision(_player.ent, tiles_to_check)) {
 
-			jump_out_of_ladder(_pli.x);
+			jump_out_of_ladder(_player, _pli.x);
 		}
 	}
 
 	//Attempt to walk out.
 	if(_pli.x) {
 
-		auto player_box_copy=player.ent.get_box();
+		auto player_box_copy=_player.ent.get_box();
 		player_box_copy.origin.y-=4;
 		auto landing_candidates=adapter.find(player_box_copy, current_map.tile_finder);
 		const auto& landing_tiles=cc.get_collisions(player_box_copy, landing_candidates);
 		if(landing_tiles.size()) {
 
-			walk_out_of_ladder(*landing_tiles[0], _pli.x);
+			walk_out_of_ladder(_player, *landing_tiles[0], _pli.x);
 		}
 	}
 }
 
 void main::tic_air(
 	float _delta,
+	app::player& _player,
 	app::player_input _pli
 ) {
 
-	//TODO: This is actually repeating...
 	//Attempt to grab a ladder with up or down.
-	if(_pli.y && timeouts.is_ok(timeout_ladder)) {
-	
-		d2d::collision::checker cc;
-		const auto ladders=cc.get_collisions(player.ent, current_map.ladders);
+	const app::ladder * ladderptr{nullptr};
+	if(_pli.y && can_grab_ladder(_player, ladderptr)) {
 
-		if(ladders.size()) {
-
-			grab_ladder(*ladders[0]);
-			tic_ladder(_delta, _pli);
-			return;
-		}
+		grab_ladder(_player, *ladderptr);
+		tic_ladder(_delta, _player,_pli);
+		return;
 	}
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
@@ -469,84 +378,71 @@ void main::tic_air(
 		//Air control is limited, but one can attempt to do it.
 		if(_pli.x) {
 
-			tools::ranged_value<double> velocity{-walk_max_velocity, walk_max_velocity, player.velocity.x};
+			tools::ranged_value<double> velocity{-simulation.walk_max_velocity, simulation.walk_max_velocity, player.velocity.x};
 
-			//TODO: Should be configurable.
-			velocity+=(double)_pli.x*2.0;
-			player.velocity.x=velocity;
+			velocity+=(double)_pli.x*simulation.air_x_velocity_acceleration_value;
+			_player.velocity.x=velocity;
 		}
 		//No horizontal input means slowing down by a tiny factor.
 		else {
 
-			//TODO: Should be configurable.
-			player.velocity.x/=1.02;
+			_player.velocity.x/=simulation.air_x_velocity_reduce_factor;
 		}
 
-		mover.apply_x(player.ent, player.velocity.x, _delta);
+		mover.apply_x(_player.ent, _player.velocity.x, _delta);
 
-		//TODO: This is an AWFUL LOT OF CODE for something that should be easier.
-		d2d::collision::phase cph(player.ent, d2d::collision::checker::phases::horizontal);
-
-		//This filters the map files and returns only those that would
-		//collisde with the current position.
-		auto current_tiles=adapter.find(player.ent, current_map.tile_finder);
-
-		std::function<bool(const d2d::collision::tile*)> ignore_passable=[](const d2d::collision::tile * _tile) -> bool {
-
-			return _tile->type != app::tile_half_bottom_passable
-				&& _tile->type != app::tile_half_top_passable;
-		};
-
-		auto valid_tiles=d2d::collision::filter_tiles(current_tiles, ignore_passable);
-
-		cph.detect_all(valid_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+		//Collision...
+		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_ignore_one_way_tiles{});
+		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 
 		if(cph.has_collision()) {
 
 			//TODO; A method would be nice.
 			cph.response_generic();
-			player.velocity.x/=2.;
+			_player.velocity.x/=simulation.air_x_velocity_collision_reduce_factor;
 		}
 	}
 
 	//do the vertical phase.
 	{
-		//Letting go of the jump shortens it...
-		if(player.velocity.y > 0. && !_pli.hold_jump && !player.jump_shortened) {
+		//Last chance to jump after we begin falling...
+		if(_pli.jump && !_player.timeouts.is_ok(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
 
-			//TODO: Should be some configurable factor.
-			player.velocity.y/=2.;
-			player.jump_shortened=true;
+			jump(_player);
 		}
 
-		gravity.apply_to(player.velocity, _delta);
-		
-		mover.apply_y(player.ent, player.velocity.y, _delta);
+		//Letting go of the jump shortens it...
+		if(player.velocity.y > 0. && !_pli.hold_jump && !_player.jump_shortened) {
 
-		d2d::collision::phase cpv(player.ent, d2d::collision::checker::phases::vertical);
+			_player.velocity.y/=simulation.air_y_velocity_jump_shorten_factor;;
+			_player.jump_shortened=true;
+		}
 
-		auto current_tiles=adapter.find(player.ent, current_map.tile_finder);
-			cpv.detect_all(current_tiles);
-			cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-			cpv.detect_all(current_map.platform_blocks);
+		simulation.gravity.apply_to(_player.velocity, _delta);
+		mover.apply_y(_player.ent, _player.velocity.y, _delta);
+
+		//Collision...
+		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder);
+		d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
+		cpv.detect_all(current_tiles);
+		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cpv.detect_all(current_map.platform_blocks);
 
 		if(cpv.has_collision()) {
 
-			player.velocity.y=0.0;
-			//cpv.response_generic();
-
 			auto response=cpv.response_complex();
-			response.solve(player.ent);
+			response.solve(_player.ent);
 
 			//Only when colliding when the top of a box can we jump again.
 			if(response.edges & d2d::collision::response::tedges::top) {
 
-				land_on_ground();
+				land_on_ground(_player);
 			}
 			else if(response.edges & d2d::collision::response::tedges::bottom) {
 
-				touch_ceiling();
+				touch_ceiling(_player);
 			}
 		}
 	}
@@ -563,17 +459,14 @@ void main::draw(
 		? draw_debug(_screen)
 		: draw_scene(_screen);
 
-#else
-
-	this.draw_scene(_screen);
-#endif
-
-#ifdef IS_DEBUG_BUILD
-	
 	if(console_enabled) {
 
 		console_display->draw(_screen);
 	}
+
+#else
+
+	this.draw_scene(_screen);
 #endif
 }
 
@@ -662,157 +555,78 @@ void main::draw_player(
 	}
 }
 
-void main::reload_values() {
-
-#ifdef IS_DEBUG_BUILD
-
-	std::cout<<current_map<<std::endl;
-	
-	std::stringstream ss;
-	ss<<env.get_app_path()+"resources/runtime/values";
-	std::cout<<"values file will be read from "<<ss.str()<<std::endl;
-
-	std::ifstream values_file{ss.str().c_str()};
-
-	if(!values_file.is_open()) {
-
-		throw std::runtime_error("could not open values file!");
-	}
-
-	while(true) {
-
-		std::string line;
-		std::getline(values_file, line);
-
-		if(values_file.eof()) {
-
-			break;
-		}
-
-		const auto pieces=tools::explode(line, '=', 2);
-		if(2 != pieces.size()) {
-
-			continue;
-		}
-
-		const auto& name=pieces[0];
-		const auto& value=pieces[1];
-
-		if(name=="gravity_force_x") {
-
-			gravity.force.x=std::stod(value);
-		}
-		else if(name=="gravity_force_y") {
-
-			gravity.force.y=std::stod(value);
-		}
-		else if(name=="gravity_max_velocity") {
-
-			gravity.max_velocity=std::stod(value);
-		}
-		else if(name=="jump_force") {
-
-			jump_force=std::stod(value);
-		}
-		else if(name=="walk_max_velocity") {
-
-			walk_max_velocity=std::stod(value);
-		}
-		else if(name=="ladder_max_velocity") {
-
-			ladder_max_velocity=std::stod(value);
-		}
-		else {
-
-			std::cout<<"bad name: "<<name<<std::endl;
-		}
-	}
-
-	std::cout<<"gravity force:" <<gravity.force<<"\n"
-		<<"gravity max velocity: "<<gravity.max_velocity<<"\n"
-		<<"jump force: "<<jump_force
-		<<std::endl;
-
-#else
-
-	//I guess we do nothing and run with the sweet defaults :).
-	gravity.force={0.0, -300.0};
-	gravity.max_velocity=-600.0;
-	jump_force=120.0;
-
-#endif
-}
-
-
 void main::grab_ladder(
+	app::player& _player,
 	const app::ladder& _ladder
 ) {
 
-	player.state=app::player::states::ladder;
-	player.velocity.x=0.0;
-	current_ladder=_ladder;
+	_player.state=app::player::states::ladder;
+	_player.velocity.x=0.0;
+	_player.current_ladder=&_ladder;
 }
 
 void main::walk_out_of_ladder(
+	app::player& _player,
 	const d2d::collision::tile& _tile,
 	int _x_force
 ) {
 	d2d::collision::snap_to_top_of(player.ent, _tile);
-	player.state=app::player::states::ground;
-	current_ladder={0,0,0};
-	timeouts.reset(timeout_ladder);
+	_player.state=app::player::states::ground;
+	_player.timeouts.reset(app::player::timeout_ladder);
 
-	player.facing=_x_force > 0 
+	_player.facing=_x_force > 0 
 		? app::faces::right
 		: app::faces::left;
+
+	_player.current_ladder=nullptr;
 }
 
 void main::jump_out_of_ladder(
+	app::player& _player,
 	int _x_force
 ) {
 
-	player.state=app::player::states::air;
-
 	//_x_force is -1 or 1.
-	double jump_out_velocity=(double)_x_force*walk_max_velocity;
-	player.velocity={jump_out_velocity, jump_force};
-	current_ladder={0,0,0};
-	timeouts.reset(timeout_ladder);
-	player.facing=_x_force > 0 
+	_player.velocity.x=(double)_x_force*simulation.walk_max_velocity;
+	_player.facing=_x_force > 0 
 		? app::faces::right
 		: app::faces::left;
+	_player.current_ladder=nullptr;
+	jump(_player);
 }
 
-void main::jump() {
+void main::jump(
+	app::player& _player
+) {
 
-	player.velocity.y=jump_force;
-	player.state=app::player::states::air;
-
-	//TODO: I wonder if this goes somewhere else too...
-	player.jump_shortened=false;
+	_player.velocity.y=simulation.jump_force;
+	_player.state=app::player::states::air;
+	_player.jump_shortened=false;
 }
 
-void main::land_on_ground() {
+void main::land_on_ground(
+	app::player& _player
+) {
 
-	player.velocity.y=0.;
-	player.state=app::player::states::ground;
+	_player.velocity.y=0.;
+	_player.state=app::player::states::ground;
 }
 
-void main::touch_ceiling() {
+void main::touch_ceiling(
+	app::player& _player
+) {
 
-	player.velocity.y=0.;
-	player.velocity.x/=2.;
+	_player.velocity.y=0.;
+	_player.velocity.x/=2.;
 }
 
-void main::start_falling() {
+void main::start_falling(
+	app::player& _player
+) {
 
-	player.state=app::player::states::air;
-	player.velocity.x/=2.; 
-}
-
-void main::setup_timeouts() {
-
-	timeouts.add(timeout_ladder, 0.5f, 0.0f);
+	_player.state=app::player::states::air;
+	_player.timeouts.reset(app::player::timeout_last_jump_chance);
+	_player.velocity.x/=2.; 
 }
 
 void main::setup_camera(
@@ -829,6 +643,45 @@ void main::setup_camera(
 
 	ldv::rect margin{x, y, w, h};
 	dd.set_center_margin(margin);
+}
+
+bool main::is_on_air(
+	const app::player& _player
+) {
+
+	auto player_box_copy=_player.ent.get_box();
+	--player_box_copy.origin.y;
+
+	//Quicky filter out tiles not in contact...
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder, app::filter_one_way_tiles{});
+
+	//fine collision phase now..
+	d2d::collision::checker cc;
+	return !cc.has_collision(player_box_copy, contacting_tiles) 
+		&& !cc.has_collision(player_box_copy, current_map.solid_blocks)
+		&& !cc.has_collision(player_box_copy, current_map.platform_blocks);
+}
+
+bool main::can_grab_ladder(
+	const app::player& _player,
+	const app::ladder *&_ladderptr
+) const {
+
+	if(!_player.timeouts.is_ok(app::player::timeout_ladder)) {
+
+		return false;
+	}
+
+	d2d::collision::checker cc;
+	const auto ladders=cc.get_collisions(_player.ent, current_map.ladders);
+	if(0==ladders.size()) {
+
+		return false;
+	}
+
+	_ladderptr=ladders[0];
+	return true;
 }
 
 #ifdef IS_DEBUG_BUILD
