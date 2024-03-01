@@ -4,7 +4,6 @@ next step:
 		plan the game.
 		crouch????
 		defeat state
-		last chance to jump when state is set to falling, reflex-like.
 		have a real camera, not all debug stuff...
 		"doors" are a block that moves up
 			most of them can  be opened by placing a crystal in a slot.

@@ -59,6 +59,7 @@ class main:
 	bool                        is_on_air(const app::player&);
 	void                        start_falling(app::player&);
 	void                        land_on_ground(app::player&);
+	void                        collide_with_wall(app::player&);
 	void                        touch_ceiling(app::player&);
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        jump(app::player&);

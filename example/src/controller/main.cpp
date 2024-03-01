@@ -340,16 +340,23 @@ void main::tic_ladder(
 		}
 	}
 
+
 	//Attempt to walk out.
 	if(_pli.x) {
 
-		auto player_box_copy=_player.ent.get_box();
-		player_box_copy.origin.y-=4;
-		auto landing_candidates=adapter.find(player_box_copy, current_map.tile_finder);
-		const auto& landing_tiles=cc.get_collisions(player_box_copy, landing_candidates);
-		if(landing_tiles.size()) {
+		//TODO: These nested ifs are ugly...
+		//There can be no exit if we are stuck in tiles.
+		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
+		if(cc.has_collision(_player.ent, tiles_to_check)) {
 
-			walk_out_of_ladder(_player, *landing_tiles[0], _pli.x);
+			auto player_box_copy=_player.ent.get_box();
+			player_box_copy.origin.y-=4;
+			auto landing_candidates=adapter.find(player_box_copy, current_map.tile_finder);
+			const auto& landing_tiles=cc.get_collisions(player_box_copy, landing_candidates);
+			if(landing_tiles.size()) {
+
+				walk_out_of_ladder(_player, *landing_tiles[0], _pli.x);
+			}
 		}
 	}
 }
@@ -373,77 +380,72 @@ void main::tic_air(
 	d2d::motion::mover mover{};
 
 	//Do the horizontal phase...
-	{
+	//Air control is limited, but one can attempt to do it.
+	if(_pli.x) {
 
-		//Air control is limited, but one can attempt to do it.
-		if(_pli.x) {
+		tools::ranged_value<double> velocity{-simulation.walk_max_velocity, simulation.walk_max_velocity, player.velocity.x};
 
-			tools::ranged_value<double> velocity{-simulation.walk_max_velocity, simulation.walk_max_velocity, player.velocity.x};
+		velocity+=(double)_pli.x*simulation.air_x_velocity_acceleration_value;
+		_player.velocity.x=velocity;
+	}
+	//No horizontal input means slowing down by a tiny factor.
+	else {
 
-			velocity+=(double)_pli.x*simulation.air_x_velocity_acceleration_value;
-			_player.velocity.x=velocity;
-		}
-		//No horizontal input means slowing down by a tiny factor.
-		else {
+		_player.velocity.x/=simulation.air_x_velocity_reduce_factor;
+	}
 
-			_player.velocity.x/=simulation.air_x_velocity_reduce_factor;
-		}
+	mover.apply_x(_player.ent, _player.velocity.x, _delta);
 
-		mover.apply_x(_player.ent, _player.velocity.x, _delta);
+	//Collision...
+	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_ignore_one_way_tiles{});
+	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
+	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 
-		//Collision...
-		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_ignore_one_way_tiles{});
-		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
-		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
-		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	if(cph.has_collision()) {
 
-		if(cph.has_collision()) {
-
-			//TODO; A method would be nice.
-			cph.response_generic();
-			_player.velocity.x/=simulation.air_x_velocity_collision_reduce_factor;
-		}
+		//TODO; A method would be nice.
+		cph.response_generic();
+		collide_with_wall(_player);
 	}
 
 	//do the vertical phase.
-	{
-		//Last chance to jump after we begin falling...
-		if(_pli.jump && !_player.timeouts.is_ok(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
+	//Last chance to jump after we begin falling...
+	if(_pli.jump && !_player.timeouts.is_ok(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
 
-			jump(_player);
+		jump(_player);
+	}
+
+	//Letting go of the jump shortens it...
+	if(player.velocity.y > 0. && !_pli.hold_jump && !_player.jump_shortened) {
+
+		_player.velocity.y/=simulation.air_y_velocity_jump_shorten_factor;;
+		_player.jump_shortened=true;
+	}
+
+	simulation.gravity.apply_to(_player.velocity, _delta);
+	mover.apply_y(_player.ent, _player.velocity.y, _delta);
+
+	//Collision...
+	current_tiles=adapter.find(_player.ent, current_map.tile_finder);
+	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
+	cpv.detect_all(current_tiles);
+	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	cpv.detect_all(current_map.platform_blocks);
+
+	if(cpv.has_collision()) {
+
+		auto response=cpv.response_complex();
+		response.solve(_player.ent);
+
+		//Only when colliding when the top of a box can we jump again.
+		if(response.edges & d2d::collision::response::tedges::top) {
+
+			land_on_ground(_player);
 		}
+		else if(response.edges & d2d::collision::response::tedges::bottom) {
 
-		//Letting go of the jump shortens it...
-		if(player.velocity.y > 0. && !_pli.hold_jump && !_player.jump_shortened) {
-
-			_player.velocity.y/=simulation.air_y_velocity_jump_shorten_factor;;
-			_player.jump_shortened=true;
-		}
-
-		simulation.gravity.apply_to(_player.velocity, _delta);
-		mover.apply_y(_player.ent, _player.velocity.y, _delta);
-
-		//Collision...
-		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder);
-		d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
-		cpv.detect_all(current_tiles);
-		cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		cpv.detect_all(current_map.platform_blocks);
-
-		if(cpv.has_collision()) {
-
-			auto response=cpv.response_complex();
-			response.solve(_player.ent);
-
-			//Only when colliding when the top of a box can we jump again.
-			if(response.edges & d2d::collision::response::tedges::top) {
-
-				land_on_ground(_player);
-			}
-			else if(response.edges & d2d::collision::response::tedges::bottom) {
-
-				touch_ceiling(_player);
-			}
+			touch_ceiling(_player);
 		}
 	}
 }
@@ -627,6 +629,13 @@ void main::start_falling(
 	_player.state=app::player::states::air;
 	_player.timeouts.reset(app::player::timeout_last_jump_chance);
 	_player.velocity.x/=2.; 
+}
+
+void main::collide_with_wall(
+	app::player& _player
+) {
+
+	_player.velocity.x/=simulation.air_x_velocity_collision_reduce_factor;
 }
 
 void main::setup_camera(
