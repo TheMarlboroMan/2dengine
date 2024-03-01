@@ -36,6 +36,7 @@ main::main(
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
+	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
@@ -66,7 +67,6 @@ main::main(
 
 #endif
 
-
 	//TODO: This kind of shit could come from any file.
 	scenery_tile_draw.set_is_animation_fn(
 		[](int _index) -> bool {
@@ -95,9 +95,8 @@ main::main(
 
 	//Attempt to load the starter map.
 	load_map("map_001.json");
-	take_player_to_entry(player, 1);
+	take_player_to_entry(player, 1, nullptr);
 }
-
 
 void main::awake(
 	dfw::input& /*input*/
@@ -144,9 +143,14 @@ void main::loop_scene(
 
 		pli.y=-1;
 	}
-	else if(_input.is_input_down(app::input::up)) {
+	else if(_input.is_input_pressed(app::input::up)) {
 
 		pli.y=1;
+
+		if(_input.is_input_down(app::input::up)) {
+
+			pli.enter_door=true;
+		}
 	}
 
 	if(_input.is_input_pressed(app::input::left)) {
@@ -158,14 +162,14 @@ void main::loop_scene(
 		pli.x=1;
 	}
 
-	if(_input.is_input_down(app::input::jump)) {
-
-		pli.jump=true;
-	}
-
 	if(_input.is_input_pressed(app::input::jump)) {
 
 		pli.hold_jump=true;
+
+		if(_input.is_input_down(app::input::jump)) {
+
+			pli.jump=true;
+		}
 	}
 
 	tic(_lid.delta, pli);
@@ -181,6 +185,8 @@ void main::load_map(
 	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
 
 	d2d::storage::map_loader loader(map_path);
+
+	current_map.clear();
 
 	loader.load_collision_tiles(
 		"logic",
@@ -202,31 +208,163 @@ void main::load_map(
 
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
+	cml.limit_to_collision_tiles(camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+
+#ifdef IS_DEBUG_BUILD
 	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+#endif
 
 //	std::cout<<current_map<<std::endl;
 }
 
+void main::exit_to(
+	app::player& _player,
+	app::exit _exit
+) {
+/**
+ * there is a reason why arguments are copied: the exit belongs to the map
+ * which will get unloaded soon and would cause the original reference or
+ * pointer to be lost. It has already happened to me so please, do not attemp
+ * to "fix" it.
+ */
+
+	player.current_ladder=nullptr;
+
+	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
+	load_map(_exit.map_filename);
+	take_player_to_entry(_player, _exit.next_entry_id, &_exit);
+}
+
 void main::take_player_to_entry(
 	app::player& _player,
-	int _id
+	int _id,
+	const app::exit * _last_exit
 ) {
 
-	lm::log(logger).info()<<"will attempt to set player at position "<<_id<<"\n";
-	auto entry=find_entry_by_id(_id);
+	lm::log(logger).info()<<"will attempt to set player at entry "<<_id<<"\n";
+	last_entry_id=_id;
+	auto map_entry=find_entry_by_id(last_entry_id);
 
-	//TODO: Actually, there are MORE WAYS to center a player, but this shall suffice.
-	auto origin=entry.ent.get_origin();
-	lm::log(logger).info()<<"setting starting point at "<<origin<<"\n";
-	player.ent.set_origin({(double)origin.x, (double)origin.y});
+	auto find_ladders=[this, &map_entry]() {
+
+		d2d::collision::checker cc;
+		const auto ladders=cc.get_collisions(map_entry.ent, current_map.ladders);
+		lm::log(logger).info()<<"found "<<ladders.size()<<" ladders in the last entry point\n";
+		return ladders;
+	};
+
+	//If no exit is indicated this is a "hard transition", e.g. reloading after
+	//defeat.
+	if(nullptr==_last_exit) {
+
+		lm::log(logger).info()<<"taking player to exit (hard mode)\n";
+
+/**
+ * about ladder position:
+ * when setting a ladder that must span maps we must extend the ladder up/down
+ * enough so that it matches the top of the corresponding EXIT and crosses the
+ * corresponding entry (or the bottom, if the ladder goes down). This is a
+ * workaround on the level design.
+ */
+		//This is crucial, if there is an entry with a ladder we favor it and
+		//place the player on it depending on how the last entry expected the
+		//player to be placed. The extra tile_h is to avoid the player colliding
+		//with the exit.
+		auto ladders=find_ladders();
+		if(ladders.size()) {
+
+			grab_ladder(_player, *ladders[0]);
+
+			if(app::entry::inner_top_edge==map_entry.position) {
+
+				d2d::collision::match_top_of(_player.ent, *ladders[0], app::tile_h);
+			}
+			else if(app::entry::inner_bottom_edge==map_entry.position) {
+
+				d2d::collision::match_bottom_of(_player.ent, *ladders[0], app::tile_h);
+			}
+			else {
+
+				throw std::runtime_error("mismatch between ladder and entry");
+			}
+		}
+		else {
+
+			_player.ent.set_origin(map_entry.ent.get_origin());
+			stand_up(_player);
+		}
+	}
+	else {
+
+		lm::log(logger).info()<<"taking player to exit (soft mode)\n";
+		auto& pos=player.ent.get_box();
+		auto entry_pt=map_entry.ent.get_origin();
+		d2d::collision::point exit_offset=pos.origin-_last_exit->ent.get_origin();
+
+		switch(map_entry.position) {
+
+			case app::entry::position::center_bottom:
+
+				land_on_ground(_player);
+				player.velocity.x=0.;
+				d2d::collision::center_horizontally(_player.ent, map_entry.ent);
+				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
+			break;
+			case app::entry::position::inner_top_edge:
+				d2d::collision::match_top_of(_player.ent, map_entry.ent);
+				_player.ent.set_x(entry_pt.x+exit_offset.x);
+			break;
+
+			case app::entry::position::inner_bottom_edge:
+				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
+				_player.ent.set_x(entry_pt.x+exit_offset.x);
+			break;
+
+			case app::entry::position::inner_right_edge:
+				d2d::collision::match_right_of(_player.ent, map_entry.ent);
+				_player.ent.set_y(entry_pt.y+exit_offset.y);
+			break;
+
+			case app::entry::position::inner_left_edge:
+				d2d::collision::match_left_of(_player.ent, map_entry.ent);
+				_player.ent.set_y(entry_pt.y+exit_offset.y);
+			break;
+		}
+
+		//If the player was in a ladder after a soft transition we want to grab the new one.
+		if(app::player::states::ladder==player.state) {
+
+			lm::log(logger).info()<<"player was in a ladder, will try to grab a new one\n";
+			auto ladders=find_ladders();
+			if(!ladders.size()) {
+
+				throw std::runtime_error("there should be a ladder at the entrypoint");
+			}
+
+			grab_ladder(_player, *ladders[0]);
+		}
+	}
+
+	//Commit positions so we don't get phantom collisions later!
+	_player.ent.sync_boxes();
+
+	lm::log(logger).info()<<"new player position is "<<_player.ent.get_origin()<<"\n";
 
 	//Center camera on map now..
-//TODO: Real camera!
+	camera.center_on(
+		d2d::video::to_screen_rect(player.ent)
+	);
+
 #ifdef IS_DEBUG_BUILD
 	dd.center_on(player.ent);
 #else
 
 #endif
+}
+
+void main::restart_level() {
+
+	take_player_to_entry(player, last_entry_id, nullptr);
 }
 
 void main::tic(
@@ -268,16 +406,22 @@ void main::tic(
 
 		if(app::player::states::defeat != player.state) {
 
+			camera.center_on(
+				d2d::video::to_screen_rect(player.ent)
+			);
+
+#ifdef IS_DEBUG_BUILD
 			dd.center_on(player.ent);
+#endif
 		}
 	}
 
 	//at the end of the tic, are we touching an exit?
 	const app::exit * exitptr{nullptr};
-	if(is_on_touch_exit(player, exitptr)) {
+	if(is_on_exit(player, exitptr, true)) {
 
-		load_map(exitptr->map_filename);
-		take_player_to_entry(player, exitptr->next_entry_id);
+		exit_to(player, *exitptr);
+		return;
 	}
 }
 
@@ -295,6 +439,15 @@ void main::tic_ground(
 		tic_ladder(_delta, _player, _pli);
 		return;
 	}
+
+	//Attempt to enter a doorway...
+	const app::exit * exitptr{nullptr};
+	if(_pli.enter_door && is_on_exit(_player, exitptr, false)) {
+
+		exit_to(_player, *exitptr);
+		return;
+	}
+
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
@@ -540,8 +693,12 @@ void main::tic_crouch(
 void main::tic_defeat(
 	float _delta,
 	app::player& _player,
-	app::player_input _pli
+	app::player_input
 ) {
+
+/**
+ * no input is taken during this phase.
+ */
 
 	d2d::motion::mover mover{};
 	simulation.gravity.apply_to(_player.velocity, _delta);
@@ -549,9 +706,8 @@ void main::tic_defeat(
 
 	if(!player.timeouts.is_counting(app::player::timeout_defeat)) {
 
-		//Todo, actually, reload xd
-		//TODO:
-		set_leave(true);
+		restart_level();
+		return;
 	}
 }
 
@@ -583,7 +739,7 @@ void main::draw_scene(
 
 	_screen.clear(current_map.background_color);
 	//TODO: Use a REAL camera.
-	scenery_tile_draw.draw(_screen, dd.camera, current_map.background_tiles);
+	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
 
 	//TODO:
 	for(const auto& block : current_map.solid_blocks) {
@@ -597,10 +753,35 @@ void main::draw_scene(
 		dd.draw(_screen, block);
 	}
 
+	for(const auto& ladder : current_map.ladders) {
+
+		draw_ladder(_screen, ladder);
+	}
+
 	draw_player(_screen, player);
-	scenery_tile_draw.draw(_screen, dd.camera, current_map.foreground_tiles);
+	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
 }
 
+void main::draw_ladder(
+	ldv::screen& _screen,
+	const app::ladder& _ladder
+) {
+
+	auto origin=d2d::video::to_screen(_ladder.get_origin());
+
+	int max_step=_ladder.get_h() / app::tile_h;
+	for(int i=0; i<max_step; i++) { 
+
+		sprite_draw_animated.spr_draw.draw(
+			_screen,
+			camera,
+			origin,
+			app::spr_ladder_yellow
+		);
+
+		origin.y+=app::tile_h;
+	}
+}
 
 void main::draw_player(
 	ldv::screen& _screen,
@@ -647,7 +828,7 @@ void main::draw_player(
 
 		sprite_draw_animated.draw(
 			_screen, 
-			dd.camera, 
+			camera, 
 			d2d::video::to_screen(player.ent.get_origin()),
 			animation_index,
 			draw_flags
@@ -658,7 +839,7 @@ void main::draw_player(
 
 	sprite_draw_animated.draw_frame(
 		_screen,
-		dd.camera,
+		camera,
 		d2d::video::to_screen(player.ent.get_origin()),
 		animation_index,
 		frame_index,
@@ -674,6 +855,9 @@ void main::grab_ladder(
 	_player.state=app::player::states::ladder;
 	_player.velocity.x=0.0;
 	_player.current_ladder=&_ladder;
+
+	//Constrict the position already.
+	_ladder.apply(_player.ent);
 }
 
 void main::walk_out_of_ladder(
@@ -799,7 +983,13 @@ void main::setup_camera(
 	int y=_screen_h /4;
 
 	ldv::rect margin{x, y, w, h};
+
+	camera.set_coordinate_system(ldv::camera::tsystem::cartesian);
+	camera.set_center_margin(margin);
+
+#ifdef IS_DEBUG_BUILD
 	dd.set_center_margin(margin);
+#endif
 }
 
 bool main::is_on_air(
@@ -820,14 +1010,15 @@ bool main::is_on_air(
 		&& !cc.has_collision(player_box_copy, current_map.platform_blocks);
 }
 
-bool main::is_on_touch_exit(
+bool main::is_on_exit(
 	const app::player& _player,
-	const app::exit *&_exitptr
+	const app::exit *&_exitptr,
+	bool _is_touch
 ) const {
 
 	for(const auto& exit : current_map.exits) {
 
-		if(exit.touch && d2d::collision::collides_with(_player.ent, exit.ent)) {
+		if(exit.touch==_is_touch && d2d::collision::collides_with(_player.ent, exit.ent)) {
 
 			_exitptr=&exit;
 			return true;
@@ -881,6 +1072,7 @@ app::entry main::find_entry_by_id(
 
 	if(std::end(current_map.entries) != it) {
 
+		lm::log(logger).info()<<"located map entry "<<_id<<"\n";
 		return *it;
 	}
 

@@ -186,6 +186,16 @@ void main::draw_debug(
 		dd.draw(_screen, ladder);
 	}
 
+	for(const auto& node : current_map.entries) {
+
+		dd.draw(_screen, node.ent);
+	}
+
+	for(const auto& node : current_map.exits) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	dd.draw(_screen, player.ent);
 }
 
@@ -231,16 +241,20 @@ void main::loop_debug(
 	else if(_input.is_input_pressed(app::input::up)) {
 
 		pli.y=1;
-	}
+		if(_input.is_input_down(app::input::up)) {
 
-	if(_input.is_input_down(app::input::jump)) {
-
-		pli.jump=true;
+			pli.enter_door=true;
+		}
 	}
 
 	if(_input.is_input_pressed(app::input::jump)) {
 
 		pli.hold_jump=true;
+
+		if(_input.is_input_down(app::input::jump)) {
+
+			pli.jump=true;
+		}
 	}
 
 	if(_input.is_input_pressed(app::input::left)) {

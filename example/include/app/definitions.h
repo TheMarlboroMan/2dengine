@@ -11,7 +11,6 @@ static const int player_h=24;
 static const int player_h_crouch=12;
 
 enum spritesheets {
-
 	ss_tiles=1
 };
 
@@ -32,20 +31,24 @@ enum animations{
 	anim_idle=100
 };
 
+enum sprites {
+	spr_ladder_yellow=137
+};
+
 enum tile_types {
-		tile_full=1,
-		tile_half_bottom=2,
-		tile_half_top=3,
-		tile_half_left=4,
-		tile_half_right=5,
-		tile_quarter_bottom_left=6,
-		tile_quarter_bottom_right=7,
-		tile_quarter_top_left=8,
-		tile_quarter_top_right=9,
-		tile_half_bottom_passable=10,
-		tile_half_top_passable=11,
-		tile_harm=12
-	};
+	tile_full=1,
+	tile_half_bottom=2,
+	tile_half_top=3,
+	tile_half_left=4,
+	tile_half_right=5,
+	tile_quarter_bottom_left=6,
+	tile_quarter_bottom_right=7,
+	tile_quarter_top_left=8,
+	tile_quarter_top_right=9,
+	tile_half_bottom_passable=10,
+	tile_half_top_passable=11,
+	tile_harm=12
+};
 
 enum class faces {
 	left,

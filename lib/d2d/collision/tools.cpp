@@ -194,33 +194,55 @@ void d2d::collision::snap_to_bottom_of(
 
 void d2d::collision::match_right_of(
 	spatiable& _a, 
-	const spatiable& _b) {
+	const spatiable& _b,
+	double _margin
+) {
+
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::right);
+	if(_margin) {
+
+		_a.set_x(_a.get_x()-_margin);
+	}
 }
 
 void d2d::collision::match_left_of(
 	spatiable& _a,
-	const spatiable& _b
+	const spatiable& _b,
+	double _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::left);
+	if(_margin) {
+
+		_a.set_x(_a.get_x()+_margin);
+	}
 }
 
 void d2d::collision::match_top_of(
 	spatiable& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	double _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::top);
+	if(_margin) {
+
+		_a.set_y(_a.get_y()-_margin);
+	}
 }
 
 void d2d::collision::match_bottom_of(
 	spatiable& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	double _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::bottom);
+	if(_margin) {
+
+		_a.set_y(_a.get_y()+_margin);
+	}
 }
 
 void d2d::collision::center_horizontally(

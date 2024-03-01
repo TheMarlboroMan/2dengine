@@ -57,14 +57,18 @@ bool            is_partially_right_of(const box&, const spatiable&);
 bool            is_partially_right_of(const box&, const box&);
 
 //These should be read as do_funcname to first arg using second arg as reference.
+//When a double is present it is meant to be a "padding", so if we say 
+//"match top of this with 10 of padding" it will match the top and then move
+//10 units down. Marging should always be expressed in positive to move "away"
+//from the matched spatiable.
 void           snap_to_right_of(spatiable&, const spatiable&);
 void           snap_to_left_of(spatiable&, const spatiable&);
 void           snap_to_top_of(spatiable&, const spatiable&);
 void           snap_to_bottom_of(spatiable&, const spatiable&);
-void           match_right_of(spatiable&, const spatiable&);
-void           match_left_of(spatiable&, const spatiable&);
-void           match_top_of(spatiable&, const spatiable&);
-void           match_bottom_of(spatiable&, const spatiable&);
+void           match_right_of(spatiable&, const spatiable&, double=0.);
+void           match_left_of(spatiable&, const spatiable&, double=0.);
+void           match_top_of(spatiable&, const spatiable&, double=0.);
+void           match_bottom_of(spatiable&, const spatiable&, double=0.);
 void           center_horizontally(spatiable&, const spatiable&);
 void           center_horizontally(box&, const box&);
 void           center_vertically(spatiable&, const spatiable&);

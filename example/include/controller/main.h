@@ -47,6 +47,7 @@ class main:
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
 	void                        draw_player(ldv::screen&, const app::player&);
+	void                        draw_ladder(ldv::screen&, const app::ladder&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_ground(float, app::player&, app::player_input);
@@ -55,14 +56,23 @@ class main:
 	void                        tic_crouch(float, app::player&, app::player_input);
 	void                        tic_defeat(float, app::player&, app::player_input);
 
+	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
-	void                        take_player_to_entry(app::player&, int);
+/**
+ * unloads map, loads new map, takes player to it.
+ */
+	void                        exit_to(app::player&, app::exit);
+	void                        take_player_to_entry(app::player&, int, const app::exit* =nullptr);
+	void                        restart_level();
 	app::entry                  find_entry_by_id(int) const;
 
+	//query methods...
 	bool                        can_grab_ladder(const app::player&, const app::ladder *&) const;
-	bool                        is_on_touch_exit(const app::player&, const app::exit *&) const;
+	bool                        is_on_exit(const app::player&, const app::exit *&, bool) const;
 	bool                        is_on_air(const app::player&) const;
 	bool                        is_into_harm(const app::player&) const;
+
+	//act on player methods...
 	void                        start_falling(app::player&);
 	void                        land_on_ground(app::player&);
 	void                        collide_with_wall(app::player&);
@@ -76,22 +86,21 @@ class main:
 	void                        jump_out_of_ladder(app::player&, int);
 	void                        drop_out_of_ladder(app::player&);
 
-	void                        setup_camera(int, int);
-
-	const app::env&				env;
-	lm::logger&					logger;
-	d2d::collision::shaper&		shaper;
+	const app::env&             env;
+	lm::logger&                 logger;
+	d2d::collision::shaper&     shaper;
 	const app::tile_impl&       tile_impl;
 
+	ldv::camera                 camera;
 	d2d::video::sprite_draw     sprite_draw;
 	d2d::video::sprite_draw_animated sprite_draw_animated;
 	d2d::video::scenery_tile_draw_animated scenery_tile_draw;
 
-	app::simulation             simulation;
-
 	//game state stuff.
+	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;
+	int                         last_entry_id{0};
 
 #ifdef IS_DEBUG_BUILD
 
