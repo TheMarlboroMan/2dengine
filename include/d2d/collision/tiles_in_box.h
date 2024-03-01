@@ -58,7 +58,6 @@ class tiles_in_box {
 	) const {
 
 		return find(_spatiable.get_box(), _finder, _callable);
-
 	}
 
 	template<typename C>

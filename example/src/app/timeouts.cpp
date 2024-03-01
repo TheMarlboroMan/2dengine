@@ -34,11 +34,26 @@ timeouts& timeouts::reset(
 	return *this;
 }
 
-bool timeouts::is_ok(
+float timeouts::get(
+	int _id
+) const {
+
+	return data.at(_id).timer;
+}
+
+
+bool timeouts::is_expired(
 	int _id
 ) const {
 
 	return data.at(_id).timer == 0.f;
+}
+
+bool timeouts::is_counting(
+	int _id
+) const {
+
+	return data.at(_id).timer != 0.f;
 }
 
 timeouts& timeouts::set(

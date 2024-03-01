@@ -1,16 +1,15 @@
 next step:
 
 	make the first example game.
-		plan the game.
-		crouch????
-		defeat state
+		reload when defeated!
 		have a real camera, not all debug stuff...
-		"doors" are a block that moves up
-			most of them can  be opened by placing a crystal in a slot.
-		there should be switches, right?
-		gates in the background to enter hitting up.
 		change map
 			by doing ladders too!!
+		plan the game.
+			"doors" are a block that moves up
+				most of them can  be opened by placing a crystal in a slot.
+			there should be switches, right?
+			gates in the background to enter hitting up.
 
 	engine:
 		I guess slopes

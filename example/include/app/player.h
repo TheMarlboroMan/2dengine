@@ -15,7 +15,8 @@ class player {
 
 	enum timeout_indexes {
 		timeout_ladder=0,
-		timeout_last_jump_chance=1
+		timeout_last_jump_chance=1,
+		timeout_defeat=2
 	};
 
 	                                            player();
@@ -31,7 +32,9 @@ class player {
 	enum class states {
 		ground,
 		air,
-		ladder
+		ladder,
+		crouch,
+		defeat
 	} state{states::ground};
 
 };

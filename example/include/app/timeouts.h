@@ -16,6 +16,11 @@ class timeouts {
 	void            tic(float);
 
 /**
+ * returns the given timeout value
+ */
+	float           get(int) const;
+
+/**
  * adds a new timeout to the list with an identifier and its max value. If
  * the third parameter is not given the value of the timeout will be set
  * to max.
@@ -39,7 +44,12 @@ class timeouts {
  * checks if the timeout identified by the identifier is ready (that is, 
  * its counter has reached zero.
  */
-	bool            is_ok(int) const;
+	bool            is_expired(int) const;
+
+/**
+ * checks if the timeout identified by the identifier is still counting down.
+ */
+	bool            is_counting(int) const;
 
 	private:
 

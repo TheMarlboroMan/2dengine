@@ -8,6 +8,7 @@ static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per 
 static const int logic_screen_h=224; //and these are 14 per screen.
 static const int player_w=15;
 static const int player_h=24;
+static const int player_h_crouch=12;
 
 enum spritesheets {
 
@@ -23,6 +24,8 @@ enum animation_groups{
 };
 
 enum animations{
+	anim_defeat=105,
+	anim_crouch=104,
 	anim_climb=103,
 	anim_jump=102,
 	anim_walk=101,

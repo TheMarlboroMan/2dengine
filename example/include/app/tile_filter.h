@@ -9,7 +9,7 @@ namespace app {
 /**
  * tile filter to ignore the one way tiles above the player.
  */
-struct filter_one_way_tiles {
+struct filter_tiles_ignore_one_way_above {
 
 	bool operator()(
 		const d2d::collision::box& _box,
@@ -30,7 +30,7 @@ struct filter_one_way_tiles {
 /**
  * tile filter to ignore all one way tiles.
  */
-struct filter_ignore_one_way_tiles {
+struct filter_tiles_ignore_one_way {
 
 	bool operator()(
 		const d2d::collision::box& ,
@@ -42,5 +42,39 @@ struct filter_ignore_one_way_tiles {
 			|| _tile.type == app::tile_half_top_passable
 		);
 	};
+};
+
+/**
+ * tile filter to extract only harm tiles.
+ */
+struct filter_tiles_harm_only {
+
+	bool operator()(
+		const d2d::collision::box& ,
+		const d2d::collision::tile& _tile
+	) const {
+
+		return _tile.type == app::tile_harm;
+	};
+};
+
+/**
+ * tiles that must be ignored when checking if we are on the air.
+ */
+struct filter_tiles_check_on_air {
+
+	bool operator()(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile& _tile
+	) const {
+
+		if(_tile.type == app::tile_harm) {
+
+			return false;
+		}
+
+		auto f=filter_tiles_ignore_one_way_above{};
+		return f(_box, _tile);
+	}
 };
 }

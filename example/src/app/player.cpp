@@ -9,6 +9,7 @@ player::player():
 
 	timeouts.add(timeout_ladder, 0.5f, 0.0f);
 	timeouts.add(timeout_last_jump_chance, 0.05f, 0.0f);
+	timeouts.add(timeout_defeat, 2.f, 0.f);
 }
 
 void player::tic(

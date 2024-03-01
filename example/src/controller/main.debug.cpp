@@ -330,6 +330,10 @@ void main::reload_values() {
 
 			simulation.air_y_velocity_jump_shorten_factor=std::stod(value);
 		}
+		else if(name=="defeat_y_velocity") {
+
+			simulation.defeat_y_velocity=std::stod(value);
+		}
 		else {
 
 			std::cout<<"bad name: "<<name<<std::endl;

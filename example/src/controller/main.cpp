@@ -133,6 +133,14 @@ void main::load_map(
 	lm::log(logger).info()<<"setting starting point at "<<tl.starting_position.x<<", "<<tl.starting_position.y<<"\n";
 	player.ent.set_origin({(double)tl.starting_position.x, (double)tl.starting_position.y});
 
+	//Center camera on map now..
+//TODO: Real camera!
+#ifdef IS_DEBUG_BUILD
+	dd.center_on(player.ent);
+#else
+
+#endif
+
 //	std::cout<<current_map<<std::endl;
 }
 
@@ -230,13 +238,25 @@ void main::tic(
 		case app::player::states::air:
 			tic_air(_delta, player, _pli);
 		break;
+
+		case app::player::states::crouch:
+			tic_crouch(_delta, player, _pli);
+		break;
+
+		case app::player::states::defeat:
+			tic_defeat(_delta, player, _pli);
+		break;
 	}
 
 	//aftermath
 	if(player.ent.get_origin() != player.ent.get_previous_box().origin) {
 	
 		player.ent.sync_boxes();
-		dd.center_on(player.ent);
+
+		if(app::player::states::defeat != player.state) {
+
+			dd.center_on(player.ent);
+		}
 	}
 }
 
@@ -266,6 +286,13 @@ void main::tic_ground(
 		return;
 	}
 
+	if(-1==_pli.y) {
+
+		crouch(_player);
+		tic_crouch(_delta, _player, _pli);
+		return;
+	}
+
 	//horizontal phase...
 	if(!_pli.x)  {
 
@@ -284,8 +311,15 @@ void main::tic_ground(
 
 		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
 
+		//It would be absurd to walk into harm's way but...
+		if(is_into_harm(_player)) {
+
+			defeat(_player);
+			return;
+		}
+
 		//Collision...
-		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_one_way_tiles{});
+		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
@@ -329,14 +363,21 @@ void main::tic_ladder(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	d2d::collision::checker cc;
 
-	//Jump out.
-	if(_pli.jump && _pli.x) {
+	//Jump out or jump down...
+	if(_pli.jump && (_pli.x || -1==_pli.y)) {
 
 		//There can be no ladder exit if there are collisions with tiles.
 		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
 		if(!cc.has_collision(_player.ent, tiles_to_check)) {
 
-			jump_out_of_ladder(_player, _pli.x);
+			if(-1==_pli.y) {
+
+				drop_out_of_ladder(_player);
+			}
+			else {
+
+				jump_out_of_ladder(_player, _pli.x);
+			}
 		}
 	}
 
@@ -397,7 +438,7 @@ void main::tic_air(
 	mover.apply_x(_player.ent, _player.velocity.x, _delta);
 
 	//Collision...
-	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_ignore_one_way_tiles{});
+	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
@@ -411,7 +452,7 @@ void main::tic_air(
 
 	//do the vertical phase.
 	//Last chance to jump after we begin falling...
-	if(_pli.jump && !_player.timeouts.is_ok(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
+	if(_pli.jump && _player.timeouts.is_counting(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
 
 		jump(_player);
 	}
@@ -425,6 +466,17 @@ void main::tic_air(
 
 	simulation.gravity.apply_to(_player.velocity, _delta);
 	mover.apply_y(_player.ent, _player.velocity.y, _delta);
+
+	//TODO:
+	//Actually, this is very bad xD!. We cannot walk onto a ledge... It would
+	//be better to just ignore these and check at the END of the tic if the
+	//player ended up in a bad position.
+	//The first collision to take into account is harm tiles... 
+	if(is_into_harm(_player)) {
+
+		defeat(_player);
+		return;
+	}
 
 	//Collision...
 	current_tiles=adapter.find(_player.ent, current_map.tile_finder);
@@ -447,6 +499,40 @@ void main::tic_air(
 
 			touch_ceiling(_player);
 		}
+	}
+}
+
+void main::tic_crouch(
+	float _delta,
+	app::player& _player,
+	app::player_input _pli
+) {
+
+	if(-1!=_pli.y) {
+
+		stand_up(_player);
+		tic_ground(_delta, _player, _pli);
+		return;
+	}
+}
+
+void main::tic_defeat(
+	float _delta,
+	app::player& _player,
+	app::player_input _pli
+) {
+
+	d2d::motion::mover mover{};
+	simulation.gravity.apply_to(_player.velocity, _delta);
+	mover.apply(_player.ent, _player.velocity, _delta);
+
+	std::cout<<player.timeouts.get(app::player::timeout_defeat)<<std::endl;
+
+	if(!player.timeouts.is_counting(app::player::timeout_defeat)) {
+
+		//Todo, actually, reload xd
+		//TODO:
+		set_leave(true);
 	}
 }
 
@@ -508,53 +594,57 @@ void main::draw_player(
 		false
 	};
 
+	int animation_index=0;
+	int frame_index=0;
+	bool is_animation=false;
+
 	switch(_player.state) {
 
-		case app::player::states::ground: {
+		case app::player::states::ground:
 
-			int animation_index=_player.velocity.x!=0.
+			animation_index=_player.velocity.x!=0.
 				? app::anim_walk
 				: app::anim_idle;
-
-			sprite_draw_animated.draw(
-				_screen, 
-				dd.camera, 
-				d2d::video::to_screen(player.ent.get_origin()),
-				animation_index,
-				draw_flags
-			);
-
-			return;
-		}
-
+			is_animation=true;
+		break;
 		case app::player::states::air:
-
-			sprite_draw_animated.draw_frame(
-				_screen,
-				dd.camera,
-				d2d::video::to_screen(player.ent.get_origin()),
-				app::anim_jump,
-				0,
-				draw_flags
-			);
-
-			return;
-		case app::player::states::ladder: {
-
+			animation_index=app::anim_jump;
+		break;
+		case app::player::states::crouch:
+			animation_index=app::anim_crouch;
+		break;
+		case app::player::states::defeat:
+			animation_index=app::anim_defeat;
+		break;
+		case app::player::states::ladder:
+			animation_index=app::anim_climb;
 			int y_mod=(int)player.ent.get_origin().y % 10;
-			int frame_index=y_mod <= 4 ? 0 : 1;
-
-			sprite_draw_animated.draw_frame(
-				_screen,
-				dd.camera,
-				d2d::video::to_screen(player.ent.get_origin()),
-				app::anim_climb,
-				frame_index
-			); //no flags needed
-
-			return;
-		}
+			frame_index=y_mod <= 4 ? 0 : 1;
+			draw_flags={false, false};
+		break;
 	}
+
+	if(is_animation) {
+
+		sprite_draw_animated.draw(
+			_screen, 
+			dd.camera, 
+			d2d::video::to_screen(player.ent.get_origin()),
+			animation_index,
+			draw_flags
+		);
+
+		return;
+	}
+
+	sprite_draw_animated.draw_frame(
+		_screen,
+		dd.camera,
+		d2d::video::to_screen(player.ent.get_origin()),
+		animation_index,
+		frame_index,
+		draw_flags
+	);
 }
 
 void main::grab_ladder(
@@ -594,7 +684,19 @@ void main::jump_out_of_ladder(
 		? app::faces::right
 		: app::faces::left;
 	_player.current_ladder=nullptr;
+	_player.timeouts.reset(app::player::timeout_ladder);
 	jump(_player);
+}
+
+void main::drop_out_of_ladder(
+	app::player& _player
+) {
+
+	_player.velocity.x=0.;
+	_player.current_ladder=nullptr;
+	_player.state=app::player::states::air;
+	_player.timeouts.reset(app::player::timeout_ladder);
+	//there is no last chance jump here.
 }
 
 void main::jump(
@@ -604,6 +706,24 @@ void main::jump(
 	_player.velocity.y=simulation.jump_force;
 	_player.state=app::player::states::air;
 	_player.jump_shortened=false;
+}
+
+void main::crouch(
+	app::player& _player
+) {
+
+	_player.velocity.x=0.;
+	_player.state=app::player::states::crouch;
+	_player.ent.get_box().h=app::player_h_crouch;
+}
+
+void main::stand_up(
+	app::player& _player
+) {
+
+	_player.velocity.x=0.;
+	_player.state=app::player::states::ground;
+	_player.ent.get_box().h=app::player_h;
 }
 
 void main::land_on_ground(
@@ -638,6 +758,15 @@ void main::collide_with_wall(
 	_player.velocity.x/=simulation.air_x_velocity_collision_reduce_factor;
 }
 
+void main::defeat(
+	app::player& _player
+) {
+
+	_player.timeouts.reset(app::player::timeout_defeat);
+	_player.state=app::player::states::defeat;
+	_player.velocity.y=simulation.defeat_y_velocity;
+}
+
 void main::setup_camera(
 	int _screen_w,
 	int _screen_h
@@ -656,14 +785,14 @@ void main::setup_camera(
 
 bool main::is_on_air(
 	const app::player& _player
-) {
+) const {
 
 	auto player_box_copy=_player.ent.get_box();
 	--player_box_copy.origin.y;
 
 	//Quicky filter out tiles not in contact...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-	auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder, app::filter_one_way_tiles{});
+	auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder, app::filter_tiles_check_on_air{});
 
 	//fine collision phase now..
 	d2d::collision::checker cc;
@@ -677,7 +806,7 @@ bool main::can_grab_ladder(
 	const app::ladder *&_ladderptr
 ) const {
 
-	if(!_player.timeouts.is_ok(app::player::timeout_ladder)) {
+	if(!_player.timeouts.is_expired(app::player::timeout_ladder)) {
 
 		return false;
 	}
@@ -691,6 +820,17 @@ bool main::can_grab_ladder(
 
 	_ladderptr=ladders[0];
 	return true;
+}
+
+bool main::is_into_harm(
+	const app::player& _player
+) const {
+
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	auto harm_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_harm_only{});
+
+	d2d::collision::checker cc;
+	return cc.has_collision(_player.ent, harm_tiles);
 }
 
 #ifdef IS_DEBUG_BUILD

@@ -52,19 +52,26 @@ class main:
 	void                        tic_ground(float, app::player&, app::player_input);
 	void                        tic_ladder(float, app::player&, app::player_input);
 	void                        tic_air(float, app::player&, app::player_input);
+	void                        tic_crouch(float, app::player&, app::player_input);
+	void                        tic_defeat(float, app::player&, app::player_input);
 
 	void                        load_map(const std::string&);
 
 	bool                        can_grab_ladder(const app::player&, const app::ladder *&) const;
-	bool                        is_on_air(const app::player&);
+	bool                        is_on_air(const app::player&) const;
+	bool                        is_into_harm(const app::player&) const;
 	void                        start_falling(app::player&);
 	void                        land_on_ground(app::player&);
 	void                        collide_with_wall(app::player&);
 	void                        touch_ceiling(app::player&);
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        jump(app::player&);
+	void                        crouch(app::player&);
+	void                        stand_up(app::player&);
+	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
 	void                        jump_out_of_ladder(app::player&, int);
+	void                        drop_out_of_ladder(app::player&);
 
 	void                        setup_camera(int, int);
 
