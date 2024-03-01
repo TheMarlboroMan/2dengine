@@ -12,6 +12,22 @@ entity::entity(
 	previous_box{collision_box}
 {}
 
+entity::entity(
+	d2d::collision::point _pt,
+	unsigned _w, 
+	unsigned _h
+):
+	collision_box{_pt, _w, _h},
+	previous_box{collision_box}
+{}
+
+entity::entity(
+	d2d::collision::box _box
+):
+	collision_box{_box},
+	previous_box{collision_box}
+{}
+
 void entity::sync_boxes() {
 
 	previous_box=collision_box;

@@ -56,8 +56,11 @@ class main:
 	void                        tic_defeat(float, app::player&, app::player_input);
 
 	void                        load_map(const std::string&);
+	void                        take_player_to_entry(app::player&, int);
+	app::entry                  find_entry_by_id(int) const;
 
 	bool                        can_grab_ladder(const app::player&, const app::ladder *&) const;
+	bool                        is_on_touch_exit(const app::player&, const app::exit *&) const;
 	bool                        is_on_air(const app::player&) const;
 	bool                        is_into_harm(const app::player&) const;
 	void                        start_falling(app::player&);

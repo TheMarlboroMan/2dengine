@@ -3,6 +3,8 @@
 #include "solid_block.h"
 #include "platform_block.h"
 #include "ladder.h"
+#include "entry.h"
+#include "exit.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
@@ -24,6 +26,8 @@ class map {
 	std::vector<solid_block>                solid_blocks;
 	std::vector<platform_block>             platform_blocks;
 	std::vector<ladder>                     ladders;
+	std::vector<entry>                      entries;
+	std::vector<exit>                       exits;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 	d2d::collision::tile_finder_matrix      tile_finder;
@@ -33,12 +37,18 @@ class map {
  * syncs the contents of collision_tiles with the tile finder.
  */
 	void                                    sync_tile_finder();
-
-	private:
-
-	friend std::ostream&                    operator<<(std::ostream&, const map&);
 };
 
 std::ostream& operator<<(std::ostream&, const map&);
+
+template<typename T>
+void                                    print_node(const std::string _nodename, const std::vector<T>& _nodes, std::ostream& _stream) {
+
+	_stream<<"\n\t"<<_nodename<<":["<<std::endl;
+
+	for(const auto& node : _nodes ) {
+		_stream<<node<<","<<std::endl;
+	}
+}
 
 }

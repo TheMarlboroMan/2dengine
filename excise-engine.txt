@@ -1,5 +1,7 @@
 next step:
 
+	surely move the timeouts to the engine too. They are nice.
+
 	make the first example game.
 		reload when defeated!
 		have a real camera, not all debug stuff...

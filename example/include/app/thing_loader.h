@@ -15,8 +15,6 @@ class thing_loader
 	void                setup();
 	void                load(d2d::storage::position, int, const std::map<std::string, d2d::storage::attribute>&);
 
-	d2d::storage::position      starting_position;
-
 	private:
 
 	map&                       curmap;

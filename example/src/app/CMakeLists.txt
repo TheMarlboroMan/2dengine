@@ -9,6 +9,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/ladder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/timeouts.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/entry.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/exit.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/map_attribute_loader.cpp
 	PARENT_SCOPE
 )

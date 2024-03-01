@@ -16,37 +16,15 @@ std::ostream& app::operator<<(
 	const map& _map
 ) {
 
-	_stream<<"map: ["<<std::endl
-		<<"\n\tcollision_tiles:["<<std::endl;
-	for(const auto& tile : _map.collision_tiles ) {
-		_stream<<tile<<","<<std::endl;
-	}
-
-	_stream<<"\n\tsolid_blocks:[\n";
-	for(const auto& block : _map.solid_blocks) {
-		_stream<<block<<","<<std::endl;
-	}
-
-	_stream<<"\n\tplatform_blocks:[\n";
-	for(const auto& block : _map.platform_blocks) {
-		_stream<<block<<","<<std::endl;
-	}
-
-	_stream<<"\n\tladders:[\n";
-	for(const auto& ladder : _map.ladders) {
-		_stream<<ladder<<","<<std::endl;
-	}
-
-	_stream<<"\n\tbackground_tiles:[\n";
-	for(const auto& tile : _map.background_tiles) {
-		_stream<<tile<<","<<std::endl;
-	}
-	_stream<<"]";
-
-	_stream<<"\n\tforeground_tiles:[\n";
-	for(const auto& tile : _map.foreground_tiles) {
-		_stream<<tile<<","<<std::endl;
-	}
+	_stream<<"map: ["<<std::endl;
+	print_node("collision_tiles", _map.collision_tiles, _stream);
+	print_node("solid_blocks", _map.solid_blocks, _stream);
+	print_node("platform_blocks", _map.platform_blocks, _stream);
+	print_node("ladders", _map.ladders, _stream);
+	print_node("background_tiles", _map.background_tiles, _stream);
+	print_node("foreground_tiles", _map.foreground_tiles, _stream);
+	print_node("entries", _map.entries, _stream);
+	print_node("exits", _map.exits, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -61,6 +39,8 @@ void map::clear() {
 	ladders.clear();
 	background_tiles.clear();
 	foreground_tiles.clear();
+	entries.clear();
+	exits.clear();
 }
 
 void map::sync_tile_finder() {

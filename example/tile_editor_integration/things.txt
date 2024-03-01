@@ -3,11 +3,97 @@ beginobject
 	name start
 	w 16
 	h 16
-	color 0 0 255 255
+	color 0 255 0 255
+	beginproperty
+		name entry_id
+		type int
+		default 0
+		comment unique id
+		linkedto nothing
+	endproperty
+	beginproperty
+		name position
+		type int
+		default 0
+		comment 0-center (no momentum), 1-inner top, 2-inner right, 3-inner bottom, 4-inner left
+		linkedto nothing
+	endproperty
+	beginproperty
+		name width
+		type int
+		default 16
+		comment entry width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment entry height.
+		linkedto h
+	endproperty
 endobject
 
 beginobject
 	id 2
+	name exit
+	w 16
+	h 16
+	color 0 0 255 255
+	beginproperty
+		name map_filename
+		type string
+		default nomap.json
+		comment map filename, no full path
+		linkedto nothing
+	endproperty
+	beginproperty
+		name next_entry_id
+		type int
+		default 0
+		comment linked entry id
+		linkedto nothing
+	endproperty
+	beginproperty
+		name width
+		type int
+		default 16
+		comment measurements should match the exit.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment measurements should match the exit.
+		linkedto h
+	endproperty
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 0=trigger, 1 touch
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
+	id 4
+	name ladder
+	w 16
+	h 16
+	color 64 128 64 255
+	beginproperty
+		name height
+		type int
+		default 2
+		comment entry height in tiles!
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
+	id 10
 	name below passable box
 	w 16 
 	h 8
@@ -15,14 +101,14 @@ beginobject
 	beginproperty
 		name width
 		type int
-		default 24
+		default 16
 		comment entry width.
 		linkedto w
 	endproperty
 endobject
 
 beginobject
-	id 3
+	id 11
 	name solid_box
 	w 16
 	h 16
@@ -43,17 +129,3 @@ beginobject
 	endproperty
 endobject
 
-beginobject
-	id 4
-	name ladder
-	w 16
-	h 16
-	color 64 128 64 255
-	beginproperty
-		name height
-		type int
-		default 2
-		comment entry height in tiles!
-		linkedto nothing
-	endproperty
-endobject

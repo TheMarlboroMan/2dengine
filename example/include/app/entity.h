@@ -6,12 +6,18 @@
 
 namespace app {
 
+/**
+ * single implementation for spatiable things that do not need to be 
+ * tracked and can be composed instead of inherited.
+ */
 class entity:
 	public d2d::collision::spatiable {
 
 	public:
 
 	                                    entity(int, int, unsigned, unsigned);
+	                                    entity(d2d::collision::point, unsigned, unsigned);
+	                                    entity(d2d::collision::box);
 	void                                sync_boxes();
 
 //Begin implementation of spatiable

@@ -70,7 +70,7 @@ main::main(
 	//TODO: This kind of shit could come from any file.
 	scenery_tile_draw.set_is_animation_fn(
 		[](int _index) -> bool {
-			return _index==29 || _index==147;
+			return _index==29 || _index==147 || _index==151;
 		}
 	);
 
@@ -79,6 +79,7 @@ main::main(
 		[](int _index) -> int {
 
 			switch(_index) {
+				case 151: return 3;
 				case 29: return 2;
 				case 147: return 1;
 			}
@@ -93,56 +94,10 @@ main::main(
 	);
 
 	//Attempt to load the starter map.
-	load_map("map.json");
+	load_map("map_001.json");
+	take_player_to_entry(player, 1);
 }
 
-void main::load_map(
-	const std::string& _map_name
-) {
-	std::stringstream ss;
-	ss<<env.get_app_path()+"resources/maps/"<<_map_name;
-
-	const std::string map_path{ss.str()};
-	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
-
-	d2d::storage::map_loader loader(map_path);
-
-	loader.load_collision_tiles(
-		"logic",
-		current_map.collision_tiles,
-		shaper,
-		tile_impl
-	);
-
-	loader.load_scenery_tiles("foreground", current_map.foreground_tiles);
-	loader.load_scenery_tiles("background", current_map.background_tiles);
-
-	current_map.sync_tile_finder();
-
-	app::thing_loader tl{current_map};
-	loader.load_thing_layer("things", tl);
-
-	app::map_attribute_loader attrl{current_map.background_color};
-	loader.load_properties(attrl);
-
-	//After loading the map, tell the camera where the limits are.
-	d2d::video::camera_map_limit cml;
-	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
-
-	//We can also position the entity in the starting point.
-	lm::log(logger).info()<<"setting starting point at "<<tl.starting_position.x<<", "<<tl.starting_position.y<<"\n";
-	player.ent.set_origin({(double)tl.starting_position.x, (double)tl.starting_position.y});
-
-	//Center camera on map now..
-//TODO: Real camera!
-#ifdef IS_DEBUG_BUILD
-	dd.center_on(player.ent);
-#else
-
-#endif
-
-//	std::cout<<current_map<<std::endl;
-}
 
 void main::awake(
 	dfw::input& /*input*/
@@ -216,6 +171,64 @@ void main::loop_scene(
 	tic(_lid.delta, pli);
 }
 
+void main::load_map(
+	const std::string& _map_name
+) {
+	std::stringstream ss;
+	ss<<env.get_app_path()+"resources/maps/"<<_map_name;
+
+	const std::string map_path{ss.str()};
+	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
+
+	d2d::storage::map_loader loader(map_path);
+
+	loader.load_collision_tiles(
+		"logic",
+		current_map.collision_tiles,
+		shaper,
+		tile_impl
+	);
+
+	loader.load_scenery_tiles("foreground", current_map.foreground_tiles);
+	loader.load_scenery_tiles("background", current_map.background_tiles);
+
+	current_map.sync_tile_finder();
+
+	app::thing_loader tl{current_map};
+	loader.load_thing_layer("things", tl);
+
+	app::map_attribute_loader attrl{current_map.background_color};
+	loader.load_properties(attrl);
+
+	//After loading the map, tell the camera where the limits are.
+	d2d::video::camera_map_limit cml;
+	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+
+//	std::cout<<current_map<<std::endl;
+}
+
+void main::take_player_to_entry(
+	app::player& _player,
+	int _id
+) {
+
+	lm::log(logger).info()<<"will attempt to set player at position "<<_id<<"\n";
+	auto entry=find_entry_by_id(_id);
+
+	//TODO: Actually, there are MORE WAYS to center a player, but this shall suffice.
+	auto origin=entry.ent.get_origin();
+	lm::log(logger).info()<<"setting starting point at "<<origin<<"\n";
+	player.ent.set_origin({(double)origin.x, (double)origin.y});
+
+	//Center camera on map now..
+//TODO: Real camera!
+#ifdef IS_DEBUG_BUILD
+	dd.center_on(player.ent);
+#else
+
+#endif
+}
+
 void main::tic(
 	float _delta,
 	app::player_input _pli
@@ -257,6 +270,14 @@ void main::tic(
 
 			dd.center_on(player.ent);
 		}
+	}
+
+	//at the end of the tic, are we touching an exit?
+	const app::exit * exitptr{nullptr};
+	if(is_on_touch_exit(player, exitptr)) {
+
+		load_map(exitptr->map_filename);
+		take_player_to_entry(player, exitptr->next_entry_id);
 	}
 }
 
@@ -388,7 +409,7 @@ void main::tic_ladder(
 		//TODO: These nested ifs are ugly...
 		//There can be no exit if we are stuck in tiles.
 		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
-		if(cc.has_collision(_player.ent, tiles_to_check)) {
+		if(!cc.has_collision(_player.ent, tiles_to_check)) {
 
 			auto player_box_copy=_player.ent.get_box();
 			player_box_copy.origin.y-=4;
@@ -525,8 +546,6 @@ void main::tic_defeat(
 	d2d::motion::mover mover{};
 	simulation.gravity.apply_to(_player.velocity, _delta);
 	mover.apply(_player.ent, _player.velocity, _delta);
-
-	std::cout<<player.timeouts.get(app::player::timeout_defeat)<<std::endl;
 
 	if(!player.timeouts.is_counting(app::player::timeout_defeat)) {
 
@@ -801,6 +820,23 @@ bool main::is_on_air(
 		&& !cc.has_collision(player_box_copy, current_map.platform_blocks);
 }
 
+bool main::is_on_touch_exit(
+	const app::player& _player,
+	const app::exit *&_exitptr
+) const {
+
+	for(const auto& exit : current_map.exits) {
+
+		if(exit.touch && d2d::collision::collides_with(_player.ent, exit.ent)) {
+
+			_exitptr=&exit;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool main::can_grab_ladder(
 	const app::player& _player,
 	const app::ladder *&_ladderptr
@@ -831,6 +867,24 @@ bool main::is_into_harm(
 
 	d2d::collision::checker cc;
 	return cc.has_collision(_player.ent, harm_tiles);
+}
+
+app::entry main::find_entry_by_id(
+	int _id
+) const {
+
+	auto it=std::find_if(
+		std::begin(current_map.entries),
+		std::end(current_map.entries),
+		[_id](const app::entry& _entry) -> bool {return _entry.id==_id;}
+	);
+
+	if(std::end(current_map.entries) != it) {
+
+		return *it;
+	}
+
+	throw std::runtime_error("could not find entry by id");
 }
 
 #ifdef IS_DEBUG_BUILD
