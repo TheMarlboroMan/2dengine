@@ -45,7 +45,11 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 
 #Define the library itself.
 set(SOURCE "")
-add_subdirectory("${PROJECT_SOURCE_DIR}/lib")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/collision")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/storage")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/video")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/motion")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/components")
 
 #library type and filenames.
 if(${BUILD_DEBUG})
@@ -155,7 +159,9 @@ if(${BUILD_TESTS})
 	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
 	set(EXAMPLE_SOURCE "")
 	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
+	add_executable(persistence tests/persistence.cpp)
 
 	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+	target_link_libraries(persistence d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 
 endif()

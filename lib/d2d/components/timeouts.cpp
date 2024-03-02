@@ -1,6 +1,6 @@
-#include <app/timeouts.h>
+#include <d2d/components/timeouts.h>
 
-using namespace app;
+using namespace d2d::components;
 
 void timeouts::tic(
 	float _delta

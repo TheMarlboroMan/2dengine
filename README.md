@@ -1,8 +1,28 @@
-#
+# d2d
 
 ## what do I want to do with this
 
 - Streamline the experience of creating a 2dgame by providing a set of commonly used tools.
+
+## namespaces of d2d
+
+### collision
+
+Axis aligned boxes collision, plus a spatiable interface for objects that need to collide.
+
+### motion
+
+### storage
+
+### tools
+
+Miscellaneous tools that would have little use outside the engine.
+
+### video
+
+### components
+
+These are reusable components for games, like timeout sequences.
 
 ## howto
 

@@ -7,7 +7,6 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/platform_block.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/thing_loader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ladder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/timeouts.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/player.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/entry.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/exit.cpp

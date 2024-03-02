@@ -1,9 +1,5 @@
 next step:
 
-	surely move the timeouts to the engine too. They are nice.
-		Sure... what would be the namespace?
-			tools?
-
 	make the first example game.
 
 		plan the game.
@@ -20,6 +16,7 @@ next step:
 			sprite scaling.
 
 	docs:
+		Complete the README.
 		Documentation and doxygen.
 
 fixes and misc:

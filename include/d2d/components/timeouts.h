@@ -2,7 +2,7 @@
 
 #include <map>
 
-namespace app {
+namespace d2d { namespace components {
 /**
  * a container of timeouts.
  */
@@ -75,4 +75,4 @@ class timeouts {
 
 	std::map<int, timeout>  data;
 };
-}
+}}

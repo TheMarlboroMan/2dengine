@@ -1,0 +1,224 @@
+#pragma once
+
+#include "exception.h"
+#include <map>
+#include <vector>
+#include <algorithm>
+
+namespace d2d { namespace components {
+
+/**
+ * safe persistence class. Stores groups of identifiers matched to a state.
+ */
+template<typename grouptype, typename idtype, typename statetype>
+class persistence {
+
+	public:
+
+/**
+ * returns the number of groups.
+ */
+	std::size_t                         size() const {
+
+		return data.size();
+	}
+
+/**
+ * returns the number of items in a group. Throws if the group does not
+ * exist.
+ */
+
+	std::size_t                         size(grouptype _group) const {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot get size of non-existent persistence group");
+		}
+
+		return data.at(_group).size();
+	}
+
+/**
+ * returns true if the group exists.
+ */
+	bool                                has(grouptype _group) const {
+
+		return (bool) data.count(_group);
+	}
+
+/**
+ * returns true if the group exists and has the given id within it.
+ */
+	bool                                has(grouptype _group, idtype _id) const {
+
+		//remove constness from this to be able to call the non-const method.
+		return nullptr!=const_cast<persistence<grouptype, idtype, statetype>*>
+			(this)->find(_group, _id);
+	}
+
+/**
+ * adds a group of the group does not exist. Throws if it exists.
+ */
+	void                                add(grouptype _group) {
+
+		if(!this->has(_group)) {
+
+			data.insert(std::make_pair(_group, list{}));
+			return;
+		}
+
+		throw exception("cannot add already existing persistence group");
+	}
+
+/**
+ * adds an item to the group. Throws if the group does not exist. Throws if
+ * a node with the same id already exists.
+ */
+	void                                add(grouptype _group, idtype _id, statetype _state) {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot add node to non-existing persistence group");
+		}
+
+		auto found=this->find(_group, _id);
+		if(nullptr!=found) {
+
+			throw exception("cannot add existing node to persistence group");
+		}
+
+		data.at(_group).emplace_back(node{_id, _state});
+	}
+
+/**
+ * sets the state of the item. Throws if the item or group do not exist.
+ */
+	void                                set(grouptype _group, idtype _id, statetype _state) {
+
+		auto found=this->find(_group, _id);
+		if(nullptr==found) {
+
+			throw exception("cannot set the value to non-existing node in persistence group");
+		}
+
+		found->state=_state;
+	}
+
+/**
+ * returns the state of the given item in the group. Throws if any of them 
+ * don't exist.
+ */
+	statetype                            get(grouptype _group, idtype _id) const {
+
+		auto found=const_cast<persistence<grouptype, idtype, statetype>*>
+			(this)->find(_group, _id);
+		if(nullptr==found) {
+
+			throw exception("cannot retrieve state in non-existing node in persistence group");
+		}
+
+		return found->state;
+	}
+	
+/**
+ * returns true if the node in the group and id matches the given state.
+ * Throws if the group or id do not exist.
+ */
+	bool                                is(grouptype _group, idtype _id, statetype _state) const {
+
+		auto found=const_cast<persistence<grouptype, idtype, statetype>*>
+			(this)->find(_group, _id);
+		if(nullptr==found) {
+
+			throw exception("cannot check state in non-existing node in persistence group");
+		}
+
+		return found->state==_state;
+	}
+
+/**
+ * clears the given group if exists. Throws if it does not.
+ */
+	void                                clear(grouptype _group) {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot clear non-existent persistence group");
+		}
+
+		data.at(_group).clear();
+	}
+
+/**
+ * removes the group if it exists. Throws if it does not.
+ */
+	void                                erase(grouptype _group) {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot erase non-existent persistence group");
+		}
+
+		data.erase(_group);
+	}
+
+/**
+ * removes the item from the given group. Throws if any of them don't exist.
+ */
+	void                                erase(grouptype _group, idtype _id) {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot erase node from non-existent persistence group");
+		}
+
+		auto& l=data.at(_group);
+		auto it=std::find_if(
+			std::begin(l),
+			std::end(l),
+			[_id](const node _node) -> bool {return _node.id==_id;}
+		);
+
+		if(std::end(l)==it) {
+
+			throw exception("cannot erase non-existent node from persistence group");
+		}
+
+		l.erase(it);
+	}
+
+	//TODO: There may be methods to store and restore the sequence from disk.
+
+	private:
+
+	struct node {
+		idtype id;
+		statetype state;
+	};
+
+	node *                              find(grouptype _group, idtype _id) {
+
+		if(!this->has(_group)) {
+
+			return nullptr;
+		}
+
+		auto& l=data.at(_group);
+		auto it=std::find_if(
+			std::begin(l),
+			std::end(l),
+			[_id](const node _node) -> bool {return _node.id==_id;}
+		);
+
+		if(std::end(l)==it) {
+
+			return nullptr;
+		}
+
+		return &(*it);
+	}
+
+	typedef std::vector<node>           list; //list of identifiers.
+	std::map<grouptype, list>           data;
+};
+}}
