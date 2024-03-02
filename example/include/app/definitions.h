@@ -10,6 +10,10 @@ static const int player_w=15;
 static const int player_h=24;
 static const int player_h_crouch=12;
 
+enum persistence_groups {
+	pergr_collectibles=1
+};
+
 enum spritesheets {
 	ss_tiles=1
 };
@@ -32,7 +36,9 @@ enum animations{
 };
 
 enum sprites {
-	spr_ladder_yellow=137
+	spr_ladder_yellow=137,
+	spr_gold_ingot=400,
+	spr_gem=401
 };
 
 enum tile_types {

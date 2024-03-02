@@ -52,7 +52,8 @@ main::main(
 		app::tile_w, 
 		app::tile_h,
 		_sp.get_animation_manager().at(app::animgr_tiles)
-	}
+	},
+	persistence{_sp.get_persistence()}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -200,7 +201,7 @@ void main::load_map(
 
 	current_map.sync_tile_finder();
 
-	app::thing_loader tl{current_map};
+	app::thing_loader tl{current_map, persistence};
 	loader.load_thing_layer("things", tl);
 
 	app::map_attribute_loader attrl{current_map.background_color};
@@ -416,6 +417,23 @@ void main::tic(
 		}
 	}
 
+	//any collectibles at hand??
+	auto it=std::find_if(
+		std::begin(current_map.collectibles),
+		std::end(current_map.collectibles),
+		[this](const app::collectible& _collectible) -> bool {
+
+			return d2d::collision::collides_with(player.ent, _collectible.ent);
+		}
+	);
+
+	if(it!=std::end(current_map.collectibles)) {
+
+		pick_up_collectible(player, *it);
+		it=current_map.collectibles.erase(it);
+		it++;
+	}
+
 	//at the end of the tic, are we touching an exit?
 	const app::exit * exitptr{nullptr};
 	if(is_on_exit(player, exitptr, true)) {
@@ -484,13 +502,6 @@ void main::tic_ground(
 			: app::faces::left;
 
 		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
-
-		//It would be absurd to walk into harm's way but...
-		if(is_into_harm(_player)) {
-
-			defeat(_player);
-			return;
-		}
 
 		//Collision...
 		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
@@ -758,6 +769,11 @@ void main::draw_scene(
 		draw_ladder(_screen, ladder);
 	}
 
+	for(const auto& collectible : current_map.collectibles) {
+
+		draw_collectible(_screen, collectible);
+	}
+
 	draw_player(_screen, player);
 	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
 }
@@ -781,6 +797,35 @@ void main::draw_ladder(
 
 		origin.y+=app::tile_h;
 	}
+}
+
+void main::draw_collectible(
+	ldv::screen& _screen,
+	const app::collectible& _collectible
+) {
+
+	auto origin=d2d::video::to_screen(_collectible.ent.get_origin());
+
+	//TODO: Maybe use a default???
+	int sprite_index=app::spr_gold_ingot;
+	switch(_collectible.type) {
+
+		case app::collectible::gold_ingot:
+
+			sprite_index=app::spr_gold_ingot;
+		break;
+		case app::collectible::gem:
+
+			sprite_index=app::spr_gem;
+		break;
+	}
+
+	sprite_draw_animated.spr_draw.draw(
+		_screen,
+		camera,
+		origin,
+		sprite_index
+	);
 }
 
 void main::draw_player(
@@ -900,6 +945,16 @@ void main::drop_out_of_ladder(
 	_player.state=app::player::states::air;
 	_player.timeouts.reset(app::player::timeout_ladder);
 	//there is no last chance jump here.
+}
+
+void main::pick_up_collectible(
+	app::player&,
+	const app::collectible& _collectible
+) {
+
+	//Does not actually make the collectible dissapear :P.
+	std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
+	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 }
 
 void main::jump(

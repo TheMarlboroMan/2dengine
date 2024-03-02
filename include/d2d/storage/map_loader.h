@@ -32,8 +32,6 @@ class map_loader {
 	                                        const std::string& ={"attributes"}
 	);
 
-	//TODO: Map property processor now...
-
 /**
 *loads data from file into the vector. Collision tiles will be cleared.
 */

@@ -6,9 +6,11 @@
 using namespace app;
 
 thing_loader::thing_loader(
-	map& _map
-)
-	:curmap{_map}
+	map& _map,
+	tpersistence& _persistence
+):
+	curmap{_map},
+	persistence{_persistence}
 {}
 
 void thing_loader::setup() {
@@ -30,6 +32,7 @@ void thing_loader::load(
 		switch(_type) {
 
 			case 1:{
+
 				unsigned w=_attributes.at("width").get_int();
 				unsigned h=_attributes.at("height").get_int();
 				int id=_attributes.at("entry_id").get_int();
@@ -54,16 +57,34 @@ void thing_loader::load(
 				return;
 			}
 			case 4:
+
 				curmap.ladders.push_back(
 					{_pos.x, _pos.y, _attributes.at("height").get_int()*app::tile_h}
 				);
 				return;
+			case 5:{
+
+				int id=_attributes.at("id").get_int();
+				//Check if it was already retrieved.
+				if(persistence.has(pergr_collectibles, id)) {
+
+					return;
+				}
+
+				int type=_attributes.at("type").get_int();
+				curmap.collectibles.push_back(
+					{ {_pos.x, _pos.y}, id, type}
+				);
+				return;
+			}
 			case 10:
+
 				curmap.platform_blocks.push_back(
 					{_pos.x, _pos.y, _attributes.at("width").get_int()}
 				);
 				return;
 			case 11:
+
 				curmap.solid_blocks.push_back(
 					{_pos.x, _pos.y, _attributes.at("width").get_int(), _attributes.at("height").get_int()}
 				);

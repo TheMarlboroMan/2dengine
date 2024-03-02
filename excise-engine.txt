@@ -3,9 +3,16 @@ next step:
 	make the first example game.
 
 		plan the game.
+			"traps":
+				stuff you fall into
+				stuff that shoots you
+				stuff that shoots you when activated
+
 			"doors" are a block that moves up
 				most of them can  be opened by placing a crystal in a slot.
+				generically they should be things with a "tag".
 			there should be switches, right?
+				generically they activate stuff with the same "tag".
 
 	engine:
 		I guess slopes
@@ -21,5 +28,4 @@ next step:
 
 fixes and misc:
 ---------------------
-
 

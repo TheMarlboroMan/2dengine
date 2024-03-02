@@ -93,6 +93,28 @@ beginobject
 endobject
 
 beginobject
+	id 5
+	name collectible
+	w 16
+	h 16
+	color 161 95 48 255
+	beginproperty
+		name type
+		type int
+		default 0
+		comment type 0=ingot, 1=gem
+		linkedto nothing
+	endproperty
+	beginproperty
+		name id
+		type int
+		default 0
+		comment should be unique in the whole map set
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 10
 	name below passable box
 	w 16 

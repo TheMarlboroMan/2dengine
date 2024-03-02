@@ -11,6 +11,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/entry.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/exit.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/map_attribute_loader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/collectible.cpp
 	PARENT_SCOPE
 )
 

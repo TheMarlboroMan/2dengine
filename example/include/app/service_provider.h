@@ -1,9 +1,10 @@
 #pragma once
 
+#include "app/tile_impl.h"
+#include "types.h"
 #include <memory>
 //Sadly a forward declaration it not enough for the unique_ptr...
 #include <d2d/collision/shaper.h>
-#include "app/tile_impl.h"
 #include <ldtools/ttf_manager.h>
 #include <d2d/video/spritesheet_manager.h>
 #include <d2d/video/animation_manager.h>
@@ -48,6 +49,7 @@ class service_provider {
 	d2d::video::spritesheet_manager& get_spritesheet_manager() {return spritesheet_manager;}
 	d2d::video::animation_manager& get_animation_manager() {return animation_manager;}
 	ldv::resource_manager&  get_video_resource_manager() {return video_resource_manager;}
+	app::tpersistence&      get_persistence() {return persistence;}
 
 	private:
 
@@ -60,5 +62,6 @@ class service_provider {
 	std::unique_ptr<ldtools::ttf_manager>	ttf_manager{nullptr};
 	d2d::video::spritesheet_manager spritesheet_manager;
 	d2d::video::animation_manager   animation_manager;
+	tpersistence                    persistence;
 };
 }

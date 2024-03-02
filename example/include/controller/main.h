@@ -13,6 +13,7 @@
 #include "app/tile_impl.h"
 #include "app/player_input.h"
 #include "app/player.h"
+#include "app/types.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -48,6 +49,7 @@ class main:
 	void                        draw_scene(ldv::screen&);
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
+	void                        draw_collectible(ldv::screen&, const app::collectible&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_ground(float, app::player&, app::player_input);
@@ -85,6 +87,7 @@ class main:
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
 	void                        jump_out_of_ladder(app::player&, int);
 	void                        drop_out_of_ladder(app::player&);
+	void                        pick_up_collectible(app::player&, const app::collectible&);
 
 	const app::env&             env;
 	lm::logger&                 logger;
@@ -95,6 +98,7 @@ class main:
 	d2d::video::sprite_draw     sprite_draw;
 	d2d::video::sprite_draw_animated sprite_draw_animated;
 	d2d::video::scenery_tile_draw_animated scenery_tile_draw;
+	app::tpersistence&          persistence;
 
 	//game state stuff.
 	app::simulation             simulation;

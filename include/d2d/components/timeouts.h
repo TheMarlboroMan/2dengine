@@ -3,8 +3,13 @@
 #include <map>
 
 namespace d2d { namespace components {
+
 /**
- * a container of timeouts.
+ * a container of timeouts. A timeout is a value associated to a numeric key
+ * that counts down by a delta value whenever "tic" is called. When the value
+ * has reached zero it has "expired". If the value is still greater than zero
+ * it is "counting". Once a timeout has expired it must be reset with "reset"
+ * so it can be used again.
  */
 class timeouts {
 
@@ -37,7 +42,6 @@ class timeouts {
 /**
  * resets the timeout identified by the identifier to its max value.
  */
-
 	timeouts&       reset(int);
 
 /**

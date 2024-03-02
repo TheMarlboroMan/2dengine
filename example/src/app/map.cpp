@@ -25,6 +25,7 @@ std::ostream& app::operator<<(
 	print_node("foreground_tiles", _map.foreground_tiles, _stream);
 	print_node("entries", _map.entries, _stream);
 	print_node("exits", _map.exits, _stream);
+	print_node("collectibles", _map.exits, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -41,6 +42,7 @@ void map::clear() {
 	foreground_tiles.clear();
 	entries.clear();
 	exits.clear();
+	collectibles.clear();
 }
 
 void map::sync_tile_finder() {

@@ -5,6 +5,9 @@
 
 namespace d2d {namespace components {
 
+/**
+ * base class for all exceptions thrown in this module.
+ */
 class exception:
 	public std::runtime_error {
 

@@ -201,6 +201,10 @@ class persistence {
 		l.erase(it);
 	}
 
+/**
+ * stores the persisted state into a regular text file. The state can be 
+ * retrieved with "load".
+ */
 	void                                save(const std::string& _filename) {
 
 		std::ofstream ofile{_filename};
@@ -224,6 +228,9 @@ class persistence {
 		}
 	}
 
+/**
+ * retrieves a state previously persisted to a file.
+ */
 	void                                load(const std::string& _filename) {
 
 		data.clear();
