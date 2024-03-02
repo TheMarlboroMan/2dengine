@@ -4,11 +4,17 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 namespace d2d { namespace components {
 
 /**
  * safe persistence class. Stores groups of identifiers matched to a state.
+ * Should identifiers of groups or nodes (or even states) be strings they
+ * should not contain spaces, the equal sign or square brackets. Should custom 
+ * types be used they should have their stream << operators overloaded.
  */
 template<typename grouptype, typename idtype, typename statetype>
 class persistence {
@@ -137,6 +143,14 @@ class persistence {
 	}
 
 /**
+ * fully destroys the contents...
+ */
+	void                                clear() {
+
+		data.clear();
+	}
+
+/**
  * clears the given group if exists. Throws if it does not.
  */
 	void                                clear(grouptype _group) {
@@ -187,7 +201,80 @@ class persistence {
 		l.erase(it);
 	}
 
-	//TODO: There may be methods to store and restore the sequence from disk.
+	void                                save(const std::string& _filename) {
+
+		std::ofstream ofile{_filename};
+
+		for(const auto& l : data) {
+
+			ofile<<"["<<l.first<<"]"<<std::endl;
+
+			if(l.second.size()) {
+
+				for(const auto& piece : l.second) {
+
+					ofile<<piece.id<<" = "<<piece.state<<" ";
+				}
+				//Remove last space...
+				long pos=ofile.tellp();
+				ofile.seekp(pos-1);
+			}
+
+			ofile<<std::endl;
+		}
+	}
+
+	void                                load(const std::string& _filename) {
+
+		data.clear();
+		std::ifstream ifile{_filename};
+
+		std::string line;
+		std::string groupname;
+		std::istringstream iss;
+
+		while(true) {
+
+			std::getline(ifile, line);
+			if(ifile.eof()) {
+
+				break;
+			}
+
+			if('['==line[0]) {
+
+				line.pop_back();
+				groupname=line.substr(1);
+				add(groupname);
+				continue;
+			}
+
+			iss.str(line);
+			if(!line.size()) {
+
+				continue;
+			}
+
+			while(true) {
+
+				idtype id;
+				statetype state;
+
+				iss>>id;
+				iss.ignore(2, '=');
+				iss>>state;
+
+				add(groupname, id, state);
+
+				if(iss.eof()) {
+
+					break;
+				}
+			}
+
+			iss.clear();
+		}
+	}
 
 	private:
 

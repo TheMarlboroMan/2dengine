@@ -172,6 +172,48 @@ int main(int, char **) {
 	std::cout<<"checking that the node was erased"<<std::endl;
 	assert(0==persistence.size("treasures"));
 
+	std::cout<<"checking full erase"<<std::endl;
+	persistence.add("a");
+	persistence.add("b");
+	persistence.add("c");
+	assert(4==persistence.size()); //counting "treasures".
+	persistence.clear();
+	assert(0==persistence.size());
+
+	std::cout<<"setting up for save"<<std::endl;
+	persistence.add("treasures");
+	persistence.add("empty");
+	persistence.add("artifacts");
+	persistence.add("treasures", 1, undiscovered);
+	persistence.add("treasures", 2, discovered);
+	persistence.add("artifacts", 1, retrieved);
+	assert(3==persistence.size());
+	assert(persistence.has("treasures"));
+	assert(persistence.has("empty"));
+	assert(persistence.has("artifacts"));
+	assert(persistence.is("treasures", 1, undiscovered));
+	assert(persistence.is("treasures", 2, discovered));
+	assert(persistence.is("artifacts", 1, retrieved));
+	assert(0==persistence.size("empty"));
+
+	persistence.save("myfile");
+
+	std::cout<<"clearing up..."<<std::endl;
+	persistence.clear();
+	assert(0==persistence.size());
+
+	std::cout<<"loading..."<<std::endl;
+	persistence.load("myfile");
+
+	assert(3==persistence.size());
+	assert(persistence.has("treasures"));
+	assert(persistence.has("empty"));
+	assert(persistence.has("artifacts"));
+	assert(persistence.is("treasures", 1, undiscovered));
+	assert(persistence.is("treasures", 2, discovered));
+	assert(persistence.is("artifacts", 1, retrieved));
+	assert(0==persistence.size("empty"));
+
 	std::cout<<"all checks are ok"<<std::endl;
 	return 0;
 }
