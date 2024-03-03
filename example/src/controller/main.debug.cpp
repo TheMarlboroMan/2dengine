@@ -201,6 +201,11 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
+	for(const auto& node : current_map.linear_monsters) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	dd.draw(_screen, player.ent);
 }
 

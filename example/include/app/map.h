@@ -6,6 +6,7 @@
 #include "entry.h"
 #include "exit.h"
 #include "collectible.h"
+#include "linear_monster.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
@@ -30,6 +31,7 @@ class map {
 	std::vector<entry>                      entries;
 	std::vector<exit>                       exits;
 	std::vector<collectible>                collectibles;
+	std::vector<linear_monster>             linear_monsters;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 	d2d::collision::tile_finder_matrix      tile_finder;

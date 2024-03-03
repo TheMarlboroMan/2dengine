@@ -16,6 +16,11 @@ struct filter_tiles_ignore_one_way_above {
 		const d2d::collision::tile& _tile
 	) const {
 
+		if(_tile.type==app::tile_monster_block) {
+
+			return false;
+		}
+
 		if(_tile.type != app::tile_half_bottom_passable
 			&& _tile.type != app::tile_half_top_passable
 		) {
@@ -36,6 +41,11 @@ struct filter_tiles_ignore_one_way {
 		const d2d::collision::box& ,
 		const d2d::collision::tile& _tile
 	) const {
+
+		if(_tile.type==app::tile_monster_block) {
+
+			return false;
+		}
 
 		return !(
 			_tile.type == app::tile_half_bottom_passable
@@ -68,6 +78,11 @@ struct filter_tiles_check_on_air {
 		const d2d::collision::tile& _tile
 	) const {
 
+		if(_tile.type==app::tile_monster_block) {
+
+			return false;
+		}
+
 		if(_tile.type == app::tile_harm) {
 
 			return false;
@@ -75,6 +90,20 @@ struct filter_tiles_check_on_air {
 
 		auto f=filter_tiles_ignore_one_way_above{};
 		return f(_box, _tile);
+	}
+};
+
+/**
+ * tiles that must be ignored when checking if we are on the air.
+ */
+struct filter_tiles_ignore_monster_block {
+
+	bool operator()(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile& _tile
+	) const {
+
+		return _tile.type!=app::tile_monster_block;
 	}
 };
 }

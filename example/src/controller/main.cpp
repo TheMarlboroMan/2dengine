@@ -404,6 +404,8 @@ void main::tic(
 		break;
 	}
 
+	tic_world(_delta);
+
 	//aftermath
 	if(player.ent.get_origin() != player.ent.get_previous_box().origin) {
 	
@@ -418,6 +420,16 @@ void main::tic(
 #ifdef IS_DEBUG_BUILD
 			dd.center_on(player.ent);
 #endif
+		}
+	}
+
+	//Are we touching a monster?
+	for(const auto& monster : current_map.linear_monsters) {
+
+		if(d2d::collision::collides_with(player.ent, monster.ent)) {
+
+			defeat(player);
+			return;
 		}
 	}
 
@@ -444,6 +456,25 @@ void main::tic(
 
 		exit_to(player, *exitptr);
 		return;
+	}
+}
+
+void main::tic_world(
+	float _delta
+) {
+
+	d2d::motion::mover mover{};
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+
+	for(auto& monster : current_map.linear_monsters) {
+
+		mover.apply_x(monster.ent, monster.velocity.x, _delta);
+		auto contacting_tiles=adapter.find(monster.ent, current_map.tile_finder);
+		//TODO: It would be nice to have a "has" method.
+		if(contacting_tiles.size()) {
+
+			monster.reverse();
+		}
 	}
 }
 
@@ -668,7 +699,7 @@ void main::tic_air(
 	}
 
 	//Collision...
-	current_tiles=adapter.find(_player.ent, current_map.tile_finder);
+	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_monster_block{});
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 	cpv.detect_all(current_tiles);
 	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
@@ -778,6 +809,11 @@ void main::draw_scene(
 		draw_collectible(_screen, collectible);
 	}
 
+	for(const auto& monster : current_map.linear_monsters) {
+
+		draw_linear_monster(_screen, monster);
+	}
+
 	draw_player(_screen, player);
 	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
 }
@@ -829,6 +865,28 @@ void main::draw_collectible(
 		camera,
 		origin,
 		sprite_index
+	);
+}
+
+void main::draw_linear_monster(
+	ldv::screen& _screen,
+	const app::linear_monster& _monster
+) {
+
+	//Al sprites are facing right by default.
+	d2d::video::sprite_draw::flags draw_flags{
+		_monster.facing==app::faces::left,
+		false
+	};
+
+	int animation_index=app::anim_scorpion;
+
+	sprite_draw_animated.draw(
+		_screen, 
+		camera, 
+		d2d::video::to_screen(_monster.ent.get_origin()),
+		animation_index,
+		draw_flags
 	);
 }
 

@@ -2,11 +2,20 @@ next step:
 
 	make the first example game.
 
+		segfault in sprite editor when moving sprites.
+		make the player box smaller.
+
 		plan the game.
+
+			"monsters"
+				monsters patrolling left and right.
+				same, but up and down.
+
 			"traps":
 				stuff you fall into
 				stuff that shoots you
 				stuff that shoots you when activated
+			treasure to pick up.
 
 			"doors" are a block that moves up
 				most of them can  be opened by placing a crystal in a slot.

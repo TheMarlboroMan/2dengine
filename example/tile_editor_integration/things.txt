@@ -115,7 +115,29 @@ beginobject
 endobject
 
 beginobject
-	id 10
+	id 50
+	name linear monster
+	w 16
+	h 16
+	color 255 32 32 255
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=scorpion
+		linkedto nothing
+	endproperty
+	beginproperty
+		name facing_right
+		type int
+		default 1
+		comment 1=right 0=left
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
+	id 100
 	name below passable box
 	w 16 
 	h 8
@@ -130,7 +152,7 @@ beginobject
 endobject
 
 beginobject
-	id 11
+	id 101
 	name solid_box
 	w 16
 	h 16

@@ -42,6 +42,7 @@ enum animations{
 	anim_f_climb=113,
 	anim_f_crouch=114,
 	anim_f_defeat=115,
+	anim_scorpion=150
 };
 
 enum sprites {
@@ -67,7 +68,8 @@ enum tile_types {
 	tile_quarter_top_right=9,
 	tile_half_bottom_passable=10,
 	tile_half_top_passable=11,
-	tile_harm=12
+	tile_harm=12,
+	tile_monster_block=13,
 };
 
 enum class faces {

@@ -50,8 +50,10 @@ class main:
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
 	void                        draw_collectible(ldv::screen&, const app::collectible&);
+	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
 
 	void                        tic(float, app::player_input);
+	void                        tic_world(float);
 	void                        tic_ground(float, app::player&, app::player_input);
 	void                        tic_ladder(float, app::player&, app::player_input);
 	void                        tic_air(float, app::player&, app::player_input);

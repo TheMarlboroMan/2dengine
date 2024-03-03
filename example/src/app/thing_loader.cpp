@@ -77,13 +77,24 @@ void thing_loader::load(
 				);
 				return;
 			}
-			case 10:
+
+			case 50: {
+
+				int type=_attributes.at("type").get_int();
+				bool faces_right=_attributes.at("facing_right").get_int()==1;
+				curmap.linear_monsters.push_back(
+					{ {_pos.x, _pos.y}, type, faces_right}
+				);
+
+				return;
+			}
+			case 100:
 
 				curmap.platform_blocks.push_back(
 					{_pos.x, _pos.y, _attributes.at("width").get_int()}
 				);
 				return;
-			case 11:
+			case 101:
 
 				curmap.solid_blocks.push_back(
 					{_pos.x, _pos.y, _attributes.at("width").get_int(), _attributes.at("height").get_int()}
