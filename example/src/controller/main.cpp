@@ -71,7 +71,7 @@ main::main(
 	//TODO: This kind of shit could come from any file.
 	scenery_tile_draw.set_is_animation_fn(
 		[](int _index) -> bool {
-			return _index==29 || _index==147 || _index==151;
+			return _index==app::spr_water_surface || _index==app::spr_waterfall || _index==app::spr_lava_surface;
 		}
 	);
 
@@ -80,9 +80,9 @@ main::main(
 		[](int _index) -> int {
 
 			switch(_index) {
-				case 151: return 3;
-				case 29: return 2;
-				case 147: return 1;
+				case app::spr_water_surface: return app::anim_water_surface;
+				case app::spr_waterfall: return app::anim_waterfall;
+				case app::spr_lava_surface: return app::anim_lava_surface;
 			}
 
 			return 0;
@@ -848,25 +848,30 @@ void main::draw_player(
 		case app::player::states::ground:
 
 			animation_index=_player.velocity.x!=0.
-				? app::anim_walk
-				: app::anim_idle;
+				? app::anim_m_walk
+				: app::anim_m_idle;
 			is_animation=true;
 		break;
 		case app::player::states::air:
-			animation_index=app::anim_jump;
+			animation_index=app::anim_m_jump;
 		break;
 		case app::player::states::crouch:
-			animation_index=app::anim_crouch;
+			animation_index=app::anim_m_crouch;
 		break;
 		case app::player::states::defeat:
-			animation_index=app::anim_defeat;
+			animation_index=app::anim_m_defeat;
 		break;
 		case app::player::states::ladder:
-			animation_index=app::anim_climb;
+			animation_index=app::anim_m_climb;
 			int y_mod=(int)player.ent.get_origin().y % 10;
 			frame_index=y_mod <= 4 ? 0 : 1;
 			draw_flags={false, false};
 		break;
+	}
+
+	if(_player.gender==app::player::genders::female) {
+
+		animation_index+=10; //they are exactly 10 indexes apart.
 	}
 
 	if(is_animation) {
@@ -874,7 +879,7 @@ void main::draw_player(
 		sprite_draw_animated.draw(
 			_screen, 
 			camera, 
-			d2d::video::to_screen(player.ent.get_origin()),
+			d2d::video::to_screen(_player.ent.get_origin()),
 			animation_index,
 			draw_flags
 		);

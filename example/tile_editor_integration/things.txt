@@ -102,7 +102,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment type 0=ingot, 1=gem
+		comment type 0=ingot, 1=gem, 2=ruby
 		linkedto nothing
 	endproperty
 	beginproperty

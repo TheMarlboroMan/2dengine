@@ -23,6 +23,10 @@ collectible::collectible(
 			ent.set_w(gem_w);
 			ent.set_h(gem_h);
 		break;
+		case ruby:
+			ent.set_w(ruby_w);
+			ent.set_h(ruby_h);
+		break;
 	}
 }
 

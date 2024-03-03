@@ -18,6 +18,7 @@ class player {
 		timeout_last_jump_chance=1,
 		timeout_defeat=2
 	};
+
 	                                            player();
 	entity                                      ent;
 	d2d::motion::motion_vector                  velocity{0.0, 0.0};
@@ -25,6 +26,9 @@ class player {
 	bool                                        jump_shortened{false};
 	d2d::components::timeouts                   timeouts;
 	const app::ladder*                          current_ladder{nullptr};
+	enum class genders {
+		male, female
+	}                                           gender{genders::female};
 
 	void                                        tic(float);
 

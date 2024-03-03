@@ -11,7 +11,8 @@ class collectible {
 
 	enum types {
 		gold_ingot=0,
-		gem=1
+		gem=1,
+		ruby=2
 	};
 
 /*
@@ -28,6 +29,8 @@ class collectible {
 	static const int                gold_ingot_h{9};
 	static const int                gem_w{10};
 	static const int                gem_h{14};
+	static const int                ruby_w{10};
+	static const int                ruby_h{10};
 };
 
 std::ostream& operator<<(std::ostream&, const collectible&);
