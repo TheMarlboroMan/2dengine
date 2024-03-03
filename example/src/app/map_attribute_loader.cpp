@@ -33,7 +33,10 @@ void map_attribute_loader::load(
 		}
 	}
 
-	background_color.r=colors[0].color;
-	background_color.g=colors[1].color;
-	background_color.b=colors[2].color;
+	background_color=ldv::rgba8(
+		colors[0].color,
+		colors[1].color,
+		colors[2].color,
+		255
+	);
 }

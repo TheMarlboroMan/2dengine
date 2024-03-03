@@ -206,6 +206,10 @@ void main::load_map(
 
 	app::map_attribute_loader attrl{current_map.background_color};
 	loader.load_properties(attrl);
+	lm::log(logger).info()<<"map background color is "
+		<<current_map.background_color.r<<", "
+		<<current_map.background_color.g<<", "
+		<<current_map.background_color.b<<"\n";
 
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
@@ -1035,12 +1039,10 @@ void main::setup_camera(
 	int _screen_h
 ) {
 
-	//Let's use a buffer half the size of
-	//the screen...
-	unsigned w=_screen_w /2;
-	unsigned h=_screen_h /2;
-	int x=_screen_w /4;
-	int y=_screen_h /4;
+	unsigned w=_screen_w /4;
+	unsigned h=_screen_h /4;
+	int x=(_screen_w /8) * 3;
+	int y=(_screen_h /8) * 3;
 
 	ldv::rect margin{x, y, w, h};
 

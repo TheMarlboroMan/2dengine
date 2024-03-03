@@ -26,7 +26,7 @@
 		"double_buffer":1,
 		"fullscreen":false,
 		"vsync":false,
-		"window_h_px":384,
-		"window_w_px":480
+		"window_h_px":448,
+		"window_w_px":576
 	}
 }
