@@ -1,4 +1,5 @@
 #include "d2d/collision/tile_finder_matrix.h"
+#include "d2d/collision/tile_limits.h"
 #include "d2d/collision/exception.h"
 #include <algorithm>
 #include <iostream>
@@ -22,30 +23,9 @@ void tile_finder_matrix::load(
 		throw exception("cannot load empty map");
 	}
 
-	//find the smallest and largest x and y.
-	auto x=std::minmax_element(
-		std::begin(_tiles),
-		std::end(_tiles),
-		[](const d2d::collision::tile& _a, const d2d::collision::tile& _b) {
-			return _a.x < _b.x;
-		}
-	);
+	d2d::collision::tile_limits_finder tlf{};
+	limit=tlf.find_limits(_tiles);
 
-	auto y=std::minmax_element(
-		std::begin(_tiles),
-		std::end(_tiles),
-		[](const d2d::collision::tile& _a, const d2d::collision::tile& _b) {
-			return _a.y < _b.y;
-		}
-	);
-
-	//Plus one because the smallest map is 1x1 thus maxx=1 minx=1 1-1=0+1 => 1.
-	limit={
-		x.first->x, x.second->x, 
-		y.first->y, y.second->y, 
-		x.second->x-x.first->x+1,
-		y.second->y-y.first->y+1
-	};
 	int cell_count=limit.w*limit.h;
 
 	//fill the data struture will null pointers.

@@ -12,6 +12,7 @@
 #include <d2d/collision/phase.h>
 #include <d2d/collision/checker.h>
 #include <d2d/collision/tiles_in_box.h>
+#include <d2d/collision/tile_limits.h>
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
@@ -201,7 +202,12 @@ void main::load_map(
 
 	current_map.sync_tile_finder();
 
-	app::thing_loader tl{current_map, persistence};
+	//we need the maps limits, so...
+	d2d::collision::tile_limits_finder tlf{};
+	auto limits=tlf.find_limits(current_map.collision_tiles);
+
+
+	app::thing_loader tl{current_map, limits, persistence};
 	loader.load_thing_layer("things", tl);
 
 	app::map_attribute_loader attrl{current_map.background_color};
@@ -213,10 +219,10 @@ void main::load_map(
 
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
-	cml.limit_to_collision_tiles(camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+	cml.limit_to_collision_tiles(camera, limits, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 
 #ifdef IS_DEBUG_BUILD
-	cml.limit_to_collision_tiles(dd.camera, current_map.collision_tiles, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+	cml.limit_to_collision_tiles(dd.camera, limits, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 #endif
 
 //	std::cout<<current_map<<std::endl;

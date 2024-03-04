@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tile_limits.h"
 #include "tile_finder.h"
 
 namespace d2d { namespace collision {
@@ -31,7 +32,6 @@ class tile_finder_matrix:
 	virtual const d2d::collision::tile* get(int, int) const;
 	virtual d2d::collision::tile*       get(int, int);
 	virtual bool                        has(int, int) const;
-	virtual limits                      get_limits() const {return limit;}
 
 //end implementation of tile finder.
 
@@ -42,6 +42,6 @@ class tile_finder_matrix:
 	                                    offset_y{0},
 	                                    tile_w{0},
 	                                    tile_h{0};
-	limits                              limit{0,0,0,0,0,0};
+	tile_limits                         limit{0,0,0,0,0,0};
 };
 }}

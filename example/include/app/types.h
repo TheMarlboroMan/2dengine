@@ -6,4 +6,4 @@ namespace app {
 
 typedef d2d::components::persistence<int, int, int> tpersistence;
 
-};
+}
