@@ -43,13 +43,13 @@ int main(
 		int x, y;
 		std::cin>>x>>y;
 
-		if(!tfm.has(x,y)) {
+		if(!tfm.has({x,y})) {
 
 			std::cout<<"nothing there"<<std::endl;
 			continue;
 		}
 
-		auto ptr=tfm.get(x,y);
+		auto ptr=tfm.get({x,y});
 		std::cout<<"type at "<<x<<","<<y<<" is "<<ptr->type<<std::endl;
 	}
 

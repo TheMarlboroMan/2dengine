@@ -470,17 +470,9 @@ void main::tic_world(
 ) {
 
 	d2d::motion::mover mover{};
-	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-
 	for(auto& monster : current_map.linear_monsters) {
 
-		mover.apply_x(monster.ent, monster.velocity.x, _delta);
-		auto contacting_tiles=adapter.find(monster.ent, current_map.tile_finder);
-		//TODO: It would be nice to have a "has" method.
-		if(contacting_tiles.size()) {
-
-			monster.reverse();
-		}
+		monster.tic(_delta, mover);
 	}
 }
 

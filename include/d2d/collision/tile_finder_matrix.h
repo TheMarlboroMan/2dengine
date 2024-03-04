@@ -29,9 +29,11 @@ class tile_finder_matrix:
 
 //begin implementation of tile_finder.
 
-	virtual const d2d::collision::tile* get(int, int) const;
-	virtual d2d::collision::tile*       get(int, int);
-	virtual bool                        has(int, int) const;
+	virtual tile_coords                 to_tile_coords(d2d::collision::point)const;
+	virtual d2d::collision::point       to_point(tile_coords)const;
+	virtual const d2d::collision::tile* get(tile_coords) const;
+	virtual d2d::collision::tile*       get(tile_coords);
+	virtual bool                        has(tile_coords) const;
 
 //end implementation of tile finder.
 

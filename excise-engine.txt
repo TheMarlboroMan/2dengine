@@ -7,10 +7,6 @@ next step:
 
 		plan the game.
 
-			"monsters"
-				monsters patrolling left and right.
-				same, but up and down.
-
 			"traps":
 				stuff you fall into
 				stuff that shoots you

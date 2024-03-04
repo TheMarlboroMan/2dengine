@@ -3,20 +3,28 @@
 #include "entity.h"
 #include "definitions.h"
 #include <d2d/motion/definitions.h>
+#include <d2d/motion/mover.h>
 #include <iostream>
 
 namespace app {
 
 /**
- * the linear monster follows a straight pattern until it hits a tile
- * and then goes back. We would establish where these tiles are as upper
- * and lower bounds in map loading time, but it would be easier for now
- * just to have the main game controller do it in each tic (so this class
- * does not even have a tic method).
+ * the linear monster follows a straight pattern until it hits its bounds,
+ * and then goes back to the other bound. These bounds are static and
+ * established at construction time based on the map tiles.
  */
 class linear_monster {
 
 	public:
+
+/**
+ * represents a pair of movement bounds, the lowerst and highest this entity
+ * can move on its turn.
+ */
+	struct boundaries {
+		double  lower,
+		        upper;
+	};
 
 	enum types {
 		scorpion=1
@@ -26,18 +34,24 @@ class linear_monster {
  * this thing spaws facing right.
  */
 
-	                        linear_monster(d2d::collision::point, int, bool);
+	                        linear_monster(d2d::collision::point, int, bool, boundaries);
 
 	entity                  ent;
 	d2d::motion::motion_vector velocity;
 	int                     type;
 	faces                   facing;
 
-	void                    reverse();
+	void                    tic(float _delta, d2d::motion::mover);
+
+	private:
 
 	static const int        scorpion_w{16};
 	static const int        scorpion_h{16};
 	static const double     scorpion_velocity;
+
+	void                    reverse();
+
+	boundaries              bounds;
 };
 
 std::ostream& operator<<(std::ostream&, const linear_monster&);

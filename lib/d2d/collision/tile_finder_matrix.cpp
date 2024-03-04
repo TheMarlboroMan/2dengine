@@ -65,61 +65,77 @@ void tile_finder_matrix::clear() {
 	data.clear();
 }
 
+tile_coords tile_finder_matrix::to_tile_coords(
+	d2d::collision::point _point
+)const {
+
+	int x=floor(_point.x/tile_w);
+	int y=floor(_point.y/tile_h);
+
+	return {x, y};
+}
+
+d2d::collision::point tile_finder_matrix::to_point(
+	tile_coords _coord
+)const {
+
+	double x=_coord.x*tile_w;
+	double y=_coord.y*tile_h;
+	return {x, y};
+}
+
 bool tile_finder_matrix::has(
-	int _x,
-	int _y
+	tile_coords _point
 ) const {
 
 	if(
-		_x < limit.left || _x > limit.right
-		 || _y < limit.bottom || _y > limit.top
+		_point.x < limit.left || _point.x > limit.right
+		 || _point.y < limit.bottom || _point.y > limit.top
 	) {
 
 		return false;
 	}
 
-	int x=_x+offset_x,
-	    y=_y+offset_y;
+	int x=_point.x+offset_x,
+	    y=_point.y+offset_y;
 
 	int index=x + (y * limit.w);
 	return nullptr!=data.at(index);
 }
 
 const d2d::collision::tile * tile_finder_matrix::get(
-	int _x,
-	int _y
+	tile_coords _point
 ) const {
 
 	if(
-		_x < limit.left || _x > limit.right
-		|| _y < limit.bottom || _y > limit.top
+		_point.x < limit.left || _point.x > limit.right
+		|| _point.y < limit.bottom || _point.y > limit.top
 	) {
 
 		return nullptr;
 	}
 
-	int x=_x+offset_x,
-	    y=_y+offset_y;
+	int x=_point.x+offset_x,
+	    y=_point.y+offset_y;
 
 	int index=x + (y * limit.w);
 	return data.at(index);
 }
 
 d2d::collision::tile * tile_finder_matrix::get(
-	int _x,
-	int _y
+	tile_coords _point
 ) {
 
 	if(
-		_x < limit.left || _x > limit.right
-		|| _y < limit.bottom || _y > limit.top
+		_point.x < limit.left || _point.x > limit.right
+		|| _point.y < limit.bottom || _point.y > limit.top
 	) {
 
 		return nullptr;
 	}
 
-	int x=_x+offset_x,
-	    y=_y+offset_y;
+	int x=_point.x+offset_x,
+	    y=_point.y+offset_y;
 
 	int index=x + (y * limit.w);
 	return data.at(index);

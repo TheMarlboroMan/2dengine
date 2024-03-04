@@ -45,7 +45,7 @@ std::vector<const d2d::collision::tile *> tiles_in_box::find(
 
 		for(int cy=y; cy <= top; cy++) {
 
-			if(_finder.has(cx, cy)) {
+			if(_finder.has({cx, cy})) {
 
 #ifdef IS_DEBUG_BUILD
 
@@ -54,7 +54,7 @@ std::vector<const d2d::collision::tile *> tiles_in_box::find(
 					lm::log(*logger).debug()<<"will add tile in "<<cx<<","<<cy<<"\n";
 				}
 #endif
-				result.push_back(_finder.get(cx, cy));
+				result.push_back(_finder.get({cx, cy}));
 			}
 		}
 	}
