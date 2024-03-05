@@ -23,7 +23,7 @@ ldv::rect d2d::video::to_screen_rect(
 	const d2d::collision::box& _box
 ) {
 	int x=_box.origin.x;
-	int y=_box.origin.y;
+	int y=-_box.origin.y-_box.h;
 	unsigned w=_box.w;
 	unsigned h=_box.h;
 	return {{x, y}, w, h};

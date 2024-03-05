@@ -141,8 +141,8 @@ void thing_loader::add_secret_cover(
 		return;
 	}
 
-	unsigned w=_attributes.at("w").get_int()*app::tile_w;
-	unsigned h=_attributes.at("h").get_int()*app::tile_h;
+	unsigned w=_attributes.at("width").get_int()*app::tile_w;
+	unsigned h=_attributes.at("height").get_int()*app::tile_h;
 
 	curmap.secret_covers.push_back(
 		{ {{_pos.x, _pos.y}, w, h}, id}
