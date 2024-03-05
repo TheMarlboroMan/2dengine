@@ -84,6 +84,13 @@ beginobject
 	h 16
 	color 64 128 64 255
 	beginproperty
+		name type
+		type int
+		default 0
+		comment 0=ladder 1=chain 2=vine
+		linkedto nothing
+	endproperty
+	beginproperty
 		name height
 		type int
 		default 2
@@ -102,7 +109,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment type 0=ingot, 1=gem, 2=ruby
+		comment type 0=ingot, 1=gem, 2=ruby 10=key 11=bluekey 12=redkey
 		linkedto nothing
 	endproperty
 	beginproperty

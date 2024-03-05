@@ -4,7 +4,7 @@
 using namespace app;
 
 player::player():
-	ent{0, 0, app::player_w, app::player_h}
+	ent{0, 0, player_w, player_h}
 {
 
 	timeouts.add(timeout_ladder, 0.5f, 0.0f);
@@ -17,4 +17,27 @@ void player::tic(
 ) {
 
 	timeouts.tic(_delta);
+}
+
+void player::crouch() {
+
+	velocity.x=0.;
+	state=states::crouch;
+	ent.get_box().h=player_h_crouch;
+}
+
+void player::stand_up() {
+
+	velocity.x=0.;
+	state=states::ground;
+	ent.get_box().h=player_h;
+}
+
+void player::jump(
+	double _force
+) {
+
+	velocity.y=_force;
+	state=states::air;
+	jump_shortened=false;
 }

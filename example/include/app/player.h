@@ -31,6 +31,9 @@ class player {
 	}                                           gender{genders::female};
 
 	void                                        tic(float);
+	void                                        crouch();
+	void                                        stand_up();
+	void                                        jump(double);
 
 	enum class states {
 		ground,
@@ -40,5 +43,10 @@ class player {
 		defeat
 	} state{states::ground};
 
+	private:
+
+	static const int player_w=12;
+	static const int player_h=24;
+	static const int player_h_crouch=12;
 };
 }

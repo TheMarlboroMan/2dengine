@@ -27,6 +27,12 @@ collectible::collectible(
 			ent.set_w(ruby_w);
 			ent.set_h(ruby_h);
 		break;
+		case yellow_key:
+		case blue_key:
+		case red_key:
+			ent.set_w(key_w);
+			ent.set_h(key_h);
+		break;
 	}
 }
 

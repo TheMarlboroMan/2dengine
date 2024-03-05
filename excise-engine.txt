@@ -1,25 +1,44 @@
 next step:
 
+	I AM DOING THE SWITCH.
+		- add the ID, each switch must be unique and if activated it should go
+		  away.
+		- things.txt
+		- map.h and cpp
+		- thing builder
+		- main: hold up when near to attempt to activate it
+		- doors next.
+
 	make the first example game.
-
-		bugs:
-			segfault in sprite editor when moving sprites.
-
-		make the player box smaller.
 
 		plan the game.
 
+			maybe difficulty modes, easy, normal, hard... Easy would be
+			less monsters and more helping blocks. Hard would have extra
+			obstacles and traps and monsters.
+
+			"monsters"
+				scorpion
+				snake 
+				bat (I think there are sprites for these already).
+				leaping piranhas
+
 			"traps":
-				stuff you fall into
 				stuff that shoots you
 				stuff that shoots you when activated
-			treasure to pick up.
 
 			"doors" are a block that moves up
-				most of them can  be opened by placing a crystal in a slot.
+				a door can be opened by activating a switch, styled like a
+keyhole. It has a tag to act on whatever is ON THE SAME MAP. Can be only
+activated once!... maybe it just dissapears.
+				I guess we could have "touch" and "action".
 				generically they should be things with a "tag".
-			there should be switches, right?
-				generically they activate stuff with the same "tag".
+
+			"something" to reskin the character?
+
+		todo:
+			better transition for secrets, just use a global timeout object
+			set to 2.5 and multiply it x 100 to get the alpha.
 
 	engine:
 		I guess slopes

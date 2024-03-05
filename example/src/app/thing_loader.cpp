@@ -23,6 +23,8 @@ void thing_loader::setup() {
 	curmap.platform_blocks.clear();
 	curmap.ladders.clear();
 	curmap.entries.clear();
+	curmap.collectibles.clear();
+	curmap.secret_covers.clear();
 }
 
 void thing_loader::load(
@@ -44,6 +46,8 @@ void thing_loader::load(
 			case 6: return add_secret_cover(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
+
+			//Adding something here? clear it up in "setup!".
 
 			//TODO: These will likely dissapear.
 			case 100:
@@ -104,8 +108,11 @@ void thing_loader::add_ladder(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int height=_attributes.at("height").get_int()*app::tile_h;
+	int type=_attributes.at("type").get_int();
+
 	curmap.ladders.push_back(
-		{_pos.x, _pos.y, _attributes.at("height").get_int()*app::tile_h}
+		{_pos, height, type} 
 	);
 }
 

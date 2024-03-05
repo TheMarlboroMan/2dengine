@@ -4,15 +4,16 @@
 using namespace app;
 
 ladder::ladder(
-	int _x,
-	int _y,
-	int _h
+	d2d::collision::point _pt,
+	int _h,
+	int _type
 ):
 	d2d::collision::motion_axis_limiter(
-		{{(double)_x, (double)_y}, app::tile_w, _h},
+		{_pt, app::tile_w, _h},
 		d2d::collision::motion_axis_limiter::axes::y,
 		d2d::collision::motion_axis_limiter::alignments::center
-	)
+	),
+	type{_type}
 {}
 
 std::ostream& app::operator<<(

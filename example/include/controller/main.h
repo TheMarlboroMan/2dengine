@@ -83,9 +83,6 @@ class main:
 	void                        collide_with_wall(app::player&);
 	void                        touch_ceiling(app::player&);
 	void                        grab_ladder(app::player&, const app::ladder&);
-	void                        jump(app::player&);
-	void                        crouch(app::player&);
-	void                        stand_up(app::player&);
 	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
 	void                        jump_out_of_ladder(app::player&, int);

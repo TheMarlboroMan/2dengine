@@ -6,9 +6,6 @@ static const int tile_w=16;
 static const int tile_h=16;
 static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per screen.
 static const int logic_screen_h=224; //and these are 14 per screen.
-static const int player_w=15;
-static const int player_h=24;
-static const int player_h_crouch=12;
 
 enum persistence_groups {
 	pergr_collectibles=1, //regular collectible bonuses
@@ -52,9 +49,15 @@ enum sprites {
 	spr_lava_surface=508,
 
 	spr_ladder_yellow=350,
+	spr_gate=351,
+	spr_chain=352,
+	spr_vine=353,
 	spr_gold_ingot=300,
 	spr_gem=301,
-	spr_ruby=302
+	spr_ruby=302,
+	spr_key_yellow=303,
+	spr_key_blue=304,
+	spr_key_red=305
 };
 
 enum tile_types {

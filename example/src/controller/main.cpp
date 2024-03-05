@@ -303,7 +303,7 @@ void main::take_player_to_entry(
 		else {
 
 			_player.ent.set_origin(map_entry.ent.get_origin());
-			stand_up(_player);
+			_player.stand_up();
 		}
 
 		//Stop all velocity.
@@ -534,7 +534,7 @@ void main::tic_ground(
 
 	if(-1==_pli.y) {
 
-		crouch(_player);
+		_player.crouch();
 		tic_crouch(_delta, _player, _pli);
 		return;
 	}
@@ -571,7 +571,7 @@ void main::tic_ground(
 
 	if(_pli.jump) {
 
-		jump(_player);
+		_player.jump(simulation.jump_force);
 	}
 }
 
@@ -692,7 +692,7 @@ void main::tic_air(
 	//Last chance to jump after we begin falling...
 	if(_pli.jump && _player.timeouts.is_counting(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
 
-		jump(_player);
+		_player.jump(simulation.jump_force);
 	}
 
 	//Letting go of the jump shortens it...
@@ -748,7 +748,7 @@ void main::tic_crouch(
 
 	if(-1!=_pli.y) {
 
-		stand_up(_player);
+		_player.stand_up();
 		tic_ground(_delta, _player, _pli);
 		return;
 	}
@@ -855,11 +855,18 @@ void main::draw_ladder(
 	int max_step=_ladder.get_h() / app::tile_h;
 	for(int i=0; i<max_step; i++) { 
 
+		int sprite_index=app::spr_ladder_yellow;
+		switch(_ladder.type) {
+			case app::ladder::t_ladder: sprite_index=app::spr_ladder_yellow; break;
+			case app::ladder::t_chain:  sprite_index=app::spr_chain; break;
+			case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
+		}
+
 		sprite_draw_animated.spr_draw.draw(
 			_screen,
 			camera,
 			origin,
-			app::spr_ladder_yellow
+			sprite_index
 		);
 
 		origin.y+=app::tile_h;
@@ -873,18 +880,12 @@ void main::draw_collectible(
 
 	auto origin=d2d::video::to_screen(_collectible.ent.get_origin());
 
-	//TODO: Maybe use a default???
 	int sprite_index=app::spr_gold_ingot;
 	switch(_collectible.type) {
 
-		case app::collectible::gold_ingot:
-
-			sprite_index=app::spr_gold_ingot;
-		break;
-		case app::collectible::gem:
-
-			sprite_index=app::spr_gem;
-		break;
+		case app::collectible::gold_ingot:  sprite_index=app::spr_gold_ingot; break;
+		case app::collectible::gem:         sprite_index=app::spr_gem; break;
+		case app::collectible::ruby:        sprite_index=app::spr_ruby; break;
 	}
 
 	sprite_draw_animated.spr_draw.draw(
@@ -1042,7 +1043,8 @@ void main::jump_out_of_ladder(
 		: app::faces::left;
 	_player.current_ladder=nullptr;
 	_player.timeouts.reset(app::player::timeout_ladder);
-	jump(_player);
+
+	_player.jump(simulation.jump_force);
 }
 
 void main::drop_out_of_ladder(
@@ -1064,6 +1066,21 @@ void main::pick_up_collectible(
 	//Does not actually make the collectible dissapear :P.
 	std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
+
+	switch(_collectible.type) {
+
+		case app::collectible::gold_ingot:
+		case app::collectible::gem:
+		case app::collectible::ruby:
+
+		break;
+		case app::collectible::yellow_key:
+		case app::collectible::blue_key:
+		case app::collectible::red_key:
+
+			//TODO: Add a key to the key count, right??
+		break;
+	}
 }
 
 void main::discover_secret(
@@ -1075,33 +1092,6 @@ void main::discover_secret(
 	std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
 	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
 	_secret_cover.discovered=true;
-}
-
-void main::jump(
-	app::player& _player
-) {
-
-	_player.velocity.y=simulation.jump_force;
-	_player.state=app::player::states::air;
-	_player.jump_shortened=false;
-}
-
-void main::crouch(
-	app::player& _player
-) {
-
-	_player.velocity.x=0.;
-	_player.state=app::player::states::crouch;
-	_player.ent.get_box().h=app::player_h_crouch;
-}
-
-void main::stand_up(
-	app::player& _player
-) {
-
-	_player.velocity.x=0.;
-	_player.state=app::player::states::ground;
-	_player.ent.get_box().h=app::player_h;
 }
 
 void main::land_on_ground(

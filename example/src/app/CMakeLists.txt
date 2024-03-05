@@ -14,6 +14,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/collectible.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/linear_monster.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/secret_cover.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/button.cpp
 	PARENT_SCOPE
 )
 
