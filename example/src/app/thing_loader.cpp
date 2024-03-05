@@ -41,6 +41,8 @@ void thing_loader::load(
 			case 2: return add_exit(pos, _attributes);
 			case 4: return add_ladder(pos, _attributes);
 			case 5: return add_collectible(pos, _attributes);
+			case 6: return add_secret_cover(pos, _attributes);
+
 			case 50: return add_linear_monster(pos, _attributes);
 
 			//TODO: These will likely dissapear.
@@ -126,6 +128,26 @@ void thing_loader::add_collectible(
 	);
 }
 
+void thing_loader::add_secret_cover(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("id").get_int();
+
+	//Check if it was already discovered.
+	if(persistence.has(pergr_secret_covers, id)) {
+
+		return;
+	}
+
+	unsigned w=_attributes.at("w").get_int()*app::tile_w;
+	unsigned h=_attributes.at("h").get_int()*app::tile_h;
+
+	curmap.secret_covers.push_back(
+		{ {{_pos.x, _pos.y}, w, h}, id}
+	);
+}
 
 void thing_loader::add_linear_monster(
 	d2d::collision::point _pos,

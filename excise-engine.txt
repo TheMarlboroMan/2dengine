@@ -2,7 +2,9 @@ next step:
 
 	make the first example game.
 
-		segfault in sprite editor when moving sprites.
+		bugs:
+			segfault in sprite editor when moving sprites.
+
 		make the player box smaller.
 
 		plan the game.

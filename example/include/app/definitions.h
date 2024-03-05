@@ -11,7 +11,8 @@ static const int player_h=24;
 static const int player_h_crouch=12;
 
 enum persistence_groups {
-	pergr_collectibles=1
+	pergr_collectibles=1, //regular collectible bonuses
+	pergr_secret_covers=2 //black rectangles covering secret areas.
 };
 
 enum spritesheets {

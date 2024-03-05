@@ -51,6 +51,7 @@ class main:
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
 	void                        draw_collectible(ldv::screen&, const app::collectible&);
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
+	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
@@ -90,6 +91,7 @@ class main:
 	void                        jump_out_of_ladder(app::player&, int);
 	void                        drop_out_of_ladder(app::player&);
 	void                        pick_up_collectible(app::player&, const app::collectible&);
+	void                        discover_secret(app::player&, app::secret_cover&);
 
 	const app::env&             env;
 	lm::logger&                 logger;

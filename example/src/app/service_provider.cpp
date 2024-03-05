@@ -16,7 +16,9 @@ service_provider::service_provider(
 	logger{_logger},
 	video_resource_manager{_kernel.get_video_resource_manager()}
 { 
+
 	persistence.add(app::pergr_collectibles);
+	persistence.add(app::pergr_secret_covers);
 }
 
 service_provider::~service_provider() {

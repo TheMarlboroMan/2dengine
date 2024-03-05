@@ -16,6 +16,7 @@
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
+#include <ldv/box_representation.h>
 #include <tools/ranged_value.h>
 #include <sstream>
 #include <iostream>
@@ -304,6 +305,9 @@ void main::take_player_to_entry(
 			_player.ent.set_origin(map_entry.ent.get_origin());
 			stand_up(_player);
 		}
+
+		//Stop all velocity.
+		_player.velocity={0., 0.};
 	}
 	else {
 
@@ -436,6 +440,23 @@ void main::tic(
 
 			defeat(player);
 			return;
+		}
+	}
+
+	//Have we entered a secret cover?
+	//TODO: I would like a dissapearing effect for this, just with the
+	//alpha. Also, the secret cover should just dissapear and be removed from
+	//memory, right?
+	for(auto& secret_cover : current_map.secret_covers) {
+
+		if(secret_cover.discovered) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, secret_cover.ent)) {
+
+			discover_secret(player, secret_cover);
 		}
 	}
 
@@ -598,7 +619,6 @@ void main::tic_ladder(
 			}
 		}
 	}
-
 
 	//Attempt to walk out.
 	if(_pli.x) {
@@ -782,16 +802,15 @@ void main::draw_scene(
 ) {
 
 	_screen.clear(current_map.background_color);
-	//TODO: Use a REAL camera.
 	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
 
-	//TODO:
+	//TODO: These will likely go away?
 	for(const auto& block : current_map.solid_blocks) {
 
 		dd.draw(_screen, block);
 	}
 
-	//TODO:
+	//TODO: These will likely go away?
 	for(const auto& block : current_map.platform_blocks) {
 
 		dd.draw(_screen, block);
@@ -814,6 +833,16 @@ void main::draw_scene(
 
 	draw_player(_screen, player);
 	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
+
+	for(const auto& secret_cover : current_map.secret_covers) {
+
+		if(secret_cover.discovered) {
+
+			continue;
+		}
+
+		draw_secret_cover(_screen, secret_cover);
+	}
 }
 
 void main::draw_ladder(
@@ -886,6 +915,21 @@ void main::draw_linear_monster(
 		animation_index,
 		draw_flags
 	);
+}
+
+void main::draw_secret_cover(
+	ldv::screen& _screen,
+	const app::secret_cover& _secret_cover
+) {
+
+	//These are no sprites, just black rectangles...
+	ldv::box_representation box{
+		d2d::video::to_screen_rect(_secret_cover.ent),
+		ldv::rgba_color(0,0,0,255),
+		ldv::box_representation::type::fill
+	};
+
+	box.draw(_screen, camera);
 }
 
 void main::draw_player(
@@ -1022,6 +1066,17 @@ void main::pick_up_collectible(
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 }
 
+void main::discover_secret(
+	app::player&,
+	app::secret_cover& _secret_cover
+) {
+
+	//Does not actually make the collectible dissapear :P.
+	std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
+	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
+	_secret_cover.discovered=true;
+}
+
 void main::jump(
 	app::player& _player
 ) {
@@ -1084,6 +1139,12 @@ void main::collide_with_wall(
 void main::defeat(
 	app::player& _player
 ) {
+
+	//Avoid being defeated time and again.
+	if(app::player::states::defeat==_player.state) {
+
+		return; 
+	}
 
 	_player.timeouts.reset(app::player::timeout_defeat);
 	_player.state=app::player::states::defeat;

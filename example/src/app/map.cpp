@@ -27,6 +27,7 @@ std::ostream& app::operator<<(
 	print_node("exits", _map.exits, _stream);
 	print_node("collectibles", _map.exits, _stream);
 	print_node("linear_monsters", _map.linear_monsters, _stream);
+	print_node("secret_covers", _map.secret_covers, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -45,6 +46,7 @@ void map::clear() {
 	exits.clear();
 	collectibles.clear();
 	linear_monsters.clear();
+	secret_covers.clear();
 }
 
 void map::sync_tile_finder() {

@@ -13,6 +13,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/map_attribute_loader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/collectible.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/linear_monster.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/secret_cover.cpp
 	PARENT_SCOPE
 )
 
