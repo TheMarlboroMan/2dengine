@@ -12,18 +12,20 @@ class button {
 
 	public:
 
-	enum types {
+	enum class types {
 		regular,
 		yellow_keyhole,
 		blue_keyhole,
 		red_keyhole
 	};
 
-	                                button(d2d::collision::point, int, int);
+	                                button(d2d::collision::point, types, int, int, bool);
 
 	entity                          ent;
-	int                             type;
+	types                           type;
+	int                             id;
 	int                             tag;
+	bool                            used;
 };
 
 std::ostream& operator<<(std::ostream&, const button&);

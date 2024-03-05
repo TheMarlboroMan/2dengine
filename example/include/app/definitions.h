@@ -9,7 +9,8 @@ static const int logic_screen_h=224; //and these are 14 per screen.
 
 enum persistence_groups {
 	pergr_collectibles=1, //regular collectible bonuses
-	pergr_secret_covers=2 //black rectangles covering secret areas.
+	pergr_secret_covers=2, //black rectangles covering secret areas.
+	pergr_buttons=3 //buttons and keyholes.
 };
 
 enum spritesheets {
@@ -48,16 +49,23 @@ enum sprites {
 	spr_waterfall=504,
 	spr_lava_surface=508,
 
-	spr_ladder_yellow=350,
-	spr_gate=351,
-	spr_chain=352,
-	spr_vine=353,
+	//Collectibles
 	spr_gold_ingot=300,
 	spr_gem=301,
 	spr_ruby=302,
 	spr_key_yellow=303,
 	spr_key_blue=304,
-	spr_key_red=305
+	spr_key_red=305,
+
+	//Special world elements
+	spr_ladder_yellow=350,
+	spr_gate=351,
+	spr_chain=352,
+	spr_vine=353,
+	spr_yellow_keyhole=354,
+	spr_blue_keyhole=355,
+	spr_red_keyhole=356,
+	spr_regular_button=131
 };
 
 enum tile_types {

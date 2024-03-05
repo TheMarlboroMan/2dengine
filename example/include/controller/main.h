@@ -47,11 +47,15 @@ class main:
 
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
+
+
+	//TODO: In time, move these to another class, a draw class.
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
 	void                        draw_collectible(ldv::screen&, const app::collectible&);
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
+	void                        draw_button(ldv::screen&, const app::button&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
@@ -76,6 +80,7 @@ class main:
 	bool                        is_on_exit(const app::player&, const app::exit *&, bool) const;
 	bool                        is_on_air(const app::player&) const;
 	bool                        is_into_harm(const app::player&) const;
+	bool                        can_activate_button(const app::player&, app::button *&);
 
 	//act on player methods...
 	void                        start_falling(app::player&);
@@ -89,6 +94,7 @@ class main:
 	void                        drop_out_of_ladder(app::player&);
 	void                        pick_up_collectible(app::player&, const app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
+	void                        activate_button(app::player&, app::button&);
 
 	const app::env&             env;
 	lm::logger&                 logger;

@@ -8,11 +8,11 @@ struct player_input {
 	            y=0;
 	bool        jump{false},
 	            hold_jump{false},
-	            enter_door{false};
+	            activate{false};
 
 	operator bool() const {
 
-		return x || y || jump || hold_jump || enter_door;
+		return x || y || jump || hold_jump || activate;
 	}
 };
 }

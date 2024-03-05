@@ -5,12 +5,16 @@ using namespace app;
 
 button::button(
 	d2d::collision::point _pt,
-	int _type,
-	int _tag
+	types _type,
+	int _id,
+	int _tag,
+	bool _used
 ):
 	ent{_pt, app::tile_w, app::tile_h},
 	type{_type},
-	tag{_tag}
+	id{_id},
+	tag{_tag},
+	used{_used}
 {}
 
 std::ostream& app::operator<<(
@@ -18,7 +22,7 @@ std::ostream& app::operator<<(
 	const button& _button
 ) {
 
-	_stream<<"button["<<_button.ent<<"]";
+	_stream<<"button["<<_button.ent<<" id:"<<_button.id<<" tag:"<<_button.tag<<"]";
 	return _stream;
 }
 

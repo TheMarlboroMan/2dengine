@@ -170,6 +170,11 @@ void main::draw_debug(
 		dd.draw(_screen, cell);
 	}
 
+	for(const auto& button : current_map.buttons) {
+
+		dd.draw(_screen, button.ent);
+	}
+
 	for(const auto& block : current_map.solid_blocks) {
 
 		dd.draw(_screen, block);
@@ -210,6 +215,8 @@ void main::draw_debug(
 
 		dd.draw(_screen, node.ent);
 	}
+
+	//TODO: Missing 
 
 	dd.draw(_screen, player.ent);
 }
@@ -258,7 +265,7 @@ void main::loop_debug(
 		pli.y=1;
 		if(_input.is_input_down(app::input::up)) {
 
-			pli.enter_door=true;
+			pli.activate=true;
 		}
 	}
 

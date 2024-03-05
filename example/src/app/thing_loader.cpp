@@ -25,6 +25,7 @@ void thing_loader::setup() {
 	curmap.entries.clear();
 	curmap.collectibles.clear();
 	curmap.secret_covers.clear();
+	curmap.buttons.clear();
 }
 
 void thing_loader::load(
@@ -44,6 +45,7 @@ void thing_loader::load(
 			case 4: return add_ladder(pos, _attributes);
 			case 5: return add_collectible(pos, _attributes);
 			case 6: return add_secret_cover(pos, _attributes);
+			case 7: return add_button(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 
@@ -197,3 +199,26 @@ void thing_loader::add_linear_monster(
 	);
 }
 	
+
+void thing_loader::add_button(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("id").get_int();
+	bool used=persistence.has(pergr_buttons, id);
+	int tag=_attributes.at("tag").get_int();
+
+	button::types type=button::types::regular;
+	switch(_attributes.at("type").get_int()) {
+
+		case 1: type=button::types::regular; break;
+		case 2: type=button::types::yellow_keyhole; break;
+		case 3: type=button::types::blue_keyhole; break;
+		case 4: type=button::types::red_keyhole; break;
+	}
+
+	curmap.buttons.push_back(
+		{ _pos, type, id, tag, used}
+	);
+}

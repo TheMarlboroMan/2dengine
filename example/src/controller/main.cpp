@@ -152,7 +152,7 @@ void main::loop_scene(
 
 		if(_input.is_input_down(app::input::up)) {
 
-			pli.enter_door=true;
+			pli.activate=true;
 		}
 	}
 
@@ -512,12 +512,25 @@ void main::tic_ground(
 		return;
 	}
 
-	//Attempt to enter a doorway...
-	const app::exit * exitptr{nullptr};
-	if(_pli.enter_door && is_on_exit(_player, exitptr, false)) {
+	//Attempt to activate a switch!
 
-		exit_to(_player, *exitptr);
-		return;
+
+	//Attempt to enter a doorway...
+	if(_pli.activate) {
+
+		const app::exit * exitptr{nullptr};
+		if(is_on_exit(_player, exitptr, false)) {
+
+			exit_to(_player, *exitptr);
+			return;
+		}
+
+		app::button * btnptr{nullptr};
+		if(can_activate_button(_player, btnptr)) {
+
+			activate_button(_player, *btnptr);
+			return;
+		}
 	}
 
 
@@ -804,6 +817,11 @@ void main::draw_scene(
 	_screen.clear(current_map.background_color);
 	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
 
+	for(const auto& node : current_map.buttons) {
+
+		draw_button(_screen, node);
+	}
+
 	//TODO: These will likely go away?
 	for(const auto& block : current_map.solid_blocks) {
 
@@ -843,6 +861,40 @@ void main::draw_scene(
 
 		draw_secret_cover(_screen, secret_cover);
 	}
+}
+
+void main::draw_button(
+	ldv::screen& _screen,
+	const app::button& _button
+) {
+
+
+	int sprite_index=app::spr_key_yellow;
+	switch(_button.type) {
+
+		case app::button::types::regular:           sprite_index=app::spr_regular_button; break;
+		case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole; break;
+		case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole; break;
+		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
+	}
+
+	//TODO: How do we draw them when used????
+	//
+	d2d::video::sprite_draw::flags flags{false, false};
+	if(_button.used) {
+
+		flags={true, true};
+	}
+
+	auto origin=d2d::video::to_screen(_button.ent.get_origin());
+
+	sprite_draw_animated.spr_draw.draw(
+		_screen,
+		camera,
+		origin,
+		sprite_index,
+		flags
+	);
 }
 
 void main::draw_ladder(
@@ -886,6 +938,9 @@ void main::draw_collectible(
 		case app::collectible::gold_ingot:  sprite_index=app::spr_gold_ingot; break;
 		case app::collectible::gem:         sprite_index=app::spr_gem; break;
 		case app::collectible::ruby:        sprite_index=app::spr_ruby; break;
+		case app::collectible::yellow_key:  sprite_index=app::spr_key_yellow; break;
+		case app::collectible::blue_key:    sprite_index=app::spr_key_blue; break;
+		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
 	}
 
 	sprite_draw_animated.spr_draw.draw(
@@ -1119,6 +1174,17 @@ void main::start_falling(
 	_player.velocity.x/=2.; 
 }
 
+void main::activate_button(
+	app::player& _player,
+	app::button& _button
+) {
+
+	persistence.add(app::pergr_buttons, _button.id, 1);
+	_button.used=true;
+
+	//TODO: Do whatever needs to be done.
+}
+
 void main::collide_with_wall(
 	app::player& _player
 ) {
@@ -1216,6 +1282,29 @@ bool main::can_grab_ladder(
 
 	_ladderptr=ladders[0];
 	return true;
+}
+
+bool main::can_activate_button(
+	const app::player& _player,
+	app::button *& _btnptr
+) {
+
+	for(app::button& button : current_map.buttons) {
+
+		if(d2d::collision::collides_with(_player.ent, button.ent)) {
+
+			if(button.used) {
+
+				continue;
+			}
+
+			//TODO: Does the player have the key and stuff???
+			_btnptr=&button;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool main::is_into_harm(

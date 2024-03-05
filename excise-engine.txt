@@ -1,15 +1,18 @@
 next step:
 
 	I AM DOING THE SWITCH.
-		- add the ID, each switch must be unique and if activated it should go
-		  away.
-		- things.txt
-		- map.h and cpp
-		- thing builder
-		- main: hold up when near to attempt to activate it
+		- check switches can only be activated with the given key.
+		- get a suitable asset for a default button
 		- doors next.
+			when loading, if a button shares a tag with a door its state should
+			depend on it...
 
 	make the first example game.
+
+		todo:
+			center items on the tile according to their width.
+			better transition for secrets, just use a global timeout object
+			set to 2.5 and multiply it x 100 to get the alpha.
 
 		plan the game.
 
@@ -28,17 +31,10 @@ next step:
 				stuff that shoots you when activated
 
 			"doors" are a block that moves up
-				a door can be opened by activating a switch, styled like a
-keyhole. It has a tag to act on whatever is ON THE SAME MAP. Can be only
-activated once!... maybe it just dissapears.
-				I guess we could have "touch" and "action".
 				generically they should be things with a "tag".
 
 			"something" to reskin the character?
 
-		todo:
-			better transition for secrets, just use a global timeout object
-			set to 2.5 and multiply it x 100 to get the alpha.
 
 	engine:
 		I guess slopes

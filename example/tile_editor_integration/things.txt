@@ -151,6 +151,35 @@ beginobject
 endobject
 
 beginobject
+	id 7
+	name button
+	w 16
+	h 16
+	color 240 200 49 255
+	beginproperty
+		name id
+		type int
+		default 0
+		comment should be unique in the whole map set
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment acts upon objects with the same tag.
+		linkedto nothing
+	endproperty
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=regular 2=yellow key 3=blue key 4=red key
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 50
 	name linear monster
 	w 16
