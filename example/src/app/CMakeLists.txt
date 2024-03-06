@@ -15,6 +15,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/linear_monster.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/secret_cover.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/button.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/gate.cpp
 	PARENT_SCOPE
 )
 

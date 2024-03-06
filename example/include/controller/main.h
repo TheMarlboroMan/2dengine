@@ -56,6 +56,7 @@ class main:
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
+	void                        draw_gate(ldv::screen&, const app::gate&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
@@ -81,6 +82,7 @@ class main:
 	bool                        is_on_air(const app::player&) const;
 	bool                        is_into_harm(const app::player&) const;
 	bool                        can_activate_button(const app::player&, app::button *&);
+	bool                        has_key(const app::player&, const app::button&) const;
 
 	//act on player methods...
 	void                        start_falling(app::player&);

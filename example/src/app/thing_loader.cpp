@@ -26,6 +26,7 @@ void thing_loader::setup() {
 	curmap.collectibles.clear();
 	curmap.secret_covers.clear();
 	curmap.buttons.clear();
+	curmap.gates.clear();
 }
 
 void thing_loader::load(
@@ -46,6 +47,7 @@ void thing_loader::load(
 			case 5: return add_collectible(pos, _attributes);
 			case 6: return add_secret_cover(pos, _attributes);
 			case 7: return add_button(pos, _attributes);
+			case 8: return add_gate(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 
@@ -198,7 +200,6 @@ void thing_loader::add_linear_monster(
 		{ {_pos.x, _pos.y}, type, faces_right, {lower_bound, upper_bound}}
 	);
 }
-	
 
 void thing_loader::add_button(
 	d2d::collision::point _pos,
@@ -220,5 +221,23 @@ void thing_loader::add_button(
 
 	curmap.buttons.push_back(
 		{ _pos, type, id, tag, used}
+	);
+}
+
+void thing_loader::add_gate(
+	d2d::collision::point _pos, 
+	const thing_loader::attrmap& _attributes
+) {
+
+	int height=_attributes.at("height").get_int()*app::tile_h;
+	int id=_attributes.at("id").get_int();
+	int tag=_attributes.at("tag").get_int();
+
+	curmap.gates.push_back(
+		{
+			{_pos, app::tile_w, height}, 
+			id, 
+			tag
+		} 
 	);
 }

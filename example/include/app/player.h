@@ -30,6 +30,10 @@ class player {
 		male, female
 	}                                           gender{genders::female};
 
+	int                                         yellow_keycount{0},
+	                                            blue_keycount{0},
+	                                            red_keycount{0};
+
 	void                                        tic(float);
 	void                                        crouch();
 	void                                        stand_up();

@@ -822,6 +822,11 @@ void main::draw_scene(
 		draw_button(_screen, node);
 	}
 
+	for(const auto& node : current_map.gates) {
+
+		draw_gate(_screen, node);
+	}
+
 	//TODO: These will likely go away?
 	for(const auto& block : current_map.solid_blocks) {
 
@@ -878,8 +883,7 @@ void main::draw_button(
 		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
 	}
 
-	//TODO: How do we draw them when used????
-	//
+	//TODO: Use new sprites.
 	d2d::video::sprite_draw::flags flags{false, false};
 	if(_button.used) {
 
@@ -895,6 +899,29 @@ void main::draw_button(
 		sprite_index,
 		flags
 	);
+}
+
+void main::draw_gate(
+	ldv::screen& _screen,
+	const app::gate& _gate
+) {
+
+	auto origin=d2d::video::to_screen(_gate.ent.get_origin());
+
+	int max_step=_gate.ent.get_h() / app::tile_h;
+	for(int i=0; i<max_step; i++) { 
+
+		int sprite_index=app::spr_gate;
+
+		sprite_draw_animated.spr_draw.draw(
+			_screen,
+			camera,
+			origin,
+			sprite_index
+		);
+
+		origin.y+=app::tile_h;
+	}
 }
 
 void main::draw_ladder(
@@ -1114,7 +1141,7 @@ void main::drop_out_of_ladder(
 }
 
 void main::pick_up_collectible(
-	app::player&,
+	app::player& _player,
 	const app::collectible& _collectible
 ) {
 
@@ -1130,11 +1157,18 @@ void main::pick_up_collectible(
 
 		break;
 		case app::collectible::yellow_key:
+
+			_player.yellow_keycount++;
+			return;
+
 		case app::collectible::blue_key:
+
+			_player.blue_keycount++;
+			return;
 		case app::collectible::red_key:
 
-			//TODO: Add a key to the key count, right??
-		break;
+			_player.red_keycount++;
+			return;
 	}
 }
 
@@ -1182,7 +1216,22 @@ void main::activate_button(
 	persistence.add(app::pergr_buttons, _button.id, 1);
 	_button.used=true;
 
-	//TODO: Do whatever needs to be done.
+	//Consume the key...
+	switch(_button.type) {
+
+		case app::button::types::regular: break;
+		case app::button::types::yellow_keyhole:
+			_player.yellow_keycount--;
+		break;
+		case app::button::types::blue_keyhole: 
+			_player.blue_keycount--;
+		break;
+		case app::button::types::red_keyhole: 
+			_player.red_keycount--;
+		break;
+	}
+
+	//TODO: Do whatever needs to be done with the tag and shit.
 }
 
 void main::collide_with_wall(
@@ -1298,7 +1347,11 @@ bool main::can_activate_button(
 				continue;
 			}
 
-			//TODO: Does the player have the key and stuff???
+			if(!has_key(_player, button)) {
+
+				continue;
+			}
+
 			_btnptr=&button;
 			return true;
 		}
@@ -1316,6 +1369,32 @@ bool main::is_into_harm(
 
 	d2d::collision::checker cc;
 	return cc.has_collision(_player.ent, harm_tiles);
+}
+
+bool main::has_key(
+	const app::player& _player,
+	const app::button& _button
+) const {
+
+	switch(_button.type) {
+
+		case app::button::types::regular:
+
+			//This kind does not need any type of key.
+			return true;
+
+		case app::button::types::yellow_keyhole:
+
+			return _player.yellow_keycount > 0;
+		case app::button::types::blue_keyhole:
+
+			return _player.blue_keycount > 0;
+		case app::button::types::red_keyhole:
+
+			return _player.red_keycount > 0;
+	}
+
+	return false;
 }
 
 app::entry main::find_entry_by_id(

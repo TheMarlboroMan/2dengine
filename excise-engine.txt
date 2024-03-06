@@ -1,11 +1,12 @@
 next step:
 
 	I AM DOING THE SWITCH.
-		- check switches can only be activated with the given key.
-		- get a suitable asset for a default button
-		- doors next.
+		- collide with gates
+		- keep internal state to see if we must tic a gate
+		- tic a gate
 			when loading, if a button shares a tag with a door its state should
-			depend on it...
+			depend on it and start open if the button is used.
+		- get a suitable asset for a default button
 
 	make the first example game.
 

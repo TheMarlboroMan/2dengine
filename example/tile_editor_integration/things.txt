@@ -180,6 +180,35 @@ beginobject
 endobject
 
 beginobject
+	id 8
+	name gate
+	w 16
+	h 16
+	color 128 128 128 255
+	beginproperty
+		name id
+		type int
+		default 0
+		comment should be unique in the whole map set
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment tag to be acted upon
+		linkedto nothing
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 2
+		comment height in tiles
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 50
 	name linear monster
 	w 16
