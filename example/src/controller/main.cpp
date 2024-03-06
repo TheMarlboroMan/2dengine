@@ -218,6 +218,24 @@ void main::load_map(
 		<<current_map.background_color.g<<", "
 		<<current_map.background_color.b<<"\n";
 
+	//All activated switches should run their course now: the gates won't save
+	//their state!
+	for(const auto& button : current_map.buttons) {
+
+		if(!button.used) {
+
+			continue;
+		}
+
+		for(auto& gate : current_map.gates) {
+
+			if(gate.tag==button.tag) {
+
+				gate.open();
+			}
+		}
+	}
+
 	//After loading the map, tell the camera where the limits are.
 	d2d::video::camera_map_limit cml;
 	cml.limit_to_collision_tiles(camera, limits, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
@@ -495,6 +513,11 @@ void main::tic_world(
 
 		monster.tic(_delta, mover);
 	}
+
+	for(auto& gate : current_map.gates) {
+
+		gate.tic(_delta);
+	}
 }
 
 void main::tic_ground(
@@ -512,12 +535,9 @@ void main::tic_ground(
 		return;
 	}
 
-	//Attempt to activate a switch!
-
-
-	//Attempt to enter a doorway...
 	if(_pli.activate) {
 
+		//Attempt to enter a doorway...
 		const app::exit * exitptr{nullptr};
 		if(is_on_exit(_player, exitptr, false)) {
 
@@ -525,6 +545,7 @@ void main::tic_ground(
 			return;
 		}
 
+		//Attempt to activate a switch!
 		app::button * btnptr{nullptr};
 		if(can_activate_button(_player, btnptr)) {
 
@@ -575,6 +596,7 @@ void main::tic_ground(
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
 
 		if(cph.has_collision()) {
 
@@ -693,6 +715,7 @@ void main::tic_air(
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
 
 	if(cph.has_collision()) {
 
@@ -735,6 +758,7 @@ void main::tic_air(
 	cpv.detect_all(current_tiles);
 	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
 	cpv.detect_all(current_map.platform_blocks);
+	std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cpv](const auto& _gate) {cpv.detect_one(_gate.ent);});
 
 	if(cpv.has_collision()) {
 
@@ -1231,7 +1255,14 @@ void main::activate_button(
 		break;
 	}
 
-	//TODO: Do whatever needs to be done with the tag and shit.
+	//Activate all gates by this tag.
+	for(auto& gate : current_map.gates) {
+
+		if(gate.tag==_button.tag) {
+
+			gate.activate();
+		}
+	}
 }
 
 void main::collide_with_wall(

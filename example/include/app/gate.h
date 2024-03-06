@@ -14,11 +14,28 @@ class gate {
 
 	public:
 
-	                                gate(d2d::collision::box, int, int);
+	                                gate(d2d::collision::box, int);
 
 	entity                          ent;
-	int                             id;
 	int                             tag;
+
+	void                            tic(float);
+	void                            activate();
+/**
+ * instantly opens the door.
+ */
+	void                            open();
+
+	private:
+
+	enum class states {
+		closed,
+		opening,
+		open
+	}                               state;
+	int                             destination_y;
+
+	static const int                y_threshold{4};
 };
 
 std::ostream& operator<<(std::ostream&, const gate&);

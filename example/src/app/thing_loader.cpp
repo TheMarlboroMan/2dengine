@@ -230,13 +230,11 @@ void thing_loader::add_gate(
 ) {
 
 	int height=_attributes.at("height").get_int()*app::tile_h;
-	int id=_attributes.at("id").get_int();
 	int tag=_attributes.at("tag").get_int();
 
 	curmap.gates.push_back(
 		{
 			{_pos, app::tile_w, height}, 
-			id, 
 			tag
 		} 
 	);

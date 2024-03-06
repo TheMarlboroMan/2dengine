@@ -7,6 +7,15 @@
 
 namespace d2d { namespace collision {
 
+/**
+ * a collision phase starts when constructed. After that, detect_one or 
+ * detect_all can be called many times to check for collisions. At any moment
+ * "has_collision" can be called to check if a collision took place and then
+ * "response_generic" and "response_complex" can be used to examine the 
+ * result.
+ * Phases can be "horizontal" or "vertical" with slightly different solving
+ * rules.
+ */
 class phase{
 
 	public:
@@ -15,8 +24,19 @@ class phase{
 
 	bool                has_collision() const {return collision_found;}
 
+/**
+ * Checks and adds the result of checking the collision against given spatiable.
+ * Returns true if there was a collision. Beware, that does not mean that
+ * this spatiable is the "closest" collision that will be picked up at
+ * response time.
+ */
 	bool                detect_one(const d2d::collision::spatiable&, int=0);
 	bool                detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
+
+/**
+ * runs through all given nodes checking collisions and adding their results.
+ * Returns true if there was any collision with any of the nodes.
+ */
 
 	template<typename T>
 	bool                detect_all(T& _nodes, int _flags=0, bool _exit_on_collision=false) {
@@ -52,11 +72,6 @@ class phase{
 	d2d::collision::response    response_complex();
 
 	private:
-
-/**
- * to reference helpers to detect all can be called with any kind of vectors,
- * pointers or not.
- */
 
 	bool                            collision_found{false};
 	d2d::collision::checker::phases collision_phase;

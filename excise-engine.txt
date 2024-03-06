@@ -1,12 +1,5 @@
 next step:
-
-	I AM DOING THE SWITCH.
-		- collide with gates
-		- keep internal state to see if we must tic a gate
-		- tic a gate
-			when loading, if a button shares a tag with a door its state should
-			depend on it and start open if the button is used.
-		- get a suitable asset for a default button
+	get a suitable asset for a default button
 
 	make the first example game.
 
@@ -21,6 +14,8 @@ next step:
 			less monsters and more helping blocks. Hard would have extra
 			obstacles and traps and monsters.
 
+			make a map for it.
+
 			"monsters"
 				scorpion
 				snake 
@@ -31,11 +26,9 @@ next step:
 				stuff that shoots you
 				stuff that shoots you when activated
 
-			"doors" are a block that moves up
-				generically they should be things with a "tag".
-
 			"something" to reskin the character?
 
+	fixes:
 
 	engine:
 		I guess slopes
@@ -48,7 +41,4 @@ next step:
 	docs:
 		Complete the README.
 		Documentation and doxygen.
-
-fixes and misc:
----------------------
 

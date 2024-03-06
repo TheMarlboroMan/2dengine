@@ -175,6 +175,11 @@ void main::draw_debug(
 		dd.draw(_screen, button.ent);
 	}
 
+	for(const auto& node : current_map.gates) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	for(const auto& block : current_map.solid_blocks) {
 
 		dd.draw(_screen, block);
