@@ -89,15 +89,25 @@ void state_driver::prepare_input(dfw::kernel& kernel) {
 	using namespace dfw;
 
 	std::vector<input_pair> pairs{
-		{{input_description::types::keyboard, SDL_SCANCODE_ESCAPE, 0}, app::input::escape},
-		{input_description_from_config_token(config.token_from_path("input:left")), app::input::left},
-		{input_description_from_config_token(config.token_from_path("input:right")), app::input::right},
-		{input_description_from_config_token(config.token_from_path("input:up")), app::input::up},
-		{input_description_from_config_token(config.token_from_path("input:down")), app::input::down},
-		{input_description_from_config_token(config.token_from_path("input:jump")), app::input::jump},
-		{input_description_from_config_token(config.token_from_path("input:tic")), app::input::tic},
-		{input_description_from_config_token(config.token_from_path("input:reload_values")), app::input::reload_values}
+		{{input_description::types::keyboard, SDL_SCANCODE_ESCAPE, 0}, app::input::escape}
 	};
+
+	auto add=[&](std::string _token, int _input_type) {
+
+		for(const auto desc : input_description_from_config_token(config.token_from_path(_token))) {
+
+			lm::log(log).info()<<"setting input for "<<_input_type<<" as code "<<desc.code<<std::endl;
+			pairs.push_back({desc, _input_type});
+		}
+	};
+
+	add("input:left", app::input::left);
+	add("input:right", app::input::right);
+	add("input:up", app::input::up);
+	add("input:down", app::input::down);
+	add("input:jump", app::input::jump);
+	add("input:tic", app::input::tic);
+	add("input:reload_values", app::input::reload_values);
 
 	kernel.init_input_system(pairs);
 }
