@@ -4,15 +4,11 @@ next step:
 	make the first example game.
 
 		todo:
-			center items on the tile according to their width.
+
 			better transition for secrets, just use a global timeout object
 			set to 2.5 and multiply it x 100 to get the alpha.
 
 		plan the game.
-
-			maybe difficulty modes, easy, normal, hard... Easy would be
-			less monsters and more helping blocks. Hard would have extra
-			obstacles and traps and monsters.
 
 			make a map for it.
 

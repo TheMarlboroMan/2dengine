@@ -101,6 +101,23 @@ main::main(
 	take_player_to_entry(player, 1, nullptr);
 }
 
+void main::set_difficulty(
+	int _value
+) {
+
+	switch(_value) {
+
+		case app::dif_easy:
+		case app::dif_normal:
+		case app::dif_hard:
+
+			difficulty_setting=_value;
+			return;
+	}
+
+	throw std::runtime_error("bad difficulty setting");
+}
+
 void main::awake(
 	dfw::input& /*input*/
 ) {
@@ -208,7 +225,7 @@ void main::load_map(
 	auto limits=tlf.find_limits(current_map.collision_tiles);
 
 
-	app::thing_loader tl{current_map, limits, persistence};
+	app::thing_loader tl{current_map, limits, persistence, difficulty_setting};
 	loader.load_thing_layer("things", tl);
 
 	app::map_attribute_loader attrl{current_map.background_color};

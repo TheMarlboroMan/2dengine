@@ -97,6 +97,13 @@ beginobject
 		comment entry height in tiles!
 		linkedto nothing
 	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject
@@ -117,6 +124,13 @@ beginobject
 		type int
 		default 0
 		comment should be unique in the whole map set
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
 		linkedto nothing
 	endproperty
 endobject
@@ -226,6 +240,13 @@ beginobject
 		type int
 		default 1
 		comment 1=right 0=left
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
 		linkedto nothing
 	endproperty
 endobject

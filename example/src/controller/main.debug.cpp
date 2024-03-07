@@ -157,6 +157,7 @@ void main::setup_console(
 	console->map_command("get_collision_tiles", {});
 	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
+	console->map_command("difficulty", {{console::types::integer}});
 }
 
 void main::draw_debug(

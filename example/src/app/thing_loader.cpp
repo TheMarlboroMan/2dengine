@@ -10,11 +10,13 @@ using namespace app;
 thing_loader::thing_loader(
 	map& _map,
 	d2d::collision::tile_limits _limits,
-	tpersistence& _persistence
+	tpersistence& _persistence,
+	int _difficulty_setting
 ):
 	curmap{_map},
 	tile_limits{_limits},
-	persistence{_persistence}
+	persistence{_persistence},
+	difficulty_setting{_difficulty_setting}
 {}
 
 void thing_loader::setup() {
@@ -112,6 +114,12 @@ void thing_loader::add_ladder(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
 	int height=_attributes.at("height").get_int()*app::tile_h;
 	int type=_attributes.at("type").get_int();
 
@@ -125,6 +133,12 @@ void thing_loader::add_collectible(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
 	int id=_attributes.at("id").get_int();
 
 	//Check if it was already retrieved.
@@ -134,6 +148,7 @@ void thing_loader::add_collectible(
 	}
 
 	int type=_attributes.at("type").get_int();
+
 	curmap.collectibles.push_back(
 		{ {_pos.x, _pos.y}, id, type}
 	);
@@ -164,6 +179,12 @@ void thing_loader::add_linear_monster(
 	d2d::collision::point _pos,
 	const thing_loader::attrmap& _attributes
 ) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
 
 	int type=_attributes.at("type").get_int();
 	bool faces_right=_attributes.at("facing_right").get_int()==1;

@@ -9,6 +9,7 @@ class collectible {
 
 	public:
 
+	//TODO: Make it an enum class.
 	enum types {
 		gold_ingot=0,
 		gem=1,

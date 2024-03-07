@@ -14,7 +14,7 @@ class thing_loader
 
 	typedef std::map<std::string, d2d::storage::attribute> attrmap;
 
-						thing_loader(map&, d2d::collision::tile_limits, tpersistence&);
+						thing_loader(map&, d2d::collision::tile_limits, tpersistence&, int);
 
 	void                setup();
 	void                load(d2d::storage::position, int, const attrmap&);
@@ -34,5 +34,6 @@ class thing_loader
 	map&                curmap;
 	d2d::collision::tile_limits tile_limits;
 	tpersistence&       persistence;
+	int                 difficulty_setting;
 };
 }

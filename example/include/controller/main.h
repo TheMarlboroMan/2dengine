@@ -43,6 +43,8 @@ class main:
 	virtual void                slumber(dfw::input& /*input*/);
 	virtual bool                can_leave_state() const {return true;}
 
+	void                        set_difficulty(int);
+
 	private:
 
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
@@ -114,6 +116,7 @@ class main:
 	app::map                    current_map;
 	app::player                 player;
 	int                         last_entry_id{0};
+	int                         difficulty_setting{app::dif_normal};
 
 #ifdef IS_DEBUG_BUILD
 

@@ -1,4 +1,5 @@
 #include "app/collectible.h"
+#include "app/definitions.h"
 
 using namespace app;
 
@@ -17,7 +18,6 @@ collectible::collectible(
 		case gold_ingot:
 			ent.set_w(gold_ingot_w);
 			ent.set_h(gold_ingot_h);
-
 		break;
 		case gem:
 			ent.set_w(gem_w);
@@ -34,6 +34,10 @@ collectible::collectible(
 			ent.set_h(key_h);
 		break;
 	}
+
+	int x=ent.get_x();
+	x+=(app::tile_w - ent.get_w()) / 2;
+	ent.set_x(x);
 }
 
 std::ostream& app::operator<<(

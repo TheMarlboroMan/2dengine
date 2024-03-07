@@ -12,19 +12,24 @@
 	},
 	"input":{
 		"down":[
-			{"type":0, "device":0, "code":81}
+			{"type":0, "device":0, "code":81},
+			{"type":2, "device":0, "code":14}
 		],
 		"left":[
-			{"type":0, "device":0, "code":80}
+			{"type":0, "device":0, "code":80},
+			{"type":2, "device":0, "code":15}
 		],
 		"right":[
-			{"type":0, "device":0, "code":79}
+			{"type":0, "device":0, "code":79},
+			{"type":2, "device":0, "code":16}
 		],
 		"up":[
-			{"type":0, "device":0, "code":82}
+			{"type":0, "device":0, "code":82},
+			{"type":2, "device":0, "code":13}
 		],
 		"jump":[
-			{"type":0, "device":0, "code":44}
+			{"type":0, "device":0, "code":44},
+			{"type":2, "device":0, "code":0}
 		],
 		"tic":[
 			{"type":0, "device":0, "code":23}

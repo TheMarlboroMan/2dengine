@@ -1,5 +1,6 @@
 #include "dfwimpl/state_driver.h"
 #include "app/input.h"
+#include "app/definitions.h"
 #include "controller/controller_states.h"
 
 #include <ldtools/ttf_manager.h>
@@ -145,6 +146,8 @@ void state_driver::register_controllers(
 		controller::state_main,
 		new controller::main(*service_provider)
 	);
+
+	static_cast<controller::main&>(*c_main).set_difficulty(app::dif_normal);
 }
 
 void state_driver::prepare_state(

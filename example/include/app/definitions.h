@@ -7,6 +7,15 @@ static const int tile_h=16;
 static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per screen.
 static const int logic_screen_h=224; //and these are 14 per screen.
 
+/**
+ * these will behave as flags, DooM style.
+ **/
+enum difficulty_settings {
+	dif_easy=1,
+	dif_normal=2,
+	dif_hard=4
+};
+
 enum persistence_groups {
 	pergr_collectibles=1, //regular collectible bonuses
 	pergr_secret_covers=2, //black rectangles covering secret areas.
