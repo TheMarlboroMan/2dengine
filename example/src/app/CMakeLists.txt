@@ -16,6 +16,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/secret_cover.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/button.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/gate.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/projectile_generator.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/projectile.cpp
 	PARENT_SCOPE
 )
 

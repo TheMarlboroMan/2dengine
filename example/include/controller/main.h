@@ -14,6 +14,7 @@
 #include "app/player_input.h"
 #include "app/player.h"
 #include "app/types.h"
+#include "app/projectile.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -59,6 +60,7 @@ class main:
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
+	void                        draw_projectile(ldv::screen&, const app::projectile&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
@@ -117,6 +119,9 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::dif_normal};
+
+	//TODO This will belong to the map.
+	std::vector<app::projectile> projectiles;
 
 #ifdef IS_DEBUG_BUILD
 

@@ -10,6 +10,7 @@
 #include "secret_cover.h"
 #include "button.h"
 #include "gate.h"
+#include "projectile_generator.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
@@ -38,8 +39,10 @@ class map {
 	std::vector<secret_cover>               secret_covers;
 	std::vector<button>                     buttons;
 	std::vector<gate>                       gates;
+	std::vector<projectile_generator>       projectile_generators;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
+
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 

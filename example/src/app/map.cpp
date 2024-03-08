@@ -30,6 +30,7 @@ std::ostream& app::operator<<(
 	print_node("secret_covers", _map.secret_covers, _stream);
 	print_node("buttons", _map.buttons, _stream);
 	print_node("gates", _map.gates, _stream);
+	print_node("projectile_generators", _map.projectile_generators, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -38,6 +39,7 @@ std::ostream& app::operator<<(
 void map::clear() {
 
 	collision_tiles.clear();
+	projectile_generators.clear();
 	platform_blocks.clear();
 	solid_blocks.clear();
 	tile_finder.clear();

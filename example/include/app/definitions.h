@@ -35,9 +35,12 @@ enum animation_groups{
 };
 
 enum animations{
+	//animated tiles
 	anim_water_surface=1,
 	anim_waterfall=2,
 	anim_lava_surface=3,
+
+	//player
 	anim_m_idle=100,
 	anim_m_walk=101,
 	anim_m_jump=102,
@@ -50,7 +53,11 @@ enum animations{
 	anim_f_climb=113,
 	anim_f_crouch=114,
 	anim_f_defeat=115,
-	anim_scorpion=150
+
+	//monsters and traps
+	anim_scorpion=150,
+	anim_projectile=151,
+	anim_projectile_end=152
 };
 
 enum sprites {

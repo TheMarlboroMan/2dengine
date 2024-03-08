@@ -254,6 +254,14 @@ void d2d::collision::center_horizontally(
 }
 
 void d2d::collision::center_horizontally(
+	spatiable& _a, 
+	const box& _b
+) {
+
+	_a.get_box().center_horizontally(_b);
+}
+
+void d2d::collision::center_horizontally(
 	box& _a, 
 	const box& _b
 ) {
@@ -267,6 +275,14 @@ void d2d::collision::center_vertically(
 ) {
 
 	_a.get_box().center_vertically(_b.get_box());
+}
+
+void d2d::collision::center_vertically(
+	spatiable& _a, 
+	const box& _b
+) {
+
+	_a.get_box().center_vertically(_b);
 }
 
 void d2d::collision::center_vertically(

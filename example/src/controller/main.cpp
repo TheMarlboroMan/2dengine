@@ -535,6 +535,27 @@ void main::tic_world(
 
 		gate.tic(_delta);
 	}
+
+	for(auto& projectile : projectiles) {
+
+		projectile.tic(_delta, mover);
+	}
+
+	for(auto& pg : current_map.projectile_generators) {
+
+		if(pg.tic(_delta)) {
+
+			const auto spawn_data=pg.get_projectile_data();
+			app::projectile proj{
+				spawn_data.box.origin,
+				spawn_data.velocity
+			};
+
+			d2d::collision::center_vertically(proj.ent, spawn_data.box);
+			d2d::collision::center_horizontally(proj.ent, spawn_data.box);
+			projectiles.push_back(proj);
+		}
+	}
 }
 
 void main::tic_ground(
@@ -895,6 +916,11 @@ void main::draw_scene(
 		draw_linear_monster(_screen, monster);
 	}
 
+	for(const auto& projectile : projectiles) {
+
+		draw_projectile(_screen, projectile);
+	}
+
 	draw_player(_screen, player);
 	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
 
@@ -1036,6 +1062,28 @@ void main::draw_linear_monster(
 		_screen, 
 		camera, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
+		animation_index,
+		draw_flags
+	);
+}
+
+void main::draw_projectile(
+	ldv::screen& _screen,
+	const app::projectile& _projectile
+) {
+
+	//Al sprites are facing right by default.
+	d2d::video::sprite_draw::flags draw_flags{
+		_projectile.velocity.x < 0., 
+		false
+	};
+
+	int animation_index=app::anim_projectile;
+
+	sprite_draw_animated.draw(
+		_screen, 
+		camera, 
+		d2d::video::to_screen(_projectile.ent.get_origin()),
 		animation_index,
 		draw_flags
 	);

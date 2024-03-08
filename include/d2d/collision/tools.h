@@ -70,8 +70,10 @@ void           match_left_of(spatiable&, const spatiable&, double=0.);
 void           match_top_of(spatiable&, const spatiable&, double=0.);
 void           match_bottom_of(spatiable&, const spatiable&, double=0.);
 void           center_horizontally(spatiable&, const spatiable&);
+void           center_horizontally(spatiable&, const box&);
 void           center_horizontally(box&, const box&);
 void           center_vertically(spatiable&, const spatiable&);
+void           center_vertically(spatiable&, const box&);
 void           center_vertically(box&, const box&);
 
 }}

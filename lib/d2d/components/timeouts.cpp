@@ -15,22 +15,15 @@ void timeouts::tic(
 timeouts& timeouts::add(
 	int _id,
 	float _max_value,
-	float _value
+	float _value,
+	bool _active
 ) {
 
 	float val=_value==-1 
 		? _max_value
 		: _value;
 
-	data[_id]={val, _max_value};
-	return *this;
-}
-
-timeouts& timeouts::reset(
-	int _id
-) {
-
-	data[_id].reset();
+	data[_id]={val, _max_value, _active};
 	return *this;
 }
 
@@ -63,4 +56,65 @@ timeouts& timeouts::set(
 
 	data[_id].timer=_value;
 	return *this;
+}
+
+timeouts& timeouts::reset(
+	int _id
+) {
+
+	data[_id].reset();
+	return *this;
+}
+
+timeouts& timeouts::pause(
+	int _id
+) {
+
+	data[_id].pause();
+	return *this;
+}
+
+timeouts& timeouts::resume(
+	int _id
+) {
+
+	data[_id].resume();
+	return *this;
+}
+
+bool timeouts::is_paused(
+	int _id
+) const {
+
+	return data.at(_id).paused;
+}
+
+void timeouts::timeout::tic(
+	float _delta
+) {
+	if(paused) {
+
+		return;
+	}
+
+	timer-=_delta;
+	if(timer < 0.f) {
+
+		timer=0.f;
+	}
+}
+
+void timeouts::timeout::reset() {
+
+	timer=max;
+}
+
+void timeouts::timeout::pause() {
+
+	paused=true;
+}
+
+void timeouts::timeout::resume() {
+
+	paused=false;
 }

@@ -28,10 +28,11 @@ class timeouts {
 /**
  * adds a new timeout to the list with an identifier and its max value. If
  * the third parameter is not given the value of the timeout will be set
- * to max.
+ * to max. The fourth parameter indicates if the timeout should be created
+ * paused.
  */
 
-	timeouts&       add(int, float, float=-1.0);
+	timeouts&       add(int, float, float=-1.0, bool=false);
 
 
 /**
@@ -55,26 +56,34 @@ class timeouts {
  */
 	bool            is_counting(int) const;
 
+/**
+ * checks if the timeout identified by the identifier is paused.
+ */
+
+	bool            is_paused(int) const;
+
+/**
+ * pauses the given timeout.
+ */
+	timeouts&       pause(int);
+
+/**
+ * resumes the given timeout.
+ */
+	timeouts&       resume(int);
+
 	private:
 
 	struct timeout {
 
 		float   timer{0.f},
 		        max{0.f};
+		bool    paused{false};
 
-		void    tic(float _delta) {
-
-			timer-=_delta;
-			if(timer < 0.f) {
-
-				timer=0.f;
-			}
-		}
-
-		void    reset() {
-
-			timer=max;
-		}
+		void    tic(float _delta);
+		void    reset();
+		void    pause();
+		void    resume();
 	};
 
 	std::map<int, timeout>  data;

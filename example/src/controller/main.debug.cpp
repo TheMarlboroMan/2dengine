@@ -222,6 +222,11 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
+	for(const auto& node : projectiles) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	//TODO: Missing 
 
 	dd.draw(_screen, player.ent);

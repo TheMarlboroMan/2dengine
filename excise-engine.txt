@@ -1,5 +1,14 @@
 next step:
+
+	projectiles must:
+		- be contained by the map and not the controller
+		- defeat player on contact
+		- dissapear upon exiting the map
+		- collide with world and desintegrate
+		- dissapear when desintegrated
+
 	get a suitable asset for a default button
+	get assets for used keyholes (same graphic, no keyhole).
 
 	make the first example game.
 
@@ -13,14 +22,9 @@ next step:
 			make a map for it.
 
 			"monsters"
-				scorpion
-				snake 
+				snake (I need sprites)
 				bat (I think there are sprites for these already).
-				leaping piranhas
-
-			"traps":
-				stuff that shoots you
-				stuff that shoots you when activated
+				leaping piranhas (I need sprites)
 
 			"something" to reskin the character?
 
