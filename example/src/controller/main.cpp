@@ -1107,7 +1107,21 @@ void main::draw_linear_monster(
 		false
 	};
 
-	int animation_index=app::anim_scorpion;
+	int animation_index=0;
+	switch(_monster.type) {
+		case app::linear_monster::types::scorpion:
+
+			animation_index=app::anim_scorpion;
+		break;
+		case app::linear_monster::types::snake:
+
+			animation_index=app::anim_snake;
+		break;
+		case app::linear_monster::types::bat:
+
+			animation_index=app::anim_bat;
+		break;
+	}
 
 	sprite_draw_animated.draw(
 		_screen, 

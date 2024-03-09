@@ -57,7 +57,9 @@ enum animations{
 	//monsters and traps
 	anim_scorpion=150,
 	anim_projectile=151,
-	anim_projectile_end=152
+	anim_projectile_end=152,
+	anim_snake=153,
+	anim_bat=154,
 };
 
 enum sprites {

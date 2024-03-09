@@ -26,19 +26,21 @@ class linear_monster {
 		        upper;
 	};
 
-	enum types {
-		scorpion=1
+	enum class types {
+		scorpion,
+		snake,
+		bat
 	};
 /**
  * the second parameter is a "type". The boolean indicates wether or not
  * this thing spaws facing right.
  */
 
-	                        linear_monster(d2d::collision::point, int, bool, boundaries);
+	                        linear_monster(d2d::collision::point, types, bool, boundaries);
 
 	entity                  ent;
 	d2d::motion::motion_vector velocity;
-	int                     type;
+	types                   type;
 	faces                   facing;
 
 	void                    tic(float _delta, d2d::motion::mover);
@@ -46,8 +48,16 @@ class linear_monster {
 	private:
 
 	static const int        scorpion_w{16};
-	static const int        scorpion_h{16};
+	static const int        scorpion_h{15};
 	static const double     scorpion_velocity;
+
+	static const int        snake_w{16};
+	static const int        snake_h{10};
+	static const double     snake_velocity;
+
+	static const int        bat_w{11};
+	static const int        bat_h{10};
+	static const double     bat_velocity;
 
 	void                    reverse();
 

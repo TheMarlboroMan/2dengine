@@ -188,36 +188,32 @@ void thing_loader::add_linear_monster(
 		return;
 	}
 
-	int type=_attributes.at("type").get_int();
-	bool faces_right=_attributes.at("facing_right").get_int()==1;
+	app::linear_monster::types type{app::linear_monster::types::scorpion};
+	double lower_bound=0.;
+	double upper_bound=0.;
 
 	auto tile=curmap.tile_finder.to_tile_coords(_pos);
 
-	//The limits start as wide as they can, then we narrow them.
-	double lower_bound{tile_limits.left},
-		upper_bound{tile_limits.right};
+	switch(_attributes.at("type").get_int()) {
 
-	//Lower bound.
-	for(int x=tile.x-1; x >= tile_limits.left; x--) {
-
-		if(curmap.tile_finder.has({x, tile.y})) {
-
-			//Notice we pick the next free tile. Its to_point will give us 
-			//the right blocked tile's edge.
-			lower_bound=curmap.tile_finder.to_point({x+1, tile.y}).x;
-			break;
-		}
+		case 1: 
+			type=app::linear_monster::types::scorpion; 
+			lower_bound=find_lower_x_bound(tile);
+			upper_bound=find_upper_x_bound(tile);
+		break;
+		case 2: 
+			type=app::linear_monster::types::snake; 
+			lower_bound=find_lower_x_bound(tile);
+			upper_bound=find_upper_x_bound(tile);
+		break;
+		case 3: 
+			type=app::linear_monster::types::bat; 
+			lower_bound=find_lower_y_bound(tile);
+			upper_bound=find_upper_y_bound(tile);
+		break;
 	}
 
-	//Upper bound...
-	for(int x=tile.x+1; x <= tile_limits.right; x++) {
-
-		if(curmap.tile_finder.has({x, tile.y})) {
-
-			upper_bound=curmap.tile_finder.to_point({x, tile.y}).x;
-			break;
-		}
-	}
+	bool faces_right=_attributes.at("facing_right").get_int()==1;
 
 	curmap.linear_monsters.push_back(
 		{ {_pos.x, _pos.y}, type, faces_right, {lower_bound, upper_bound}}
@@ -286,4 +282,77 @@ void thing_loader::add_projectile_generator(
 			active
 		} 
 	);
+}
+
+double thing_loader::find_lower_x_bound(
+	d2d::collision::tile_coords _tile
+) const {
+
+	//the limits start as wide as they can, then we narrow them.
+	double lower_bound{tile_limits.left};
+
+	//lower bound.
+	for(int x=_tile.x-1; x >= tile_limits.left; x--) {
+
+		if(curmap.tile_finder.has({x, _tile.y})) {
+
+			//notice we pick the next free tile. its to_point will give us 
+			//the right blocked tile's edge.
+			lower_bound=curmap.tile_finder.to_point({x+1, _tile.y}).x;
+			break;
+		}
+	}
+
+	return lower_bound;
+}
+
+double thing_loader::find_upper_x_bound(
+	d2d::collision::tile_coords _tile
+) const {
+
+	double upper_bound{tile_limits.right};
+	for(int x=_tile.x+1; x <= tile_limits.right; x++) {
+
+		if(curmap.tile_finder.has({x, _tile.y})) {
+
+			upper_bound=curmap.tile_finder.to_point({x, _tile.y}).x;
+			break;
+		}
+	}
+
+	return upper_bound;
+}
+
+double thing_loader::find_lower_y_bound(
+	d2d::collision::tile_coords _tile
+) const {
+
+	double lower_bound{tile_limits.bottom};
+	for(int y=_tile.y-1; y >= tile_limits.bottom; y--) {
+
+		if(curmap.tile_finder.has({_tile.x, y})) {
+
+			lower_bound=curmap.tile_finder.to_point({_tile.x, y+1}).y;
+			break;
+		}
+	}
+
+	return lower_bound;
+}
+
+double thing_loader::find_upper_y_bound(
+	d2d::collision::tile_coords _tile
+) const {
+
+	double upper_bound{tile_limits.top};
+	for(int y=_tile.y+1; y <= tile_limits.top; y++) {
+
+		if(curmap.tile_finder.has({_tile.x, y})) {
+
+			upper_bound=curmap.tile_finder.to_point({_tile.x, y}).x;
+			break;
+		}
+	}
+
+	return upper_bound;
 }

@@ -232,14 +232,14 @@ beginobject
 		name type
 		type int
 		default 1
-		comment 1=scorpion
+		comment 1=scorpion 2=snake 3=bat
 		linkedto nothing
 	endproperty
 	beginproperty
 		name facing_right
 		type int
 		default 1
-		comment 1=right 0=left
+		comment 1=right/up 0=left/down
 		linkedto nothing
 	endproperty
 	beginproperty

@@ -3,14 +3,13 @@ next step:
 	make the first example game.
 
 		todo:
+			fix bat (I think there are sprites for these already).
 
 		plan the game.
 
 			make a map for it.
 
 			"monsters"
-				snake (I need sprites)
-				bat (I think there are sprites for these already).
 				leaping piranhas (I need sprites)
 
 			"something" to reskin the character?
