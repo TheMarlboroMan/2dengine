@@ -1,12 +1,5 @@
 next step:
 
-	projectiles must:
-		- be contained by the map and not the controller
-		- defeat player on contact
-		- dissapear upon exiting the map
-		- collide with world and desintegrate
-		- dissapear when desintegrated
-
 	get a suitable asset for a default button
 	get assets for used keyholes (same graphic, no keyhole).
 

@@ -14,7 +14,6 @@
 #include "app/player_input.h"
 #include "app/player.h"
 #include "app/types.h"
-#include "app/projectile.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -50,7 +49,6 @@ class main:
 
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
-
 
 	//TODO: In time, move these to another class, a draw class.
 	void                        draw_player(ldv::screen&, const app::player&);
@@ -119,9 +117,6 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::dif_normal};
-
-	//TODO This will belong to the map.
-	std::vector<app::projectile> projectiles;
 
 #ifdef IS_DEBUG_BUILD
 

@@ -106,4 +106,19 @@ struct filter_tiles_ignore_monster_block {
 		return _tile.type!=app::tile_monster_block;
 	}
 };
+
+/**
+ * tiles to be checked when projectiles move around.
+ */
+struct filter_tiles_projectile {
+
+	bool operator()(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile& _tile
+	) const {
+
+		return _tile.type!=app::tile_monster_block;
+	}
+};
+
 }

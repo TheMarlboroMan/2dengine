@@ -222,7 +222,7 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
-	for(const auto& node : projectiles) {
+	for(const auto& node : current_map.projectiles) {
 
 		dd.draw(_screen, node.ent);
 	}

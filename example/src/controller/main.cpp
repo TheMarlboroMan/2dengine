@@ -223,7 +223,7 @@ void main::load_map(
 	//we need the maps limits, so...
 	d2d::collision::tile_limits_finder tlf{};
 	auto limits=tlf.find_limits(current_map.collision_tiles);
-
+	current_map.set_limits(limits);
 
 	app::thing_loader tl{current_map, limits, persistence, difficulty_setting};
 	loader.load_thing_layer("things", tl);
@@ -414,6 +414,7 @@ void main::take_player_to_entry(
 
 void main::restart_level() {
 
+	current_map.projectiles.clear();
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
 
@@ -478,6 +479,22 @@ void main::tic(
 		}
 	}
 
+	//Or a projectile?
+	for(auto& projectile : current_map.projectiles) {
+
+		if(!projectile.is_moving()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, projectile.ent)) {
+
+			projectile.desintegrate();
+			defeat(player);
+			return;
+		}
+	}
+
 	//Have we entered a secret cover?
 	//TODO: I would like a dissapearing effect for this, just with the
 	//alpha. Also, the secret cover should just dissapear and be removed from
@@ -536,10 +553,39 @@ void main::tic_world(
 		gate.tic(_delta);
 	}
 
-	for(auto& projectile : projectiles) {
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	for(auto& projectile : current_map.projectiles) {
 
 		projectile.tic(_delta, mover);
+
+		//Outside map boundaries? dissapear at once.
+		if(!current_map.is_within_boundaries(projectile.ent)) {
+
+			projectile.finish();
+			continue;
+		}
+
+		//We won't correct the collisions, so we will check if the projectile
+		//is already moving.
+		if(projectile.is_moving() && adapter.has(
+			projectile.ent, 
+			current_map.tile_finder, 
+			app::filter_tiles_projectile{}
+		)) {
+
+			projectile.desintegrate();
+		}
 	}
+
+	//erase-remove idiom, get rid of projectiles we no longer want.
+	current_map.projectiles.erase(
+		std::remove_if(
+			current_map.projectiles.begin(),
+			current_map.projectiles.end(),
+			[](app::projectile& _proj) {return _proj.is_done();}
+		),
+		current_map.projectiles.end()
+	);
 
 	for(auto& pg : current_map.projectile_generators) {
 
@@ -553,7 +599,7 @@ void main::tic_world(
 
 			d2d::collision::center_vertically(proj.ent, spawn_data.box);
 			d2d::collision::center_horizontally(proj.ent, spawn_data.box);
-			projectiles.push_back(proj);
+			current_map.projectiles.push_back(proj);
 		}
 	}
 }
@@ -591,7 +637,6 @@ void main::tic_ground(
 			return;
 		}
 	}
-
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 
@@ -916,7 +961,7 @@ void main::draw_scene(
 		draw_linear_monster(_screen, monster);
 	}
 
-	for(const auto& projectile : projectiles) {
+	for(const auto& projectile : current_map.projectiles) {
 
 		draw_projectile(_screen, projectile);
 	}
@@ -1078,13 +1123,24 @@ void main::draw_projectile(
 		false
 	};
 
-	int animation_index=app::anim_projectile;
+	if(!_projectile.is_moving()) {
+
+		sprite_draw_animated.draw(
+			_screen, 
+			camera, 
+			d2d::video::to_screen(_projectile.ent.get_origin()),
+			app::anim_projectile_end,
+			_projectile.get_timeout_value(),
+			draw_flags
+		);
+		return;
+	}
 
 	sprite_draw_animated.draw(
 		_screen, 
 		camera, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
-		animation_index,
+		app::anim_projectile,
 		draw_flags
 	);
 }
@@ -1348,6 +1404,10 @@ void main::defeat(
 	}
 
 	_player.timeouts.reset(app::player::timeout_defeat);
+
+std::cout<<_player.timeouts.get(app::player::timeout_defeat)<<" / "<<
+	_player.timeouts.get_max(app::player::timeout_defeat)<<std::endl;
+
 	_player.state=app::player::states::defeat;
 	_player.velocity.y=simulation.defeat_y_velocity;
 }

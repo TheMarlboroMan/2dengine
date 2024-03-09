@@ -53,10 +53,29 @@ void map::clear() {
 	secret_covers.clear();
 	buttons.clear();
 	gates.clear();
+
+	projectiles.clear();
 }
 
 void map::sync_tile_finder() {
 
 	tile_finder.clear();
 	tile_finder.load(collision_tiles);
+}
+
+void map::set_limits(
+	d2d::collision::tile_limits _limit
+) {
+
+	double x=_limit.left*app::tile_w;
+	double y=_limit.bottom*app::tile_h;
+
+	limits={{x, y}, _limit.w*app::tile_w, _limit.h*app::tile_h};
+}
+
+bool map::is_within_boundaries(
+	const d2d::collision::spatiable& _spatiable
+) const {
+
+	return collides_with(_spatiable, limits);
 }

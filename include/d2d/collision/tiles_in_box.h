@@ -81,6 +81,38 @@ class tiles_in_box {
 		return result;
 	}
 
+/**
+ * early returning version of find that just checks if a collision exists.
+ */
+	template<typename C>
+	bool has(
+		const d2d::collision::spatiable& _spatiable,
+		const d2d::collision::tile_finder& _finder,
+		C _callable
+	) const {
+
+		return this->has(_spatiable.get_box(), _finder, _callable);
+	}
+
+	template<typename C>
+	bool has(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile_finder& _finder,
+		C _callable
+	) const {
+
+		const auto& previous_results=find(_box, _finder);
+		for(const auto& _node : find(_box, _finder)) {
+
+			if(_callable(_box, *_node)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private:
 
 	int                 tile_w,

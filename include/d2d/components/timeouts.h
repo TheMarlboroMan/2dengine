@@ -5,11 +5,37 @@
 namespace d2d { namespace components {
 
 /**
- * a container of timeouts. A timeout is a value associated to a numeric key
- * that counts down by a delta value whenever "tic" is called. When the value
- * has reached zero it has "expired". If the value is still greater than zero
- * it is "counting". Once a timeout has expired it must be reset with "reset"
+ * Timeouts count from zero to a limit. When the limit is reached we say the
+ * timeout "is expired". The counter increases by a delta time whenever
+ * "tic" is called. Once a timeout has expired it must be reset with "reset"
  * so it can be used again.
+ */
+class timeout {
+
+	public:
+	                timeout(float, float=-1.0, bool=false);
+
+	bool            is_expired() const;
+	bool            is_counting() const;
+	bool            is_paused() const;
+	float           get() const;
+	float           get_max() const;
+	timeout&        tic(float _delta);
+	timeout&        set(float);
+	timeout&        reset();
+	timeout&        pause();
+	timeout&        resume();
+
+	private:
+
+	float   timer{0.f},
+			max{0.f};
+	bool    paused{false};
+
+};
+
+/**
+ * a container of timeouts associated with a numeric key.
  */
 class timeouts {
 
@@ -24,6 +50,11 @@ class timeouts {
  * returns the given timeout value
  */
 	float           get(int) const;
+
+/**
+ * returns the given timeout max
+ */
+	float           get_max(int) const;
 
 /**
  * adds a new timeout to the list with an identifier and its max value. If
@@ -73,18 +104,6 @@ class timeouts {
 	timeouts&       resume(int);
 
 	private:
-
-	struct timeout {
-
-		float   timer{0.f},
-		        max{0.f};
-		bool    paused{false};
-
-		void    tic(float _delta);
-		void    reset();
-		void    pause();
-		void    resume();
-	};
 
 	std::map<int, timeout>  data;
 };

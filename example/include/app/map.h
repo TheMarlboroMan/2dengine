@@ -11,7 +11,9 @@
 #include "button.h"
 #include "gate.h"
 #include "projectile_generator.h"
+#include "projectile.h"
 #include <d2d/collision/tile.h>
+#include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
 #include <ldv/color.h>
@@ -43,13 +45,28 @@ class map {
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 
+	std::vector<app::projectile>            projectiles;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
+
+/**
+ * returns true if an entity is within the tile boundaries.
+ */
+	bool                                    is_within_boundaries(const d2d::collision::spatiable&) const;
 
 /**
  * syncs the contents of collision_tiles with the tile finder.
  */
 	void                                    sync_tile_finder();
+
+/**
+ * converts a set of tile limits to a box of world unit limits.
+ */
+	void                                    set_limits(d2d::collision::tile_limits);
+
+	private:
+
+	d2d::collision::box                     limits{{0.,0.},0,0};
 };
 
 std::ostream& operator<<(std::ostream&, const map&);
