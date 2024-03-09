@@ -496,12 +496,9 @@ void main::tic(
 	}
 
 	//Have we entered a secret cover?
-	//TODO: I would like a dissapearing effect for this, just with the
-	//alpha. Also, the secret cover should just dissapear and be removed from
-	//memory, right?
 	for(auto& secret_cover : current_map.secret_covers) {
 
-		if(secret_cover.discovered) {
+		if(!secret_cover.is_hidden()) {
 
 			continue;
 		}
@@ -601,6 +598,11 @@ void main::tic_world(
 			d2d::collision::center_horizontally(proj.ent, spawn_data.box);
 			current_map.projectiles.push_back(proj);
 		}
+	}
+
+	for(auto& sc : current_map.secret_covers) {
+
+		sc.tic(_delta);
 	}
 }
 
@@ -971,7 +973,7 @@ void main::draw_scene(
 
 	for(const auto& secret_cover : current_map.secret_covers) {
 
-		if(secret_cover.discovered) {
+		if(secret_cover.is_discovered()) {
 
 			continue;
 		}
@@ -995,11 +997,16 @@ void main::draw_button(
 		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
 	}
 
-	//TODO: Use new sprites.
 	d2d::video::sprite_draw::flags flags{false, false};
 	if(_button.used) {
 
-		flags={true, true};
+		switch(_button.type) {
+
+			case app::button::types::regular:           sprite_index=app::spr_regular_button_used; break;
+			case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole_used; break;
+			case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole_used; break;
+			case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole_used; break;
+		}
 	}
 
 	auto origin=d2d::video::to_screen(_button.ent.get_origin());
@@ -1008,8 +1015,7 @@ void main::draw_button(
 		_screen,
 		camera,
 		origin,
-		sprite_index,
-		flags
+		sprite_index
 	);
 }
 
@@ -1153,10 +1159,18 @@ void main::draw_secret_cover(
 	//These are no sprites, just black rectangles...
 	ldv::box_representation box{
 		d2d::video::to_screen_rect(_secret_cover.ent),
+//TODO: if we debug this alpha we get atrocious values xD
 		ldv::rgba_color(0,0,0,255),
 		ldv::box_representation::type::fill
 	};
 
+	if(_secret_cover.is_dissapearing()) {
+
+		int alpha=255 - (_secret_cover.get_timer() * 100);
+		box.set_alpha(alpha);
+	}
+
+	box.set_blend(ldv::representation::blends::alpha);
 	box.draw(_screen, camera);
 }
 
@@ -1325,7 +1339,7 @@ void main::discover_secret(
 	//Does not actually make the collectible dissapear :P.
 	std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
 	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
-	_secret_cover.discovered=true;
+	_secret_cover.discover();
 }
 
 void main::land_on_ground(

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include <d2d/components/timeouts.h>
 #include <iostream>
 
 namespace app {
@@ -19,7 +20,24 @@ class secret_cover {
 
 	entity                      ent;
 	int                         id;
-	bool                        discovered{false}; //Means it must not show anymore when true.
+
+	bool                        is_discovered() const;
+	bool                        is_hidden() const;
+	bool                        is_dissapearing() const;
+
+	void                        tic(float);
+	void                        discover();
+	float                       get_timer() const {return timeout.get();}
+
+	private:
+
+	enum class states {
+		hidden,
+		dissapearing,
+		discovered
+	}                           state{states::hidden};
+
+	d2d::components::timeout    timeout;
 };
 
 std::ostream& operator<<(std::ostream&, const secret_cover&);

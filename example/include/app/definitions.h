@@ -81,7 +81,11 @@ enum sprites {
 	spr_yellow_keyhole=354,
 	spr_blue_keyhole=355,
 	spr_red_keyhole=356,
-	spr_regular_button=131
+	spr_yellow_keyhole_used=357,
+	spr_blue_keyhole_used=358,
+	spr_red_keyhole_used=359,
+	spr_regular_button=360,
+	spr_regular_button_used=361
 };
 
 enum tile_types {
