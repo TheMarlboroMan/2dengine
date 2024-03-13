@@ -46,8 +46,6 @@ void sprite_draw::draw(
 	auto pt=d2d::video::to_screen_coordinates(_point, _frame.box.h);
 	pt.x-=_frame.disp_x;
 	pt.y-=_frame.disp_y;
-	//TODO: Not as robust as I thought???
-	//bmp.set_location({_point, _frame.box.w, _frame.box.h});
 	bmp.set_location({pt, _frame.box.w, _frame.box.h});
 
 	bmp.set_invert_horizontal(_flags.flip_horizontal);
@@ -55,13 +53,6 @@ void sprite_draw::draw(
 
 	bmp.center_rotation_center();
 	bmp.set_rotation(_flags.rotation_degrees);
-	//TODO: If I use this here, it fails.
-	//bmp.go_to(pt);
-	//std::cout<<_flags.rotation_degrees<<std::endl;
-	//
-	//TODO: WTF... If i put this in, it works xD
-	//I guess I can only... change the order of stuff???
-	bmp.debug_against_camera(_camera);
 
 	bmp.draw(_screen, _camera);
 }

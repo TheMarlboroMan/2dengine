@@ -933,8 +933,6 @@ void main::draw_scene(
 ) {
 
 	_screen.clear(current_map.background_color);
-	//draw_player(_screen, player);
-	//return;
 
 	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
 
