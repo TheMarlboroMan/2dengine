@@ -1,20 +1,32 @@
 next step:
 
+	- implement rotation flags in the drawing pipeline
+
+	- when a player is defeated cannot pick up or activate shit.
+
 	make the first example game.
 
 		todo:
-			fix bat (I think there are sprites for these already).
 
-		plan the game.
-
-			make a map for it.
+			make a paper map for it.
 
 			"monsters"
-				leaping piranhas (I need sprites)
+				leaping piranhas
+
+			"traps":
+				- fire from the floor, fire makes everything better.
+					- we can thing of fire as a projectile that has a lifetime
+					and desintegrates after N tics. Perhaps we can extend the
+					current projectile for that. A zero lifetime means "until
+					it hits something".
+				- platforms that break once the player lands on them, reset on
+				map reload or in time.
+					- The easy way is just add them to collision detection and
+					later check if they must break,
+				- something that shoots right at where the player is and forces
+				it to keep moving. 
 
 			"something" to reskin the character?
-
-		fixes:
 
 	engine:
 		I guess slopes

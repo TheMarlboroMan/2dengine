@@ -46,9 +46,22 @@ void sprite_draw::draw(
 	auto pt=d2d::video::to_screen_coordinates(_point, _frame.box.h);
 	pt.x-=_frame.disp_x;
 	pt.y-=_frame.disp_y;
+	//TODO: Not as robust as I thought???
+	//bmp.set_location({_point, _frame.box.w, _frame.box.h});
 	bmp.set_location({pt, _frame.box.w, _frame.box.h});
+
 	bmp.set_invert_horizontal(_flags.flip_horizontal);
 	bmp.set_invert_vertical(_flags.flip_vertical);
+
+	bmp.center_rotation_center();
+	bmp.set_rotation(_flags.rotation_degrees);
+	//TODO: If I use this here, it fails.
+	//bmp.go_to(pt);
+	//std::cout<<_flags.rotation_degrees<<std::endl;
+	//
+	//TODO: WTF... If i put this in, it works xD
+	//I guess I can only... change the order of stuff???
+	bmp.debug_against_camera(_camera);
 
 	bmp.draw(_screen, _camera);
 }
@@ -60,12 +73,12 @@ void sprite_draw::draw(
 	const ldtools::sprite_frame& _frame
 ) {
 
-
 	draw(
 		_screen, _camera, _point, _frame, 
 		{
 			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip)
+			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			_frame.get_rotation()
 		}
 	);
 }
@@ -112,6 +125,9 @@ void sprite_draw::draw(
 	bmp.set_invert_horizontal(_flags.flip_horizontal);
 	bmp.set_invert_vertical(_flags.flip_vertical);
 
+	bmp.center_rotation_center();
+	bmp.set_rotation(_flags.rotation_degrees);
+
 	bmp.draw(_screen, _camera);
 }
 
@@ -126,7 +142,8 @@ void sprite_draw::draw(
 		_screen, _camera, _rect, _frame, 
 		{
 			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip)
+			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			_frame.get_rotation()
 		}
 	);
 }
@@ -171,6 +188,9 @@ void sprite_draw::draw(
 	bmp.set_invert_horizontal(_flags.flip_horizontal);
 	bmp.set_invert_vertical(_flags.flip_vertical);
 
+	bmp.center_rotation_center();
+	bmp.set_rotation(_flags.rotation_degrees);
+
 	bmp.draw(_screen);
 }
 
@@ -184,7 +204,8 @@ void sprite_draw::draw(
 		_screen, _point, _frame, 
 		{
 			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip)
+			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			_frame.get_rotation()
 		}
 	);
 }
@@ -227,6 +248,9 @@ void sprite_draw::draw(
 	bmp.set_location(_rect);
 	bmp.set_invert_horizontal(_flags.flip_horizontal);
 	bmp.set_invert_vertical(_flags.flip_vertical);
+	
+	bmp.center_rotation_center();
+	bmp.set_rotation(_flags.rotation_degrees);
 
 	bmp.draw(_screen);
 }
@@ -241,7 +265,8 @@ void sprite_draw::draw(
 		_screen, _rect, _frame, 
 		{
 			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip)
+			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			_frame.get_rotation()
 		}
 	);
 }

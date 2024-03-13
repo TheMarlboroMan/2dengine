@@ -146,8 +146,6 @@ void state_driver::register_controllers(
 		controller::state_main,
 		new controller::main(*service_provider)
 	);
-
-	static_cast<controller::main&>(*c_main).set_difficulty(app::dif_normal);
 }
 
 void state_driver::prepare_state(
@@ -189,8 +187,44 @@ void state_driver::virtualize_input(dfw::input& input) {
 }
 
 void state_driver::start_app(
-	const tools::arg_manager& /*_argman*/
+	const tools::arg_manager& _argman
 ) {
+
+	auto& mainc=static_cast<controller::main&>(*c_main);
+
+	mainc.set_difficulty(app::skill_normal);
+	mainc.start("map_001.json", 1);
+
+#ifdef IS_DEBUG_BUILD
+
+	if(_argman.exists("--map")) {
+
+		int entry_id=1;
+
+		if(_argman.exists("--eid")) {
+
+			entry_id=std::stoi(_argman.get_following("--eid"));
+		}
+
+		mainc.start(_argman.get_following("--map"), entry_id);
+	}
+
+	if(_argman.exists("--skill")) {
+
+		int skill=std::stoi(_argman.get_following("--skill"));
+
+		switch(skill) {
+
+			case 1: mainc.set_difficulty(app::skill_easy); break;
+			case 2: mainc.set_difficulty(app::skill_normal); break;
+			case 3: mainc.set_difficulty(app::skill_hard); break;
+			default:
+				mainc.set_difficulty(app::skill_normal); 
+			break;
+		}
+	}
+
+#endif
 /*
 #ifndef NDEBUG
 	if(_argman.exists("-s")) {
@@ -198,20 +232,6 @@ void state_driver::start_app(
 		static_cast<controller::main&>(*c_main).debug_start_step_control();
 	}
 
-	if(_argman.exists("-map")) {
-
-		int entry_id=1;
-
-		if(_argman.exists("-eid")) {
-
-			entry_id=std::stoi(_argman.get_following("-eid"));
-		}
-
-		game_state.reset();
-		//no threading needed, this is debug mode :D.
-		static_cast<controller::main&>(*c_main).perform_map_change(_argman.get_following("-map"), entry_id, {0,0});
-		states.set(controller::t_states::state_main);
-	}
 #endif
 */
 }

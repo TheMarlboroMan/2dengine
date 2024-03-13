@@ -44,6 +44,7 @@ class main:
 	virtual bool                can_leave_state() const {return true;}
 
 	void                        set_difficulty(int);
+	void                        start(const std::string&, int);
 
 	private:
 
@@ -100,6 +101,9 @@ class main:
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 
+#ifdef IS_DEBUG_BUILD
+	app::service_provider&      sp;
+#endif
 	const app::env&             env;
 	lm::logger&                 logger;
 	d2d::collision::shaper&     shaper;
@@ -116,7 +120,7 @@ class main:
 	app::map                    current_map;
 	app::player                 player;
 	int                         last_entry_id{0};
-	int                         difficulty_setting{app::dif_normal};
+	int                         difficulty_setting{app::skill_normal};
 
 #ifdef IS_DEBUG_BUILD
 

@@ -22,6 +22,7 @@ class sprite_draw {
 	struct flags {
 		bool    flip_horizontal{false},
 		        flip_vertical{false};
+		int     rotation_degrees{0};
 	};
 
 	                                sprite_draw(const ldtools::sprite_table&, const ldv::texture&);

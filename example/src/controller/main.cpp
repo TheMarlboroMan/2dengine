@@ -34,6 +34,9 @@ using namespace controller;
 main::main(
 	app::service_provider& _sp
 ):
+#ifdef IS_DEBUG_BUILD
+	sp{_sp},
+#endif
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
@@ -96,9 +99,15 @@ main::main(
 		app::logic_screen_h
 	);
 
-	//Attempt to load the starter map.
-	load_map("map_001.json");
-	take_player_to_entry(player, 1, nullptr);
+}
+
+void main::start(
+	const std::string& _map,
+	int _entry_id
+) {
+
+	load_map(_map);
+	take_player_to_entry(player, _entry_id, nullptr);
 }
 
 void main::set_difficulty(
@@ -107,9 +116,9 @@ void main::set_difficulty(
 
 	switch(_value) {
 
-		case app::dif_easy:
-		case app::dif_normal:
-		case app::dif_hard:
+		case app::skill_easy:
+		case app::skill_normal:
+		case app::skill_hard:
 
 			difficulty_setting=_value;
 			return;
@@ -924,6 +933,9 @@ void main::draw_scene(
 ) {
 
 	_screen.clear(current_map.background_color);
+	//draw_player(_screen, player);
+	//return;
+
 	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
 
 	for(const auto& node : current_map.buttons) {
@@ -980,13 +992,70 @@ void main::draw_scene(
 
 		draw_secret_cover(_screen, secret_cover);
 	}
+
+	return;
+
+	//TODO: Can we at least attempt to draw something here and see if it works??
+	ldv::bitmap_representation bmp(sp.get_video_resource_manager().get_texture(app::tex_tiles));
+	bmp.set_blend(ldv::representation::blends::alpha);
+/*
+	bmp.clip_to_texture(); //TODO: Seems to also fuck up location??? Is this properly documented???
+	bmp.set_location({128,-64, 32, 64});
+	bmp.set_invert_vertical(true);
+	bmp.set_invert_horizontal(true);
+	bmp.center_rotation_center();
+	bmp.set_rotation(45);
+	bmp.draw(_screen, camera);
+*/
+
+	std::cout<<camera.get_focus_box()<<std::endl;
+
+	int loc_x=0, loc_y=0, loc_w=0, loc_h=0, clip_x=0, clip_y=0, clip_w=0, clip_h=0;
+	std::ifstream file("shit");
+	file>>loc_x>>loc_y>>loc_w>>loc_h>>clip_x>>clip_y>>clip_w>>clip_h;
+
+/*
+ * TODO: WHERE DID THE TRACE BOX GO???
+	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
+	bmp.set_location({100,-64, loc_w, loc_h});
+	bmp.center_rotation_center();
+	bmp.set_rotation(0);
+	bmp.draw(_screen, camera);
+	bmp.debug_trace_box(1.f, 0.f, 0.f, 0.8f);
+*/
+
+	//THIS IS THE ONE THAT DISSAPEARS!
+	//TODO: OK it has to do with camera PLUS rotation: Likely 
+	//the stuff is out of the camera.
+	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
+	bmp.set_location({loc_x, loc_y, loc_w, loc_h});
+	bmp.center_rotation_center();
+	bmp.set_rotation(45);
+	bmp.draw(_screen, camera);
+	bmp.debug_trace_box(0.f, 1.f, 0.f);
+
+	bmp.debug_against_camera(camera);
+/**
+	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
+	bmp.set_location({0,64, loc_w, loc_h});
+	bmp.center_rotation_center();
+	bmp.set_rotation(0);
+	bmp.draw(_screen);
+	bmp.debug_trace_box(0.f, 0.f, 1.f);
+
+	bmp.set_clip({clip_x+16,clip_y, clip_w, clip_h}); //brown brick.
+	bmp.set_location({100,64, loc_w, loc_h});
+	bmp.center_rotation_center();
+	bmp.set_rotation(10);
+	bmp.draw(_screen);
+	bmp.debug_trace_box(1.f, 1.f, 1.f);
+**/
 }
 
 void main::draw_button(
 	ldv::screen& _screen,
 	const app::button& _button
 ) {
-
 
 	int sprite_index=app::spr_key_yellow;
 	switch(_button.type) {
@@ -997,7 +1066,6 @@ void main::draw_button(
 		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
 	}
 
-	d2d::video::sprite_draw::flags flags{false, false};
 	if(_button.used) {
 
 		switch(_button.type) {
@@ -1220,6 +1288,7 @@ void main::draw_player(
 		break;
 		case app::player::states::defeat:
 			animation_index=app::anim_m_defeat;
+			is_animation=true;
 		break;
 		case app::player::states::ladder:
 			animation_index=app::anim_m_climb;

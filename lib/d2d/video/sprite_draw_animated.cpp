@@ -60,6 +60,9 @@ void sprite_draw_animated::draw_frame(
 		_flags.flip_vertical=!_flags.flip_vertical;
 	}
 
+	int degrees=line.get_rotation() + line.frame.get_rotation() + _flags.rotation_degrees;
+	_flags.rotation_degrees=degrees % 360;
+
 	spr_draw.draw(_screen, _camera, _point, line.frame, _flags);
 }
 
@@ -131,6 +134,9 @@ void sprite_draw_animated::draw(
 
 		_flags.flip_vertical=!_flags.flip_vertical;
 	}
+
+	int degrees=line.get_rotation() + line.frame.get_rotation() + _flags.rotation_degrees;
+	_flags.rotation_degrees=degrees % 360;
 
 	spr_draw.draw(_screen, _camera, _point, line.frame, _flags);
 }
@@ -248,6 +254,9 @@ void sprite_draw_animated::draw(
 		_flags.flip_vertical=!_flags.flip_vertical;
 	}
 
+	int degrees=line.get_rotation() + line.frame.get_rotation() + _flags.rotation_degrees;
+	_flags.rotation_degrees=degrees % 360;
+
 	spr_draw.draw(_screen, _point, line.frame, _flags);
 }
 
@@ -357,6 +366,9 @@ void sprite_draw_animated::draw(
 
 		_flags.flip_vertical=!_flags.flip_vertical;
 	}
+
+	int degrees=line.get_rotation() + line.frame.get_rotation() + _flags.rotation_degrees;
+	_flags.rotation_degrees=degrees % 360;
 
 	spr_draw.draw(_screen, _camera, _rect, line.frame, _flags);
 }
@@ -473,6 +485,9 @@ void sprite_draw_animated::draw(
 
 		_flags.flip_vertical=!_flags.flip_vertical;
 	}
+
+	int degrees=line.get_rotation() + line.frame.get_rotation() + _flags.rotation_degrees;
+	_flags.rotation_degrees=degrees % 360;
 
 	spr_draw.draw(_screen, _rect, line.frame, _flags);
 }

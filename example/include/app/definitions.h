@@ -10,10 +10,10 @@ static const int logic_screen_h=224; //and these are 14 per screen.
 /**
  * these will behave as flags, DooM style.
  **/
-enum difficulty_settings {
-	dif_easy=1,
-	dif_normal=2,
-	dif_hard=4
+enum skill_settings {
+	skill_easy=1,
+	skill_normal=2,
+	skill_hard=4
 };
 
 enum persistence_groups {

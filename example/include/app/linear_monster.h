@@ -60,6 +60,7 @@ class linear_monster {
 	static const double     bat_velocity;
 
 	void                    reverse();
+	bool                    is_horizontal_movement() const;
 
 	boundaries              bounds;
 };

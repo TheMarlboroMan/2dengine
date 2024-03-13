@@ -54,23 +54,15 @@ void linear_monster::tic(
 ) {
 
 	_mover.apply(ent, velocity, _delta);
-	switch(facing) {
 
-		case faces::left:
+	double pos=is_horizontal_movement() 
+		? ent.get_x()
+		: ent.get_y();
 
-			if(ent.get_x() <= bounds.lower) {
-				reverse();
-				return;
-			}
-		break;
-		case faces::right:
+	if(pos <= bounds.lower || pos >= bounds.upper) {
 
-			if(ent.get_right() >= bounds.upper) {
-
-				reverse();
-				return;
-			}
-		break;
+		reverse();
+		return;
 	}
 }
 
@@ -90,4 +82,19 @@ std::ostream& app::operator<<(
 
 	_stream<<"linear_monster["<<_monster.ent.get_origin()<<"]";
 	return _stream;
+}
+
+bool linear_monster::is_horizontal_movement() const {
+
+	switch(type) {
+
+		case types::scorpion:
+		case types::snake:
+			return true;
+
+		case types::bat:
+			return false;
+	}
+
+	return false;
 }
