@@ -478,8 +478,26 @@ void main::tic(
 		}
 	}
 
+	//If the player can do things in the world, run them.
+	if(!player.is_defeated()) {
+
+		post_tic();
+	}
+}
+
+void main::post_tic() {
+
 	//Are we touching a monster?
 	for(const auto& monster : current_map.linear_monsters) {
+
+		if(d2d::collision::collides_with(player.ent, monster.ent)) {
+
+			defeat(player);
+			return;
+		}
+	}
+
+	for(const auto& monster : current_map.leaping_monsters) {
 
 		if(d2d::collision::collides_with(player.ent, monster.ent)) {
 
@@ -550,6 +568,16 @@ void main::tic_world(
 
 	d2d::motion::mover mover{};
 	for(auto& monster : current_map.linear_monsters) {
+
+		monster.tic(_delta, mover);
+	}
+
+	for(auto& monster : current_map.leaping_monsters) {
+
+		if(monster.is_on_air()) {
+
+			simulation.gravity.apply_to(monster.velocity, _delta);
+		}
 
 		monster.tic(_delta, mover);
 	}
@@ -973,6 +1001,11 @@ void main::draw_scene(
 		draw_linear_monster(_screen, monster);
 	}
 
+	for(const auto& monster : current_map.leaping_monsters) {
+
+		draw_leaping_monster(_screen, monster);
+	}
+
 	for(const auto& projectile : current_map.projectiles) {
 
 		draw_projectile(_screen, projectile);
@@ -990,64 +1023,6 @@ void main::draw_scene(
 
 		draw_secret_cover(_screen, secret_cover);
 	}
-
-	return;
-
-	//TODO: Can we at least attempt to draw something here and see if it works??
-	ldv::bitmap_representation bmp(sp.get_video_resource_manager().get_texture(app::tex_tiles));
-	bmp.set_blend(ldv::representation::blends::alpha);
-/*
-	bmp.clip_to_texture(); //TODO: Seems to also fuck up location??? Is this properly documented???
-	bmp.set_location({128,-64, 32, 64});
-	bmp.set_invert_vertical(true);
-	bmp.set_invert_horizontal(true);
-	bmp.center_rotation_center();
-	bmp.set_rotation(45);
-	bmp.draw(_screen, camera);
-*/
-
-	std::cout<<camera.get_focus_box()<<std::endl;
-
-	int loc_x=0, loc_y=0, loc_w=0, loc_h=0, clip_x=0, clip_y=0, clip_w=0, clip_h=0;
-	std::ifstream file("shit");
-	file>>loc_x>>loc_y>>loc_w>>loc_h>>clip_x>>clip_y>>clip_w>>clip_h;
-
-/*
- * TODO: WHERE DID THE TRACE BOX GO???
-	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
-	bmp.set_location({100,-64, loc_w, loc_h});
-	bmp.center_rotation_center();
-	bmp.set_rotation(0);
-	bmp.draw(_screen, camera);
-	bmp.debug_trace_box(1.f, 0.f, 0.f, 0.8f);
-*/
-
-	//THIS IS THE ONE THAT DISSAPEARS!
-	//TODO: OK it has to do with camera PLUS rotation: Likely 
-	//the stuff is out of the camera.
-	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
-	bmp.set_location({loc_x, loc_y, loc_w, loc_h});
-	bmp.center_rotation_center();
-	bmp.set_rotation(45);
-	bmp.draw(_screen, camera);
-	bmp.debug_trace_box(0.f, 1.f, 0.f);
-
-	bmp.debug_against_camera(camera);
-/**
-	bmp.set_clip({clip_x,clip_y, clip_w, clip_h}); //brown brick.
-	bmp.set_location({0,64, loc_w, loc_h});
-	bmp.center_rotation_center();
-	bmp.set_rotation(0);
-	bmp.draw(_screen);
-	bmp.debug_trace_box(0.f, 0.f, 1.f);
-
-	bmp.set_clip({clip_x+16,clip_y, clip_w, clip_h}); //brown brick.
-	bmp.set_location({100,64, loc_w, loc_h});
-	bmp.center_rotation_center();
-	bmp.set_rotation(10);
-	bmp.draw(_screen);
-	bmp.debug_trace_box(1.f, 1.f, 1.f);
-**/
 }
 
 void main::draw_button(
@@ -1197,6 +1172,20 @@ void main::draw_linear_monster(
 		draw_flags
 	);
 }
+
+void main::draw_leaping_monster(
+	ldv::screen& _screen,
+	const app::leaping_monster& _monster
+) {
+
+	sprite_draw_animated.draw(
+		_screen, 
+		camera, 
+		d2d::video::to_screen(_monster.ent.get_origin()),
+		app::anim_piranha
+	);
+}
+
 
 void main::draw_projectile(
 	ldv::screen& _screen,

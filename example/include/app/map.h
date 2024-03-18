@@ -7,6 +7,7 @@
 #include "exit.h"
 #include "collectible.h"
 #include "linear_monster.h"
+#include "leaping_monster.h"
 #include "secret_cover.h"
 #include "button.h"
 #include "gate.h"
@@ -38,6 +39,7 @@ class map {
 	std::vector<exit>                       exits;
 	std::vector<collectible>                collectibles;
 	std::vector<linear_monster>             linear_monsters;
+	std::vector<leaping_monster>            leaping_monsters;
 	std::vector<secret_cover>               secret_covers;
 	std::vector<button>                     buttons;
 	std::vector<gate>                       gates;

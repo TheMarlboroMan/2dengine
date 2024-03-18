@@ -13,6 +13,9 @@ namespace d2d { namespace components {
 class timeout {
 
 	public:
+/**
+ * maximum, current and paused. This counts down.
+*/
 	                timeout(float, float=-1.0, bool=false);
 
 	bool            is_expired() const;

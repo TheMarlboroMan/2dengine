@@ -60,6 +60,7 @@ enum animations{
 	anim_projectile_end=152,
 	anim_snake=153,
 	anim_bat=154,
+	anim_piranha=155
 };
 
 enum sprites {

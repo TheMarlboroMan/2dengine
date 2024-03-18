@@ -18,6 +18,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/gate.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/projectile_generator.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/projectile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/leaping_monster.cpp
 	PARENT_SCOPE
 )
 

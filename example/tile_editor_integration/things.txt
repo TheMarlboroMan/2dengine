@@ -309,6 +309,42 @@ beginobject
 endobject
 
 beginobject
+	id 52
+	name leaping monster
+	w 16
+	h 16
+	color 255 64 32 255
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=piranha
+		linkedto nothing
+	endproperty
+	beginproperty
+		name rest_ms
+		type int
+		default 3000
+		comment milliseconds between leaps
+		linkedto nothing
+	endproperty
+	beginproperty
+		name leap_force
+		type int
+		default 100
+		comment leap force
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 100
 	name below passable box
 	w 16 

@@ -56,6 +56,7 @@ class main:
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
 	void                        draw_collectible(ldv::screen&, const app::collectible&);
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
+	void                        draw_leaping_monster(ldv::screen&, const app::leaping_monster&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
@@ -100,6 +101,7 @@ class main:
 	void                        pick_up_collectible(app::player&, const app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
+	void                        post_tic();
 
 #ifdef IS_DEBUG_BUILD
 	app::service_provider&      sp;

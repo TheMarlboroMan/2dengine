@@ -30,6 +30,8 @@ void thing_loader::setup() {
 	curmap.buttons.clear();
 	curmap.gates.clear();
 	curmap.projectile_generators.clear();
+	curmap.linear_monsters.clear();
+	curmap.leaping_monsters.clear();
 }
 
 void thing_loader::load(
@@ -54,6 +56,7 @@ void thing_loader::load(
 
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
+			case 52: return add_leaping_monster(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 
@@ -217,6 +220,25 @@ void thing_loader::add_linear_monster(
 
 	curmap.linear_monsters.push_back(
 		{ {_pos.x, _pos.y}, type, faces_right, {lower_bound, upper_bound}}
+	);
+}
+
+void thing_loader::add_leaping_monster(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
+	int rest_ms=_attributes.at("rest_ms").get_int();
+	int leap_force=_attributes.at("leap_force").get_int();
+
+	curmap.leaping_monsters.push_back(
+		{ {_pos.x, _pos.y}, app::leaping_monster::types::piranha, rest_ms, leap_force}
 	);
 }
 

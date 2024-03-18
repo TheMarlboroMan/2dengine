@@ -26,6 +26,7 @@ class thing_loader
 	void                add_ladder(d2d::collision::point, const attrmap&);
 	void                add_collectible(d2d::collision::point, const attrmap&);
 	void                add_linear_monster(d2d::collision::point, const attrmap&);
+	void                add_leaping_monster(d2d::collision::point, const attrmap&);
 	void                add_secret_cover(d2d::collision::point, const attrmap&);
 	void                add_button(d2d::collision::point, const attrmap&);
 	void                add_gate(d2d::collision::point, const attrmap&);

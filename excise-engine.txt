@@ -1,17 +1,13 @@
 next step:
 
-	- implement rotation flags in the drawing pipeline
-
-	- when a player is defeated cannot pick up or activate shit.
+	FIX whatever happened to things in tile_editor!!!
+	FOr whatever reason the piranha is not rotated... 
 
 	make the first example game.
 
 		todo:
 
 			make a paper map for it.
-
-			"monsters"
-				leaping piranhas
 
 			"traps":
 				- fire from the floor, fire makes everything better.

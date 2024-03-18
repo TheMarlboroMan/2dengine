@@ -217,6 +217,11 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
+	for(const auto& node : current_map.leaping_monsters) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	for(const auto& node : current_map.secret_covers) {
 
 		dd.draw(_screen, node.ent);

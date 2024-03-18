@@ -41,3 +41,8 @@ void player::jump(
 	state=states::air;
 	jump_shortened=false;
 }
+
+bool player::is_defeated() const {
+
+	return state==states::defeat;
+}

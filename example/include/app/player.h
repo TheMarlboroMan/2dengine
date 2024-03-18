@@ -39,6 +39,8 @@ class player {
 	void                                        stand_up();
 	void                                        jump(double);
 
+	bool                                        is_defeated() const;
+
 	enum class states {
 		ground,
 		air,
