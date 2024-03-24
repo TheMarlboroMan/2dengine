@@ -5,17 +5,16 @@
 
 namespace d2d { namespace video {
 
+/*
+ * TODO: What a terrible name xD!
+ */
 class sprite_draw_animated {
 
 	public:
 
 	                                sprite_draw_animated(
-										const ldtools::sprite_table&, 
-										const ldv::texture&,
 										const ldtools::animation_table&
 									);
-
-	sprite_draw                     spr_draw;
 
 /**
  * the timer must be fed from the outside.
@@ -28,52 +27,34 @@ class sprite_draw_animated {
 	sprite_draw_animated&           reset_animation(const ldtools::animation_table&);
 
 /**
- * draws a single animation frame.
+ * gets an animation by index.
  */
-	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, int, sprite_draw::flags);
-	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, int);
-	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, int, int, sprite_draw::flags);
-	void            draw_frame(ldv::screen&, const ldv::camera&, ldv::point, int, int);
-//TODO: MIssing no camera, rect, with index and shit.
+	const ldtools::animation&      animation(int _index) const {return animation_table->get(_index);}
 
 /**
- * the methods with a float can use an external timer.
+ * get frame line from animation using the internal timer.
  */
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, float);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, const ldtools::animation&);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, float, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, float);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::point, int);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, float, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, float);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, const ldtools::animation&);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, float, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, float);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int, sprite_draw::flags);
-	void            draw(ldv::screen&, const ldv::camera&, ldv::rect, int);
+	const ldtools::animation_line& get(const ldtools::animation&) const;
+	const ldtools::animation_line& get(int) const;
+/**
+ * get frame line from animation using the given float time.
+ */
+	const ldtools::animation_line& get(const ldtools::animation&, float) const;
+	const ldtools::animation_line& get(int, float) const;
 
+/**
+ * get frame line from animation using the given float time if the animation
+ * lasted that other float time.
+ */
+	const ldtools::animation_line& get(const ldtools::animation&, float, float) const;
+	const ldtools::animation_line& get(int, float, float) const;
 
-/** same as above, no camera */
-	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, float, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, float);
-	void            draw(ldv::screen&, ldv::point, const ldtools::animation&, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::point, const ldtools::animation&);
-	void            draw(ldv::screen&, ldv::point, int, float, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::point, int, float);
-	void            draw(ldv::screen&, ldv::point, int, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::point, int);
-	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, float, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, float);
-	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::rect, const ldtools::animation&);
-	void            draw(ldv::screen&, ldv::rect, int, float, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::rect, int, float);
-	void            draw(ldv::screen&, ldv::rect, int, sprite_draw::flags);
-	void            draw(ldv::screen&, ldv::rect, int);
+/**
+ * get the flags for the given line. The second version uses the original
+ * flags as the point of starting.
+ */
+	sprite_draw::flags             flags(const ldtools::animation_line&) const;
+	sprite_draw::flags             flags(const ldtools::animation_line&, sprite_draw::flags) const;
 
 	private:
 

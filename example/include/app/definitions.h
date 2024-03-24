@@ -60,7 +60,10 @@ enum animations{
 	anim_projectile_end=152,
 	anim_snake=153,
 	anim_bat=154,
-	anim_piranha=155
+	anim_piranha=155,
+
+	anim_breaking_platform=200,
+	anim_breaking_platform_return=201
 };
 
 enum sprites {
@@ -88,7 +91,8 @@ enum sprites {
 	spr_blue_keyhole_used=358,
 	spr_red_keyhole_used=359,
 	spr_regular_button=360,
-	spr_regular_button_used=361
+	spr_regular_button_used=361,
+	spr_breaking_block=362
 };
 
 enum tile_types {

@@ -191,6 +191,11 @@ void main::draw_debug(
 		dd.draw(_screen, block);
 	}
 
+	for(const auto& block : current_map.breaking_platforms) {
+
+		dd.draw(_screen, block);
+	}
+
 	//TODO: Alpha is not working for these...
 	for(const auto& ladder : current_map.ladders) {
 

@@ -99,7 +99,7 @@ struct filter_tiles_check_on_air {
 struct filter_tiles_ignore_monster_block {
 
 	bool operator()(
-		const d2d::collision::box& _box,
+		const d2d::collision::box&,
 		const d2d::collision::tile& _tile
 	) const {
 
@@ -113,7 +113,7 @@ struct filter_tiles_ignore_monster_block {
 struct filter_tiles_projectile {
 
 	bool operator()(
-		const d2d::collision::box& _box,
+		const d2d::collision::box&,
 		const d2d::collision::tile& _tile
 	) const {
 

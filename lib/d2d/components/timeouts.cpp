@@ -29,6 +29,14 @@ timeout& timeout::tic(
 	return *this;
 }
 
+timeout& timeout::target(
+	float _value
+) {
+
+	max=_value;
+	return *this;
+}
+
 timeout& timeout::reset() {
 
 	timer=0.f;

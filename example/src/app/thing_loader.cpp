@@ -32,6 +32,7 @@ void thing_loader::setup() {
 	curmap.projectile_generators.clear();
 	curmap.linear_monsters.clear();
 	curmap.leaping_monsters.clear();
+	curmap.breaking_platforms.clear();
 }
 
 void thing_loader::load(
@@ -53,6 +54,7 @@ void thing_loader::load(
 			case 6: return add_secret_cover(pos, _attributes);
 			case 7: return add_button(pos, _attributes);
 			case 8: return add_gate(pos, _attributes);
+			case 9: return add_breaking_platform(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
@@ -306,6 +308,25 @@ void thing_loader::add_projectile_generator(
 	);
 }
 
+void thing_loader::add_breaking_platform(
+	d2d::collision::point _pos, 
+	const thing_loader::attrmap& _attributes
+) {
+
+	int ms_breaking=_attributes.at("ms_breaking").get_int();
+	int ms_gone=_attributes.at("ms_gone").get_int();
+	int ms_returning=_attributes.at("ms_returning").get_int();
+
+	curmap.breaking_platforms.push_back(
+		{
+			_pos,
+			ms_breaking,
+			ms_gone,
+			ms_returning
+		} 
+	);
+}
+
 double thing_loader::find_lower_x_bound(
 	d2d::collision::tile_coords _tile
 ) const {
@@ -378,3 +399,4 @@ double thing_loader::find_upper_y_bound(
 
 	return upper_bound;
 }
+

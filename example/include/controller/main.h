@@ -61,6 +61,7 @@ class main:
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
 	void                        draw_projectile(ldv::screen&, const app::projectile&);
+	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);

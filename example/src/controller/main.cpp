@@ -44,11 +44,11 @@ main::main(
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
-		_sp.get_video_resource_manager().get_texture(app::tex_tiles)
+		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
+		&camera,
+		true
 	},
 	sprite_draw_animated{
-		_sp.get_spritesheet_manager().at(app::ss_tiles),
-		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
 		_sp.get_animation_manager().at(app::animgr_tiles)
 	},
 	scenery_tile_draw{
@@ -56,7 +56,9 @@ main::main(
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
 		app::tile_w, 
 		app::tile_h,
-		_sp.get_animation_manager().at(app::animgr_tiles)
+		_sp.get_animation_manager().at(app::animgr_tiles),
+		&camera,
+		true
 	},
 	persistence{_sp.get_persistence()}
 #ifdef IS_DEBUG_BUILD
@@ -280,7 +282,7 @@ void main::exit_to(
 /**
  * there is a reason why arguments are copied: the exit belongs to the map
  * which will get unloaded soon and would cause the original reference or
- * pointer to be lost. It has already happened to me so please, do not attemp
+ * pointer to be lost. It has already happened to me so please, do not attemptw
  * to "fix" it.
  */
 
@@ -962,7 +964,7 @@ void main::draw_scene(
 
 	_screen.clear(current_map.background_color);
 
-	scenery_tile_draw.draw(_screen, camera, current_map.background_tiles);
+	scenery_tile_draw.draw(_screen, current_map.background_tiles);
 
 	for(const auto& node : current_map.buttons) {
 
@@ -984,6 +986,11 @@ void main::draw_scene(
 	for(const auto& block : current_map.platform_blocks) {
 
 		dd.draw(_screen, block);
+	}
+
+	for(const auto& block : current_map.breaking_platforms) {
+
+		draw_breaking_platform(_screen, block);
 	}
 
 	for(const auto& ladder : current_map.ladders) {
@@ -1012,7 +1019,7 @@ void main::draw_scene(
 	}
 
 	draw_player(_screen, player);
-	scenery_tile_draw.draw(_screen, camera, current_map.foreground_tiles);
+	scenery_tile_draw.draw(_screen, current_map.foreground_tiles);
 
 	for(const auto& secret_cover : current_map.secret_covers) {
 
@@ -1052,9 +1059,8 @@ void main::draw_button(
 
 	auto origin=d2d::video::to_screen(_button.ent.get_origin());
 
-	sprite_draw_animated.spr_draw.draw(
+	sprite_draw.draw(
 		_screen,
-		camera,
 		origin,
 		sprite_index
 	);
@@ -1072,9 +1078,8 @@ void main::draw_gate(
 
 		int sprite_index=app::spr_gate;
 
-		sprite_draw_animated.spr_draw.draw(
+		sprite_draw.draw(
 			_screen,
-			camera,
 			origin,
 			sprite_index
 		);
@@ -1100,9 +1105,8 @@ void main::draw_ladder(
 			case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
 		}
 
-		sprite_draw_animated.spr_draw.draw(
+		sprite_draw.draw(
 			_screen,
-			camera,
 			origin,
 			sprite_index
 		);
@@ -1129,9 +1133,8 @@ void main::draw_collectible(
 		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
 	}
 
-	sprite_draw_animated.spr_draw.draw(
+	sprite_draw.draw(
 		_screen,
-		camera,
 		origin,
 		sprite_index
 	);
@@ -1164,11 +1167,13 @@ void main::draw_linear_monster(
 		break;
 	}
 
-	sprite_draw_animated.draw(
+	const auto& line=sprite_draw_animated.get(animation_index);
+	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+	sprite_draw.draw(
 		_screen, 
-		camera, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
-		animation_index,
+		line.frame,
 		draw_flags
 	);
 }
@@ -1178,14 +1183,61 @@ void main::draw_leaping_monster(
 	const app::leaping_monster& _monster
 ) {
 
-	sprite_draw_animated.draw(
+	const auto& line=sprite_draw_animated.get(app::anim_piranha);
+	auto draw_flags=sprite_draw_animated.flags(line);
+
+	sprite_draw.draw(
 		_screen, 
-		camera, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
-		app::anim_piranha
+		line.frame,
+		draw_flags
 	);
 }
 
+void main::draw_breaking_platform(
+	ldv::screen& _screen,
+	const app::breaking_platform& _block
+) {
+
+	if(_block.is_gone()) {
+
+		return;
+	}
+
+	if(_block.is_ok()) {
+
+		sprite_draw.draw(
+			_screen,
+			d2d::video::to_screen(_block.get_origin()),
+			app::spr_breaking_block
+		);
+		return;
+	}
+
+	int animation_index=0;
+	float anim_len=0.f;
+
+	if(_block.is_breaking()) {
+
+		anim_len=_block.get_breaking_ms() / 1000.f;
+		animation_index=app::anim_breaking_platform;
+	}
+	else {// if block.is_returning
+
+		anim_len=_block.get_returning_ms() / 1000.f;
+		animation_index=app::anim_breaking_platform_return;
+	}
+
+	const auto& line=sprite_draw_animated.get(animation_index, _block.get_timer(), anim_len);
+	auto flags=sprite_draw_animated.flags(line);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_block.get_origin()),
+		line.frame,
+		flags
+	);
+}
 
 void main::draw_projectile(
 	ldv::screen& _screen,
@@ -1200,22 +1252,29 @@ void main::draw_projectile(
 
 	if(!_projectile.is_moving()) {
 
-		sprite_draw_animated.draw(
+		auto line=sprite_draw_animated.get(
+			app::anim_projectile_end, 
+			_projectile.get_timeout_value()
+		);
+
+		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+		sprite_draw.draw(
 			_screen, 
-			camera, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
-			app::anim_projectile_end,
-			_projectile.get_timeout_value(),
+			line.frame,
 			draw_flags
 		);
 		return;
 	}
 
-	sprite_draw_animated.draw(
+	auto line=sprite_draw_animated.get(app::anim_projectile);
+	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+	sprite_draw.draw(
 		_screen, 
-		camera, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
-		app::anim_projectile,
+		line.frame,
 		draw_flags
 	);
 }
@@ -1228,7 +1287,6 @@ void main::draw_secret_cover(
 	//These are no sprites, just black rectangles...
 	ldv::box_representation box{
 		d2d::video::to_screen_rect(_secret_cover.ent),
-//TODO: if we debug this alpha we get atrocious values xD
 		ldv::rgba_color(0,0,0,255),
 		ldv::box_representation::type::fill
 	};
@@ -1292,23 +1350,28 @@ void main::draw_player(
 
 	if(is_animation) {
 
-		sprite_draw_animated.draw(
+		const auto& line=sprite_draw_animated.get(animation_index);
+		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+		sprite_draw.draw(
 			_screen, 
-			camera, 
 			d2d::video::to_screen(_player.ent.get_origin()),
-			animation_index,
+			line.frame,
 			draw_flags
 		);
 
 		return;
 	}
 
-	sprite_draw_animated.draw_frame(
+
+	const auto& animation=sprite_draw_animated.animation(animation_index);
+	const auto& line=animation.get(frame_index);
+	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+	sprite_draw.draw(
 		_screen,
-		camera,
 		d2d::video::to_screen(player.ent.get_origin()),
-		animation_index,
-		frame_index,
+		line.frame,
 		draw_flags
 	);
 }
@@ -1488,10 +1551,6 @@ void main::defeat(
 	}
 
 	_player.timeouts.reset(app::player::timeout_defeat);
-
-std::cout<<_player.timeouts.get(app::player::timeout_defeat)<<" / "<<
-	_player.timeouts.get_max(app::player::timeout_defeat)<<std::endl;
-
 	_player.state=app::player::states::defeat;
 	_player.velocity.y=simulation.defeat_y_velocity;
 }

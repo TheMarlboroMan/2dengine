@@ -16,9 +16,14 @@ namespace d2d { namespace video {
  */
 class scenery_tile_draw_animated {
 
+	//TODO: A bit... meh. The should be the counterpart of the sprite_draw_animated thingy.
+
 	public:
 	                                scenery_tile_draw_animated(
-		const ldtools::sprite_table&, const ldv::texture&, int, int, const ldtools::animation_table&
+		const ldtools::sprite_table&, const ldv::texture&, int, int, 
+		const ldtools::animation_table&,
+		ldv::camera * =nullptr,
+		bool=false
 	);
 
 
@@ -50,13 +55,11 @@ class scenery_tile_draw_animated {
 /**
  * These methods use the internal timer.
  */
-	void            draw(ldv::screen&, const ldv::camera&, const scenery_tile&);
 	void            draw(ldv::screen&, const scenery_tile&);
 
 /**
  * draw versions to be called with an outside timer.
  */
-	void            draw(ldv::screen&, const ldv::camera&, const scenery_tile&, float);
 	void            draw(ldv::screen&, const scenery_tile&, float);
 
 
@@ -64,29 +67,11 @@ class scenery_tile_draw_animated {
  * templated methods of the previous ones for ranged containers.
  */
 	template<typename T>
-	void            draw(ldv::screen& _screen, const ldv::camera& _camera, const T& _container) {
-
-		for(const auto& tile : _container) {
-
-			draw(_screen, _camera, tile);
-		}
-	}
-
-	template<typename T>
 	void            draw(ldv::screen& _screen, const T& _container) {
 
 		for(const auto& tile : _container) {
 
 			draw(_screen, tile);
-		}
-	}
-
-	template<typename T>
-	void            draw(ldv::screen& _screen, const ldv::camera& _camera, const T& _container, float _timer) {
-
-		for(const auto& tile : _container) {
-
-			draw(_screen, _camera, tile, _timer);
 		}
 	}
 

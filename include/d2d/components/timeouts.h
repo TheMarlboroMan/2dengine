@@ -23,8 +23,18 @@ class timeout {
 	bool            is_paused() const;
 	float           get() const;
 	float           get_max() const;
-	timeout&        tic(float _delta);
+	timeout&        tic(float);
+/**
+ * sets the new maximum value.
+ */
+	timeout&        target(float);
+/**
+ * sets the current value.
+ */
 	timeout&        set(float);
+/**
+ * resets the current value to zero
+ */
 	timeout&        reset();
 	timeout&        pause();
 	timeout&        resume();

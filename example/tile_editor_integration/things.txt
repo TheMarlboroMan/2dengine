@@ -223,6 +223,35 @@ beginobject
 endobject
 
 beginobject
+	id 9
+	name breaking_platform
+	w 16
+	h 8
+	color 192 192 192 255
+	beginproperty
+		name ms_breaking
+		type int
+		default 2000
+		comment how long it takes to break
+		linkedto nothing
+	endproperty
+	beginproperty
+		name ms_gone
+		type int
+		default 6000
+		comment how long it stays gone
+		linkedto nothing
+	endproperty
+	beginproperty
+		name ms_returning
+		type int
+		default 500
+		comment how long the returning animation takes
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 50
 	name linear monster
 	w 16

@@ -17,27 +17,19 @@ class scenery_tile_draw{
 	                        const ldtools::sprite_table&, 
 	                        const ldv::texture&, 
 	                        int, 
-	                        int
+	                        int,
+	                        ldv::camera * = nullptr,
+	                        bool=false
 	);
 
 	//100% public, can be manipulated.
 	d2d::video::sprite_draw     sprite_draw;
 
-	void            draw(ldv::screen&, const ldv::camera&, const scenery_tile&);
 	void            draw(ldv::screen&, const scenery_tile&);
 
 /**
  * templated methods of the previous ones for ranged containers.
  */
-	template<typename T>
-	void            draw(ldv::screen& _screen, const ldv::camera& _camera, const T& _container) {
-
-		for(const auto& tile : _container) {
-
-			draw(_screen, _camera, tile);
-		}
-	}
-
 	template<typename T>
 	void            draw(ldv::screen& _screen, const T& _container) {
 
@@ -49,6 +41,25 @@ class scenery_tile_draw{
 
 	int             get_tile_w() const {return tile_w;}
 	int             get_tile_h() const {return tile_h;}
+
+/**
+ * sets if a camera will be used.
+ */
+	scenery_tile_draw&  set_with_camera(bool _value) {sprite_draw.set_with_camera(_value); return *this;}
+
+
+/**
+ * sets a camera. If not null a with_camera is true the camera will be used.
+ * The camera must outlive this instance.
+ */
+	scenery_tile_draw&  set_camera(ldv::camera& _camera) {sprite_draw.set_camera(_camera); return *this;}
+
+/**
+ * removes the camera.
+ */
+
+	scenery_tile_draw&  unset_camera() {sprite_draw.unset_camera(); return *this;}
+
 
 	private:
 

@@ -9,9 +9,11 @@ scenery_tile_draw_animated::scenery_tile_draw_animated(
 	const ldv::texture& _texture,
 	int _tile_w,
 	int _tile_h,
-	const ldtools::animation_table& _animation_table
+	const ldtools::animation_table& _animation_table,
+	ldv::camera * _camera,
+	bool _with_camera
 ):
-	static_draw{_sprite_table, _texture, _tile_w, _tile_h},
+	static_draw{_sprite_table, _texture, _tile_w, _tile_h, _camera, _with_camera},
 	animation_table{&_animation_table}
 { }
 
@@ -40,50 +42,11 @@ scenery_tile_draw_animated& scenery_tile_draw_animated::set_index_to_animation_f
 }
 
 void scenery_tile_draw_animated::draw(
-	ldv::screen& _screen,
-	const ldv::camera& _camera, 
-	const scenery_tile& _tile
-) {
-
-	draw(_screen, _camera, _tile, internal_timer);
-}
-
-void scenery_tile_draw_animated::draw(
 	ldv::screen& _screen, 
 	const scenery_tile& _tile
 ) {
 
 	draw(_screen, _tile, internal_timer);
-}
-
-void scenery_tile_draw_animated::draw(
-	ldv::screen& _screen,
-	const ldv::camera& _camera, 
-	const scenery_tile& _tile,
-	float _timer
-) {
-
-	//if no checking is implemented, be safe. We take advantage of short
-	//circuiting here...
-	if(!index_is_animation || !index_is_animation(_tile.type)) {
-
-		static_draw.draw(_screen, _camera, _tile);
-		return;
-	}
-
-	if(!index_to_animation) {
-
-		throw exception("cannot run scenery_tile_draw_animated if the index_to_animation function is not defined");
-	}
-
-	auto index=index_to_animation(_tile.type);
-	const auto& animation=animation_table->get(index);
-	const auto& frame=animation.get_for_time(_timer);
-
-	int x=static_draw.get_tile_w()*_tile.x;
-	int y=static_draw.get_tile_h()*_tile.y;
-
-	return static_draw.sprite_draw.draw(_screen, _camera, {x, y}, frame.frame);
 }
 
 void scenery_tile_draw_animated::draw(
