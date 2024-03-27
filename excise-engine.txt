@@ -6,6 +6,9 @@ next step:
 	all these TODO's with the collision checker and the whole breaking
 	platform.
 
+	test map with EVERYTHING IN THE GAME
+	and a shell script to start it.
+
 		todo:
 
 			make a paper map for it.
