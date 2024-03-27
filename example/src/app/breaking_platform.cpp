@@ -1,4 +1,5 @@
 #include "app/breaking_platform.h"
+#include <iostream>
 
 using namespace app;
 
@@ -36,7 +37,6 @@ void breaking_platform::tic(
 	}
 
 	timeout.tic(_delta);
-
 	if(timeout.is_counting()) {
 
 		return;

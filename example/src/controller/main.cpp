@@ -13,6 +13,7 @@
 #include <d2d/collision/checker.h>
 #include <d2d/collision/tiles_in_box.h>
 #include <d2d/collision/tile_limits.h>
+#include <d2d/tools/algorithm.h>
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/color.h>
@@ -555,6 +556,26 @@ void main::post_tic() {
 		it++;
 	}
 
+	//Are we breaking any breakable platforms?
+	if(app::player::states::ground==player.state || app::player::states::crouch==player.state) {
+
+		auto player_box_copy=player.ent.get_box();
+		--player_box_copy.origin.y;
+
+		for(auto& block : current_map.breaking_platforms) {
+
+			if(!block.is_solid()) {
+
+				continue;
+			}
+
+			if(d2d::collision::collides_with(block, player_box_copy)) {
+
+				block.start_breaking();
+			}
+		}
+	}
+
 	//at the end of the tic, are we touching an exit?
 	const app::exit * exitptr{nullptr};
 	if(is_on_exit(player, exitptr, true)) {
@@ -643,6 +664,11 @@ void main::tic_world(
 
 		sc.tic(_delta);
 	}
+
+	for(auto& bp : current_map.breaking_platforms) {
+
+		bp.tic(_delta);
+	}
 }
 
 void main::tic_ground(
@@ -718,9 +744,17 @@ void main::tic_ground(
 		//Collision...
 		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+
+		const auto breaking_platforms_fn=[&cph](const auto& _block) {
+
+			if(!_block.is_solid()) {return;}
+			cph.detect_one(_block);
+		};
+
 		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
+		d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fn);
+		d2d::tools::for_each(current_map.gates, [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
 
 		if(cph.has_collision()) {
 
@@ -837,9 +871,23 @@ void main::tic_air(
 	//Collision...
 	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+	
+	//TODO: Dislike...
+	const auto breaking_platforms_fn=[&cph](const auto& _block) {
+
+		if(!_block.is_solid()) {return;}
+		cph.detect_one(_block);
+	};
+
 	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-	std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
+	//TODO; Not feeling it, there is no way to pass additional requirements 
+	//to the "detect_one" or "detect_all" methods.
+	d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fn);
+
+	//TODO: Maybe detect all can have a "deferencer" method overload?
+	//so we can do cph.detect_all(current_map.gates, flags, [](const auto& _gate) {return gate.ent;});
+	d2d::tools::for_each(current_map.gates, [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
 
 	if(cph.has_collision()) {
 
@@ -879,10 +927,18 @@ void main::tic_air(
 	//Collision...
 	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_monster_block{});
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
+
+	//TODO: Even worse...
+	const auto breaking_platforms_fnv=[&cpv](const auto& _block) {
+
+		if(!_block.is_solid()) {return;}
+		cpv.detect_one(_block);
+	};
+
 	cpv.detect_all(current_tiles);
 	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-	cpv.detect_all(current_map.platform_blocks);
-	std::for_each(std::begin(current_map.gates), std::end(current_map.gates), [&cpv](const auto& _gate) {cpv.detect_one(_gate.ent);});
+	d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fnv);
+	d2d::tools::for_each(current_map.gates, [&cpv](const auto& _gate) {cpv.detect_one(_gate.ent);});
 
 	if(cpv.has_collision()) {
 
@@ -906,6 +962,9 @@ void main::tic_crouch(
 	app::player& _player,
 	app::player_input _pli
 ) {
+
+	//Nothing happens here... except for waiting for the player to let go
+	//of the crouch input.
 
 	if(-1!=_pli.y) {
 
@@ -1588,9 +1647,29 @@ bool main::is_on_air(
 
 	//fine collision phase now..
 	d2d::collision::checker cc;
-	return !cc.has_collision(player_box_copy, contacting_tiles) 
-		&& !cc.has_collision(player_box_copy, current_map.solid_blocks)
-		&& !cc.has_collision(player_box_copy, current_map.platform_blocks);
+
+	if(
+		 cc.has_collision(player_box_copy, contacting_tiles) 
+		|| cc.has_collision(player_box_copy, current_map.solid_blocks)
+	) {
+
+		return false;
+	}
+
+	for(const auto& plat : current_map.breaking_platforms) {
+
+		if(!plat.is_solid()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(plat, player_box_copy)) {
+
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool main::is_on_exit(

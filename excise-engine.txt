@@ -3,13 +3,8 @@ next step:
 	make the first example game.
 
 	tile draw animated thing, make it equivalent to the other. Maybe it can 
-	EVEN BE THE OTHER xD:
-
-		- NO COLLISION AT ALL YET.
-			- The easy way is just add them to collision detection AS LONG
-				as they are solid xD!
-			- At a later point check if one's below the player and if so crack
-			  it.
+	all these TODO's with the collision checker and the whole breaking
+	platform.
 
 		todo:
 
