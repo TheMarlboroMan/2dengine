@@ -33,6 +33,7 @@ void thing_loader::setup() {
 	curmap.linear_monsters.clear();
 	curmap.leaping_monsters.clear();
 	curmap.breaking_platforms.clear();
+	curmap.timed_traps.clear();
 }
 
 void thing_loader::load(
@@ -59,6 +60,7 @@ void thing_loader::load(
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
 			case 52: return add_leaping_monster(pos, _attributes);
+			case 53: return add_timed_trap(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 
@@ -241,6 +243,26 @@ void thing_loader::add_leaping_monster(
 
 	curmap.leaping_monsters.push_back(
 		{ {_pos.x, _pos.y}, app::leaping_monster::types::piranha, rest_ms, leap_force}
+	);
+}
+
+void thing_loader::add_timed_trap(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
+	int pre_ms=_attributes.at("pre_ms").get_int();
+	int active_ms=_attributes.at("active_ms").get_int();
+	int post_ms=_attributes.at("post_ms").get_int();
+
+	curmap.timed_traps.push_back(
+		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, pre_ms, active_ms, post_ms}
 	);
 }
 

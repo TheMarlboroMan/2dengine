@@ -381,6 +381,49 @@ beginobject
 endobject
 
 beginobject
+	id 53
+	name timed trap
+	w 16
+	h 16
+	color 255 32 0 255
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=fire
+		linkedto nothing
+	endproperty
+	beginproperty
+		name pre_ms
+		type int
+		default 3000
+		comment milliseconds between before activating
+		linkedto nothing
+	endproperty
+	beginproperty
+		name active_ms
+		type int
+		default 3000
+		comment milliseconds active
+		linkedto nothing
+	endproperty
+	beginproperty
+		name post_ms
+		type int
+		default 3000
+		comment milliseconds after activation
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 100
 	name below passable box
 	w 16 

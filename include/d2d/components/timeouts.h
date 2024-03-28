@@ -14,7 +14,7 @@ class timeout {
 
 	public:
 /**
- * maximum, current and paused. This counts down.
+ * maximum, current and paused.
 */
 	                timeout(float, float=-1.0, bool=false);
 

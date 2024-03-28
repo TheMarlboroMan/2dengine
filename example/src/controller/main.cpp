@@ -525,6 +525,21 @@ void main::post_tic() {
 		}
 	}
 
+	//Or a trap?
+	for(const auto& trap : current_map.timed_traps) {
+
+		if(!trap.is_harmful()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, trap.ent)) {
+
+			defeat(player);
+			return;
+		}
+	}
+
 	//Have we entered a secret cover?
 	for(auto& secret_cover : current_map.secret_covers) {
 
@@ -590,6 +605,11 @@ void main::tic_world(
 ) {
 
 	d2d::motion::mover mover{};
+	for(auto& trap : current_map.timed_traps) {
+
+		trap.tic(_delta);
+	}
+
 	for(auto& monster : current_map.linear_monsters) {
 
 		monster.tic(_delta, mover);

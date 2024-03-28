@@ -10,11 +10,9 @@ next steps:
 
 		make a paper map for it.
 
-		- fire from the floor, fire makes everything better.
-				- we can thing of fire as a projectile that has a lifetime
-				and desintegrates after N tics. Perhaps we can extend the
-				current projectile for that. A zero lifetime means "until
-				it hits something".
+		- timed trap
+			- need graphics
+			- need drawing
 
 		"something" to reskin the character?
 

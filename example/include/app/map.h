@@ -14,6 +14,7 @@
 #include "projectile_generator.h"
 #include "projectile.h"
 #include "breaking_platform.h"
+#include "timed_trap.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -46,6 +47,7 @@ class map {
 	std::vector<gate>                       gates;
 	std::vector<breaking_platform>          breaking_platforms;
 	std::vector<projectile_generator>       projectile_generators;
+	std::vector<timed_trap>                 timed_traps;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 

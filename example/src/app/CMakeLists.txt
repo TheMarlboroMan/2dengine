@@ -20,6 +20,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/projectile.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/leaping_monster.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/breaking_platform.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/timed_trap.cpp
 	PARENT_SCOPE
 )
 
