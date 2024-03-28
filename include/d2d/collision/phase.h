@@ -25,10 +25,26 @@ class phase{
 	bool                has_collision() const {return collision_found;}
 
 /**
+ * resets all modifiers (flags / early exit). All modifiers are reset after
+ * a call to detect_*
+ */
+	phase&              reset_modifiers();
+
+/**
+ * sets the given flags for the next call to detect_*
+ */
+	phase&              flags(int);
+
+/**
+ * sets the early exit for the next call to detect_*
+ */
+	phase&              early_exit(bool);
+
+/**
  * Checks and adds the result of checking the collision against given spatiable.
  * Returns true if there was a collision. Beware, that does not mean that
  * this spatiable is the "closest" collision that will be picked up at
- * response time.
+ * response time. Does not reset the given flags.
  */
 	bool                detect_one(const d2d::collision::spatiable&, int=0);
 	bool                detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
@@ -36,23 +52,20 @@ class phase{
 /**
  * runs through all given nodes checking collisions and adding their results.
  * Returns true if there was any collision with any of the nodes. Can opt
- * for an early exit if need be.
+ * for an early exit if need be. Works on containers of pointers or not.
  */
 	template<typename T>
 	bool                detect_all(
-		T& _nodes,
-		int _flags=0,
-		bool _exit_on_collision=false
+		T& _nodes
 	) {
 
 		bool had_collision=false;
-		std::size_t l=_nodes.size(); 
-		for(std::size_t i=0; i<l; i++) {
+		for(const auto& node : _nodes) {
 
-			if(detect_one(d2d::tools::to_ref(_nodes[i]), _flags)) {
+			if(detect_one(d2d::tools::to_ref(node), collision_flags)) {
 
 				had_collision=true;
-				if(_exit_on_collision) {
+				if(with_early_exit) {
 
 					break;
 				}
@@ -60,6 +73,38 @@ class phase{
 		}
 
 		collision_found|=had_collision;
+		reset_modifiers();
+		return had_collision;
+	}
+
+/**
+ * same as the one before, but with a callable that can turn an element of
+ * the container into an spatiable. If used with a callable we must make 
+ * sure that it does not return a temporary! Lambdas with no return type
+ * specified are tricky for this.
+ */
+	template<typename T, typename D>
+	bool                detect_all(
+		T& _nodes,
+		const D& _dereferencer
+	) {
+
+		bool had_collision=false;
+		for(const auto& node : _nodes) {
+
+			const auto& spatiable=_dereferencer(node);
+			if(detect_one(d2d::tools::to_ref(spatiable), collision_flags)) {
+
+				had_collision=true;
+				if(with_early_exit) {
+
+					break;
+				}
+			}
+		}
+
+		collision_found|=had_collision;
+		reset_modifiers();
 		return had_collision;
 	}
 
@@ -67,29 +112,27 @@ class phase{
  * runs through all given nodes checking collisions and adding their results
  * as long as the _skipper functor returns true. 
  * Returns true if there was any collision with any of the nodes. Can opt
- * for an early exit if need be.
+ * for an early exit if need be. Works on containers of pointers or not.
  */
 	template<typename T, typename P>
 	bool                detect_if(
 		T& _nodes,
-		const P& _skipper, 
-		int _flags=0,
-		bool _exit_on_collision=false
+		const P& _skipper
 	) {
 
 		bool had_collision=false;
-		std::size_t l=_nodes.size(); 
-		for(std::size_t i=0; i<l; i++) {
+		for(const auto& node : _nodes) {
 
-			if(!_skipper(d2d::tools::to_ref(_nodes[i]))) {
+			const auto& ref=d2d::tools::to_ref(node);
+			if(!_skipper(ref)) {
 
 				continue;
 			}
 
-			if(detect_one(d2d::tools::to_ref(_nodes[i]), _flags)) {
+			if(detect_one(ref, collision_flags)) {
 
 				had_collision=true;
-				if(_exit_on_collision) {
+				if(with_early_exit) {
 
 					break;
 				}
@@ -97,6 +140,7 @@ class phase{
 		}
 
 		collision_found|=had_collision;
+		reset_modifiers();
 		return had_collision;
 	}
 
@@ -114,7 +158,9 @@ class phase{
 
 	private:
 
-	bool                            collision_found{false};
+	bool                            collision_found{false},
+	                                with_early_exit{false};
+	int                             collision_flags{0};
 	d2d::collision::checker::phases collision_phase;
 	d2d::collision::spatiable&      subject;
 	d2d::collision::checker         checker;

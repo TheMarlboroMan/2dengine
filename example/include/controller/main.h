@@ -138,6 +138,14 @@ class main:
 		}
 	};
 
+	template<typename T>
+	struct spatiable_dereferencer{
+
+		const d2d::collision::spatiable& operator()(const T& _node) const {return _node.ent;}
+	};
+
+	//TODO: Can we have a typename for the gate ones???
+
 #ifdef IS_DEBUG_BUILD
 
 	void                        reload_values();

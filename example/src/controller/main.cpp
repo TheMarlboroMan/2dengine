@@ -771,10 +771,10 @@ void main::tic_ground(
 		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 
-		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
-		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
+		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
 		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-		d2d::tools::for_each(current_map.gates, [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
+		cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
 		if(cph.has_collision()) {
 
@@ -892,13 +892,10 @@ void main::tic_air(
 	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 	
-	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
-	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
+	cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
 	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-
-	//TODO: Maybe detect all can have a "deferencer" method overload?
-	//so we can do cph.detect_all(current_map.gates, flags, [](const auto& _gate) {return gate.ent;});
-	d2d::tools::for_each(current_map.gates, [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
+	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
 	if(cph.has_collision()) {
 
@@ -940,9 +937,9 @@ void main::tic_air(
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 
 	cpv.detect_all(current_tiles);
-	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
+	cpv.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
 	cpv.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-	d2d::tools::for_each(current_map.gates, [&cpv](const auto& _gate) {cpv.detect_one(_gate.ent);});
+	cpv.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
 	if(cpv.has_collision()) {
 

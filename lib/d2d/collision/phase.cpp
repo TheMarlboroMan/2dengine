@@ -11,6 +11,29 @@ phase::phase(
 	subject{_subject}
 { }
 
+phase& phase::reset_modifiers() {
+
+	collision_flags=0;
+	with_early_exit=false;
+	return *this;
+}
+
+phase& phase::flags(
+	int _val
+) {
+	collision_flags=_val;
+	return *this;
+}
+
+phase& phase::early_exit(
+	bool _val
+) {
+
+	with_early_exit=_val;
+	return *this;
+}
+
+
 bool phase::detect_one(
 	const d2d::collision::spatiable& _node, 
 	int _flags
