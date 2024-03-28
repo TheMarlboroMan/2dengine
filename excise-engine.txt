@@ -1,28 +1,26 @@
-next step:
+next steps:
+
+	tile draw animated thing, make it equivalent to the other. Maybe it can 
+
+	all these TODO's with the collision checker and the whole breaking
+	platform (meaning an extra condition func and an adapter from a class to
+	a collision thingy).
+
+	directed projectile end animation!
+
+	test map with EVERYTHING IN THE GAME and a shell script to start it.
 
 	make the first example game.
 
-	tile draw animated thing, make it equivalent to the other. Maybe it can 
-	all these TODO's with the collision checker and the whole breaking
-	platform.
+		make a paper map for it.
 
-	test map with EVERYTHING IN THE GAME
-	and a shell script to start it.
+		- fire from the floor, fire makes everything better.
+				- we can thing of fire as a projectile that has a lifetime
+				and desintegrates after N tics. Perhaps we can extend the
+				current projectile for that. A zero lifetime means "until
+				it hits something".
 
-		todo:
-
-			make a paper map for it.
-
-			"traps":
-				- fire from the floor, fire makes everything better.
-					- we can thing of fire as a projectile that has a lifetime
-					and desintegrates after N tics. Perhaps we can extend the
-					current projectile for that. A zero lifetime means "until
-					it hits something".
-				- something that shoots right at where the player is and forces
-				it to keep moving. 
-
-			"something" to reskin the character?
+		"something" to reskin the character?
 
 	engine:
 		I guess slopes

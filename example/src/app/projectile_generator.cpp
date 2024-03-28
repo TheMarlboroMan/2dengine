@@ -5,6 +5,7 @@ using namespace app;
 
 projectile_generator::projectile_generator(
 	d2d::collision::box _box,
+	types _type,
 	int _velocity,
 	int _tag,
 	int _volley,
@@ -14,6 +15,7 @@ projectile_generator::projectile_generator(
 ):
 	state{projectile_generator::states::volley},
 	active{_active},
+	type{_type},
 	tag{_tag},
 	volley_total{_volley},
 	pr_data{

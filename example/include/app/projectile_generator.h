@@ -11,6 +11,12 @@ class projectile_generator {
 
 	public:
 
+	//types of projectile that this generates...
+	enum class types {
+		linear,
+		directed
+	};
+
 /**
  * indicates the direction projectiles will spawn in. The box means that
  * projectiles will spawn centered on it
@@ -22,6 +28,7 @@ class projectile_generator {
 
 							projectile_generator(
 		d2d::collision::box,
+		types,
 		int,    //velocity
 		int,	//tag
 		int,    //volley count
@@ -30,6 +37,7 @@ class projectile_generator {
 		bool
 	);
 
+	types                   get_type() const {return type;}
 /**
 *Returns true if must generate a projectile.
 */
@@ -66,6 +74,7 @@ class projectile_generator {
 	}                       state;
 
 	bool                    active;
+	types                   type;
 	int                     tag;
 
 	const int               volley_total;

@@ -288,6 +288,18 @@ void thing_loader::add_projectile_generator(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	app::projectile_generator::types type{app::projectile_generator::types::linear};
+	switch(_attributes.at("type").get_int()) {
+
+		case 0:
+			type=app::projectile_generator::types::linear;
+		break;
+
+		case 1:
+			type=app::projectile_generator::types::directed;
+		break;
+	}
+
 	int velocity=_attributes.at("velocity").get_int();
 	int tag=_attributes.at("tag").get_int();
 	int volley_count=_attributes.at("volley_count").get_int();
@@ -298,6 +310,7 @@ void thing_loader::add_projectile_generator(
 	curmap.projectile_generators.push_back(
 		{
 			{_pos, app::tile_w, app::tile_h}, 
+			type,
 			velocity,
 			tag,
 			volley_count,

@@ -61,6 +61,8 @@ class main:
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
 	void                        draw_projectile(ldv::screen&, const app::projectile&);
+	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);
+	void                        draw_projectile_directed(ldv::screen&, const app::projectile&);
 	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);
 
 	void                        tic(float, app::player_input);
@@ -103,6 +105,9 @@ class main:
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 	void                        post_tic();
+
+	//world...
+	void                        generate_projectile(const app::projectile_generator&);
 
 #ifdef IS_DEBUG_BUILD
 	app::service_provider&      sp;

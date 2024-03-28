@@ -329,6 +329,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name type
+		type int
+		default 0
+		comment type of projectile generated 0=horizontal 1=directed
+		linkedto nothing
+	endproperty
+	beginproperty
 		name difficulty
 		type int
 		default 7

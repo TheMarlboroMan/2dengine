@@ -5,12 +5,29 @@ using namespace app;
 
 projectile::projectile(
 	d2d::collision::point _pt, 
-	d2d::motion::motion_vector _velocity
+	d2d::motion::motion_vector _velocity,
+	types _type
 ):
-	ent{_pt, projectile_w, projectile_h},
+	ent{_pt, 0, 0},
 	velocity{_velocity},
+	type{_type},
 	timeout{0.3f, 0.0f, true}
-{};
+{
+	
+	switch(type) {
+
+		case types::horizontal:
+
+			ent.set_w(projectile_horizontal_w);
+			ent.set_h(projectile_horizontal_h);
+		break;
+		case types::round:
+
+			ent.set_w(projectile_round_w);
+			ent.set_h(projectile_round_h);
+		break;
+	}
+}
 
 void projectile::tic(
 	float _delta,
@@ -31,7 +48,7 @@ void projectile::tic(
 
 	if(is_moving()) {
 
-		_mover.apply_x(ent, velocity.x, _delta);
+		_mover.apply(ent, velocity, _delta);
 		return;
 	}
 }

@@ -648,15 +648,7 @@ void main::tic_world(
 
 		if(pg.tic(_delta)) {
 
-			const auto spawn_data=pg.get_projectile_data();
-			app::projectile proj{
-				spawn_data.box.origin,
-				spawn_data.velocity
-			};
-
-			d2d::collision::center_vertically(proj.ent, spawn_data.box);
-			d2d::collision::center_horizontally(proj.ent, spawn_data.box);
-			current_map.projectiles.push_back(proj);
+			generate_projectile(pg);
 		}
 	}
 
@@ -669,6 +661,40 @@ void main::tic_world(
 
 		bp.tic(_delta);
 	}
+}
+
+void main::generate_projectile(
+	const app::projectile_generator& _pg
+) {
+
+	const auto spawn_data=_pg.get_projectile_data();
+
+	auto type=app::projectile::types::horizontal;
+	auto velocity=spawn_data.velocity;
+
+	switch(_pg.get_type()) {
+
+		case app::projectile_generator::types::linear:
+			//The defaults are above...
+		break;
+		case app::projectile_generator::types::directed:
+
+			type=app::projectile::types::round;
+			velocity=ldt::vector_from_points(spawn_data.box.origin, player.ent.get_origin());
+			velocity.normalize();
+			velocity*=fabs(spawn_data.velocity.x);
+		break;
+	}
+
+	app::projectile proj{
+		spawn_data.box.origin,
+		velocity,
+		type
+	};
+
+	d2d::collision::center_vertically(proj.ent, spawn_data.box);
+	d2d::collision::center_horizontally(proj.ent, spawn_data.box);
+	current_map.projectiles.push_back(proj);
 }
 
 void main::tic_ground(
@@ -1287,7 +1313,11 @@ void main::draw_breaking_platform(
 		animation_index=app::anim_breaking_platform_return;
 	}
 
-	const auto& line=sprite_draw_animated.get(animation_index, _block.get_timer(), anim_len);
+	const auto& line=sprite_draw_animated.get(
+		animation_index, 
+		_block.get_timer(), 
+		anim_len
+	);
 	auto flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
@@ -1299,6 +1329,20 @@ void main::draw_breaking_platform(
 }
 
 void main::draw_projectile(
+	ldv::screen& _screen,
+	const app::projectile& _projectile
+) {
+
+	switch(_projectile.get_type()) {
+
+		case app::projectile::types::horizontal:
+			return draw_projectile_linear(_screen, _projectile);
+		case app::projectile::types::round:
+			return draw_projectile_directed(_screen, _projectile);
+	}
+}
+
+void main::draw_projectile_linear(
 	ldv::screen& _screen,
 	const app::projectile& _projectile
 ) {
@@ -1329,6 +1373,28 @@ void main::draw_projectile(
 
 	auto line=sprite_draw_animated.get(app::anim_projectile);
 	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_projectile.ent.get_origin()),
+		line.frame,
+		draw_flags
+	);
+}
+
+void main::draw_projectile_directed(
+	ldv::screen& _screen,
+	const app::projectile& _projectile
+) {
+
+	if(!_projectile.is_moving()) {
+
+		//TODO: We don´t have this animation.
+		return;
+	}
+
+	auto line=sprite_draw_animated.get(app::anim_projectile_round);
+	auto draw_flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
 		_screen, 

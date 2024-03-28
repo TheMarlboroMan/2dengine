@@ -61,6 +61,8 @@ enum animations{
 	anim_snake=153,
 	anim_bat=154,
 	anim_piranha=155,
+	anim_flames=156,
+	anim_projectile_round=157,
 
 	anim_breaking_platform=200,
 	anim_breaking_platform_return=201
