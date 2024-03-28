@@ -35,15 +35,56 @@ class phase{
 
 /**
  * runs through all given nodes checking collisions and adding their results.
- * Returns true if there was any collision with any of the nodes.
+ * Returns true if there was any collision with any of the nodes. Can opt
+ * for an early exit if need be.
  */
-
 	template<typename T>
-	bool                detect_all(T& _nodes, int _flags=0, bool _exit_on_collision=false) {
+	bool                detect_all(
+		T& _nodes,
+		int _flags=0,
+		bool _exit_on_collision=false
+	) {
 
 		bool had_collision=false;
 		std::size_t l=_nodes.size(); 
 		for(std::size_t i=0; i<l; i++) {
+
+			if(detect_one(d2d::tools::to_ref(_nodes[i]), _flags)) {
+
+				had_collision=true;
+				if(_exit_on_collision) {
+
+					break;
+				}
+			}
+		}
+
+		collision_found|=had_collision;
+		return had_collision;
+	}
+
+/**
+ * runs through all given nodes checking collisions and adding their results
+ * as long as the _skipper functor returns true. 
+ * Returns true if there was any collision with any of the nodes. Can opt
+ * for an early exit if need be.
+ */
+	template<typename T, typename P>
+	bool                detect_if(
+		T& _nodes,
+		const P& _skipper, 
+		int _flags=0,
+		bool _exit_on_collision=false
+	) {
+
+		bool had_collision=false;
+		std::size_t l=_nodes.size(); 
+		for(std::size_t i=0; i<l; i++) {
+
+			if(!_skipper(d2d::tools::to_ref(_nodes[i]))) {
+
+				continue;
+			}
 
 			if(detect_one(d2d::tools::to_ref(_nodes[i]), _flags)) {
 

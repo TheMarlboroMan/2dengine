@@ -2,9 +2,8 @@ next steps:
 
 	tile draw animated thing, make it equivalent to the other. Maybe it can 
 
-	all these TODO's with the collision checker and the whole breaking
-	platform (meaning an extra condition func and an adapter from a class to
-	a collision thingy).
+	adapter for the collision phase, something that can reference the
+	collision... Maybe we will need lots of duplicate function names.
 
 	directed projectile end animation!
 

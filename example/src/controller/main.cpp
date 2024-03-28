@@ -771,15 +771,9 @@ void main::tic_ground(
 		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 
-		const auto breaking_platforms_fn=[&cph](const auto& _block) {
-
-			if(!_block.is_solid()) {return;}
-			cph.detect_one(_block);
-		};
-
 		cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 		cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-		d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fn);
+		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 		d2d::tools::for_each(current_map.gates, [&cph](const auto& _gate) {cph.detect_one(_gate.ent);});
 
 		if(cph.has_collision()) {
@@ -898,18 +892,9 @@ void main::tic_air(
 	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 	
-	//TODO: Dislike...
-	const auto breaking_platforms_fn=[&cph](const auto& _block) {
-
-		if(!_block.is_solid()) {return;}
-		cph.detect_one(_block);
-	};
-
 	cph.detect_all(current_tiles, d2d::collision::checker::flag_skip_passable_side_check);
 	cph.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-	//TODO; Not feeling it, there is no way to pass additional requirements 
-	//to the "detect_one" or "detect_all" methods.
-	d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fn);
+	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 
 	//TODO: Maybe detect all can have a "deferencer" method overload?
 	//so we can do cph.detect_all(current_map.gates, flags, [](const auto& _gate) {return gate.ent;});
@@ -954,16 +939,9 @@ void main::tic_air(
 	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_monster_block{});
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 
-	//TODO: Even worse...
-	const auto breaking_platforms_fnv=[&cpv](const auto& _block) {
-
-		if(!_block.is_solid()) {return;}
-		cpv.detect_one(_block);
-	};
-
 	cpv.detect_all(current_tiles);
 	cpv.detect_all(current_map.solid_blocks, d2d::collision::checker::flag_skip_passable_side_check);
-	d2d::tools::for_each(current_map.breaking_platforms, breaking_platforms_fnv);
+	cpv.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 	d2d::tools::for_each(current_map.gates, [&cpv](const auto& _gate) {cpv.detect_one(_gate.ent);});
 
 	if(cpv.has_collision()) {

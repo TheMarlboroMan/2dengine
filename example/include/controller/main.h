@@ -130,6 +130,14 @@ class main:
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 
+	struct breaking_platforms_fn{
+
+		bool operator()(const app::breaking_platform& _block) const {
+
+			return _block.is_solid();
+		}
+	};
+
 #ifdef IS_DEBUG_BUILD
 
 	void                        reload_values();
