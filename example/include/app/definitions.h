@@ -63,6 +63,8 @@ enum animations{
 	anim_piranha=155,
 	anim_flames=156,
 	anim_projectile_round=157,
+	anim_projectile_round_end=158,
+	anim_timed_trap_fire=159,
 
 	anim_breaking_platform=200,
 	anim_breaking_platform_return=201

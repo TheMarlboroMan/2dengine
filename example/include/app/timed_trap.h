@@ -18,6 +18,9 @@ class timed_trap {
 		fire
 	};
 
+	//Public, so the thing loader can align it to a grid.
+	static const int    fire_w{6};
+
 /**
  * integer args are pre-count, duration and post-count
  */
@@ -44,8 +47,7 @@ class timed_trap {
 	                            post_s;
 	d2d::components::timeout    timeout;
 
-	static const int    fire_w{10};
-	static const int    fire_h{12};
+	static const int    fire_h{14};
 };
 
 std::ostream& operator<<(std::ostream&, const timed_trap&);

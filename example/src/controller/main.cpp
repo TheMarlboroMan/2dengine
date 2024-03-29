@@ -700,6 +700,7 @@ void main::generate_projectile(
 		case app::projectile_generator::types::directed:
 
 			type=app::projectile::types::round;
+			//TODO: Should aim FOR THE CENTER!
 			velocity=ldt::vector_from_points(spawn_data.box.origin, player.ent.get_origin());
 			velocity.normalize();
 			velocity*=fabs(spawn_data.velocity.x);
@@ -1093,6 +1094,11 @@ void main::draw_scene(
 		draw_leaping_monster(_screen, monster);
 	}
 
+	for(const auto& trap : current_map.timed_traps) {
+
+		draw_timed_trap(_screen, trap);
+	}
+
 	for(const auto& projectile : current_map.projectiles) {
 
 		draw_projectile(_screen, projectile);
@@ -1274,6 +1280,27 @@ void main::draw_leaping_monster(
 	);
 }
 
+void main::draw_timed_trap(
+	ldv::screen& _screen,
+	const app::timed_trap& _trap
+) {
+
+	if(!_trap.is_harmful()) {
+
+		return;
+	}
+
+	const auto& line=sprite_draw_animated.get(app::anim_timed_trap_fire);
+	auto draw_flags=sprite_draw_animated.flags(line);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_trap.ent.get_origin()),
+		line.frame,
+		draw_flags
+	);
+}
+
 void main::draw_breaking_platform(
 	ldv::screen& _screen,
 	const app::breaking_platform& _block
@@ -1384,18 +1411,27 @@ void main::draw_projectile_directed(
 
 	if(!_projectile.is_moving()) {
 
-		//TODO: We don´t have this animation.
+		auto line=sprite_draw_animated.get(
+			app::anim_projectile_round_end, 
+			_projectile.get_timeout_value()
+		);
+
+		sprite_draw.draw(
+			_screen, 
+			d2d::video::to_screen(_projectile.ent.get_origin()),
+			line.frame,
+			sprite_draw_animated.flags(line)
+		);
 		return;
 	}
 
 	auto line=sprite_draw_animated.get(app::anim_projectile_round);
-	auto draw_flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		draw_flags
+		sprite_draw_animated.flags(line)
 	);
 }
 

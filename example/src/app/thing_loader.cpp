@@ -261,6 +261,9 @@ void thing_loader::add_timed_trap(
 	int active_ms=_attributes.at("active_ms").get_int();
 	int post_ms=_attributes.at("post_ms").get_int();
 
+	//Spawn it aligned to the center of the grid.
+	_pos.x+=(app::tile_w / 2)- (app::timed_trap::fire_w / 2);
+
 	curmap.timed_traps.push_back(
 		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, pre_ms, active_ms, post_ms}
 	);

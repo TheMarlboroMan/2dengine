@@ -57,6 +57,7 @@ class main:
 	void                        draw_collectible(ldv::screen&, const app::collectible&);
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
 	void                        draw_leaping_monster(ldv::screen&, const app::leaping_monster&);
+	void                        draw_timed_trap(ldv::screen&, const app::timed_trap&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);

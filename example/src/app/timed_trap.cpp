@@ -15,7 +15,17 @@ timed_trap::timed_trap(
 	harm_s{(float)_harm_ms / 1000.f},
 	post_s{(float)_post_ms / 1000.f},
 	timeout{pre_s}
-{}
+{
+	switch(type) {
+
+		case types::fire:
+
+			ent.set_w(fire_w);
+			ent.set_h(fire_h);
+		break;
+	}
+}
+
 
 void timed_trap::tic(
 	float _delta

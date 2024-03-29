@@ -2,17 +2,11 @@ next steps:
 
 	tile draw animated thing, make it equivalent to the other. Maybe it can 
 
-	directed projectile end animation!
-
 	test map with EVERYTHING IN THE GAME and a shell script to start it.
 
 	make the first example game.
 
 		make a paper map for it.
-
-		- timed trap
-			- need graphics
-			- need drawing
 
 		"something" to reskin the character?
 
