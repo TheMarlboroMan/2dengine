@@ -14,9 +14,11 @@ class collectible {
 		gold_ingot=0,
 		gem=1,
 		ruby=2,
+		diamond=3,
 		yellow_key=10,
 		blue_key=11,
-		red_key=12
+		red_key=12,
+		green_key=13
 	};
 
 /*
@@ -35,6 +37,8 @@ class collectible {
 	static const int                gem_h{14};
 	static const int                ruby_w{10};
 	static const int                ruby_h{10};
+	static const int                diamond_w{15};
+	static const int                diamond_h{13};
 	static const int                key_w{16};
 	static const int                key_h{10};
 };

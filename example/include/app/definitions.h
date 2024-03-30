@@ -82,6 +82,8 @@ enum sprites {
 	spr_key_yellow=303,
 	spr_key_blue=304,
 	spr_key_red=305,
+	spr_key_green=306,
+	spr_diamond=307,
 
 	//Special world elements
 	spr_ladder_yellow=350,
@@ -91,9 +93,11 @@ enum sprites {
 	spr_yellow_keyhole=354,
 	spr_blue_keyhole=355,
 	spr_red_keyhole=356,
+	spr_green_keyhole=366,
 	spr_yellow_keyhole_used=357,
 	spr_blue_keyhole_used=358,
 	spr_red_keyhole_used=359,
+	spr_green_keyhole_used=367,
 	spr_regular_button=360,
 	spr_regular_button_used=361,
 	spr_breaking_block=362

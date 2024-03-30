@@ -6,6 +6,9 @@ next steps:
 
 	make the first example game.
 
+		timed traps should have a tag and be activated or not. These are
+		new things to be added to the class and the builder.
+
 		make a paper map for it.
 
 		"something" to reskin the character?

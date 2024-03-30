@@ -256,6 +256,9 @@ void main::load_map(
 			continue;
 		}
 
+		//TODO: Same with other things that can be activated, such as 
+		//projectile generators or timed traps.
+
 		for(auto& gate : current_map.gates) {
 
 			if(gate.tag==button.tag) {
@@ -1130,6 +1133,7 @@ void main::draw_button(
 		case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole; break;
 		case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole; break;
 		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
+		case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole; break;
 	}
 
 	if(_button.used) {
@@ -1140,6 +1144,7 @@ void main::draw_button(
 			case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole_used; break;
 			case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole_used; break;
 			case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole_used; break;
+			case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole_used; break;
 		}
 	}
 
@@ -1214,9 +1219,11 @@ void main::draw_collectible(
 		case app::collectible::gold_ingot:  sprite_index=app::spr_gold_ingot; break;
 		case app::collectible::gem:         sprite_index=app::spr_gem; break;
 		case app::collectible::ruby:        sprite_index=app::spr_ruby; break;
+		case app::collectible::diamond:     sprite_index=app::spr_diamond; break;
 		case app::collectible::yellow_key:  sprite_index=app::spr_key_yellow; break;
 		case app::collectible::blue_key:    sprite_index=app::spr_key_blue; break;
 		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
+		case app::collectible::green_key:   sprite_index=app::spr_key_green; break;
 	}
 
 	sprite_draw.draw(
@@ -1602,6 +1609,7 @@ void main::pick_up_collectible(
 		case app::collectible::gold_ingot:
 		case app::collectible::gem:
 		case app::collectible::ruby:
+		case app::collectible::diamond:
 
 		break;
 		case app::collectible::yellow_key:
@@ -1616,6 +1624,10 @@ void main::pick_up_collectible(
 		case app::collectible::red_key:
 
 			_player.red_keycount++;
+			return;
+		case app::collectible::green_key:
+
+			_player.green_keycount++;
 			return;
 	}
 }
@@ -1676,6 +1688,9 @@ void main::activate_button(
 		break;
 		case app::button::types::red_keyhole: 
 			_player.red_keycount--;
+		break;
+		case app::button::types::green_keyhole: 
+			_player.green_keycount--;
 		break;
 	}
 
@@ -1867,6 +1882,9 @@ bool main::has_key(
 		case app::button::types::red_keyhole:
 
 			return _player.red_keycount > 0;
+		case app::button::types::green_keyhole:
+
+			return _player.green_keycount > 0;
 	}
 
 	return false;

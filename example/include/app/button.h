@@ -16,7 +16,8 @@ class button {
 		regular,
 		yellow_keyhole,
 		blue_keyhole,
-		red_keyhole
+		red_keyhole,
+		green_keyhole
 	};
 
 	                                button(d2d::collision::point, types, int, int, bool);

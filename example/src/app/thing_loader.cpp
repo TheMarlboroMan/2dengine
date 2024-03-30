@@ -285,6 +285,7 @@ void thing_loader::add_button(
 		case 2: type=button::types::yellow_keyhole; break;
 		case 3: type=button::types::blue_keyhole; break;
 		case 4: type=button::types::red_keyhole; break;
+		case 5: type=button::types::green_keyhole; break;
 	}
 
 	curmap.buttons.push_back(
