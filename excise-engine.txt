@@ -13,6 +13,14 @@ next steps:
 
 		"something" to reskin the character?
 
+	ideas:
+		-forest area
+		-mountain area
+
+		-castle area
+			- front and back, moving through windows and doors
+			- secret on ceiling climbing lamp hole.
+
 	engine:
 		I guess slopes
 		Or moving blocks, which were originally there too.
