@@ -45,6 +45,27 @@ tile_limits tile_limits_finder::find_limits(
 	};
 }
 
+tile_limits tile_limits_finder::find_limits(
+	const std::vector<d2d::collision::tile>& _tiles,
+	filter_function _filter_fn
+) const {
+
+	if(!_tiles.size()) {
+
+		return {0,0,0,0,0,0};
+	}
+
+	//copy and filter... 
+	std::vector<d2d::collision::tile> copy=_tiles;
+
+	copy.erase(
+		std::remove_if(std::begin(copy), std::end(copy), _filter_fn),
+		std::end(copy)
+	);
+
+	return find_limits(copy);
+}
+
 std::ostream& d2d::collision::operator<<(
 	std::ostream& _stream,
 	const tile_limits& _limit

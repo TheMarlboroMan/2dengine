@@ -17,6 +17,30 @@ tile::tile(
 	cimpl{&_cimpl}
 {}
 
+tile::tile(
+	const tile& _other
+): 
+	x{_other.x},
+	y{_other.y},
+	type{_other.type},
+	shaper{_other.shaper},
+	cimpl{_other.cimpl}
+{}
+
+tile& tile::operator=(
+	const tile& _other
+) {
+	x=_other.x;
+	y=_other.y;
+	type=_other.type;
+	shaper=_other.shaper;
+
+	//the cimpl is not assigned as it is const... Anyway, it is the very
+	//same and cannot change.
+
+	return *this;
+}
+
 std::ostream& d2d::collision::operator<<(
 	std::ostream& _stream,
 	const tile& _tile

@@ -1,5 +1,7 @@
 next steps:
 
+	fix vertical scroll, seems broken.
+
 	tile draw animated thing, make it equivalent to the other. Maybe it can 
 
 	test map with EVERYTHING IN THE GAME and a shell script to start it.
@@ -8,6 +10,9 @@ next steps:
 
 		timed traps should have a tag and be activated or not. These are
 		new things to be added to the class and the builder.
+
+		- trap:
+			fire falling in drops from the ceiling, with gravity??
 
 		make a paper map for it.
 

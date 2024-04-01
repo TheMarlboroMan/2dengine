@@ -268,12 +268,19 @@ void main::load_map(
 		}
 	}
 
-	//After loading the map, tell the camera where the limits are.
+	//After loading the map, tell the camera where the limits are. We use
+	//removing harm tiles, to allow for harming tiles to exist outside 
+	//the camera boundaries.
+	d2d::collision::tile_limits_finder::filter_function ff=
+		[](const d2d::collision::tile& _tile) {return _tile.type==app::tile_harm;};
+
+	auto tile_limits_view=tlf.find_limits(current_map.collision_tiles, ff);
+
 	d2d::video::camera_map_limit cml;
-	cml.limit_to_collision_tiles(camera, limits, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+	cml.limit_to_collision_tiles(camera, tile_limits_view, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 
 #ifdef IS_DEBUG_BUILD
-	cml.limit_to_collision_tiles(dd.camera, limits, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
+	cml.limit_to_collision_tiles(dd.camera, tile_limits_view, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 #endif
 
 //	std::cout<<current_map<<std::endl;

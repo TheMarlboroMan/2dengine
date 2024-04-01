@@ -6,24 +6,9 @@ beginproperty
 endproperty
 
 beginproperty
-	name bg_red
+	name bg_color
 	type int
 	default 0
-	comment background color red
+	comment 0=black 1=sky
 endproperty
-
-beginproperty
-	name bg_green
-	type int
-	default 0
-	comment background color green
-endproperty
-
-beginproperty
-	name bg_blue
-	type int
-	default 0
-	comment background color blue
-endproperty
-
 

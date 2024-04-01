@@ -14,6 +14,13 @@ struct tile:
 
 	tile(int, int, int, d2d::collision::shaper&, const d2d::collision::tile_implementation&);
 
+/**
+ * Fact of the matter is that we may need to copy tiles and the const members
+ * don't like defaults, so here we have some more constructors and operators.
+ */
+	tile(const tile&);
+	tile& operator=(const tile&);
+
 	int                     x,
 	                        y,
 	                        type;
