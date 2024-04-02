@@ -10,6 +10,21 @@ ldv::point d2d::video::to_screen(
 	return {(int)_pt.x, (int)_pt.y};
 }
 
+ldv::rect d2d::video::to_screen(
+	const d2d::collision::box& _box
+) {
+	unsigned w=_box.w;
+	unsigned h=_box.h;
+	return {to_screen(_box.origin), w, h};
+}
+
+ldv::rect d2d::video::to_screen(
+	const d2d::collision::spatiable& _spatiable
+) {
+
+	return to_screen(_spatiable.get_box());
+}
+
 ldv::point d2d::video::to_screen_coordinates(
 	ldv::point _point,
 	unsigned _h

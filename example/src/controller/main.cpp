@@ -424,7 +424,7 @@ void main::take_player_to_entry(
 
 	//Center camera on map now..
 	camera.center_on(
-		d2d::video::to_screen_rect(player.ent)
+		d2d::video::to_screen(player.ent)
 	);
 
 #ifdef IS_DEBUG_BUILD
@@ -482,7 +482,7 @@ void main::tic(
 		if(app::player::states::defeat != player.state) {
 
 			camera.center_on(
-				d2d::video::to_screen_rect(player.ent)
+				d2d::video::to_screen(player.ent)
 			);
 
 #ifdef IS_DEBUG_BUILD
