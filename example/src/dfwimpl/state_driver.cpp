@@ -13,7 +13,7 @@ using namespace dfwimpl;
 state_driver::state_driver(
 	dfwimpl::config& c,
 	lm::logger& _logger,
-	const app::env& _env,
+	const appenv::env& _env,
 	int _initial_state
 ):
 	state_driver_interface(_initial_state),
@@ -117,14 +117,14 @@ void state_driver::prepare_resources(
 	dfw::kernel& _kernel
 ) {
 
-	dfw::resource_loader r_loader(_kernel.get_video_resource_manager(), _kernel.get_audio_resource_manager(), env.get_app_path());
+	dfw::resource_loader r_loader(_kernel.get_video_resource_manager(), _kernel.get_audio_resource_manager(), env.build_app_path(""));
 
-	r_loader.generate_textures(tools::explode_lines_from_file(env.get_app_path()+"resources/lists/textures.txt"));
+	r_loader.generate_textures(tools::explode_lines_from_file(env.build_app_path("resources/lists/textures.txt")));
 
 	//Some surfaces need to be loaded, for later manipulation into composite backgrounds.
-	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.get_app_path()+"data/lists/surfaces.txt"));
-	//r_loader.generate_sounds(tools::explode_lines_from_file(env.get_app_path()+"data/lists/sounds.txt"));
-	//r_loader.generate_music(tools::explode_lines_from_file(env.get_app_path()+std::string("data/lists/music.txt")));
+	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.build_app_path("data/lists/surfaces.txt"));
+	//r_loader.generate_sounds(tools::explode_lines_from_file(env.build_app_path("data/lists/sounds.txt"));
+	//r_loader.generate_music(tools::explode_lines_from_file(env.build_app_path("data/lists/music.txt")));
 	
 	service_provider.reset(
 		new app::service_provider{env, config, log, _kernel}
@@ -241,58 +241,19 @@ void state_driver::load_resources() {
 	auto& spritesheets=service_provider->get_spritesheet_manager();
 	spritesheets.add(
 		app::ss_tiles, 
-		ldtools::sprite_table{env.get_app_path()+"resources/lists/tiles.txt"}
+		ldtools::sprite_table{env.build_app_path("resources/lists/tiles.txt")}
 	);
 
 	auto& animations=service_provider->get_animation_manager();
 	animations.add(
 		app::animgr_tiles,
-		ldtools::animation_table{ spritesheets.at(app::ss_tiles), env.get_app_path()+"resources/lists/animations.txt"}
+		ldtools::animation_table{ spritesheets.at(app::ss_tiles), env.build_app_path("resources/lists/animations.txt")}
 	);
 
 	auto &ttf_manager=service_provider->get_ttf_manager();
 	ttf_manager.insert(
 		"console_font",
 		14,
-		env.get_app_path()+"resources/fonts/BebasNeue-Regular.ttf"
+		env.build_app_path("resources/fonts/BebasNeue-Regular.ttf")
 	);
-
-/*
-	ttf_manager.insert(
-		app::action_font_name,
-		app::action_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-	ttf_manager.insert(
-		app::show_text_font_name,
-		app::show_text_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-	ttf_manager.insert(
-		app::ingame_text_font_name,
-		app::ingame_text_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-	ttf_manager.insert(
-		app::status_description_font_name,
-		app::status_description_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-	ttf_manager.insert(
-		app::status_status_font_name,
-		app::status_status_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-	ttf_manager.insert(
-		app::main_menu_font_name,
-		app::main_menu_font_size,
-		env.get_app_path()+"data/fonts/BebasNeue-Regular.ttf"
-	);
-
-*/
 }

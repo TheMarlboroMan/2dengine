@@ -16,6 +16,7 @@ struct tile_impl:
 
 		switch(_tile.type) {
 			case tile_full:
+			case tile_full_no_camera:
 			case tile_harm:
 			case tile_monster_block:
 				return d2d::collision::shaper_default::tiles::tile_full;

@@ -113,7 +113,7 @@ class main:
 #ifdef IS_DEBUG_BUILD
 	app::service_provider&      sp;
 #endif
-	const app::env&             env;
+	const appenv::env&          env;
 	lm::logger&                 logger;
 	d2d::collision::shaper&     shaper;
 	const app::tile_impl&       tile_impl;

@@ -323,7 +323,7 @@ void main::reload_values() {
 	std::cout<<current_map<<std::endl;
 	
 	std::stringstream ss;
-	ss<<env.get_app_path()+"resources/runtime/values";
+	ss<<env.build_user_path("values");
 	std::cout<<"values file will be read from "<<ss.str()<<std::endl;
 
 	std::ifstream values_file{ss.str().c_str()};

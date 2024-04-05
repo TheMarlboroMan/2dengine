@@ -6,7 +6,7 @@
 using namespace app;
 
 service_provider::service_provider(
-	const app::env& _env, 
+	const appenv::env& _env, 
 	const dfwimpl::config& _config,
 	lm::logger& _logger,
 	dfw::kernel& _kernel

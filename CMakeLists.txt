@@ -6,6 +6,7 @@ option(BUILD_SHARED "Build a shared library" ON)
 option(BUILD_STATIC "Build a static library" OFF)
 option(BUILD_EXAMPLE "Build example" "ON")
 option(BUILD_TESTS "Build test code" "ON")
+option(BUILD_EXAMPLE_APPIMAGE "Build example as appimage" "OFF")
 
 #library version
 set(MAJOR_VERSION 0)
@@ -145,6 +146,12 @@ if(${BUILD_EXAMPLE})
 		message("example will be built as debug")
 		target_compile_definitions(example-app PUBLIC "-DIS_DEBUG_BUILD")
 		target_compile_definitions(exlib PUBLIC "-DIS_DEBUG_BUILD")
+	endif()
+
+	if(${BUILD_EXAMPLE_APPIMAGE})
+
+		message("will build example as appimage for packaging...")
+		target_compile_definitions(example-app PUBLIC "-DAS_APP_IMAGE")
 	endif()
 
 	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)

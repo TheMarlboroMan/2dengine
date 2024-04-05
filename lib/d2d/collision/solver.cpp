@@ -127,8 +127,10 @@ response solver::horizontal_complex(
 		}
 		else {
 			std::stringstream ss;
-			ss<<"error in horizontal pass, obstacle was nor left, nor right, nor colliding, subject prev position: "
-				<<_subject.get_previous_box()
+			ss<<"error in horizontal pass, obstacle was nor left, nor right, nor colliding (previous positions used). subject current pos: "
+				<<_subject.get_box()
+				<<", subject prev position: "<<_subject.get_previous_box()
+				<<", obstacle position: "<<(*obstacle).get_box()
 				<<", obstacle prev position: "<<(*obstacle).get_previous_box();
 
 			throw response_exception{ss.str()};
@@ -192,9 +194,11 @@ response solver::vertical_complex(
 		}
 		else {
 			std::stringstream ss;
-			ss<<"error in vertical pass, obstacle was nor above, nor below, nor colliding with subject prev position: "
-				<<_subject.get_previous_box()
-				<<", subject position: "<<_subject.get_box()
+
+			ss<<"error in vertical pass, obstacle was nor above, nor below, nor colliding (previous positions used). subject current pos: "
+				<<_subject.get_box()
+				<<", subject prev position: "<<_subject.get_previous_box()
+				<<", obstacle position: "<<(*obstacle).get_box()
 				<<", obstacle prev position: "<<(*obstacle).get_previous_box();
 
 			throw response_exception{ss.str()};

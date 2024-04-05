@@ -10,6 +10,7 @@
 #include <d2d/video/animation_manager.h>
 #include <ldv/resource_manager.h>
 #include <dfw/kernel.h>
+#include <appenv/env.h>
 
 namespace lm {
 class logger;
@@ -31,16 +32,14 @@ class shaper;
 
 namespace app {
 
-class env;
-
 class service_provider {
 
 	public:
 
-	service_provider(const app::env&, const dfwimpl::config&, lm::logger&, dfw::kernel&);
+	service_provider(const appenv::env&, const dfwimpl::config&, lm::logger&, dfw::kernel&);
 	~service_provider();
 
-	const app::env&			get_env() const {return env;}
+	const appenv::env&		get_env() const {return env;}
 	const dfwimpl::config&	get_config() const {return config;}
 	lm::logger&				get_logger() {return logger;}
 	d2d::collision::shaper& get_shaper();
@@ -53,7 +52,7 @@ class service_provider {
 
 	private:
 
-	const app::env&			env;
+	const appenv::env&		env;
 	const dfwimpl::config&	config;
 	lm::logger&				logger;
 	ldv::resource_manager&	video_resource_manager;

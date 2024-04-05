@@ -1,8 +1,6 @@
 #pragma once
 
 #include "config.h"
-
-#include "app/env.h"
 #include "app/service_provider.h"
 
 //Controllers.
@@ -20,7 +18,7 @@ class state_driver:
 	public dfw::state_driver_interface {
 
 	public:
-	                                state_driver(dfwimpl::config& config, lm::logger&, const app::env&, int);
+	                                state_driver(dfwimpl::config& config, lm::logger&, const appenv::env&, int);
 
 
 	virtual void                    common_pre_loop_input(dfw::input& input, float delta);
@@ -45,7 +43,7 @@ class state_driver:
 	//references
 	dfwimpl::config&                config;
 	lm::logger&                     log;
-	const app::env&                 env;
+	const appenv::env&              env;
 	std::unique_ptr<app::service_provider>  service_provider{nullptr};
 	
 

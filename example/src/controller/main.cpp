@@ -211,7 +211,7 @@ void main::load_map(
 	const std::string& _map_name
 ) {
 	std::stringstream ss;
-	ss<<env.get_app_path()+"resources/maps/"<<_map_name;
+	ss<<env.build_app_path("resources/maps/")<<_map_name;
 
 	const std::string map_path{ss.str()};
 	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
@@ -269,10 +269,10 @@ void main::load_map(
 	}
 
 	//After loading the map, tell the camera where the limits are. We use
-	//removing harm tiles, to allow for harming tiles to exist outside 
+	//removing harm tiles/solid but no camera, to allow for these to exist outside
 	//the camera boundaries.
 	d2d::collision::tile_limits_finder::filter_function ff=
-		[](const d2d::collision::tile& _tile) {return _tile.type==app::tile_harm;};
+		[](const d2d::collision::tile& _tile) {return _tile.type==app::tile_harm || _tile.type==app::tile_full_no_camera;};
 
 	auto tile_limits_view=tlf.find_limits(current_map.collision_tiles, ff);
 
@@ -342,6 +342,7 @@ void main::take_player_to_entry(
 		auto ladders=find_ladders();
 		if(ladders.size()) {
 
+			lm::log(logger).info()<<"found ladder in entry point, it will be used\n";
 			grab_ladder(_player, *ladders[0]);
 
 			if(app::entry::inner_top_edge==map_entry.position) {
@@ -359,6 +360,7 @@ void main::take_player_to_entry(
 		}
 		else {
 
+			lm::log(logger).info()<<"no ladder in entry point, player will stand up";
 			_player.ent.set_origin(map_entry.ent.get_origin());
 			_player.stand_up();
 		}
@@ -420,7 +422,9 @@ void main::take_player_to_entry(
 	//Commit positions so we don't get phantom collisions later!
 	_player.ent.sync_boxes();
 
-	lm::log(logger).info()<<"new player position is "<<_player.ent.get_origin()<<"\n";
+	lm::log(logger).debug()<<"new player position is "<<_player.ent.get_origin()<<"\n";
+	lm::log(logger).debug()<<"player box at "<<_player.ent.get_box()<<"\n";
+	lm::log(logger).debug()<<"player prev box at "<<_player.ent.get_previous_box()<<"\n";
 
 	//Center camera on map now..
 	camera.center_on(

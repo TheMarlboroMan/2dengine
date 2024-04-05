@@ -5,6 +5,8 @@
 #include <lm/ostream_logger.h>
 #include <ldt/sdl_tools.h>
 
+std::unique_ptr<appenv::env> make_env(lm::logger&);
+
 int main(int argc, char ** argv)
 {
 		
@@ -13,29 +15,28 @@ int main(int argc, char ** argv)
 	//lm::fileapp_log app_log(log_path.c_str());
 	lm::ostream_logger app_log(std::cout);
 
-	app::env env(app_log);
+	auto env=make_env(app_log);
 
 	try {
 
 #ifdef IS_DEBUG_BUILD
 
+		ldt::log_lsdl::set_type(ldt::log_lsdl::types::out);
 		lm::log(app_log).info()<<"setting up config..."<<std::endl;
+#else
+
+		ldt::log_lsdl::set_type(ldt::log_lsdl::types::null);
 #endif
 
 		//Setup the application configuration
 		lm::log(app_log).info()<<"setting up config..."<<std::endl;
-		const std::string config_file{env.get_usr_path()+"/resources/runtime/config.json"};
+		const std::string config_file{env->build_user_path("config.json")};
 		dfwimpl::config config(config_file);
 
 		//Init the state driver, this should NOT start system stuff yet!.
 		lm::log(app_log).info()<<"building state driver..."<<std::endl;
 		int initial_state=controller::state_main;
-		dfwimpl::state_driver sd(config, app_log, env, initial_state);
-
-		//init sdl2 wrapper log.
-		ldt::log_lsdl::set_type(ldt::log_lsdl::types::out);
-		//ldt::log_lsdl::set_type(ldt::log_lsdl::types::null);
-		//ldt::log_lsdl::set_filename("logs/libdansdl2.log");
+		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
 
 		lm::log(app_log).info()<<"init sdl2..."<<std::endl;
 		if(!ldt::sdl_init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK)) {
@@ -73,4 +74,25 @@ int main(int argc, char ** argv)
 	ldt::sdl_shutdown();
 
 	return 0;
+}
+
+std::unique_ptr<appenv::env> make_env(
+	lm::logger& _logger
+) {
+
+	auto result=std::unique_ptr<appenv::env>(
+		new app::env(_logger)
+	);
+
+	result->create_user_dir();
+	result->copy_from_app_to_home("resources/runtime/config.json", "config.json");
+#ifdef IS_DEBUG_BUILD
+	result->copy_from_app_to_home("resources/runtime/values", "values");
+#endif
+
+#ifdef AS_APPIMAGE
+	result->appimagefy();
+#endif
+
+	return result;
 }
