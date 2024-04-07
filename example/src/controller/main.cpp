@@ -1512,7 +1512,7 @@ void main::draw_player(
 		case app::player::states::ladder:
 			animation_index=app::anim_m_climb;
 			int y_mod=(int)player.ent.get_origin().y % 10;
-			frame_index=y_mod <= 4 ? 0 : 1;
+			frame_index=abs(y_mod) <= 4 ? 0 : 1;
 			draw_flags={false, false};
 		break;
 	}

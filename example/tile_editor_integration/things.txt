@@ -153,14 +153,14 @@ beginobject
 		type int
 		default 16
 		comment entry width in tile units!
-		linkedto w
+		linkedto nothing
 	endproperty
 	beginproperty
 		name height
 		type int
 		default 16
 		comment entry height in tile units!
-		linkedto h
+		linkedto nothing
 	endproperty
 endobject
 
