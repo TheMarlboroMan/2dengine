@@ -193,7 +193,7 @@ void state_driver::start_app(
 	auto& mainc=static_cast<controller::main&>(*c_main);
 
 	mainc.set_difficulty(app::skill_normal);
-	mainc.start("map_001.json", 1);
+	mainc.start("start_001", 1);
 
 #ifdef IS_DEBUG_BUILD
 

@@ -211,7 +211,7 @@ void main::load_map(
 	const std::string& _map_name
 ) {
 	std::stringstream ss;
-	ss<<env.build_app_path("resources/maps/")<<_map_name;
+	ss<<env.build_app_path("resources/maps/")<<_map_name<<".json";
 
 	const std::string map_path{ss.str()};
 	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
