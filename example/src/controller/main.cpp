@@ -807,7 +807,7 @@ void main::tic_ground(
 		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 
 		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
-		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
+		//cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.platform_blocks);
 		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 		cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
@@ -928,7 +928,7 @@ void main::tic_air(
 	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 	
 	cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
-	cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
+	//cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
 	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
@@ -972,7 +972,8 @@ void main::tic_air(
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 
 	cpv.detect_all(current_tiles);
-	cpv.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
+
+	cpv.detect_all(current_map.platform_blocks);
 	cpv.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 	cpv.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 
@@ -1071,16 +1072,9 @@ void main::draw_scene(
 		draw_gate(_screen, node);
 	}
 
-	//TODO: These will likely go away?
-	for(const auto& block : current_map.solid_blocks) {
-
-		dd.draw(_screen, block);
-	}
-
-	//TODO: These will likely go away?
 	for(const auto& block : current_map.platform_blocks) {
 
-		dd.draw(_screen, block);
+		draw_platform(_screen, block);
 	}
 
 	for(const auto& block : current_map.breaking_platforms) {
@@ -1365,6 +1359,26 @@ void main::draw_breaking_platform(
 		d2d::video::to_screen(_block.get_origin()),
 		line.frame,
 		flags
+	);
+}
+
+void main::draw_platform(
+	ldv::screen& _screen,
+	const app::platform_block& _block
+) {
+
+	int index=app::spr_platform_branch;
+	switch(_block.get_type()) {
+
+		case app::platform_block::types::branch:
+			index=app::spr_platform_branch;
+		break;
+	}
+
+	sprite_draw.draw(
+		_screen,
+		d2d::video::to_screen(_block.get_origin()),
+		index
 	);
 }
 
@@ -1773,7 +1787,7 @@ bool main::is_on_air(
 
 	if(
 		 cc.has_collision(player_box_copy, contacting_tiles) 
-		|| cc.has_collision(player_box_copy, current_map.solid_blocks)
+		|| cc.has_collision(player_box_copy, current_map.platform_blocks)
 	) {
 
 		return false;

@@ -21,7 +21,6 @@ thing_loader::thing_loader(
 
 void thing_loader::setup() {
 
-	curmap.solid_blocks.clear();
 	curmap.platform_blocks.clear();
 	curmap.ladders.clear();
 	curmap.entries.clear();
@@ -56,6 +55,7 @@ void thing_loader::load(
 			case 7: return add_button(pos, _attributes);
 			case 8: return add_gate(pos, _attributes);
 			case 9: return add_breaking_platform(pos, _attributes);
+			case 10: return add_platform(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
@@ -63,20 +63,6 @@ void thing_loader::load(
 			case 53: return add_timed_trap(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
-
-			//TODO: These will likely dissapear.
-			case 100:
-
-				curmap.platform_blocks.push_back(
-					{_pos.x, _pos.y, _attributes.at("width").get_int()}
-				);
-				return;
-			case 101:
-
-				curmap.solid_blocks.push_back(
-					{_pos.x, _pos.y, _attributes.at("width").get_int(), _attributes.at("height").get_int()}
-				);
-				return;
 		}
 	}
 	catch(std::exception& e) {
@@ -364,6 +350,22 @@ void thing_loader::add_breaking_platform(
 			ms_returning
 		} 
 	);
+}
+
+void thing_loader::add_platform(
+	d2d::collision::point _pos, 
+	const thing_loader::attrmap& _attributes
+) {
+
+	app::platform_block::types type{app::platform_block::types::branch};
+
+	switch(_attributes.at("type").get_int()) {
+
+		case 0: type=app::platform_block::types::branch; break;
+		default: break;
+	}
+
+	curmap.platform_blocks.push_back({_pos, type });
 }
 
 double thing_loader::find_lower_x_bound(

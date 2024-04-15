@@ -181,11 +181,6 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
-	for(const auto& block : current_map.solid_blocks) {
-
-		dd.draw(_screen, block);
-	}
-
 	for(const auto& block : current_map.platform_blocks) {
 
 		dd.draw(_screen, block);

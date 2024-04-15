@@ -65,6 +65,7 @@ class main:
 	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_directed(ldv::screen&, const app::projectile&);
 	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);
+	void                        draw_platform(ldv::screen&, const app::platform_block&);
 
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);

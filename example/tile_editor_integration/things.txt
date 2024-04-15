@@ -252,6 +252,27 @@ beginobject
 endobject
 
 beginobject
+	id 10
+	name platform
+	w 16 
+	h 16
+	color 128 128 64 255
+	beginproperty
+		name type
+		type int
+		default 0
+		comment 0=branch
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 1
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+beginobject
 	id 50
 	name linear monster
 	w 16
@@ -420,21 +441,6 @@ beginobject
 		default 7
 		comment flag, 1=easy, 2=medium 4=hard
 		linkedto nothing
-	endproperty
-endobject
-
-beginobject
-	id 100
-	name below passable box
-	w 16 
-	h 8
-	color 128 128 64 255
-	beginproperty
-		name width
-		type int
-		default 16
-		comment entry width.
-		linkedto w
 	endproperty
 endobject
 

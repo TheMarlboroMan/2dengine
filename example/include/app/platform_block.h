@@ -6,14 +6,22 @@
 namespace app {
 
 /**
- * a platform that is passable from below, fixed height.
+ * a platform that is passable from below, fixed height and width. The idea
+ * is that it appears in certain difficulty levels to make things easier.
+ * The fixed size matches a tile, to make drawing easier.
  */
 class platform_block:
 	public d2d::collision::spatiable {
 
 	public:
 
-	                                        platform_block(int, int, int);
+	//describes visual attributes.
+	enum class types {
+		branch
+	};
+
+	                                        platform_block(d2d::collision::point, types);
+	types                                   get_type() const {return type;}
 
 //Begin implementation of spatiable
 
@@ -35,7 +43,11 @@ class platform_block:
 
 	private:
 
+	static const int                        w{16};
+	static const int                        h{16};
+
 	d2d::collision::box                 collision_box;
+	types                               type;
 };
 
 std::ostream& operator<<(std::ostream&, const platform_block&);

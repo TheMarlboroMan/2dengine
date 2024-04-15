@@ -3,11 +3,11 @@
 using namespace app;
 
 platform_block::platform_block(
-	int _x,
-	int _y,
-	int _w 
+	d2d::collision::point _pt,
+	types _type
 ):
-	collision_box{{(double)_x, (double)_y}, _w, 12}
+	collision_box{_pt, w, h},
+	type{_type}
 {}
 
 std::ostream& app::operator<<(

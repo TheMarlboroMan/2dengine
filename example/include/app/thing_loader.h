@@ -32,6 +32,7 @@ class thing_loader
 	void                add_gate(d2d::collision::point, const attrmap&);
 	void                add_projectile_generator(d2d::collision::point, const attrmap&);
 	void                add_breaking_platform(d2d::collision::point, const attrmap&);
+	void                add_platform(d2d::collision::point, const attrmap&);
 	void                add_timed_trap(d2d::collision::point, const attrmap&);
 
 	double              find_lower_x_bound(d2d::collision::tile_coords) const;

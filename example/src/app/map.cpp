@@ -18,7 +18,6 @@ std::ostream& app::operator<<(
 
 	_stream<<"map: ["<<std::endl;
 	print_node("collision_tiles", _map.collision_tiles, _stream);
-	print_node("solid_blocks", _map.solid_blocks, _stream);
 	print_node("platform_blocks", _map.platform_blocks, _stream);
 	print_node("ladders", _map.ladders, _stream);
 	print_node("background_tiles", _map.background_tiles, _stream);
@@ -44,7 +43,6 @@ void map::clear() {
 	collision_tiles.clear();
 	projectile_generators.clear();
 	platform_blocks.clear();
-	solid_blocks.clear();
 	tile_finder.clear();
 	ladders.clear();
 	background_tiles.clear();
