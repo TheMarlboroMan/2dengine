@@ -68,6 +68,28 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
+	if(_cmd=="skill") {
+
+		difficulty_setting=_args[0].get_int();
+		std::stringstream ss;
+		ss<<"changed skill setting "<<difficulty_setting;
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="give") {
+
+		int how_many=_args[0].get_int();
+
+		player.yellow_keycount+=how_many;
+		player.blue_keycount+=how_many;
+		player.red_keycount+=how_many;
+		player.green_keycount+=how_many;
+
+		std::stringstream ss;
+		ss<<"keys given";
+		return {0, ss.str()};
+	}
+
 	if(_cmd=="debugdraw") {
 
 		debug_draw=true;
@@ -137,7 +159,7 @@ void main::setup_console(
 	console_display.reset(
 		new appconsole::console{
 			{0,0,480, 100},
-			_sp.get_ttf_manager().get("console_font", 14),
+			_sp.get_ttf_manager().get("console_font", 7),
 			display_update
 		}
 	);
@@ -157,7 +179,8 @@ void main::setup_console(
 	console->map_command("get_collision_tiles", {});
 	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
-	console->map_command("difficulty", {{console::types::integer}});
+	console->map_command("skill", {{console::types::integer}});
+	console->map_command("give", {{console::types::integer}});
 }
 
 void main::draw_debug(

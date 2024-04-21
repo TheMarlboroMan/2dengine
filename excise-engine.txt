@@ -1,8 +1,15 @@
 next steps:
 
-	tile draw animated thing, make it equivalent to the other. Maybe it can 
+	tile draw animated thing, make it equivalent to the other. 
+
+	the console does not seem to stop capturing text after it exits
+
+	the console text does not seem to understand the max width part.
 
 	test map with EVERYTHING IN THE GAME and a shell script to start it.
+
+	forest_004, die and you get transported to the previous screen, bad 
+	positioning, does now grab ladder??? check that.
 
 	make the first example game.
 

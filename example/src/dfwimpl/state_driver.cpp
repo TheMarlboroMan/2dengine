@@ -253,7 +253,7 @@ void state_driver::load_resources() {
 	auto &ttf_manager=service_provider->get_ttf_manager();
 	ttf_manager.insert(
 		"console_font",
-		14,
-		env.build_app_path("resources/fonts/BebasNeue-Regular.ttf")
+		7,
+		env.build_app_path("resources/fonts/publicpixel.ttf")
 	);
 }
