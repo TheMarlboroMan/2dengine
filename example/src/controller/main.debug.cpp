@@ -68,11 +68,25 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
+	if(_cmd=="map") {
+
+		load_map(_args[0].get_string());
+		take_player_to_entry(player, _args[1].get_int(), nullptr);
+		return {1, "map loaded"};
+	}
+
 	if(_cmd=="skill") {
 
 		difficulty_setting=_args[0].get_int();
 		std::stringstream ss;
 		ss<<"changed skill setting "<<difficulty_setting;
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="getskill") {
+
+		std::stringstream ss;
+		ss<<"skill setting is"<<difficulty_setting;
 		return {0, ss.str()};
 	}
 
@@ -180,7 +194,9 @@ void main::setup_console(
 	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
 	console->map_command("skill", {{console::types::integer}});
+	console->map_command("getskill", {});
 	console->map_command("give", {{console::types::integer}});
+	console->map_command("map", {{console::types::string}, {console::types::integer, true, 1}});
 }
 
 void main::draw_debug(

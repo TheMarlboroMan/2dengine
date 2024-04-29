@@ -22,10 +22,11 @@ int main(int argc, char ** argv)
 #ifdef IS_DEBUG_BUILD
 
 		ldt::log_lsdl::set_type(ldt::log_lsdl::types::out);
-		lm::log(app_log).info()<<"setting up config..."<<std::endl;
+		lm::log(app_log).info()<<"ldsdl2 will output its logging to the std out"<<std::endl;
 #else
 
 		ldt::log_lsdl::set_type(ldt::log_lsdl::types::null);
+		lm::log(app_log).info()<<"ldsdl2 will not output its logging"<<std::endl;
 #endif
 
 		//Setup the application configuration
