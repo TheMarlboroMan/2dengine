@@ -79,14 +79,14 @@ console::result main::execute_cmd(
 
 		difficulty_setting=_args[0].get_int();
 		std::stringstream ss;
-		ss<<"changed skill setting "<<difficulty_setting;
+		ss<<"changed skill setting "<<difficulty_setting<<" 1=easy 2=normal 4=hard";
 		return {0, ss.str()};
 	}
 
 	if(_cmd=="getskill") {
 
 		std::stringstream ss;
-		ss<<"skill setting is"<<difficulty_setting;
+		ss<<"skill setting is"<<difficulty_setting<<" 1=easy 2=normal 4=hard";
 		return {0, ss.str()};
 	}
 

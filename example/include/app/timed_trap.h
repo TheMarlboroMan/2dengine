@@ -22,13 +22,16 @@ class timed_trap {
 	static const int    fire_w{6};
 
 /**
- * integer args are pre-count, duration and post-count
+ * integer args are tag, pre-count, duration and post-count
  */
-	                    timed_trap(d2d::collision::point, types, int, int, int);
+	                    timed_trap(d2d::collision::point, types, bool, int, int, int, int);
 
 	void                tic(float);
-	bool                is_harmful() const {return state==states::harm;}
+	bool                is_harmful() const {return active && state==states::harm;}
 	types               get_type() const {return type;}
+	bool                is_active() const {return active;}
+	int                 get_tag() const {return tag;}
+	void                activate() {active=true;}
 
 	entity              ent;
 
@@ -42,6 +45,8 @@ class timed_trap {
 
 	types                       type{types::fire};
 
+	int                         tag{0};
+	bool                        active{true};
 	float                       pre_s,
 	                            harm_s,
 	                            post_s;

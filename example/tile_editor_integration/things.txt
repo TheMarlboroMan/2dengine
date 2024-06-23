@@ -415,6 +415,20 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name active
+		type int
+		default 1
+		comment 1=active 0=inactive
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment activation tag
+		linkedto nothing
+	endproperty
+	beginproperty
 		name pre_ms
 		type int
 		default 3000

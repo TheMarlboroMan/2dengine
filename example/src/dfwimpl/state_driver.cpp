@@ -220,6 +220,7 @@ void state_driver::start_app(
 			case 3: mainc.set_difficulty(app::skill_hard); break;
 			default:
 				mainc.set_difficulty(app::skill_normal); 
+				lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
 			break;
 		}
 	}

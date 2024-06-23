@@ -243,6 +243,8 @@ void thing_loader::add_timed_trap(
 		return;
 	}
 
+	bool active=_attributes.at("active").get_int()==1;
+	int tag=_attributes.at("tag").get_int();
 	int pre_ms=_attributes.at("pre_ms").get_int();
 	int active_ms=_attributes.at("active_ms").get_int();
 	int post_ms=_attributes.at("post_ms").get_int();
@@ -251,7 +253,7 @@ void thing_loader::add_timed_trap(
 	_pos.x+=(app::tile_w / 2)- (app::timed_trap::fire_w / 2);
 
 	curmap.timed_traps.push_back(
-		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, pre_ms, active_ms, post_ms}
+		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, active, tag, pre_ms, active_ms, post_ms}
 	);
 }
 

@@ -258,12 +258,23 @@ void main::load_map(
 
 		//TODO: Same with other things that can be activated, such as 
 		//projectile generators or timed traps.
+		//
+		//TODO: This is repeated...
 
 		for(auto& gate : current_map.gates) {
 
 			if(gate.tag==button.tag) {
 
 				gate.open();
+			}
+		}
+
+		//Activate all traps by this tag...
+		for(auto& trap : current_map.timed_traps) {
+
+			if(trap.get_tag()==button.tag) {
+
+				trap.activate();
 			}
 		}
 	}
@@ -1104,6 +1115,11 @@ void main::draw_scene(
 
 	for(const auto& trap : current_map.timed_traps) {
 
+		if(!trap.is_active()) {
+
+			continue;
+		}
+
 		draw_timed_trap(_screen, trap);
 	}
 
@@ -1296,6 +1312,24 @@ void main::draw_timed_trap(
 	ldv::screen& _screen,
 	const app::timed_trap& _trap
 ) {
+
+	//There is always a plaque under this trap... We could fake it with a 
+	//decoration object or with foreground tiles but those would be meh and
+	//a nuisance in skill levels, respectively.
+	
+	auto origin=d2d::video::to_screen(_trap.ent.get_origin());
+
+	//The plaque is under the trap itself and must be centered on it.
+	origin.y-=app::tile_h;
+	origin.x-=(app::timed_trap::fire_w / 2) + 1;
+
+	int sprite_index=app::spr_fire_trap_plaque;
+
+	sprite_draw.draw(
+		_screen,
+		origin,
+		sprite_index
+	);
 
 	if(!_trap.is_harmful()) {
 
@@ -1719,12 +1753,23 @@ void main::activate_button(
 		break;
 	}
 
+	//TODO: Centralize this in some other method.
+
 	//Activate all gates by this tag.
 	for(auto& gate : current_map.gates) {
 
 		if(gate.tag==_button.tag) {
 
 			gate.activate();
+		}
+	}
+
+	//Activate all traps by this tag...
+	for(auto& trap : current_map.timed_traps) {
+
+		if(trap.get_tag()==_button.tag) {
+
+			trap.activate();
 		}
 	}
 }

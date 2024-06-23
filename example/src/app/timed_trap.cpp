@@ -5,10 +5,14 @@ using namespace app;
 timed_trap::timed_trap(
 	d2d::collision::point _pt, 
 	types _type, 
+	bool _active,
+	int _tag,
 	int _pre_ms,
 	int _harm_ms,
 	int _post_ms
 ):
+	tag{_tag},
+	active{_active},
 	ent{_pt, 0, 0},
 	type{_type},
 	pre_s{(float)_pre_ms / 1000.f},

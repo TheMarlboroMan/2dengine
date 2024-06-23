@@ -101,7 +101,8 @@ enum sprites {
 	spr_regular_button=360,
 	spr_regular_button_used=361,
 	spr_breaking_block=362,
-	spr_platform_branch=155
+	spr_platform_branch=155,
+	spr_fire_trap_plaque=188
 };
 
 enum tile_types {
