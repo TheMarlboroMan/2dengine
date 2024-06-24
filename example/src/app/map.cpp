@@ -29,6 +29,7 @@ std::ostream& app::operator<<(
 	print_node("leaping_monsters", _map.leaping_monsters, _stream);
 	print_node("secret_covers", _map.secret_covers, _stream);
 	print_node("buttons", _map.buttons, _stream);
+	print_node("touch_triggers", _map.touch_triggers, _stream);
 	print_node("gates", _map.gates, _stream);
 	print_node("projectile_generators", _map.projectile_generators, _stream);
 	print_node("breaking_platforms", _map.breaking_platforms, _stream);
@@ -54,6 +55,7 @@ void map::clear() {
 	leaping_monsters.clear();
 	secret_covers.clear();
 	buttons.clear();
+	touch_triggers.clear();
 	gates.clear();
 	breaking_platforms.clear();
 	timed_traps.clear();

@@ -19,7 +19,8 @@ enum skill_settings {
 enum persistence_groups {
 	pergr_collectibles=1, //regular collectible bonuses
 	pergr_secret_covers=2, //black rectangles covering secret areas.
-	pergr_buttons=3 //buttons and keyholes.
+	pergr_buttons=3, //buttons and keyholes.
+	pergr_touch_triggers=4, //touch triggers
 };
 
 enum spritesheets {

@@ -20,6 +20,7 @@ service_provider::service_provider(
 	persistence.add(app::pergr_collectibles);
 	persistence.add(app::pergr_secret_covers);
 	persistence.add(app::pergr_buttons);
+	persistence.add(app::pergr_touch_triggers);
 }
 
 service_provider::~service_provider() {

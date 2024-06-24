@@ -247,8 +247,9 @@ void main::load_map(
 		<<current_map.background_color.g<<", "
 		<<current_map.background_color.b<<"\n";
 
-	//All activated switches should run their course now: the gates won't save
-	//their state!
+	//All activated switches should run their course now: all activated objects
+	//will not save their state but will be activated when the switches do
+	//their thing.
 	for(const auto& button : current_map.buttons) {
 
 		if(!button.used) {
@@ -256,27 +257,17 @@ void main::load_map(
 			continue;
 		}
 
-		//TODO: Same with other things that can be activated, such as 
-		//projectile generators or timed traps.
-		//
-		//TODO: This is repeated...
+		activate_tag(button.tag);
+	}
 
-		for(auto& gate : current_map.gates) {
+	for(const auto& trigger : current_map.touch_triggers) {
 
-			if(gate.tag==button.tag) {
+		if(!trigger.used) {
 
-				gate.open();
-			}
+			continue;
 		}
 
-		//Activate all traps by this tag...
-		for(auto& trap : current_map.timed_traps) {
-
-			if(trap.get_tag()==button.tag) {
-
-				trap.activate();
-			}
-		}
+		activate_tag(trigger.tag);
 	}
 
 	//After loading the map, tell the camera where the limits are. We use
@@ -576,6 +567,20 @@ void main::post_tic() {
 		if(d2d::collision::collides_with(player.ent, secret_cover.ent)) {
 
 			discover_secret(player, secret_cover);
+		}
+	}
+
+	//Have we activated a touch trigger?
+	for(auto& trigger : current_map.touch_triggers) {
+
+		if(trigger.used) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, trigger.ent)) {
+
+			activate_touch_trigger(trigger);
 		}
 	}
 
@@ -1753,25 +1758,16 @@ void main::activate_button(
 		break;
 	}
 
-	//TODO: Centralize this in some other method.
+	activate_tag(_button.tag);
+}
 
-	//Activate all gates by this tag.
-	for(auto& gate : current_map.gates) {
+void main::activate_touch_trigger(
+	app::touch_trigger& _trigger
+) {
 
-		if(gate.tag==_button.tag) {
-
-			gate.activate();
-		}
-	}
-
-	//Activate all traps by this tag...
-	for(auto& trap : current_map.timed_traps) {
-
-		if(trap.get_tag()==_button.tag) {
-
-			trap.activate();
-		}
-	}
+	persistence.add(app::pergr_touch_triggers, _trigger.id, 1);
+	_trigger.used=true;
+	activate_tag(_trigger.tag);
 }
 
 void main::collide_with_wall(
@@ -1977,6 +1973,36 @@ app::entry main::find_entry_by_id(
 	}
 
 	throw std::runtime_error("could not find entry by id");
+}
+
+void main::activate_tag(
+	int _tag
+) {
+
+	for(auto& gate : current_map.gates) {
+
+		if(gate.tag==_tag) {
+
+			gate.open();
+		}
+	}
+
+	//Activate all traps by this tag...
+	for(auto& trap : current_map.timed_traps) {
+
+		if(trap.get_tag()==_tag) {
+
+			trap.activate();
+		}
+	}
+
+	for(auto& generator : current_map.projectile_generators) {
+
+		if(generator.get_tag()==_tag) {
+
+			generator.activate();
+		}
+	}
 }
 
 #ifdef IS_DEBUG_BUILD

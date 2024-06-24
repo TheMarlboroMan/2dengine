@@ -37,6 +37,8 @@ class projectile_generator {
 		bool
 	);
 
+	int                     get_tag() const {return tag;}
+
 	types                   get_type() const {return type;}
 /**
 *Returns true if must generate a projectile.

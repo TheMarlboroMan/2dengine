@@ -50,6 +50,7 @@ set(SOURCE "")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/collision")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/storage")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/video")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/audio")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/motion")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/d2d/components")
 
@@ -157,7 +158,7 @@ if(${BUILD_EXAMPLE})
 	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
 
 	add_custom_target(setup_files ALL)
-	add_custom_command(TARGET setup_files POST_BUILD COMMAND cp -r ../example/resources .)
+	add_custom_command(TARGET setup_files POST_BUILD COMMAND "../make_resources.sh")
 endif()
 
 if(${BUILD_TESTS}) 

@@ -9,6 +9,7 @@
 #include "leaping_monster.h"
 #include "secret_cover.h"
 #include "button.h"
+#include "touch_trigger.h"
 #include "gate.h"
 #include "projectile_generator.h"
 #include "projectile.h"
@@ -42,6 +43,7 @@ class map {
 	std::vector<leaping_monster>            leaping_monsters;
 	std::vector<secret_cover>               secret_covers;
 	std::vector<button>                     buttons;
+	std::vector<touch_trigger>              touch_triggers;
 	std::vector<gate>                       gates;
 	std::vector<breaking_platform>          breaking_platforms;
 	std::vector<projectile_generator>       projectile_generators;

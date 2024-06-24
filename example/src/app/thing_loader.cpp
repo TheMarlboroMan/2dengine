@@ -27,6 +27,7 @@ void thing_loader::setup() {
 	curmap.collectibles.clear();
 	curmap.secret_covers.clear();
 	curmap.buttons.clear();
+	curmap.touch_triggers.clear();
 	curmap.gates.clear();
 	curmap.projectile_generators.clear();
 	curmap.linear_monsters.clear();
@@ -56,6 +57,7 @@ void thing_loader::load(
 			case 8: return add_gate(pos, _attributes);
 			case 9: return add_breaking_platform(pos, _attributes);
 			case 10: return add_platform(pos, _attributes);
+			case 11: return add_touch_trigger(pos, _attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
@@ -441,5 +443,21 @@ double thing_loader::find_upper_y_bound(
 	}
 
 	return upper_bound;
+}
+
+void thing_loader::add_touch_trigger(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("id").get_int();
+	int tag=_attributes.at("tag").get_int();
+	int width=_attributes.at("width").get_int();
+	int height=_attributes.at("height").get_int();
+	bool used=persistence.has(pergr_touch_triggers, id);
+
+	curmap.touch_triggers.push_back(
+		{ {_pos, width, height}, id, tag, used}
+	);
 }
 

@@ -29,6 +29,7 @@ class thing_loader
 	void                add_leaping_monster(d2d::collision::point, const attrmap&);
 	void                add_secret_cover(d2d::collision::point, const attrmap&);
 	void                add_button(d2d::collision::point, const attrmap&);
+	void                add_touch_trigger(d2d::collision::point, const attrmap&);
 	void                add_gate(d2d::collision::point, const attrmap&);
 	void                add_projectile_generator(d2d::collision::point, const attrmap&);
 	void                add_breaking_platform(d2d::collision::point, const attrmap&);

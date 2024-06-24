@@ -106,10 +106,12 @@ class main:
 	void                        pick_up_collectible(app::player&, const app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
+	void                        activate_touch_trigger(app::touch_trigger&);
 	void                        post_tic();
 
 	//world...
 	void                        generate_projectile(const app::projectile_generator&);
+	void                        activate_tag(int);
 
 #ifdef IS_DEBUG_BUILD
 	app::service_provider&      sp;

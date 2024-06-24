@@ -272,6 +272,43 @@ beginobject
 		linkedto nothing
 	endproperty
 endobject
+
+beginobject
+	id 11
+	name touch trigger
+	w 16
+	h 16
+	color 49 200 240 255
+	beginproperty
+		name id
+		type int
+		default 0
+		comment should be unique in the whole map set
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment acts upon objects with the same tag.
+		linkedto nothing
+	endproperty
+	beginproperty
+		name width
+		type int
+		default 16
+		comment entry width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment entry height.
+		linkedto h
+	endproperty
+endobject
+
 beginobject
 	id 50
 	name linear monster
