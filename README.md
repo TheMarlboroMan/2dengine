@@ -39,3 +39,6 @@ These are reusable components for games, like timeout sequences.
 
 - Font Babas Neue by Dharma Type.
 - Surt, Sharm and Vk for the tileset at https://opengameart.org/content/simple-broad-purpose-tileset
+- Brandon75689 for "cave theme" in test music at https://opengameart.org/content/cave-theme
+- Rezoner for "happy arcade tune" in test music at https://opengameart.org/content/happy-arcade-tune
+- pauliuw for "field of dreams" in test music at https://opengameart.org/content/the-field-of-dreams- 
