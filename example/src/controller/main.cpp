@@ -42,6 +42,7 @@ main::main(
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
+	music_player{_sp.get_music_player()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
@@ -108,6 +109,8 @@ void main::start(
 	const std::string& _map,
 	int _entry_id
 ) {
+
+	music_player.enqueue(app::music_start);
 
 	load_map(_map);
 	take_player_to_entry(player, _entry_id, nullptr);

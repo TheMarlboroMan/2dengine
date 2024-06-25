@@ -1,5 +1,8 @@
 next steps:
 
+	change level so it contains a music id, zero for silence
+		change music on load
+
 	tile draw animated thing, make it equivalent to the other. 
 		I don't know what this means.
 
@@ -11,8 +14,6 @@ next steps:
 	positioning, does now grab ladder??? check that.
 
 	php script to read object properties, read maps and fill missing stuff.
-
-	music for each level.
 
 	sounds.
 

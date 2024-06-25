@@ -124,7 +124,7 @@ void state_driver::prepare_resources(
 	//Some surfaces need to be loaded, for later manipulation into composite backgrounds.
 	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.build_app_path("data/lists/surfaces.txt"));
 	//r_loader.generate_sounds(tools::explode_lines_from_file(env.build_app_path("data/lists/sounds.txt"));
-	//r_loader.generate_music(tools::explode_lines_from_file(env.build_app_path("data/lists/music.txt")));
+	r_loader.generate_music(tools::explode_lines_from_file(env.build_app_path("resources/lists/music.txt")));
 	
 	service_provider.reset(
 		new app::service_provider{env, config, log, _kernel}

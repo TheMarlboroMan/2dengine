@@ -14,7 +14,9 @@ service_provider::service_provider(
 	env{_env},
 	config{_config},
 	logger{_logger},
-	video_resource_manager{_kernel.get_video_resource_manager()}
+	video_resource_manager{_kernel.get_video_resource_manager()},
+	audio_resource_manager{_kernel.get_audio_resource_manager()},
+	dfwaudio{_kernel.get_audio()}
 { 
 
 	persistence.add(app::pergr_collectibles);
@@ -56,4 +58,14 @@ ldtools::ttf_manager& service_provider::get_ttf_manager() {
 	}
 
 	return *ttf_manager;
+}
+
+d2d::audio::music_player& service_provider::get_music_player() {
+
+	if(nullptr==music_player.get()) {
+
+		music_player.reset(new d2d::audio::music_player(get_logger(), dfwaudio, audio_resource_manager));
+	}
+
+	return *music_player;
 }

@@ -22,6 +22,7 @@
 #include <d2d/video/scenery_tile_draw_animated.h>
 #include <d2d/video/sprite_draw.h>
 #include <d2d/video/sprite_draw_animated.h>
+#include <d2d/audio/music_player.h>
 #include <memory>
 
 namespace controller {
@@ -120,6 +121,7 @@ class main:
 	lm::logger&                 logger;
 	d2d::collision::shaper&     shaper;
 	const app::tile_impl&       tile_impl;
+	d2d::audio::music_player&   music_player;
 
 	ldv::camera                 camera;
 	d2d::video::sprite_draw     sprite_draw;

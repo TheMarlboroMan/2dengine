@@ -7,6 +7,12 @@ static const int tile_h=16;
 static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per screen.
 static const int logic_screen_h=224; //and these are 14 per screen.
 
+enum music {
+	music_start=1,
+	music_out,
+	music_dungeon
+};
+
 /**
  * these will behave as flags, DooM style.
  **/
