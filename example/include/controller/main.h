@@ -121,6 +121,8 @@ class main:
 	lm::logger&                 logger;
 	d2d::collision::shaper&     shaper;
 	const app::tile_impl&       tile_impl;
+
+	lda::resource_manager&      audio_resource_manager;
 	d2d::audio::music_player&   music_player;
 
 	ldv::camera                 camera;

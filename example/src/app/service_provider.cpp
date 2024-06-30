@@ -69,3 +69,15 @@ d2d::audio::music_player& service_provider::get_music_player() {
 
 	return *music_player;
 }
+
+dfw::id_to_path_mapper service_provider::get_music_id_mapper() {
+
+	if(nullptr==music_id_mapper) {
+
+		music_id_mapper.reset(new dfw::id_to_path_mapper(
+			env.build_app_path("resources/lists/music.txt")
+		));
+	}
+
+	return *music_id_mapper;
+}

@@ -6,6 +6,13 @@ beginproperty
 endproperty
 
 beginproperty
+	name music_id
+	type int
+	default 0
+	comment music piece identifier
+endproperty
+
+beginproperty
 	name bg_color
 	type int
 	default 0

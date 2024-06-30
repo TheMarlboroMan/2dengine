@@ -12,6 +12,7 @@
 #include <ldv/resource_manager.h>
 #include <dfw/kernel.h>
 #include <appenv/env.h>
+#include <dfw/id_to_path_mapper.h>
 
 namespace lm {
 class logger;
@@ -49,8 +50,10 @@ class service_provider {
 	d2d::video::spritesheet_manager& get_spritesheet_manager() {return spritesheet_manager;}
 	d2d::video::animation_manager& get_animation_manager() {return animation_manager;}
 	ldv::resource_manager&  get_video_resource_manager() {return video_resource_manager;}
+	lda::resource_manager&  get_audio_resource_manager() {return audio_resource_manager;}
 	app::tpersistence&      get_persistence() {return persistence;}
 	d2d::audio::music_player& get_music_player();
+	dfw::id_to_path_mapper  get_music_id_mapper();
 
 	private:
 
@@ -67,5 +70,6 @@ class service_provider {
 	d2d::video::spritesheet_manager spritesheet_manager;
 	d2d::video::animation_manager   animation_manager;
 	tpersistence                    persistence;
+	std::unique_ptr<dfw::id_to_path_mapper> music_id_mapper{nullptr};
 };
 }

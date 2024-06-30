@@ -4,14 +4,17 @@
 using namespace app;
 
 map_attribute_loader::map_attribute_loader(
-	ldv::rgba_color& _background_color
+	ldv::rgba_color& _background_color,
+	int& _music_id
 ):
-	background_color{_background_color}
+	background_color{_background_color},
+	music_id{_music_id}
 {}
 
 void map_attribute_loader::setup() {
 
 	background_color={0,0,0, 255};
+	music_id=0;
 }
 
 void map_attribute_loader::load(
@@ -29,6 +32,8 @@ void map_attribute_loader::load(
 			case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;
 		}
 	}
+
+	music_id=_attr_map.at("music_id").get_int();
 
 /*
 	struct pair {

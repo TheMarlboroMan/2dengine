@@ -42,6 +42,7 @@ main::main(
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
+	audio_resource_manager{_sp.get_audio_resource_manager()},
 	music_player{_sp.get_music_player()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	sprite_draw{
@@ -103,14 +104,20 @@ main::main(
 		app::logic_screen_h
 	);
 
+	auto music_load_fn=[&](int _id) {
+
+		auto path=_sp.get_music_id_mapper().get(_id);
+		return env.build_app_path(path);
+	};
+
+	music_player.set_load_music_function(music_load_fn);
+	music_player.set_unload_finished(true);
 }
 
 void main::start(
 	const std::string& _map,
 	int _entry_id
 ) {
-
-	music_player.enqueue(app::music_start);
 
 	load_map(_map);
 	take_player_to_entry(player, _entry_id, nullptr);
@@ -243,12 +250,18 @@ void main::load_map(
 	app::thing_loader tl{current_map, limits, persistence, difficulty_setting};
 	loader.load_thing_layer("things", tl);
 
-	app::map_attribute_loader attrl{current_map.background_color};
+	//The loader takes references to the map data.
+	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id};
 	loader.load_properties(attrl);
-	lm::log(logger).info()<<"map background color is "
+	lm::log(logger).info()<<"map musicid is "
+		<<current_map.music_id
+		<<" and backgroundcolor is "
 		<<current_map.background_color.r<<", "
 		<<current_map.background_color.g<<", "
 		<<current_map.background_color.b<<"\n";
+
+	//Now the music... pieces are loaded in real time so nothing to do here.
+	music_player.swap(current_map.music_id, 500);
 
 	//All activated switches should run their course now: all activated objects
 	//will not save their state but will be activated when the switches do

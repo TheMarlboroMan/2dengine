@@ -1,5 +1,6 @@
 #include "d2d/audio/music_player.h"
 #include <lm/log.h>
+#include <stdexcept>
 
 using namespace d2d::audio;
 
@@ -21,97 +22,147 @@ music_player::~music_player() {
 	audio().remove_music_stop_callback("d2d::music_player");
 }
 
-void music_player::enqueue(
-	int _music_id
+void music_player::play(
+	int _piece_id,
+	int _fade
 ) {
 
-	next_id=_music_id;
-	lm::log(log).debug()<<"requesting to play music "<<_music_id<<std::endl;
+	playing_id=_piece_id;
+	fade=_fade;
+	next_id=0;
 
-	if(_music_id==playing_id) {
+	lm::log(log).debug()<<"<d2d::audio::music_player> requesting audio controller to play music id="<<playing_id<<" with fadein of "<<fade<<std::endl;
 
-		if(next_id==_music_id) {
+	if(0==playing_id) {
 
-			lm::log(log).debug()<<"will play the same currently played piece"<<std::endl;
-		}
-		else {
-
-			lm::log(log).debug()<<"will not play, as it is the currently played piece"<<std::endl;
-			return;
-		}
-
+		audio().stop_music(fade);
+		return;
 	}
 
+	load_attempt();
+	audio().play_music({audio_resource_manager.get_music(playing_id), fade});
+}
+
+void music_player::stop(
+	int _fade
+) {
+
+	audio().stop_music(_fade);
+}
+
+void music_player::pause() {
+
+	audio().pause_music();
+}
+
+void music_player::resume() {
+
+	audio().resume_music();
+}
+
+void music_player::swap(
+	int _music_id_to_enqueue,
+	int _fade
+) {
+
+	lm::log(log).debug()<<"<d2d::audio::music_player> requesting to swap current "<<playing_id<<" to "<<_music_id_to_enqueue<<std::endl;
+
+	if(_music_id_to_enqueue==playing_id) {
+
+		next_id=_music_id_to_enqueue;
+		lm::log(log).debug()<<"<d2d::audio::music_player> asked for the same playing piece, will play after ramp down"<<std::endl;
+		return;
+	}
+
+	next_id=_music_id_to_enqueue;
+	fade=_fade;
+
+	//If there is music, we must stop it and trust the callback to play for us.
 	if(audio().is_music_playing()) {
 
-		//TODO: Should be parametrizable.
-		audio().stop_music(300);
+		lm::log(log).debug()<<"<d2d::audio::music_player> requesting audio controller to stop music with fadeout of "<<fade<<std::endl;
+		audio().stop_music(fade);
+		return;
 	}
-	else {
 
-		//Consider that the first piece might be silence.
-		if(_music_id) {
-
-			playing_id=_music_id;
-			//TODO: Again, should be parametrizable.
-			audio().play_music({audio_resource_manager.get_music(playing_id), 300});
-		}
-	}
+	//If there was no music playing we are here, so just play a tune.
+	play(_music_id_to_enqueue, fade);
 }
 
 void music_player::do_callback() {
+	
+	//These are callbacks for when the music STOPS playing so we can free
+	//the associated memory.
+	lm::log(log).debug()<<"<d2d::audio::music_player> music_player do_callback for "<<playing_id<<std::endl;
 
-	lm::log(log).debug()<<"music_player do_callback for "<<playing_id<<std::endl;
+	//We were playing "silence" and swapped it for... something?
+	if(0==playing_id) {
 
-	if(-1!= playing_id) {
+		if(next_id==0) {
 
-		//maybe we are getting called at the same time the audio_menu class is
-		//getting called too.
-		if(!audio_resource_manager.has_music(playing_id)) {
-
-			lm::log(log).debug()<<"will not unload non-existing music "<<playing_id<<std::endl;
 			return;
 		}
+	}
+
+	if(!audio_resource_manager.has_music(playing_id)) {
+
+		lm::log(log).debug()<<"<d2d::audio::music_player> will not unload non-existing music "<<playing_id<<std::endl;
+		return;
+	}
+
+	if(unload_finished) {
 
 		//New music got requested and the same one we are playing got requested
 		//before that one faded out, so we keep the one we have...
 		if(playing_id==next_id) {
 
-			lm::log(log).debug()<<"will not unload music "<<playing_id<<", it is next in queue"<<std::endl;
-			playing_id=-1;
-			return;
+			lm::log(log).debug()<<"<d2d::audio::music_player> will not unload music "<<playing_id<<", it is next in queue"<<std::endl;
 		}
+		else {
 
-		//Free music just got played...
-		lm::log(log).debug()<<"unloading finished music "<<playing_id<<std::endl;
-		audio_resource_manager.unload_music(playing_id);
-		lm::log(log).debug()<<"remaining musics: "<<audio_resource_manager.size_music()<<std::endl;
+			//Free music just got played...
+			lm::log(log).debug()<<"<d2d::audio::music_player> unloading finished music "<<playing_id<<std::endl;
+			audio_resource_manager.unload_music(playing_id);
+			lm::log(log).debug()<<"<d2d::audio::music_player> remaining musics: "<<audio_resource_manager.size_music()<<std::endl;
+		}
 	}
 
-	playing_id=-1;
-}
-
-void music_player::play_next() {
-
-	playing_id=next_id;
-
-	if(!playing_id) {
-
-		return;
-	}
-
-	audio().play_music({audio_resource_manager.get_music(playing_id), 300});
+	//This will clear out "next_id".
+	play(next_id, fade);
+	return;
 }
 
 void music_player::disable() {
 
 	enabled=false;
-	audio().pause_music();
+	pause();
 }
-
 
 void music_player::enable() {
 
 	enabled=true;
-	audio().resume_music();
+	resume();
+}
+
+void music_player::load_attempt() {
+
+	//Last chance to load the music in real time...
+	if(!audio_resource_manager.has_music(playing_id)) {
+
+		if(!load_fn) {
+
+			lm::log(log).debug()<<"<d2d::audio::music_player> piece does not exist, no load function specified, will throw"<<std::endl;
+			throw std::runtime_error("requested non-loaded music");
+		}
+
+		lm::log(log).debug()<<"<d2d::audio::music_player> piece does not exist, will attempt to load"<<std::endl;
+		auto music_path=load_fn(playing_id);
+		audio_resource_manager.insert_music(playing_id, music_path);
+
+		if(!audio_resource_manager.has_music(playing_id)) {
+
+			lm::log(log).debug()<<"<d2d::audio::music_player> music load failed, will throw"<<std::endl;
+			throw std::runtime_error("unable to load music");
+		}
+	}
 }
