@@ -53,21 +53,6 @@ class main:
 	void                        draw_scene(ldv::screen&);
 
 	//TODO: In time, move these to another class, a draw class.
-	void                        draw_player(ldv::screen&, const app::player&);
-	void                        draw_ladder(ldv::screen&, const app::ladder&);
-	void                        draw_collectible(ldv::screen&, const app::collectible&);
-	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
-	void                        draw_leaping_monster(ldv::screen&, const app::leaping_monster&);
-	void                        draw_timed_trap(ldv::screen&, const app::timed_trap&);
-	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
-	void                        draw_button(ldv::screen&, const app::button&);
-	void                        draw_gate(ldv::screen&, const app::gate&);
-	void                        draw_projectile(ldv::screen&, const app::projectile&);
-	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);
-	void                        draw_projectile_directed(ldv::screen&, const app::projectile&);
-	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);
-	void                        draw_platform(ldv::screen&, const app::platform_block&);
-
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
 	void                        tic_ground(float, app::player&, app::player_input);

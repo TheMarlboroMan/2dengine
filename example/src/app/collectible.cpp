@@ -10,7 +10,7 @@ collectible::collectible(
 ):
 	id{_id},
 	type{_type},
-	ent{_pt.x, _pt.y, 8, 8}
+	ent{ _pt, 8, 8}
 {
 
 	switch(type) {

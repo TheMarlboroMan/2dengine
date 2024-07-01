@@ -18,7 +18,7 @@ class camera_map_limit {
 /**
  * these two integers are the width and height of each tile.
  */
-	void            limit_to_collision_tiles(ldv::camera&, d2d::collision::tile_limits, unsigned, unsigned, lm::logger* =nullptr);
+	void            limit_to_collision_tiles(ldv::camera&, d2d::collision::tile_limits, int, int, lm::logger* =nullptr);
 };
 
 }}

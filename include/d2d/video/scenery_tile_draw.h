@@ -60,7 +60,6 @@ class scenery_tile_draw{
 
 	scenery_tile_draw&  unset_camera() {sprite_draw.unset_camera(); return *this;}
 
-
 	private:
 
 	int                             tile_w{0},

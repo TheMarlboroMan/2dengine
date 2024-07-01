@@ -3,6 +3,7 @@
 #include "app/thing_loader.h"
 #include "app/map_attribute_loader.h"
 #include "app/tile_filter.h"
+#include "app/game_draw.h"
 
 #include "dfwimpl/config.h"
 #include <d2d/storage/map_loader.h>
@@ -16,8 +17,6 @@
 #include <d2d/tools/algorithm.h>
 #include <tools/string_utils.h>
 #include <ldtools/ttf_manager.h>
-#include <ldv/color.h>
-#include <ldv/box_representation.h>
 #include <tools/ranged_value.h>
 #include <sstream>
 #include <iostream>
@@ -45,15 +44,25 @@ main::main(
 	audio_resource_manager{_sp.get_audio_resource_manager()},
 	music_player{_sp.get_music_player()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
+	//TODO: I don't like this here only to be able to be passed along later
+	//to game draw :(. These are actually very cheap...
+	//but we could just create a game_draw instance and sod off, even hide
+	//it in the service provider :P.
+	//TODO; But then there would be no ticks for the tickable thingies.
+	//TODO: Well, we might as well add these to the service provider, 
+	//except for the camera, right? The camera is not part of this...
+	//BUT can be set xD
 	sprite_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
 		&camera,
 		true
 	},
+	//TODO: Same
 	sprite_draw_animated{
 		_sp.get_animation_manager().at(app::animgr_tiles)
 	},
+	//TODO: Same: The camera CAN be set at the moment...
 	scenery_tile_draw{
 		_sp.get_spritesheet_manager().at(app::ss_tiles),
 		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
@@ -1090,534 +1099,17 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	_screen.clear(current_map.background_color);
-
-	scenery_tile_draw.draw(_screen, current_map.background_tiles);
-
-	for(const auto& node : current_map.buttons) {
-
-		draw_button(_screen, node);
-	}
-
-	for(const auto& node : current_map.gates) {
-
-		draw_gate(_screen, node);
-	}
-
-	for(const auto& block : current_map.platform_blocks) {
-
-		draw_platform(_screen, block);
-	}
-
-	for(const auto& block : current_map.breaking_platforms) {
-
-		draw_breaking_platform(_screen, block);
-	}
-
-	for(const auto& ladder : current_map.ladders) {
-
-		draw_ladder(_screen, ladder);
-	}
-
-	for(const auto& collectible : current_map.collectibles) {
-
-		draw_collectible(_screen, collectible);
-	}
-
-	for(const auto& monster : current_map.linear_monsters) {
-
-		draw_linear_monster(_screen, monster);
-	}
-
-	for(const auto& monster : current_map.leaping_monsters) {
-
-		draw_leaping_monster(_screen, monster);
-	}
-
-	for(const auto& trap : current_map.timed_traps) {
-
-		if(!trap.is_active()) {
-
-			continue;
-		}
-
-		draw_timed_trap(_screen, trap);
-	}
-
-	for(const auto& projectile : current_map.projectiles) {
-
-		draw_projectile(_screen, projectile);
-	}
-
-	draw_player(_screen, player);
-	scenery_tile_draw.draw(_screen, current_map.foreground_tiles);
-
-	for(const auto& secret_cover : current_map.secret_covers) {
-
-		if(secret_cover.is_discovered()) {
-
-			continue;
-		}
-
-		draw_secret_cover(_screen, secret_cover);
-	}
-}
-
-void main::draw_button(
-	ldv::screen& _screen,
-	const app::button& _button
-) {
-
-	int sprite_index=app::spr_key_yellow;
-	switch(_button.type) {
-
-		case app::button::types::regular:           sprite_index=app::spr_regular_button; break;
-		case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole; break;
-		case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole; break;
-		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
-		case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole; break;
-	}
-
-	if(_button.used) {
-
-		switch(_button.type) {
-
-			case app::button::types::regular:           sprite_index=app::spr_regular_button_used; break;
-			case app::button::types::yellow_keyhole:    sprite_index=app::spr_yellow_keyhole_used; break;
-			case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole_used; break;
-			case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole_used; break;
-			case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole_used; break;
-		}
-	}
-
-	auto origin=d2d::video::to_screen(_button.ent.get_origin());
-
-	sprite_draw.draw(
-		_screen,
-		origin,
-		sprite_index
-	);
-}
-
-void main::draw_gate(
-	ldv::screen& _screen,
-	const app::gate& _gate
-) {
-
-	auto origin=d2d::video::to_screen(_gate.ent.get_origin());
-
-	int max_step=_gate.ent.get_h() / app::tile_h;
-	for(int i=0; i<max_step; i++) { 
-
-		int sprite_index=app::spr_gate;
-
-		sprite_draw.draw(
-			_screen,
-			origin,
-			sprite_index
-		);
-
-		origin.y+=app::tile_h;
-	}
-}
-
-void main::draw_ladder(
-	ldv::screen& _screen,
-	const app::ladder& _ladder
-) {
-
-	auto origin=d2d::video::to_screen(_ladder.get_origin());
-
-	int max_step=_ladder.get_h() / app::tile_h;
-	for(int i=0; i<max_step; i++) { 
-
-		int sprite_index=app::spr_ladder_yellow;
-		switch(_ladder.type) {
-			case app::ladder::t_ladder: sprite_index=app::spr_ladder_yellow; break;
-			case app::ladder::t_chain:  sprite_index=app::spr_chain; break;
-			case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
-		}
-
-		sprite_draw.draw(
-			_screen,
-			origin,
-			sprite_index
-		);
-
-		origin.y+=app::tile_h;
-	}
-}
-
-void main::draw_collectible(
-	ldv::screen& _screen,
-	const app::collectible& _collectible
-) {
-
-	auto origin=d2d::video::to_screen(_collectible.ent.get_origin());
-
-	int sprite_index=app::spr_gold_ingot;
-	switch(_collectible.type) {
-
-		case app::collectible::gold_ingot:  sprite_index=app::spr_gold_ingot; break;
-		case app::collectible::gem:         sprite_index=app::spr_gem; break;
-		case app::collectible::ruby:        sprite_index=app::spr_ruby; break;
-		case app::collectible::diamond:     sprite_index=app::spr_diamond; break;
-		case app::collectible::yellow_key:  sprite_index=app::spr_key_yellow; break;
-		case app::collectible::blue_key:    sprite_index=app::spr_key_blue; break;
-		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
-		case app::collectible::green_key:   sprite_index=app::spr_key_green; break;
-	}
-
-	sprite_draw.draw(
-		_screen,
-		origin,
-		sprite_index
-	);
-}
-
-void main::draw_linear_monster(
-	ldv::screen& _screen,
-	const app::linear_monster& _monster
-) {
-
-	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_monster.facing==app::faces::left,
-		false
-	};
-
-	int animation_index=0;
-	switch(_monster.type) {
-		case app::linear_monster::types::scorpion:
-
-			animation_index=app::anim_scorpion;
-		break;
-		case app::linear_monster::types::snake:
-
-			animation_index=app::anim_snake;
-		break;
-		case app::linear_monster::types::bat:
-
-			animation_index=app::anim_bat;
-		break;
-	}
-
-	const auto& line=sprite_draw_animated.get(animation_index);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
-
-	sprite_draw.draw(
+	app::game_draw gd(
 		_screen, 
-		d2d::video::to_screen(_monster.ent.get_origin()),
-		line.frame,
-		draw_flags
+		camera, 
+		scenery_tile_draw, 
+		sprite_draw, 
+		sprite_draw_animated
 	);
+	gd.draw(current_map, player);
+
 }
 
-void main::draw_leaping_monster(
-	ldv::screen& _screen,
-	const app::leaping_monster& _monster
-) {
-
-	const auto& line=sprite_draw_animated.get(app::anim_piranha);
-	auto draw_flags=sprite_draw_animated.flags(line);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_monster.ent.get_origin()),
-		line.frame,
-		draw_flags
-	);
-}
-
-void main::draw_timed_trap(
-	ldv::screen& _screen,
-	const app::timed_trap& _trap
-) {
-
-	//There is always a plaque under this trap... We could fake it with a 
-	//decoration object or with foreground tiles but those would be meh and
-	//a nuisance in skill levels, respectively.
-	
-	auto origin=d2d::video::to_screen(_trap.ent.get_origin());
-
-	//The plaque is under the trap itself and must be centered on it.
-	origin.y-=app::tile_h;
-	origin.x-=(app::timed_trap::fire_w / 2) + 1;
-
-	int sprite_index=app::spr_fire_trap_plaque;
-
-	sprite_draw.draw(
-		_screen,
-		origin,
-		sprite_index
-	);
-
-	if(!_trap.is_harmful()) {
-
-		return;
-	}
-
-	const auto& line=sprite_draw_animated.get(app::anim_timed_trap_fire);
-	auto draw_flags=sprite_draw_animated.flags(line);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_trap.ent.get_origin()),
-		line.frame,
-		draw_flags
-	);
-}
-
-void main::draw_breaking_platform(
-	ldv::screen& _screen,
-	const app::breaking_platform& _block
-) {
-
-	if(_block.is_gone()) {
-
-		return;
-	}
-
-	if(_block.is_ok()) {
-
-		sprite_draw.draw(
-			_screen,
-			d2d::video::to_screen(_block.get_origin()),
-			app::spr_breaking_block
-		);
-		return;
-	}
-
-	int animation_index=0;
-	float anim_len=0.f;
-
-	if(_block.is_breaking()) {
-
-		anim_len=_block.get_breaking_ms() / 1000.f;
-		animation_index=app::anim_breaking_platform;
-	}
-	else {// if block.is_returning
-
-		anim_len=_block.get_returning_ms() / 1000.f;
-		animation_index=app::anim_breaking_platform_return;
-	}
-
-	const auto& line=sprite_draw_animated.get(
-		animation_index, 
-		_block.get_timer(), 
-		anim_len
-	);
-	auto flags=sprite_draw_animated.flags(line);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_block.get_origin()),
-		line.frame,
-		flags
-	);
-}
-
-void main::draw_platform(
-	ldv::screen& _screen,
-	const app::platform_block& _block
-) {
-
-	int index=app::spr_platform_branch;
-	switch(_block.get_type()) {
-
-		case app::platform_block::types::branch:
-			index=app::spr_platform_branch;
-		break;
-	}
-
-	sprite_draw.draw(
-		_screen,
-		d2d::video::to_screen(_block.get_origin()),
-		index
-	);
-}
-
-void main::draw_projectile(
-	ldv::screen& _screen,
-	const app::projectile& _projectile
-) {
-
-	switch(_projectile.get_type()) {
-
-		case app::projectile::types::horizontal:
-			return draw_projectile_linear(_screen, _projectile);
-		case app::projectile::types::round:
-			return draw_projectile_directed(_screen, _projectile);
-	}
-}
-
-void main::draw_projectile_linear(
-	ldv::screen& _screen,
-	const app::projectile& _projectile
-) {
-
-	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_projectile.velocity.x < 0., 
-		false
-	};
-
-	if(!_projectile.is_moving()) {
-
-		auto line=sprite_draw_animated.get(
-			app::anim_projectile_end, 
-			_projectile.get_timeout_value()
-		);
-
-		draw_flags=sprite_draw_animated.flags(line, draw_flags);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
-			line.frame,
-			draw_flags
-		);
-		return;
-	}
-
-	auto line=sprite_draw_animated.get(app::anim_projectile);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_projectile.ent.get_origin()),
-		line.frame,
-		draw_flags
-	);
-}
-
-void main::draw_projectile_directed(
-	ldv::screen& _screen,
-	const app::projectile& _projectile
-) {
-
-	if(!_projectile.is_moving()) {
-
-		auto line=sprite_draw_animated.get(
-			app::anim_projectile_round_end, 
-			_projectile.get_timeout_value()
-		);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
-			line.frame,
-			sprite_draw_animated.flags(line)
-		);
-		return;
-	}
-
-	auto line=sprite_draw_animated.get(app::anim_projectile_round);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_projectile.ent.get_origin()),
-		line.frame,
-		sprite_draw_animated.flags(line)
-	);
-}
-
-void main::draw_secret_cover(
-	ldv::screen& _screen,
-	const app::secret_cover& _secret_cover
-) {
-
-	//These are no sprites, just black rectangles...
-	ldv::box_representation box{
-		d2d::video::to_screen_rect(_secret_cover.ent),
-		ldv::rgba_color(0,0,0,255),
-		ldv::box_representation::type::fill
-	};
-
-	if(_secret_cover.is_dissapearing()) {
-
-		int alpha=255 - (_secret_cover.get_timer() * 100);
-		box.set_alpha(alpha);
-	}
-
-	box.set_blend(ldv::representation::blends::alpha);
-	box.draw(_screen, camera);
-}
-
-void main::draw_player(
-	ldv::screen& _screen,
-	const app::player& _player
-) {
-
-	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		player.facing==app::faces::left,
-		false
-	};
-
-	int animation_index=0;
-	int frame_index=0;
-	bool is_animation=false;
-
-	switch(_player.state) {
-
-		case app::player::states::ground:
-
-			animation_index=_player.velocity.x!=0.
-				? app::anim_m_walk
-				: app::anim_m_idle;
-			is_animation=true;
-		break;
-		case app::player::states::air:
-			animation_index=app::anim_m_jump;
-		break;
-		case app::player::states::crouch:
-			animation_index=app::anim_m_crouch;
-		break;
-		case app::player::states::defeat:
-			animation_index=app::anim_m_defeat;
-			is_animation=true;
-		break;
-		case app::player::states::ladder:
-			animation_index=app::anim_m_climb;
-			int y_mod=(int)player.ent.get_origin().y % 10;
-			frame_index=abs(y_mod) <= 4 ? 0 : 1;
-			draw_flags={false, false};
-		break;
-	}
-
-	if(_player.gender==app::player::genders::female) {
-
-		animation_index+=10; //they are exactly 10 indexes apart.
-	}
-
-	if(is_animation) {
-
-		const auto& line=sprite_draw_animated.get(animation_index);
-		draw_flags=sprite_draw_animated.flags(line, draw_flags);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_player.ent.get_origin()),
-			line.frame,
-			draw_flags
-		);
-
-		return;
-	}
-
-
-	const auto& animation=sprite_draw_animated.animation(animation_index);
-	const auto& line=animation.get(frame_index);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
-
-	sprite_draw.draw(
-		_screen,
-		d2d::video::to_screen(player.ent.get_origin()),
-		line.frame,
-		draw_flags
-	);
-}
 
 void main::grab_ladder(
 	app::player& _player,

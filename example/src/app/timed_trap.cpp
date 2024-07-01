@@ -11,10 +11,10 @@ timed_trap::timed_trap(
 	int _harm_ms,
 	int _post_ms
 ):
-	tag{_tag},
-	active{_active},
 	ent{_pt, 0, 0},
 	type{_type},
+	tag{_tag},
+	active{_active},
 	pre_s{(float)_pre_ms / 1000.f},
 	harm_s{(float)_harm_ms / 1000.f},
 	post_s{(float)_post_ms / 1000.f},

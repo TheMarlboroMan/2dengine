@@ -10,7 +10,7 @@ gate::gate(
 	ent{_box},
 	tag{_tag},
 	state{states::closed},
-	destination_y{_box.origin.y+_box.h-y_threshold}
+	destination_y{(int)_box.origin.y+_box.h-y_threshold}
 {}
 
 void gate::tic(

@@ -8,8 +8,8 @@ using namespace d2d::video;
 void camera_map_limit::limit_to_collision_tiles(
 	ldv::camera& _camera,
 	d2d::collision::tile_limits _limits,
-	unsigned _w,
-	unsigned _h,
+	int _w,
+	int _h,
 	lm::logger* _logger
 ) {
 
@@ -30,14 +30,12 @@ void camera_map_limit::limit_to_collision_tiles(
 
 	//These are cartesian system coordinates, mind you, boxes grow to the right
 	//and UPWARDS, so we have to adjust accordingly...
-	unsigned w=_limits.w*_w;
-	unsigned h=_limits.h*_h;
 
 	ldv::rect limit{
 		_limits.left * _w,
 		_limits.bottom * _h,
-		w,
-		h
+		(unsigned)(_limits.w*_w),
+		(unsigned)(_limits.h*_h)
 	};
 
 	if(nullptr != _logger) {

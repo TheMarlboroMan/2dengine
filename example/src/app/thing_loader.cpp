@@ -80,8 +80,8 @@ void thing_loader::add_entry(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	unsigned w=_attributes.at("width").get_int();
-	unsigned h=_attributes.at("height").get_int();
+	int w=_attributes.at("width").get_int();
+	int h=_attributes.at("height").get_int();
 	int id=_attributes.at("entry_id").get_int();
 	int type=_attributes.at("position").get_int();
 	curmap.entries.push_back({ { {_pos.x, _pos.y}, w, h}, id, type});
@@ -92,8 +92,8 @@ void thing_loader::add_exit(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	unsigned w=_attributes.at("width").get_int();
-	unsigned h=_attributes.at("height").get_int();
+	int w=_attributes.at("width").get_int();
+	int h=_attributes.at("height").get_int();
 	int next_id=_attributes.at("next_entry_id").get_int();
 	bool touch=_attributes.at("type").get_int()==1;
 	std::string filename=_attributes.at("map_filename").get_string();
@@ -164,8 +164,8 @@ void thing_loader::add_secret_cover(
 		return;
 	}
 
-	unsigned w=_attributes.at("width").get_int()*app::tile_w;
-	unsigned h=_attributes.at("height").get_int()*app::tile_h;
+	int w=_attributes.at("width").get_int()*app::tile_w;
+	int h=_attributes.at("height").get_int()*app::tile_h;
 
 	curmap.secret_covers.push_back(
 		{ {{_pos.x, _pos.y}, w, h}, id}

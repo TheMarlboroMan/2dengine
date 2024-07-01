@@ -1,8 +1,5 @@
 next steps:
 
-	change level so it contains a music id, zero for silence
-		change music on load
-
 	tile draw animated thing, make it equivalent to the other. 
 		I don't know what this means.
 
@@ -16,8 +13,17 @@ next steps:
 	php script to read object properties, read maps and fill missing stuff.
 
 	sounds.
+		jump
+		touch ground
+		take treasure
+
+	fix crash at exit
+
+	fix all warnings
 
 	separate drawing into its own class.
+		take the stuff from the main constructor into the service provider,
+		even if we are just hiding stuff.
 
 	draw status (status screen??)
 

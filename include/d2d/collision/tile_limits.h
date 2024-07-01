@@ -10,7 +10,7 @@ namespace d2d { namespace collision {
 struct tile_limits{
 	int left, right, //leftmost and rightmost x indexes, inclusive, in tile units.
 		bottom, top; //bottommost and topmost y indexes, inclusive, in tile units.
-	unsigned w, h; //width and height, in tile units.
+	int w, h; //width and height, in tile units.
 
 	operator bool() const;
 };

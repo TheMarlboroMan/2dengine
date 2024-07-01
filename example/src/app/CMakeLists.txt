@@ -22,6 +22,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/breaking_platform.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/timed_trap.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/touch_trigger.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_draw.cpp
 	PARENT_SCOPE
 )
 

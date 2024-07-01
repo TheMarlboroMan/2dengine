@@ -15,8 +15,8 @@ class entity:
 
 	public:
 
-	                                    entity(int, int, unsigned, unsigned);
-	                                    entity(d2d::collision::point, unsigned, unsigned);
+	                                    entity(int, int, int, int);
+	                                    entity(d2d::collision::point, int, int);
 	                                    entity(d2d::collision::box);
 	void                                sync_boxes();
 

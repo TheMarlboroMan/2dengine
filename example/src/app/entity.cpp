@@ -5,8 +5,8 @@ using namespace app;
 entity::entity(
 	int _x,
 	int _y,
-	unsigned _w, 
-	unsigned _h
+	int _w, 
+	int _h
 ):
 	collision_box{{(double)_x, (double)_y}, _w, _h},
 	previous_box{collision_box}
@@ -14,8 +14,8 @@ entity::entity(
 
 entity::entity(
 	d2d::collision::point _pt,
-	unsigned _w, 
-	unsigned _h
+	int _w, 
+	int _h
 ):
 	collision_box{_pt, _w, _h},
 	previous_box{collision_box}

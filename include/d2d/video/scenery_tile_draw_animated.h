@@ -26,7 +26,6 @@ class scenery_tile_draw_animated {
 		bool=false
 	);
 
-
 	//100% public, for sure.
 	scenery_tile_draw               static_draw;
 
@@ -34,6 +33,13 @@ class scenery_tile_draw_animated {
  * the timer must be fed from the outside.
  */
 	void                            tic(float);
+
+/**
+ * sets if a camera will be used.
+ */
+	scenery_tile_draw_animated&     set_with_camera(bool _value) {static_draw.set_with_camera(_value); return *this;}
+	scenery_tile_draw_animated&     set_camera(ldv::camera& _camera) {static_draw.set_camera(_camera); return *this;}
+	scenery_tile_draw_animated&     unset_camera() {static_draw.unset_camera(); return *this;}
 
 /**
  * replaces the current animation table.
