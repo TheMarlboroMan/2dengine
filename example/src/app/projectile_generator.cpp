@@ -98,7 +98,7 @@ void projectile_generator::deactivate() {
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,
-	const app::projectile_generator& _generator
+	const app::projectile_generator&
 ) {
 
 	_stream<<"projectile generator[]";

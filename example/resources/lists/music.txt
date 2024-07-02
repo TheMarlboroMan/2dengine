@@ -1,3 +1,3 @@
-1	resources/audio/test_music-start.ogg
-2	resources/audio/test_music-out.ogg
-3	resources/audio/test_music-dungeon.ogg
+1	resources/music/test_music-start.ogg
+2	resources/music/test_music-out.ogg
+3	resources/music/test_music-dungeon.ogg

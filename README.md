@@ -42,3 +42,6 @@ These are reusable components for games, like timeout sequences.
 - Brandon75689 for "cave theme" in test music at https://opengameart.org/content/cave-theme
 - Rezoner for "happy arcade tune" in test music at https://opengameart.org/content/happy-arcade-tune
 - pauliuw for "field of dreams" in test music at https://opengameart.org/content/the-field-of-dreams- 
+
+- Sounds: Little Robot Sound Factory, www.littlerobotsoundfactory.com
+

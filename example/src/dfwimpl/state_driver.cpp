@@ -3,6 +3,8 @@
 #include "app/definitions.h"
 #include "controller/controller_states.h"
 
+#include <d2d/video/spritesheet_manager.h>
+#include <d2d/video/animation_manager.h>
 #include <ldtools/ttf_manager.h>
 #include <ldtools/sprite_table.h>
 #include <algorithm>
@@ -123,14 +125,20 @@ void state_driver::prepare_resources(
 
 	//Some surfaces need to be loaded, for later manipulation into composite backgrounds.
 	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.build_app_path("data/lists/surfaces.txt"));
-	//r_loader.generate_sounds(tools::explode_lines_from_file(env.build_app_path("data/lists/sounds.txt"));
-
+	//
+	r_loader.generate_sounds(tools::explode_lines_from_file(env.build_app_path("resources/lists/sounds.txt")));
 	//music will be dynamically loaded as needed, so there.
 	//r_loader.generate_music(tools::explode_lines_from_file(env.build_app_path("resources/lists/music.txt")));
 	
 	service_provider.reset(
 		new app::service_provider{env, config, log, _kernel}
 	);
+
+	auto& persistence=service_provider->get_persistence();
+	persistence.add(app::pergr_collectibles);
+	persistence.add(app::pergr_secret_covers);
+	persistence.add(app::pergr_buttons);
+	persistence.add(app::pergr_touch_triggers);
 }
 
 void state_driver::register_controllers(

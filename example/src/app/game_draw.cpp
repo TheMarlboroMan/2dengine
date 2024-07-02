@@ -21,7 +21,7 @@ using namespace app;
 
 game_draw::game_draw(
 	ldv::screen& _screen,
-	const ldv::camera& _camera,
+	ldv::camera& _camera,
 	d2d::video::scenery_tile_draw_animated&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
 	d2d::video::sprite_draw_animated& _sprite_draw_animated
@@ -31,7 +31,24 @@ game_draw::game_draw(
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
 	sprite_draw_animated(_sprite_draw_animated)
-{}
+{
+
+	sprite_draw.set_camera(camera);
+	sprite_draw.set_with_camera(true);
+
+	scenery_tile_draw.set_camera(camera);
+	scenery_tile_draw.set_with_camera(true);
+}
+
+game_draw::~game_draw() {
+
+	sprite_draw.unset_camera();
+	sprite_draw.set_with_camera(false);
+
+	scenery_tile_draw.unset_camera();
+	scenery_tile_draw.set_with_camera(false);
+
+}
 
 void game_draw::draw(
 	const app::map& _map,

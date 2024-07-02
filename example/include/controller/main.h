@@ -19,9 +19,6 @@
 #include <d2d/collision/shaper.h>
 #include <d2d/video/debug_display.h>
 #include <lm/logger.h>
-#include <d2d/video/scenery_tile_draw_animated.h>
-#include <d2d/video/sprite_draw.h>
-#include <d2d/video/sprite_draw_animated.h>
 #include <d2d/audio/music_player.h>
 #include <memory>
 
@@ -52,7 +49,6 @@ class main:
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
 
-	//TODO: In time, move these to another class, a draw class.
 	void                        tic(float, app::player_input);
 	void                        tic_world(float);
 	void                        tic_ground(float, app::player&, app::player_input);
@@ -93,30 +89,22 @@ class main:
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
+
+	//world methods.
+	void                        generate_projectile(const app::projectile_generator&);
+	void                        activate_tag(int, bool);
 	void                        post_tic();
 
-	//world...
-	void                        generate_projectile(const app::projectile_generator&);
-	void                        activate_tag(int);
-
-#ifdef IS_DEBUG_BUILD
-	app::service_provider&      sp;
-#endif
+	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;
 	lm::logger&                 logger;
 	d2d::collision::shaper&     shaper;
 	const app::tile_impl&       tile_impl;
-
-	lda::resource_manager&      audio_resource_manager;
+	app::tpersistence&          persistence;
 	d2d::audio::music_player&   music_player;
 
-	ldv::camera                 camera;
-	d2d::video::sprite_draw     sprite_draw;
-	d2d::video::sprite_draw_animated sprite_draw_animated;
-	d2d::video::scenery_tile_draw_animated scenery_tile_draw;
-	app::tpersistence&          persistence;
-
 	//game state stuff.
+	ldv::camera                 camera;
 	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;

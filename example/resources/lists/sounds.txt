@@ -1,0 +1,2 @@
+1	resources/sounds/Collect_Point_00.ogg
+

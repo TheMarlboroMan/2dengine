@@ -6,6 +6,7 @@
 #include "app/game_draw.h"
 
 #include "dfwimpl/config.h"
+
 #include <d2d/storage/map_loader.h>
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/video/tools.h>
@@ -15,9 +16,14 @@
 #include <d2d/collision/tiles_in_box.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/tools/algorithm.h>
+
+#include <dfw/id_to_path_mapper.h>
+
 #include <tools/string_utils.h>
-#include <ldtools/ttf_manager.h>
 #include <tools/ranged_value.h>
+
+#include <ldtools/ttf_manager.h>
+
 #include <sstream>
 #include <iostream>
 #include <cmath>
@@ -34,45 +40,14 @@ using namespace controller;
 main::main(
 	app::service_provider& _sp
 ):
-#ifdef IS_DEBUG_BUILD
 	sp{_sp},
-#endif
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
 	shaper{_sp.get_shaper()},
 	tile_impl{_sp.get_tile_impl()},
-	audio_resource_manager{_sp.get_audio_resource_manager()},
+	persistence{_sp.get_persistence()},
 	music_player{_sp.get_music_player()},
-	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
-	//TODO: I don't like this here only to be able to be passed along later
-	//to game draw :(. These are actually very cheap...
-	//but we could just create a game_draw instance and sod off, even hide
-	//it in the service provider :P.
-	//TODO; But then there would be no ticks for the tickable thingies.
-	//TODO: Well, we might as well add these to the service provider, 
-	//except for the camera, right? The camera is not part of this...
-	//BUT can be set xD
-	sprite_draw{
-		_sp.get_spritesheet_manager().at(app::ss_tiles),
-		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
-		&camera,
-		true
-	},
-	//TODO: Same
-	sprite_draw_animated{
-		_sp.get_animation_manager().at(app::animgr_tiles)
-	},
-	//TODO: Same: The camera CAN be set at the moment...
-	scenery_tile_draw{
-		_sp.get_spritesheet_manager().at(app::ss_tiles),
-		_sp.get_video_resource_manager().get_texture(app::tex_tiles),
-		app::tile_w, 
-		app::tile_h,
-		_sp.get_animation_manager().at(app::animgr_tiles),
-		&camera,
-		true
-	},
-	persistence{_sp.get_persistence()}
+	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -87,40 +62,10 @@ main::main(
 
 #endif
 
-	//TODO: This kind of shit could come from any file.
-	scenery_tile_draw.set_is_animation_fn(
-		[](int _index) -> bool {
-			return _index==app::spr_water_surface || _index==app::spr_waterfall || _index==app::spr_lava_surface;
-		}
-	);
-
-	//TODO: Same, this should come from a file.
-	scenery_tile_draw.set_index_to_animation_fn(
-		[](int _index) -> int {
-
-			switch(_index) {
-				case app::spr_water_surface: return app::anim_water_surface;
-				case app::spr_waterfall: return app::anim_waterfall;
-				case app::spr_lava_surface: return app::anim_lava_surface;
-			}
-
-			return 0;
-		}
-	);
-
 	setup_camera(
 		app::logic_screen_w,
 		app::logic_screen_h
 	);
-
-	auto music_load_fn=[&](int _id) {
-
-		auto path=_sp.get_music_id_mapper().get(_id);
-		return env.build_app_path(path);
-	};
-
-	music_player.set_load_music_function(music_load_fn);
-	music_player.set_unload_finished(true);
 }
 
 void main::start(
@@ -282,7 +227,7 @@ void main::load_map(
 			continue;
 		}
 
-		activate_tag(button.tag);
+		activate_tag(button.tag, true);
 	}
 
 	for(const auto& trigger : current_map.touch_triggers) {
@@ -292,7 +237,7 @@ void main::load_map(
 			continue;
 		}
 
-		activate_tag(trigger.tag);
+		activate_tag(trigger.tag, true);
 	}
 
 	//After loading the map, tell the camera where the limits are. We use
@@ -476,8 +421,8 @@ void main::tic(
 	app::player_input _pli
 ) {
 
-	scenery_tile_draw.tic(_delta);
-	sprite_draw_animated.tic(_delta);
+	sp.get_game_scenery_tile_draw_animated().tic(_delta);
+	sp.get_game_sprite_draw_animated().tic(_delta);
 	player.tic(_delta);
 
 	switch(player.state) {
@@ -1102,12 +1047,12 @@ void main::draw_scene(
 	app::game_draw gd(
 		_screen, 
 		camera, 
-		scenery_tile_draw, 
-		sprite_draw, 
-		sprite_draw_animated
+		sp.get_game_scenery_tile_draw_animated(),
+		sp.get_game_sprite_draw(),
+		sp.get_game_sprite_draw_animated()
 	);
-	gd.draw(current_map, player);
 
+	gd.draw(current_map, player);
 }
 
 
@@ -1175,6 +1120,12 @@ void main::pick_up_collectible(
 	//Does not actually make the collectible dissapear :P.
 	std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
+
+	//play a jingle :D.
+	lda::sound_struct snd{
+		sp.get_audio_resource_manager().get_sound(app::snd_item_pickup)
+	};
+	sp.get_audio().play_sound(snd);
 
 	switch(_collectible.type) {
 
@@ -1266,7 +1217,7 @@ void main::activate_button(
 		break;
 	}
 
-	activate_tag(_button.tag);
+	activate_tag(_button.tag, false);
 }
 
 void main::activate_touch_trigger(
@@ -1275,7 +1226,7 @@ void main::activate_touch_trigger(
 
 	persistence.add(app::pergr_touch_triggers, _trigger.id, 1);
 	_trigger.used=true;
-	activate_tag(_trigger.tag);
+	activate_tag(_trigger.tag, false);
 }
 
 void main::collide_with_wall(
@@ -1484,14 +1435,18 @@ app::entry main::find_entry_by_id(
 }
 
 void main::activate_tag(
-	int _tag
+	int _tag,
+	bool _previously_activated
 ) {
 
 	for(auto& gate : current_map.gates) {
 
 		if(gate.tag==_tag) {
 
-			gate.open();
+			//there is an "animation" here we might want to skip.
+			_previously_activated
+				? gate.open()
+				: gate.activate();
 		}
 	}
 

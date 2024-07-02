@@ -13,22 +13,22 @@ next steps:
 	php script to read object properties, read maps and fill missing stuff.
 
 	sounds.
-		jump
-		touch ground
-		take treasure
+		something better in code, this one sucks xD
+		for:
+			jump
+			touch ground
+			discover secret
+			activate switch
 
 	fix crash at exit
-
-	fix all warnings
-
-	separate drawing into its own class.
-		take the stuff from the main constructor into the service provider,
-		even if we are just hiding stuff.
+		seems to be something about music unloading. I just commented it out.
 
 	draw status (status screen??)
+		shows current items
+		shows current time
+		shows current lives?
 
 	make the first example game
-
 		- easy: infinite lives.
 		- normal: infinite lives, timer.
 		- hard: finite lives, timer.

@@ -31,18 +31,19 @@ class game_draw {
 
 	                            game_draw(
 		ldv::screen&, 
-		const ldv::camera&,
+		ldv::camera&,
 		d2d::video::scenery_tile_draw_animated&, 
 		d2d::video::sprite_draw&,
 		d2d::video::sprite_draw_animated&
 	);
+	                            ~game_draw();
 
 	void                        draw(const app::map&, const app::player&);
 
 	private:
 
 	ldv::screen&                screen;
-	const ldv::camera&          camera;
+	ldv::camera&                camera;
 	d2d::video::scenery_tile_draw_animated&  scenery_tile_draw;
 	d2d::video::sprite_draw&        sprite_draw;
 	d2d::video::sprite_draw_animated& sprite_draw_animated;

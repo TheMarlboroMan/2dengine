@@ -377,7 +377,7 @@ double thing_loader::find_lower_x_bound(
 ) const {
 
 	//the limits start as wide as they can, then we narrow them.
-	double lower_bound{tile_limits.left};
+	double lower_bound=tile_limits.left;
 
 	//lower bound.
 	for(int x=_tile.x-1; x >= tile_limits.left; x--) {
@@ -398,7 +398,7 @@ double thing_loader::find_upper_x_bound(
 	d2d::collision::tile_coords _tile
 ) const {
 
-	double upper_bound{tile_limits.right};
+	double upper_bound=tile_limits.right;
 	for(int x=_tile.x+1; x <= tile_limits.right; x++) {
 
 		if(curmap.tile_finder.has({x, _tile.y})) {
@@ -415,7 +415,7 @@ double thing_loader::find_lower_y_bound(
 	d2d::collision::tile_coords _tile
 ) const {
 
-	double lower_bound{tile_limits.bottom};
+	double lower_bound=tile_limits.bottom;
 	for(int y=_tile.y-1; y >= tile_limits.bottom; y--) {
 
 		if(curmap.tile_finder.has({_tile.x, y})) {
@@ -432,7 +432,7 @@ double thing_loader::find_upper_y_bound(
 	d2d::collision::tile_coords _tile
 ) const {
 
-	double upper_bound{tile_limits.top};
+	double upper_bound=tile_limits.top;
 	for(int y=_tile.y+1; y <= tile_limits.top; y++) {
 
 		if(curmap.tile_finder.has({_tile.x, y})) {

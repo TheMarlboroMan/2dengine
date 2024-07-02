@@ -13,6 +13,10 @@ enum music {
 	music_dungeon
 };
 
+enum sound {
+	snd_item_pickup=1
+};
+
 /**
  * these will behave as flags, DooM style.
  **/

@@ -15,7 +15,7 @@ leaping_monster::leaping_monster(
 	spawn_y{ (int)_pt.y},
 	leap_force{_force},
 	//spawns starting the countdown.
-	timeout{(float)_rest_ms / 1000., 0.f, false}
+	timeout{(float)_rest_ms / 1000.f, 0.f, false}
 {
 
 	switch(type) {
