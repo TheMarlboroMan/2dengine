@@ -361,11 +361,18 @@ void thing_loader::add_platform(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
 	app::platform_block::types type{app::platform_block::types::branch};
 
 	switch(_attributes.at("type").get_int()) {
 
 		case 0: type=app::platform_block::types::branch; break;
+		case 1: type=app::platform_block::types::rock; break;
 		default: break;
 	}
 

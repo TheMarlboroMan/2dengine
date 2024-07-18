@@ -77,6 +77,16 @@ void main::start(
 	take_player_to_entry(player, _entry_id, nullptr);
 }
 
+void main::new_game() {
+
+	lm::log(logger).info()<<"starting new game..."<<std::endl;
+	persistence.reset();
+	player.reset(); //this resets keys.
+	//TODO: Everything about resetting shit would go here!!
+	//TODO: Like... lives, timer, keys.
+	start("start_001", 1);
+}
+
 void main::set_difficulty(
 	int _value
 ) {
@@ -123,18 +133,20 @@ void main::loop_scene(
 ) {
 
 	if(_input().is_exit_signal()) {
+
+		lm::log(logger).info()<<"caught exit signal, quitting\n";
 		set_leave(true);
+		return;
+	}
+
+	if(_input.is_input_down(app::input::escape)) {
+
+		lm::log(logger).info()<<"will go back to main menu\n";
+		pop_state();
 		return;
 	}
 
 	app::player_input pli{};
-
-	if(_input.is_input_down(app::input::escape)) {
-
-		set_leave(true);
-		return;
-	}
-
 	if(_input.is_input_pressed(app::input::down)) {
 
 		pli.y=-1;
@@ -607,6 +619,7 @@ void main::tic_world(
 	d2d::motion::mover mover{};
 	for(auto& trap : current_map.timed_traps) {
 
+		//TODO: Make sound.
 		trap.tic(_delta);
 	}
 
@@ -668,6 +681,7 @@ void main::tic_world(
 
 		if(pg.tic(_delta)) {
 
+			//TODO: Make a sound...
 			generate_projectile(pg);
 		}
 	}
@@ -680,6 +694,7 @@ void main::tic_world(
 	for(auto& bp : current_map.breaking_platforms) {
 
 		bp.tic(_delta);
+		//TODO: Make a sound when breaking!
 	}
 }
 
@@ -806,7 +821,10 @@ void main::tic_ground(
 	if(_pli.jump) {
 
 		_player.jump(simulation.jump_force);
+		play_sound(app::snd_jump);
 	}
+
+	//TODO: Sound when landing too???
 }
 
 void main::tic_ladder(
@@ -850,6 +868,7 @@ void main::tic_ladder(
 			else {
 
 				jump_out_of_ladder(_player, _pli.x);
+				play_sound(app::snd_jump);
 			}
 		}
 	}
@@ -1122,10 +1141,7 @@ void main::pick_up_collectible(
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 
 	//play a jingle :D.
-	lda::sound_struct snd{
-		sp.get_audio_resource_manager().get_sound(app::snd_item_pickup)
-	};
-	sp.get_audio().play_sound(snd);
+	play_sound(app::snd_item_pickup);
 
 	switch(_collectible.type) {
 
@@ -1164,6 +1180,7 @@ void main::discover_secret(
 	std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
 	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
 	_secret_cover.discover();
+	play_sound(app::snd_secret);
 }
 
 void main::land_on_ground(
@@ -1218,6 +1235,7 @@ void main::activate_button(
 	}
 
 	activate_tag(_button.tag, false);
+	play_sound(app::snd_switch);
 }
 
 void main::activate_touch_trigger(
@@ -1246,6 +1264,7 @@ void main::defeat(
 		return; 
 	}
 
+	play_sound(app::snd_defeat);
 	_player.timeouts.reset(app::player::timeout_defeat);
 	_player.state=app::player::states::defeat;
 	_player.velocity.y=simulation.defeat_y_velocity;
@@ -1447,6 +1466,11 @@ void main::activate_tag(
 			_previously_activated
 				? gate.open()
 				: gate.activate();
+
+			if(!_previously_activated) {
+
+				play_sound(app::snd_open_gate);
+			}
 		}
 	}
 
@@ -1466,6 +1490,20 @@ void main::activate_tag(
 			generator.activate();
 		}
 	}
+}
+
+/**
+ * basic fire and forget sound playing.
+ */
+void main::play_sound(
+	int _index
+) {
+
+	lda::sound_struct snd{
+		sp.get_audio_resource_manager().get_sound(_index)
+	};
+
+	sp.get_audio().play_sound(snd);
 }
 
 #ifdef IS_DEBUG_BUILD

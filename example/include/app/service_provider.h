@@ -28,6 +28,10 @@ namespace ldtools{
 	class ttf_manager;
 }
 
+namespace tools {
+	class i8n;
+};
+
 namespace d2d{
 
 	namespace video {
@@ -76,6 +80,7 @@ class service_provider {
 	d2d::video::sprite_draw& get_game_sprite_draw();
 	d2d::video::sprite_draw_animated& get_game_sprite_draw_animated();
 	d2d::video::scenery_tile_draw_animated& get_game_scenery_tile_draw_animated();
+	tools::i8n              get_localization();
 
 	private:
 
@@ -99,5 +104,6 @@ class service_provider {
 	std::unique_ptr<d2d::video::sprite_draw> game_sprite_draw{nullptr};
 	std::unique_ptr<d2d::video::sprite_draw_animated> game_sprite_draw_animated{nullptr};
 	std::unique_ptr<d2d::video::scenery_tile_draw_animated> game_scenery_tile_draw_animated{nullptr};
+	std::unique_ptr<tools::i8n> localization{nullptr};
 };
 }

@@ -1,2 +1,8 @@
 1	resources/sounds/Collect_Point_00.ogg
+2	resources/sounds/jump.ogg
+3	resources/sounds/open_gate.ogg
+4	resources/sounds/projectile.ogg
+5	resources/sounds/switch.ogg
+6	resources/sounds/defeat.ogg
+7	resources/sounds/secret.ogg
 

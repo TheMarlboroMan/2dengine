@@ -5,6 +5,7 @@
 
 //Controllers.
 #include "controller/main.h"
+#include "controller/menu.h"
 //[new-controller-header-mark]
 
 #include <lm/logger.h>
@@ -49,6 +50,7 @@ class state_driver:
 
 	typedef std::unique_ptr<dfw::controller_interface>	ptr_controller;
 	ptr_controller                  c_main;
+	ptr_controller                  c_menu;
 	//[new-controller-property-mark]
 };
 

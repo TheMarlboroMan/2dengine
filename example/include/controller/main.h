@@ -42,6 +42,7 @@ class main:
 	virtual bool                can_leave_state() const {return true;}
 
 	void                        set_difficulty(int);
+	void                        new_game();
 	void                        start(const std::string&, int);
 
 	private:
@@ -89,6 +90,7 @@ class main:
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
+	void                        play_sound(int);
 
 	//world methods.
 	void                        generate_projectile(const app::projectile_generator&);

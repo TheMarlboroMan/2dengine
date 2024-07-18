@@ -90,6 +90,11 @@ class timeouts {
 	timeouts&       reset(int);
 
 /**
+ * resets all timeouts.
+ */
+	timeouts&       reset();
+
+/**
  * checks if the timeout identified by the identifier is ready (that is, 
  * its counter has reached zero.
  */

@@ -35,6 +35,7 @@ class player {
 	                                            red_keycount{0},
 	                                            green_keycount{0};
 
+	void                                        reset();
 	void                                        tic(float);
 	void                                        crouch();
 	void                                        stand_up();

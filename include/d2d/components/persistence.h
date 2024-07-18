@@ -151,6 +151,17 @@ class persistence {
 	}
 
 /**
+ * cleans up contents, does not remove groups!
+ */
+	void                                reset() {
+
+		for(auto& group : data) {
+
+			group.second.clear();
+		}
+	}
+
+/**
  * clears the given group if exists. Throws if it does not.
  */
 	void                                clear(grouptype _group) {

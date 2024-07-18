@@ -14,7 +14,13 @@ enum music {
 };
 
 enum sound {
-	snd_item_pickup=1
+	snd_item_pickup=1,
+	snd_jump=2,
+	snd_open_gate=3,
+	snd_projectile=4,
+	snd_switch=5,
+	snd_defeat=6,
+	snd_secret=7
 };
 
 /**
@@ -113,7 +119,8 @@ enum sprites {
 	spr_regular_button_used=361,
 	spr_breaking_block=362,
 	spr_platform_branch=155,
-	spr_fire_trap_plaque=188
+	spr_fire_trap_plaque=188,
+	spr_platform_rock=189
 };
 
 enum tile_types {

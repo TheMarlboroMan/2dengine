@@ -301,7 +301,7 @@ void main::loop_debug(
 
 	if(_input.is_input_down(app::input::escape)) {
 
-		set_leave(true);
+		pop_state();
 		return;
 	}
 
@@ -350,7 +350,6 @@ void main::loop_debug(
 
 	tic(_lid.delta, pli);
 }
-
 
 void main::reload_values() {
 

@@ -7,6 +7,7 @@
 #include <d2d/video/animation_manager.h>
 #include <ldtools/ttf_manager.h>
 #include <ldtools/sprite_table.h>
+#include <tools/i8n.h>
 #include <algorithm>
 #include <filesystem>
 
@@ -139,6 +140,10 @@ void state_driver::prepare_resources(
 	persistence.add(app::pergr_secret_covers);
 	persistence.add(app::pergr_buttons);
 	persistence.add(app::pergr_touch_triggers);
+
+	_kernel.get_screen().set_title(
+		service_provider->get_localization().get("window-title")
+	);
 }
 
 void state_driver::register_controllers(
@@ -156,13 +161,38 @@ void state_driver::register_controllers(
 		controller::state_main,
 		new controller::main(*service_provider)
 	);
+
+	reg(
+		c_menu,
+		controller::state_menu,
+		new controller::menu(*service_provider)
+	);
 }
 
 void state_driver::prepare_state(
-	int /*_next*/,
-	int /*_current*/
+	int _next,
+	int _current
 ) {
 
+	lm::log(log).info()<<"prepare state from "<<_current<<" to "<<_next<<std::endl;
+
+	if(_current==controller::state_menu && _next==controller::state_main) {
+
+		//Are we starting a new game?
+		auto& menuc=static_cast<controller::menu&>(*c_menu);
+
+		if(!menuc.is_continue_game()) {
+
+			lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
+			auto& mainc=static_cast<controller::main&>(*c_main);
+			mainc.set_difficulty(menuc.get_selected_skill());
+			mainc.new_game();
+			menuc.set_can_continue();
+			return;
+		}
+
+		lm::log(log).info()<<"game will resume"<<std::endl;
+	}
 }
 
 void state_driver::common_pre_loop_input(dfw::input& input, float /*delta*/) {
@@ -200,14 +230,11 @@ void state_driver::start_app(
 	const tools::arg_manager& _argman
 ) {
 
-	auto& mainc=static_cast<controller::main&>(*c_main);
-
-	mainc.set_difficulty(app::skill_normal);
-	mainc.start("start_001", 1);
-
 #ifdef IS_DEBUG_BUILD
 
 	if(_argman.exists("--map")) {
+
+		states.set(controller::states::state_main);
 
 		int entry_id=1;
 
@@ -216,12 +243,16 @@ void state_driver::start_app(
 			entry_id=std::stoi(_argman.get_following("--eid"));
 		}
 
+		auto& mainc=static_cast<controller::main&>(*c_main);
 		mainc.start(_argman.get_following("--map"), entry_id);
 	}
 
 	if(_argman.exists("--skill")) {
 
+		states.set(controller::states::state_main);
+
 		int skill=std::stoi(_argman.get_following("--skill"));
+		auto& mainc=static_cast<controller::main&>(*c_main);
 
 		switch(skill) {
 
@@ -229,7 +260,7 @@ void state_driver::start_app(
 			case 2: mainc.set_difficulty(app::skill_normal); break;
 			case 3: mainc.set_difficulty(app::skill_hard); break;
 			default:
-				mainc.set_difficulty(app::skill_normal); 
+				mainc.set_difficulty(app::skill_normal);
 				lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
 			break;
 		}
@@ -265,6 +296,12 @@ void state_driver::load_resources() {
 	ttf_manager.insert(
 		"console_font",
 		7,
+		env.build_app_path("resources/fonts/publicpixel.ttf")
+	);
+
+	ttf_manager.insert(
+		"menu_font",
+		16,
 		env.build_app_path("resources/fonts/publicpixel.ttf")
 	);
 }

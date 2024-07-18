@@ -160,6 +160,15 @@ timeouts& timeouts::reset(
 	return *this;
 }
 
+timeouts& timeouts::reset() {
+
+	for(auto& node : data) {
+
+		node.second.reset();
+	}
+	return *this;
+}
+
 timeouts& timeouts::pause(
 	int _id
 ) {

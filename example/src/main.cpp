@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
 
 		//Init the state driver, this should NOT start system stuff yet!.
 		lm::log(app_log).info()<<"building state driver..."<<std::endl;
-		int initial_state=controller::state_main;
+		int initial_state=controller::state_menu;
 		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
 
 		lm::log(app_log).info()<<"init sdl2..."<<std::endl;

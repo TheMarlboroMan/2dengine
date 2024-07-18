@@ -9,30 +9,15 @@ next steps:
 
 	forest_004, die and you get transported to the previous screen, bad 
 	positioning, does now grab ladder??? check that.
+		should be able to test this instantly in debug mode, right?
+		something like entries to list entry ids and gotoentry to go to it.
 
 	php script to read object properties, read maps and fill missing stuff.
-
-	sounds.
-		something better in code, this one sucks xD
-		for:
-			jump
-			touch ground
-			discover secret
-			activate switch
 
 	fix crash at exit
 		seems to be something about music unloading. I just commented it out.
 
-	draw status (status screen??)
-		shows current items
-		shows current time
-		shows current lives?
-
 	make the first example game
-		- easy: infinite lives.
-		- normal: infinite lives, timer.
-		- hard: finite lives, timer.
-
 		- trap:
 			fire falling in drops from the ceiling, with gravity??
 
@@ -42,9 +27,20 @@ next steps:
 
 		"something" to reskin the character?
 
+		create starting screen
+			load
+				of course, load has... save :/.
+			save... how?
+
+		draw status (status screen??)
+			shows current items
+			shows current time (in negative steps XD)
+			shows current lives (if need be).
+
 	ideas:
 		-forest area
 		-mountain area
+		-cave area
 
 		-castle area
 			- front and back, moving through windows and doors
@@ -59,6 +55,4 @@ next steps:
 			sprite scaling.
 
 	docs:
-		Complete the README.
-		Documentation and doxygen.
-
+		Complete the README

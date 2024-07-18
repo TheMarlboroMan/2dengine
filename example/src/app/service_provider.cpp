@@ -18,6 +18,8 @@
 
 #include <appenv/env.h>
 
+#include "tools/i8n.h"
+
 using namespace app;
 
 service_provider::service_provider(
@@ -221,4 +223,21 @@ d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_
 	}
 
 	return *game_scenery_tile_draw_animated;
+}
+
+
+tools::i8n service_provider::get_localization() {
+
+	if(nullptr==localization) {
+
+		localization.reset(
+			new tools::i8n(
+				env.build_app_path("resources/localization"),
+				"en",
+				{"texts.i8n"}
+			)
+		);
+	}
+
+	return *localization;
 }

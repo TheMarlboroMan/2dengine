@@ -384,6 +384,9 @@ void game_draw::draw_platform(
 		case app::platform_block::types::branch:
 			index=app::spr_platform_branch;
 		break;
+		case app::platform_block::types::rock:
+			index=app::spr_platform_rock;
+		break;
 	}
 
 	sprite_draw.draw(
