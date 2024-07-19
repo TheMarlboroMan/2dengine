@@ -180,18 +180,30 @@ void state_driver::prepare_state(
 
 		//Are we starting a new game?
 		auto& menuc=static_cast<controller::menu&>(*c_menu);
+		auto& mainc=static_cast<controller::main&>(*c_main);
 
-		if(!menuc.is_continue_game()) {
+		switch(menuc.get_action_signal()) {
 
-			lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
-			auto& mainc=static_cast<controller::main&>(*c_main);
-			mainc.set_difficulty(menuc.get_selected_skill());
-			mainc.new_game();
-			menuc.set_can_continue();
-			return;
+			case controller::menu::signals::new_game:
+
+				lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
+				mainc.set_difficulty(menuc.get_selected_skill());
+				mainc.new_game();
+				menuc.set_can_continue();
+				return;
+
+			case controller::menu::signals::continue_game:
+
+				lm::log(log).info()<<"game will resume"<<std::endl;
+				return;
+
+			case controller::menu::signals::load_game:
+
+				lm::log(log).info()<<"is load game, will instruct to load the savegame"<<std::endl;
+				mainc.load_game();
+				menuc.set_can_continue();
+				return;
 		}
-
-		lm::log(log).info()<<"game will resume"<<std::endl;
 	}
 }
 

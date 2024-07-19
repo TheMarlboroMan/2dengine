@@ -43,6 +43,7 @@ menu::menu(
 
 	set_text("menu_start", "main_menu-start");
 	set_text("menu_continue", "main_menu-continue");
+	set_text("menu_load", "main_menu-load");
 	set_text("menu_quit", "main_menu-quit");
 	set_text("menu_skill_easy", "main_menu-skill_easy");
 	set_text("menu_skill_normal", "main_menu-skill_normal");
@@ -173,7 +174,7 @@ void menu::select() {
 
 					if(game_can_continue) {
 
-						continue_game=true;
+						action_signal=signals::continue_game;
 						push_state(state_main);
 						return;
 					}
@@ -181,6 +182,13 @@ void menu::select() {
 					//TODO: We should... I don't know, reserve a channel for this. We
 					//can hit the button until the cows come home xD!
 					play_sound(app::snd_defeat);
+					return;
+
+				case main_option_load:
+
+					//TODO: Next choice should be "continue" in the menu.
+					action_signal=signals::load_game;
+					push_state(state_main);
 					return;
 
 				case main_option_exit:
@@ -197,7 +205,7 @@ void menu::select() {
 			curlevel=levels::main;
 			main_option=main_option_continue;
 			push_state(state_main);
-			continue_game=false;
+			action_signal=signals::new_game;
 			return;
 	}
 }
@@ -228,6 +236,7 @@ void menu::enter_main() {
 
 	toggle("menu_start", true);
 	toggle("menu_continue", true);
+	toggle("menu_load", true);
 	toggle("menu_quit", true);
 	toggle("menu_skill_easy", false);
 	toggle("menu_skill_normal", false);
@@ -245,6 +254,7 @@ void menu::enter_new_game() {
 
 	toggle("menu_start", true);
 	toggle("menu_continue", false);
+	toggle("menu_load", false);
 	toggle("menu_quit", false);
 	toggle("menu_skill_easy", true);
 	toggle("menu_skill_normal", true);
@@ -280,6 +290,7 @@ void menu::refresh() {
 
 	toggle("menu_start", false);
 	toggle("menu_continue", false);
+	toggle("menu_load", false);
 	toggle("menu_quit", false);
 	toggle("menu_skill_easy", false);
 	toggle("menu_skill_normal", false);
@@ -299,6 +310,11 @@ void menu::refresh() {
 				case main_option_continue:
 
 					toggle("menu_continue", true);
+					return;
+
+				case main_option_load:
+
+					toggle("menu_load", true);
 					return;
 				case main_option_exit:
 

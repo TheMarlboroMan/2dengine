@@ -4,6 +4,7 @@
 #include "app/map_attribute_loader.h"
 #include "app/tile_filter.h"
 #include "app/game_draw.h"
+#include "app/savegame.h"
 
 #include "dfwimpl/config.h"
 
@@ -80,10 +81,7 @@ void main::start(
 void main::new_game() {
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
-	persistence.reset();
-	player.reset(); //this resets keys.
-	//TODO: Everything about resetting shit would go here!!
-	//TODO: Like... lives, timer, keys.
+	reset_game();
 	start("start_001", 1);
 }
 
@@ -217,7 +215,7 @@ void main::load_map(
 	loader.load_thing_layer("things", tl);
 
 	//The loader takes references to the map data.
-	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id};
+	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.save_point};
 	loader.load_properties(attrl);
 	lm::log(logger).info()<<"map musicid is "
 		<<current_map.music_id
@@ -277,7 +275,7 @@ void main::exit_to(
 /**
  * there is a reason why arguments are copied: the exit belongs to the map
  * which will get unloaded soon and would cause the original reference or
- * pointer to be lost. It has already happened to me so please, do not attemptw
+ * pointer to be lost. It has already happened to me so please, do not attempt
  * to "fix" it.
  */
 
@@ -286,6 +284,12 @@ void main::exit_to(
 	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
 	load_map(_exit.map_filename);
 	take_player_to_entry(_player, _exit.next_entry_id, &_exit);
+
+	//is this map a save point? store information...
+	if(current_map.save_point) {
+
+		save_game(_exit.map_filename, _exit.next_entry_id);
+	}
 }
 
 void main::take_player_to_entry(
@@ -1504,6 +1508,64 @@ void main::play_sound(
 	};
 
 	sp.get_audio().play_sound(snd);
+}
+
+void main::save_game(
+	const std::string& _map_name,
+	int _entry_id
+) {
+
+	lm::log(logger).info()<<"will save the game now...\n";
+
+	app::savegame save{
+		_map_name,
+		persistence.save_to_string(),
+		_entry_id,
+		difficulty_setting,
+		0, //seconds
+		0, //lives,
+		player.yellow_keycount,
+		player.blue_keycount,
+		player.red_keycount,
+		player.green_keycount
+	};
+
+	app::savegame_manager manager{};
+	manager.save_to_file(
+		//TODO: yeah, sure...
+		"/tmp/crapfile",
+		save
+	);
+}
+
+void main::load_game() {
+
+	const std::string filename="/tmp/crapfile";
+	app::savegame_manager manager{};
+	auto save=manager.load_from_file(filename);
+
+	lm::log(logger).info()<<"starting new game..."<<std::endl;
+	reset_game();
+
+	player.red_keycount=save.red_keys;
+	player.blue_keycount=save.blue_keys;
+	player.green_keycount=save.green_keys;
+	player.yellow_keycount=save.yellow_keys;
+
+	difficulty_setting=save.difficulty_setting;
+
+	std::cout<<"persistence string is "<<save.persistence_string<<std::endl;
+	persistence.load_from_string(save.persistence_string);
+
+	start(save.map_filename, save.entry_id);
+}
+
+void main::reset_game() {
+
+	persistence.reset();
+	player.reset(); //this resets keys.
+	//TODO: Everything about resetting shit would go here!!
+	//TODO: Like... lives, timer, keys.
 }
 
 #ifdef IS_DEBUG_BUILD

@@ -44,6 +44,7 @@ class main:
 	void                        set_difficulty(int);
 	void                        new_game();
 	void                        start(const std::string&, int);
+	void                        load_game();
 
 	private:
 
@@ -91,6 +92,8 @@ class main:
 	void                        activate_button(app::player&, app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
 	void                        play_sound(int);
+	void                        save_game(const std::string&, int);
+	void                        reset_game();
 
 	//world methods.
 	void                        generate_projectile(const app::projectile_generator&);

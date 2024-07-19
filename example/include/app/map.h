@@ -55,6 +55,7 @@ class map {
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};
+	bool                                    save_point{false};
 
 /**
  * returns true if an entity is within the tile boundaries.

@@ -196,14 +196,49 @@ int main(int, char **) {
 	assert(persistence.is("artifacts", 1, retrieved));
 	assert(0==persistence.size("empty"));
 
-	persistence.save("myfile");
+	persistence.save_to_file("myfile");
 
 	std::cout<<"clearing up..."<<std::endl;
 	persistence.clear();
 	assert(0==persistence.size());
 
 	std::cout<<"loading..."<<std::endl;
-	persistence.load("myfile");
+	persistence.load_from_file("myfile");
+
+	assert(3==persistence.size());
+	assert(persistence.has("treasures"));
+	assert(persistence.has("empty"));
+	assert(persistence.has("artifacts"));
+	assert(persistence.is("treasures", 1, undiscovered));
+	assert(persistence.is("treasures", 2, discovered));
+	assert(persistence.is("artifacts", 1, retrieved));
+	assert(0==persistence.size("empty"));
+
+	std::cout<<"setting up for string save..."<<std::endl;
+	persistence.clear();
+	persistence.add("treasures");
+	persistence.add("empty");
+	persistence.add("artifacts");
+	persistence.add("treasures", 1, undiscovered);
+	persistence.add("treasures", 2, discovered);
+	persistence.add("artifacts", 1, retrieved);
+	assert(3==persistence.size());
+	assert(persistence.has("treasures"));
+	assert(persistence.has("empty"));
+	assert(persistence.has("artifacts"));
+	assert(persistence.is("treasures", 1, undiscovered));
+	assert(persistence.is("treasures", 2, discovered));
+	assert(persistence.is("artifacts", 1, retrieved));
+	assert(0==persistence.size("empty"));
+	auto str=persistence.save_to_string();
+	std::cout<<"saved string is "<<str<<std::endl;
+
+	std::cout<<"clearing up..."<<std::endl;
+	persistence.clear();
+	assert(0==persistence.size());
+
+	std::cout<<"loading..."<<std::endl;
+	persistence.load_from_string(str);
 
 	assert(3==persistence.size());
 	assert(persistence.has("treasures"));

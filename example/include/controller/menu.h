@@ -14,6 +14,12 @@ class menu:
 
 	public:
 
+	enum class signals {
+		new_game,
+		continue_game,
+		load_game
+	};
+
 	                            menu(app::service_provider&);
 
 	virtual void                loop(dfw::input&, const dfw::loop_iteration_data&);
@@ -22,8 +28,9 @@ class menu:
 	virtual void                slumber(dfw::input& /*input*/);
 	virtual bool                can_leave_state() const {return true;}
 
-	bool                        is_continue_game() const {return continue_game;}
+	signals                     get_action_signal() const {return action_signal;}
 	int                         get_selected_skill() const;
+	//make the "continue" option available.
 	void                        set_can_continue() {game_can_continue=true;}
 
 	private:
@@ -49,6 +56,7 @@ class menu:
 	enum main_options{
 		main_option_choose_skill,
 		main_option_continue,
+		main_option_load,
 		main_option_exit
 	};
 	int                         main_option=main_option_choose_skill;
@@ -60,8 +68,8 @@ class menu:
 	};
 	int                         skill_option=skill_option_easy;
 
+	signals                     action_signal{signals::new_game};
 	bool                        game_can_continue=false;
-	bool                        continue_game=false;
 };
 
 }

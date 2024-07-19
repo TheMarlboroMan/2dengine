@@ -19,3 +19,10 @@ beginproperty
 	comment 0=black 1=sky
 endproperty
 
+beginproperty
+	name save_point
+	type int
+	default 0
+	comment set to 1 if the game should be saved upon loading this map
+endproperty
+

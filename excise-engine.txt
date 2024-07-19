@@ -17,6 +17,12 @@ next steps:
 	fix crash at exit
 		seems to be something about music unloading. I just commented it out.
 
+	sound:
+		what about a very basic sound like 
+			play_sound(int)
+			play_looped(int) : int
+			play_exclusive(int)
+
 	make the first example game
 		- trap:
 			fire falling in drops from the ceiling, with gravity??
@@ -27,10 +33,7 @@ next steps:
 
 		"something" to reskin the character?
 
-		create starting screen
-			load
-				of course, load has... save :/.
-			save... how?
+		better menu for loading shit.
 
 		draw status (status screen??)
 			shows current items

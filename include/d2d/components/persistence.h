@@ -212,49 +212,89 @@ class persistence {
 		l.erase(it);
 	}
 
+	//TODO: Change this shit so that we can use streams. Right? This way
+	//we can use different implementations and save the stuff however we need.
+
 /**
  * stores the persisted state into a regular text file. The state can be 
- * retrieved with "load".
+ * retrieved with "load_from_file".
  */
-	void                                save(const std::string& _filename) {
+	void                                save_to_file(const std::string& _filename) {
 
 		std::ofstream ofile{_filename};
-
-		for(const auto& l : data) {
-
-			ofile<<"["<<l.first<<"]"<<std::endl;
-
-			if(l.second.size()) {
-
-				for(const auto& piece : l.second) {
-
-					ofile<<piece.id<<" = "<<piece.state<<" ";
-				}
-				//Remove last space...
-				long pos=ofile.tellp();
-				ofile.seekp(pos-1);
-			}
-
-			ofile<<std::endl;
-		}
+		save(ofile);
 	}
 
 /**
  * retrieves a state previously persisted to a file.
  */
-	void                                load(const std::string& _filename) {
+	void                                load_from_file(const std::string& _filename) {
 
 		data.clear();
 		std::ifstream ifile{_filename};
+		load(ifile);
+	}
+
+/**
+ * saves the state to a string that will be returned
+ */
+	std::string                         save_to_string() {
+
+		std::stringstream ss;
+		save(ss);
+		return ss.str();
+	}
+
+/**
+ * load state from the given string
+ */
+	void                                load_from_string(const std::string& _data) {
+
+		std::stringstream ss(_data);
+		load(ss);
+	}
+
+	private:
+
+/**
+ * generic save method, writes everything into a stream.
+ */
+	void                                save(std::ostream& _stream) {
+
+		for(const auto& l : data) {
+
+			_stream<<"["<<l.first<<"]"<<std::endl;
+
+			if(l.second.size()) {
+
+				for(const auto& piece : l.second) {
+
+					_stream<<piece.id<<" = "<<piece.state<<" ";
+				}
+				//Remove last space...
+				long pos=_stream.tellp();
+				_stream.seekp(pos-1);
+			}
+
+			_stream<<std::endl;
+		}
+	}
+
+/**
+ * generic load method, loads this instance from a stream.
+ */
+	void                                load(std::istream& _stream) {
+
+		data.clear();
 
 		std::string line;
-		std::string groupname;
+		grouptype groupname;
 		std::istringstream iss;
 
 		while(true) {
 
-			std::getline(ifile, line);
-			if(ifile.eof()) {
+			std::getline(_stream, line);
+			if(_stream.eof()) {
 
 				break;
 			}
@@ -262,7 +302,12 @@ class persistence {
 			if('['==line[0]) {
 
 				line.pop_back();
-				groupname=line.substr(1);
+				line=line.substr(1);
+
+				std::istringstream converter;
+				converter.str(line);
+				converter>>groupname;
+
 				add(groupname);
 				continue;
 			}
@@ -293,8 +338,6 @@ class persistence {
 			iss.clear();
 		}
 	}
-
-	private:
 
 	struct node {
 		idtype id;
