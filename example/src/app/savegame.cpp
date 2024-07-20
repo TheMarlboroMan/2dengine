@@ -7,7 +7,7 @@
 
 using namespace app;
 
-savegame savegame_manager::load_from_file(
+savegame savegame_io::load_from_file(
 	const std::string& _filename
 ) {
 
@@ -15,7 +15,7 @@ savegame savegame_manager::load_from_file(
 	return load(infile);
 }
 
-void savegame_manager::save_to_file(
+void savegame_io::save_to_file(
 	const std::string& _filename,
 	const savegame& _data
 ) {
@@ -30,7 +30,7 @@ void savegame_manager::save_to_file(
  * because every single item must be in a simple line the persistence layer
  * has its newlines scaped on input.
  */
-savegame savegame_manager::load(
+savegame savegame_io::load(
 	std::istream& _stream
 ) {
 
@@ -108,7 +108,7 @@ savegame savegame_manager::load(
 /**
  * generic save. Same format as load.
  */
-void savegame_manager::save(
+void savegame_io::save(
 	std::ostream& _stream,
 	const savegame& _data
 ) {

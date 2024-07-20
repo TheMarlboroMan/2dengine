@@ -24,6 +24,12 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/touch_trigger.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/game_draw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/savegame.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/savegame_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/automap_reader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/automap.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/automap_game.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/inventory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_session.cpp
 	PARENT_SCOPE
 )
 

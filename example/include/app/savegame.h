@@ -31,7 +31,7 @@ struct savegame {
 	}
 };
 
-class savegame_manager {
+class savegame_io {
 
 	public:
 

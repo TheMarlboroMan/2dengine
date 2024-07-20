@@ -14,6 +14,8 @@
 #include "app/player_input.h"
 #include "app/player.h"
 #include "app/types.h"
+#include "app/inventory.h"
+#include "app/game_session.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -41,7 +43,6 @@ class main:
 	virtual void                slumber(dfw::input& /*input*/);
 	virtual bool                can_leave_state() const {return true;}
 
-	void                        set_difficulty(int);
 	void                        new_game();
 	void                        start(const std::string&, int);
 	void                        load_game();
@@ -107,6 +108,8 @@ class main:
 	const app::tile_impl&       tile_impl;
 	app::tpersistence&          persistence;
 	d2d::audio::music_player&   music_player;
+	app::inventory&             inventory;
+	app::game_session&          game_session;
 
 	//game state stuff.
 	ldv::camera                 camera;

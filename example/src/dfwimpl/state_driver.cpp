@@ -110,6 +110,7 @@ void state_driver::prepare_input(dfw::kernel& kernel) {
 	add("input:up", app::input::up);
 	add("input:down", app::input::down);
 	add("input:jump", app::input::jump);
+	add("input:pause", app::input::pause);
 	add("input:tic", app::input::tic);
 	add("input:reload_values", app::input::reload_values);
 
@@ -140,6 +141,7 @@ void state_driver::prepare_resources(
 	persistence.add(app::pergr_secret_covers);
 	persistence.add(app::pergr_buttons);
 	persistence.add(app::pergr_touch_triggers);
+	persistence.add(app::pergr_automap);
 
 	_kernel.get_screen().set_title(
 		service_provider->get_localization().get("window-title")
@@ -167,6 +169,12 @@ void state_driver::register_controllers(
 		controller::state_menu,
 		new controller::menu(*service_provider)
 	);
+
+	reg(
+		c_pause,
+		controller::state_pause,
+		new controller::pause(*service_provider)
+	);
 }
 
 void state_driver::prepare_state(
@@ -187,7 +195,8 @@ void state_driver::prepare_state(
 			case controller::menu::signals::new_game:
 
 				lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
-				mainc.set_difficulty(menuc.get_selected_skill());
+
+				service_provider->get_game_session().reset(menuc.get_selected_skill());
 				mainc.new_game();
 				menuc.set_can_continue();
 				return;
@@ -264,15 +273,15 @@ void state_driver::start_app(
 		states.set(controller::states::state_main);
 
 		int skill=std::stoi(_argman.get_following("--skill"));
-		auto& mainc=static_cast<controller::main&>(*c_main);
+		auto& gs=service_provider->get_game_session();
 
 		switch(skill) {
 
-			case 1: mainc.set_difficulty(app::skill_easy); break;
-			case 2: mainc.set_difficulty(app::skill_normal); break;
-			case 3: mainc.set_difficulty(app::skill_hard); break;
+			case 1: gs.set_skill_level(app::skill_easy); break;
+			case 2: gs.set_skill_level(app::skill_normal); break;
+			case 3: gs.set_skill_level(app::skill_hard); break;
 			default:
-				mainc.set_difficulty(app::skill_normal);
+				gs.set_skill_level(app::skill_normal);
 				lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
 			break;
 		}

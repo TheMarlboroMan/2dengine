@@ -49,10 +49,6 @@ bool player::is_defeated() const {
 
 void player::reset() {
 
-	yellow_keycount=0;
-	red_keycount=0;
-	blue_keycount=0;
-	green_keycount=0;
 	facing=faces::right;
 	timeouts.reset();
 	current_ladder=nullptr;

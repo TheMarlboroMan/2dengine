@@ -31,6 +31,9 @@
 			{"type":0, "device":0, "code":44},
 			{"type":2, "device":0, "code":2}
 		],
+		"pause":[
+			{"type":0, "device":0, "code":43}
+		],
 		"tic":[
 			{"type":0, "device":0, "code":23}
 		],

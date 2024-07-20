@@ -94,10 +94,10 @@ console::result main::execute_cmd(
 
 		int how_many=_args[0].get_int();
 
-		player.yellow_keycount+=how_many;
-		player.blue_keycount+=how_many;
-		player.red_keycount+=how_many;
-		player.green_keycount+=how_many;
+		inventory.yellow_keys+=how_many;
+		inventory.blue_keys+=how_many;
+		inventory.red_keys+=how_many;
+		inventory.green_keys+=how_many;
 
 		std::stringstream ss;
 		ss<<"keys given";
@@ -302,6 +302,12 @@ void main::loop_debug(
 	if(_input.is_input_down(app::input::escape)) {
 
 		pop_state();
+		return;
+	}
+
+	if(_input.is_input_down(app::input::pause)) {
+
+		push_state(controller::state_pause);
 		return;
 	}
 

@@ -54,6 +54,9 @@ namespace d2d{
 namespace app {
 
 class tile_impl;
+class automap;
+class inventory;
+class game_session;
 
 class service_provider {
 
@@ -80,7 +83,10 @@ class service_provider {
 	d2d::video::sprite_draw& get_game_sprite_draw();
 	d2d::video::sprite_draw_animated& get_game_sprite_draw_animated();
 	d2d::video::scenery_tile_draw_animated& get_game_scenery_tile_draw_animated();
-	tools::i8n              get_localization();
+	tools::i8n&             get_localization();
+	automap&                get_automap();
+	inventory&              get_inventory();
+	game_session&           get_game_session();
 
 	private:
 
@@ -105,5 +111,8 @@ class service_provider {
 	std::unique_ptr<d2d::video::sprite_draw_animated> game_sprite_draw_animated{nullptr};
 	std::unique_ptr<d2d::video::scenery_tile_draw_animated> game_scenery_tile_draw_animated{nullptr};
 	std::unique_ptr<tools::i8n> localization{nullptr};
+	std::unique_ptr<automap> game_automap{nullptr};
+	std::unique_ptr<inventory> game_inventory{nullptr};
+	std::unique_ptr<game_session> session{nullptr};
 };
 }

@@ -1,4 +1,5 @@
 #include "controller/main.h"
+#include "controller/controller_states.h"
 #include "app/input.h"
 #include "app/thing_loader.h"
 #include "app/map_attribute_loader.h"
@@ -48,6 +49,8 @@ main::main(
 	tile_impl{_sp.get_tile_impl()},
 	persistence{_sp.get_persistence()},
 	music_player{_sp.get_music_player()},
+	inventory{_sp.get_inventory()},
+	game_session{_sp.get_game_session()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}}
 #ifdef IS_DEBUG_BUILD
 	,
@@ -83,23 +86,6 @@ void main::new_game() {
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
 	reset_game();
 	start("start_001", 1);
-}
-
-void main::set_difficulty(
-	int _value
-) {
-
-	switch(_value) {
-
-		case app::skill_easy:
-		case app::skill_normal:
-		case app::skill_hard:
-
-			difficulty_setting=_value;
-			return;
-	}
-
-	throw std::runtime_error("bad difficulty setting");
 }
 
 void main::awake(
@@ -141,6 +127,12 @@ void main::loop_scene(
 
 		lm::log(logger).info()<<"will go back to main menu\n";
 		pop_state();
+		return;
+	}
+
+	if(_input.is_input_down(app::input::pause)) {
+
+		push_state(controller::state_pause);
 		return;
 	}
 
@@ -211,7 +203,7 @@ void main::load_map(
 	auto limits=tlf.find_limits(current_map.collision_tiles);
 	current_map.set_limits(limits);
 
-	app::thing_loader tl{current_map, limits, persistence, difficulty_setting};
+	app::thing_loader tl{current_map, limits, persistence, game_session.skill_level};
 	loader.load_thing_layer("things", tl);
 
 	//The loader takes references to the map data.
@@ -1136,7 +1128,7 @@ void main::drop_out_of_ladder(
 }
 
 void main::pick_up_collectible(
-	app::player& _player,
+	app::player& /*_player,*/,
 	const app::collectible& _collectible
 ) {
 
@@ -1154,23 +1146,24 @@ void main::pick_up_collectible(
 		case app::collectible::ruby:
 		case app::collectible::diamond:
 
+			++inventory.total_collectibles;
 		break;
 		case app::collectible::yellow_key:
 
-			_player.yellow_keycount++;
+			inventory.yellow_keys++;
 			return;
 
 		case app::collectible::blue_key:
 
-			_player.blue_keycount++;
+			inventory.blue_keys++;
 			return;
 		case app::collectible::red_key:
 
-			_player.red_keycount++;
+			inventory.red_keys++;
 			return;
 		case app::collectible::green_key:
 
-			_player.green_keycount++;
+			inventory.green_keys++;
 			return;
 	}
 }
@@ -1213,7 +1206,7 @@ void main::start_falling(
 }
 
 void main::activate_button(
-	app::player& _player,
+	app::player& /*_player*/,
 	app::button& _button
 ) {
 
@@ -1225,16 +1218,16 @@ void main::activate_button(
 
 		case app::button::types::regular: break;
 		case app::button::types::yellow_keyhole:
-			_player.yellow_keycount--;
+			inventory.yellow_keys--;
 		break;
 		case app::button::types::blue_keyhole: 
-			_player.blue_keycount--;
+			inventory.blue_keys--;
 		break;
 		case app::button::types::red_keyhole: 
-			_player.red_keycount--;
+			inventory.red_keys--;
 		break;
 		case app::button::types::green_keyhole: 
-			_player.green_keycount--;
+			inventory.green_keys--;
 		break;
 	}
 
@@ -1410,7 +1403,7 @@ bool main::is_into_harm(
 }
 
 bool main::has_key(
-	const app::player& _player,
+	const app::player& /**_player*/,
 	const app::button& _button
 ) const {
 
@@ -1423,16 +1416,16 @@ bool main::has_key(
 
 		case app::button::types::yellow_keyhole:
 
-			return _player.yellow_keycount > 0;
+			return inventory.yellow_keys > 0;
 		case app::button::types::blue_keyhole:
 
-			return _player.blue_keycount > 0;
+			return inventory.blue_keys > 0;
 		case app::button::types::red_keyhole:
 
-			return _player.red_keycount > 0;
+			return inventory.red_keys > 0;
 		case app::button::types::green_keyhole:
 
-			return _player.green_keycount > 0;
+			return inventory.green_keys > 0;
 	}
 
 	return false;
@@ -1521,17 +1514,18 @@ void main::save_game(
 		_map_name,
 		persistence.save_to_string(),
 		_entry_id,
-		difficulty_setting,
-		0, //seconds
-		0, //lives,
-		player.yellow_keycount,
-		player.blue_keycount,
-		player.red_keycount,
-		player.green_keycount
+		game_session.skill_level,
+		game_session.seconds_elapsed,
+		game_session.lives,
+		inventory.yellow_keys,
+		inventory.blue_keys,
+		inventory.red_keys,
+		inventory.green_keys
+		//TODO: What about the total collectibles?
 	};
 
-	app::savegame_manager manager{};
-	manager.save_to_file(
+	app::savegame_io sio{};
+	sio.save_to_file(
 		//TODO: yeah, sure...
 		"/tmp/crapfile",
 		save
@@ -1541,18 +1535,18 @@ void main::save_game(
 void main::load_game() {
 
 	const std::string filename="/tmp/crapfile";
-	app::savegame_manager manager{};
-	auto save=manager.load_from_file(filename);
+	app::savegame_io sio{};
+	auto save=sio.load_from_file(filename);
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
 	reset_game();
 
-	player.red_keycount=save.red_keys;
-	player.blue_keycount=save.blue_keys;
-	player.green_keycount=save.green_keys;
-	player.yellow_keycount=save.yellow_keys;
+	inventory.red_keys=save.red_keys;
+	inventory.blue_keys=save.blue_keys;
+	inventory.green_keys=save.green_keys;
+	inventory.yellow_keys=save.yellow_keys;
 
-	difficulty_setting=save.difficulty_setting;
+	game_session.skill_level=save.difficulty_setting;
 
 	std::cout<<"persistence string is "<<save.persistence_string<<std::endl;
 	persistence.load_from_string(save.persistence_string);
@@ -1562,10 +1556,10 @@ void main::load_game() {
 
 void main::reset_game() {
 
+	//TODO: Why should this go here in this controller?
 	persistence.reset();
-	player.reset(); //this resets keys.
-	//TODO: Everything about resetting shit would go here!!
-	//TODO: Like... lives, timer, keys.
+	player.reset();
+	inventory.reset();
 }
 
 #ifdef IS_DEBUG_BUILD

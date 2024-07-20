@@ -9,6 +9,7 @@ enum input {
 	up,
 	jump,
 	down,
+	pause,
 	tic,
 	reload_values
 };

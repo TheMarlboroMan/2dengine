@@ -37,6 +37,12 @@ enum persistence_groups {
 	pergr_secret_covers=2, //black rectangles covering secret areas.
 	pergr_buttons=3, //buttons and keyholes.
 	pergr_touch_triggers=4, //touch triggers
+	pergr_automap=5, //automap discovery state.
+};
+
+enum automap_flags {
+	am_discovered=1, //room has been visited
+	am_complete=2 //room has no collectibles left
 };
 
 enum spritesheets {

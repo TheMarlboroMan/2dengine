@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
 	catch(std::exception& e) {
 
 		std::cerr<<"Interrupting due to exception: "<<e.what()<<std::endl;
-		lm::log(app_log).error()<<"an error happened "<<e.what()<<std::endl;
+		lm::log(app_log).error()<<"an error happened: "<<e.what()<<std::endl;
 		lm::log(app_log).info()<<"stopping sdl2..."<<std::endl;
 		ldt::sdl_shutdown();
 

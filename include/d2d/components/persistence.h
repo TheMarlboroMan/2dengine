@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <functional>
 
 namespace d2d { namespace components {
 
@@ -42,6 +43,26 @@ class persistence {
 		}
 
 		return data.at(_group).size();
+	}
+
+/**
+ * returns the count of members in a group that satisfy the given predicate.
+ */
+	std::size_t                         size(
+		grouptype _group,
+		std::function<bool(statetype)> _predicate
+	) {
+
+		if(!this->has(_group)) {
+
+			throw exception("cannot get filtered size of non-existent persistence group");
+		}
+
+		return std::count_if(
+			std::begin(data.at(_group)),
+			std::end(data.at(_group)),
+			[_predicate](const node& _node) -> bool {return _predicate(_node.state);}
+		);
 	}
 
 /**

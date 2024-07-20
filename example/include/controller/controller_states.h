@@ -6,6 +6,7 @@ enum states {
 	state_min=0,
 	state_menu,
 	state_main,
+	state_pause,
 	state_max
 };
 }

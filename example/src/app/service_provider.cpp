@@ -1,6 +1,10 @@
 #include "app/service_provider.h"
 #include "app/definitions.h"
 #include "app/tile_impl.h"
+#include "app/automap.h"
+#include "app/automap_reader.h"
+#include "app/inventory.h"
+#include "app/game_session.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -226,7 +230,7 @@ d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_
 }
 
 
-tools::i8n service_provider::get_localization() {
+tools::i8n& service_provider::get_localization() {
 
 	if(nullptr==localization) {
 
@@ -240,4 +244,38 @@ tools::i8n service_provider::get_localization() {
 	}
 
 	return *localization;
+}
+
+app::automap& service_provider::get_automap() {
+
+	if(nullptr==game_automap) {
+
+		automap_reader ar;
+
+		auto am=ar.read_map(get_env().build_app_path("resources/lists/automap.txt"));
+		game_automap.reset(new automap(am)); //default copy constructor.
+
+	}
+
+	return *game_automap;
+}
+
+app::inventory& service_provider::get_inventory() {
+
+	if(nullptr==game_inventory) {
+
+		game_inventory.reset(new inventory());
+	}
+
+	return *game_inventory;
+}
+
+app::game_session& service_provider::get_game_session() {
+
+	if(nullptr==session) {
+
+		session.reset(new game_session());
+	}
+
+	return *session;
 }
