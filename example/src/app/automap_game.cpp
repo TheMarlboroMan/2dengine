@@ -6,33 +6,37 @@ automap_game::automap_game(
 	const automap& _automap
 ):
 	map{_automap},
-	current_index{0},
-	last_index(map.size()-1)
+	current_index{0}
 {}
 
 void automap_game::reset() {
 
-	current_index=0;
 }
 
-void automap_game::next() {
+const map_area& automap_game::get() {
 
-	if(current_index==last_index) {
-
-		current_index=0;
-		return;
-	}
-
-	++current_index;
+	return map.areas.at(current_index);
 }
 
-void automap_game::previous() {
+const map_area& automap_game::get(
+	int _area_id
+) {
 
-	if(current_index==0) {
+	current_index=_area_id;
+	return map.areas.at(current_index);
+}
 
-		current_index=last_index;
-		return;
-	}
+const map_area& automap_game::next() {
 
-	--current_index;
+	//TODO: how do we know what areas are available?
+	//The easy way is just to tell this class when we go into a new map,
+	//right? like "make_available" or "discover_area" or whatever. This
+	//would be easy to be stored in a set.
+	return map.areas.at(0);
+}
+
+const map_area& automap_game::previous() {
+
+	//TODO: how do we know what areas are available?
+	return map.areas.at(0);
 }

@@ -1,0 +1,129 @@
+{
+	"main_menu":[
+		{
+			"type":"screen",
+			"rgba":[0,0,0,0]
+		},
+		{
+			"id":"menu_start",
+			"type":"ttf",
+			"location":[32, 32],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_continue",
+			"type":"ttf",
+			"location":[32, 64],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_load",
+			"type":"ttf",
+			"location":[32, 96],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_quit",
+			"type":"ttf",
+			"location":[32, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+
+		{
+			"id":"menu_skill_easy",
+			"type":"ttf",
+			"location":[64, 64],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_skill_normal",
+			"type":"ttf",
+			"location":[64, 96],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_skill_hard",
+			"type":"ttf",
+			"location":[64, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		}
+	],
+	"pause":[
+		{
+			"type":"screen",
+			"rgba":[47,72,78,255]
+		},
+		{
+			"type":"box",
+			"location":[8, 8, 272, 208],
+			"rgba":[0,0,0,255]
+		},
+		{
+			"id":"treasure_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[0, 7, 16, 9],
+			"location":[16, 16, 16, 9]
+		},
+		{
+			"id":"treasure_value",
+			"type":"ttf",
+			"location":[32, 16],
+			"text":" x 99",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"keys_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[48, 3, 16, 10],
+			"location":[16, 32, 16, 10]
+		},
+		{
+			"id":"keys_value",
+			"type":"ttf",
+			"location":[32, 32],
+			"text":" x 99",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"lives_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[144, 8, 16, 10],
+			"location":[144, 16, 16, 10]
+		},
+		{
+			"id":"lives_value",
+			"type":"ttf",
+			"location":[160, 16],
+			"text":" x 99",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"time_value",
+			"type":"ttf",
+			"location":[144, 32],
+			"text":"01:32:34",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		}
+	]
+}

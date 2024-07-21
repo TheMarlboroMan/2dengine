@@ -316,7 +316,13 @@ void state_driver::load_resources() {
 	auto &ttf_manager=service_provider->get_ttf_manager();
 	ttf_manager.insert(
 		"console_font",
-		7,
+		8,
+		env.build_app_path("resources/fonts/publicpixel.ttf")
+	);
+
+	ttf_manager.insert(
+		"pause_font",
+		8,
 		env.build_app_path("resources/fonts/publicpixel.ttf")
 	);
 

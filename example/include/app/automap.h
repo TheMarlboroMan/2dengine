@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <ostream>
+#include <algorithm>
 
 namespace app {
 

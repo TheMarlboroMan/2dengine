@@ -4,13 +4,13 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 using namespace app;
 
 automap automap_reader::read_map(
 	const std::string& _filename
 ) {
-
 
 	if(!std::filesystem::exists(_filename)) {
 
@@ -128,3 +128,4 @@ void automap_reader::parse_feature(
 
 	_cell.features.push_back({x, y, flags});
 }
+

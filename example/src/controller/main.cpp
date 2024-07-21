@@ -207,7 +207,7 @@ void main::load_map(
 	loader.load_thing_layer("things", tl);
 
 	//The loader takes references to the map data.
-	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.save_point};
+	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.automap_id, current_map.save_point};
 	loader.load_properties(attrl);
 	lm::log(logger).info()<<"map musicid is "
 		<<current_map.music_id
@@ -256,6 +256,16 @@ void main::load_map(
 #ifdef IS_DEBUG_BUILD
 	cml.limit_to_collision_tiles(dd.camera, tile_limits_view, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 #endif
+
+	//Ok, discover this map...
+	if(!persistence.has(app::pergr_automap, current_map.automap_id)) {
+
+		persistence.add(
+			app::pergr_automap, 
+			current_map.automap_id, 
+			current_map.collectibles.size() ? app::am_discovered : app::am_complete
+		);
+	}
 
 //	std::cout<<current_map<<std::endl;
 }
@@ -1147,6 +1157,7 @@ void main::pick_up_collectible(
 		case app::collectible::diamond:
 
 			++inventory.total_collectibles;
+			//TODO: Must we update the automap state because this room is now complete???
 		break;
 		case app::collectible::yellow_key:
 

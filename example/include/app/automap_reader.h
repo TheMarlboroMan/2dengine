@@ -3,6 +3,7 @@
 #include "app/automap.h"
 #include <string>
 #include <fstream>
+#include <functional>
 
 namespace app {
 

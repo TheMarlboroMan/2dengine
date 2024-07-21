@@ -30,24 +30,17 @@ menu::menu(
 		)
 	);
 
-	const std::string layout_path=env.build_app_path("resources/layout/main_menu.json");
+	const std::string layout_path=env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
 	view.parse(document["main_menu"]);
 
-	auto set_text=[this](const std::string& _id, const std::string& _key) {
-
-		static_cast<ldv::ttf_representation*>(view.get_by_id(_id))->set_text(
-			sp.get_localization().get(_key)
-		);
-	};
-
-	set_text("menu_start", "main_menu-start");
-	set_text("menu_continue", "main_menu-continue");
-	set_text("menu_load", "main_menu-load");
-	set_text("menu_quit", "main_menu-quit");
-	set_text("menu_skill_easy", "main_menu-skill_easy");
-	set_text("menu_skill_normal", "main_menu-skill_normal");
-	set_text("menu_skill_hard", "main_menu-skill_hard");
+	view.set_text("menu_start", sp.get_localization().get("main_menu-start"));
+	view.set_text("menu_continue", sp.get_localization().get("main_menu-continue"));
+	view.set_text("menu_load", sp.get_localization().get("main_menu-load"));
+	view.set_text("menu_quit", sp.get_localization().get("main_menu-quit"));
+	view.set_text("menu_skill_easy", sp.get_localization().get("main_menu-skill_easy"));
+	view.set_text("menu_skill_normal", sp.get_localization().get("main_menu-skill_normal"));
+	view.set_text("menu_skill_hard", sp.get_localization().get("main_menu-skill_hard"));
 
 	enter_main();
 }
@@ -107,7 +100,6 @@ void menu::draw(
 	int /*_fps*/
 ) {
 
-	_screen.clear({0, 0, 0, 0});
 	view.draw(_screen);
 }
 
@@ -229,36 +221,26 @@ void menu::back() {
 
 void menu::enter_main() {
 
-	auto toggle=[this](const std::string& _id, bool _value) {
-
-		static_cast<ldv::representation*>(view.get_by_id(_id))->set_visible(_value);
-	};
-
-	toggle("menu_start", true);
-	toggle("menu_continue", true);
-	toggle("menu_load", true);
-	toggle("menu_quit", true);
-	toggle("menu_skill_easy", false);
-	toggle("menu_skill_normal", false);
-	toggle("menu_skill_hard", false);
+	view.set_visible("menu_start", true);
+	view.set_visible("menu_continue", true);
+	view.set_visible("menu_load", true);
+	view.set_visible("menu_quit", true);
+	view.set_visible("menu_skill_easy", false);
+	view.set_visible("menu_skill_normal", false);
+	view.set_visible("menu_skill_hard", false);
 
 	refresh();
 }
 
 void menu::enter_new_game() {
 
-	auto toggle=[this](const std::string& _id, bool _value) {
-
-		static_cast<ldv::representation*>(view.get_by_id(_id))->set_visible(_value);
-	};
-
-	toggle("menu_start", true);
-	toggle("menu_continue", false);
-	toggle("menu_load", false);
-	toggle("menu_quit", false);
-	toggle("menu_skill_easy", true);
-	toggle("menu_skill_normal", true);
-	toggle("menu_skill_hard", true);
+	view.set_visible("menu_start", true);
+	view.set_visible("menu_continue", false);
+	view.set_visible("menu_load", false);
+	view.set_visible("menu_quit", false);
+	view.set_visible("menu_skill_easy", true);
+	view.set_visible("menu_skill_normal", true);
+	view.set_visible("menu_skill_hard", true);
 
 	refresh();
 }
@@ -285,7 +267,7 @@ void menu::refresh() {
 	auto toggle=[this](const std::string& _id, bool _value) {
 
 		int alpha=_value ? 255 : 128;
-		static_cast<ldv::representation*>(view.get_by_id(_id))->set_alpha(alpha);
+		view.set_alpha(_id, alpha);
 	};
 
 	toggle("menu_start", false);

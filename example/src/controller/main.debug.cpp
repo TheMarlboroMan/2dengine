@@ -173,7 +173,7 @@ void main::setup_console(
 	console_display.reset(
 		new appconsole::console{
 			{0,0,480, 100},
-			_sp.get_ttf_manager().get("console_font", 7),
+			_sp.get_ttf_manager().get("console_font", 8),
 			display_update
 		}
 	);

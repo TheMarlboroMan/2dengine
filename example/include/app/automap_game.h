@@ -15,13 +15,28 @@ class automap_game {
 
 	                automap_game(const automap&);
 	void            reset();
-	void            next();
-	void            previous();
+
+/**
+ *returns the current area.
+ */
+	const map_area& get();
+/**
+ * returns the automap area identified by the given id. Throws if it does not
+ * exist.
+ */
+	const map_area& get(int);
+/**
+ * Chooses the next AVAILABLE zone.
+ */
+	const map_area& next();
+/**
+ * Chooses the previous AVAILABLE zone.
+ */
+	const map_area& previous();
 
 	private:
 
 	const automap&  map;
-	std::size_t     current_index;
-	const std::size_t last_index;
+	std::size_t     current_index{0};
 };
 }
