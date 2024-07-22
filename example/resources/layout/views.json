@@ -73,6 +73,13 @@
 			"rgba":[0,0,0,255]
 		},
 		{
+			"type":"box",
+			"location":[8, 64, 272, 140],
+			"id":"automap_center_box",
+			"rgba":[0,255,0,64],
+			"visible":false
+		},
+		{
 			"id":"treasure_icon",
 			"type":"bitmap",
 			"texture":"main",

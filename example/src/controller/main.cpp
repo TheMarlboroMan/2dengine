@@ -207,7 +207,7 @@ void main::load_map(
 	loader.load_thing_layer("things", tl);
 
 	//The loader takes references to the map data.
-	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.automap_id, current_map.save_point};
+	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.automap_id};
 	loader.load_properties(attrl);
 	lm::log(logger).info()<<"map musicid is "
 		<<current_map.music_id
@@ -218,6 +218,8 @@ void main::load_map(
 
 	//Now the music... pieces are loaded in real time so nothing to do here.
 	music_player.swap(current_map.music_id, 500);
+
+	game_session.current_map_id=current_map.automap_id;
 
 	//All activated switches should run their course now: all activated objects
 	//will not save their state but will be activated when the switches do
@@ -260,11 +262,14 @@ void main::load_map(
 	//Ok, discover this map...
 	if(!persistence.has(app::pergr_automap, current_map.automap_id)) {
 
+		lm::log(logger).info()<<"will add id "<<current_map.automap_id<<" to automap..."<<std::endl;
 		persistence.add(
 			app::pergr_automap, 
 			current_map.automap_id, 
 			current_map.collectibles.size() ? app::am_discovered : app::am_complete
 		);
+
+		std::cout<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
 	}
 
 //	std::cout<<current_map<<std::endl;
@@ -287,11 +292,8 @@ void main::exit_to(
 	load_map(_exit.map_filename);
 	take_player_to_entry(_player, _exit.next_entry_id, &_exit);
 
-	//is this map a save point? store information...
-	if(current_map.save_point) {
-
-		save_game(_exit.map_filename, _exit.next_entry_id);
-	}
+	//game is saved at each map change xD
+	save_game(_exit.map_filename, _exit.next_entry_id);
 }
 
 void main::take_player_to_entry(
@@ -587,6 +589,17 @@ void main::post_tic() {
 		pick_up_collectible(player, *it);
 		it=current_map.collectibles.erase(it);
 		it++;
+	}
+
+	//Must we update the automap state because this room is now complete???
+	//TODO: I don't like this here, but the collectibles are deleted here...
+	if(!current_map.collectibles.size()) {
+
+		persistence.set(
+			app::pergr_automap,
+			current_map.automap_id,
+			app::am_complete
+		);
 	}
 
 	//Are we breaking any breakable platforms?
@@ -1157,25 +1170,23 @@ void main::pick_up_collectible(
 		case app::collectible::diamond:
 
 			++inventory.total_collectibles;
-			//TODO: Must we update the automap state because this room is now complete???
 		break;
 		case app::collectible::yellow_key:
 
 			inventory.yellow_keys++;
-			return;
-
+		break;
 		case app::collectible::blue_key:
 
 			inventory.blue_keys++;
-			return;
+		break;
 		case app::collectible::red_key:
 
 			inventory.red_keys++;
-			return;
+		break;
 		case app::collectible::green_key:
 
 			inventory.green_keys++;
-			return;
+		break;
 	}
 }
 

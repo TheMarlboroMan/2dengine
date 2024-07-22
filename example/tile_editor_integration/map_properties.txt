@@ -1,11 +1,4 @@
 beginproperty
-	name name
-	type string
-	default unnamed
-	comment Map name
-endproperty
-
-beginproperty
 	name music_id
 	type int
 	default 0
@@ -24,12 +17,5 @@ beginproperty
 	type int
 	default 0
 	comment 0=black 1=sky
-endproperty
-
-beginproperty
-	name save_point
-	type int
-	default 0
-	comment set to 1 if the game should be saved upon loading this map
 endproperty
 

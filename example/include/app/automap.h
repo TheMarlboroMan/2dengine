@@ -56,7 +56,7 @@ struct map_feature {
 		exit_left=8, 
 		gate=16,
 		ellipsis_horizontal=32,
-		ellipsis_vertical=68
+		ellipsis_vertical=64
 	};
 
 	int x, y, flags;

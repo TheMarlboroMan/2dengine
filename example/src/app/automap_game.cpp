@@ -23,6 +23,7 @@ const map_area& automap_game::get(
 ) {
 
 	current_index=_area_id;
+	//TODO: Noope, by id!!!!!!
 	return map.areas.at(current_index);
 }
 

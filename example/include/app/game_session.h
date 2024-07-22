@@ -13,7 +13,8 @@ struct game_session {
  * controller to know what we are supposed to load. The automap identifies maps
  * by their unique numeric id.
  */
-	        current_map_id{0}; 
+	        current_map_id{0},
+	        current_area_id{1};
 
 	bool    with_lives() const;
 	bool    with_timer() const;
