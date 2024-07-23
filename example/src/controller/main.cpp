@@ -219,6 +219,7 @@ void main::load_map(
 	//Now the music... pieces are loaded in real time so nothing to do here.
 	music_player.swap(current_map.music_id, 500);
 
+	//Setup the automap.
 	game_session.current_map_id=current_map.automap_id;
 
 	//All activated switches should run their course now: all activated objects

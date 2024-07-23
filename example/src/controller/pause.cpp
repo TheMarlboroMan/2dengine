@@ -45,19 +45,15 @@ void pause::awake(
 	dfw::input& /*input*/
 ) {
 
-	//TODO: Hide the kind of shit we don't need according to game_sesion.
-	//LIVES
-	//TIME
-	
-	//TODO: use the automap to select the current area. So it it the one
-	//that shows. Or even better, take it from the game_session and add that
-	//layer of indirection.
-	//Select the current map and shit... This is actually interesting
-	//because we need to find the AREA from the current map id. Not a lot
-	//but well...
-	
-	set_area_name();
+	//Hide or show stuff according to game mode.
+	view.set_visible("lives_icon", game_session.with_lives());
+	view.set_visible("lives_value", game_session.with_lives());
+	view.set_visible("time_value", game_session.with_timer());
 
+	lm::log(logger).debug()<<"attempting to locate area for "<<game_session.current_map_id<<"\n";
+	auto area_id=automap_interface.area_id_from_map_id(game_session.current_map_id);
+	automap_interface.set(area_id);
+	
 	ready_map();
 }
 
@@ -100,24 +96,13 @@ void pause::draw(
 
 void pause::ready_map() {
 
-	//TODO: We also have to set the map name, right? 
-	//For that we would need a way to align the text, but that is not 
-	//supported in the whole view, right? No need, we can align it horizontally
-	//with the box, right? 
-
-	std::vector<const app::map_cell*> cells;
+	const auto& area=automap_interface.get();
+	view.set_text("area_name", localization.get(area.localization_key));
 
 	//Get all cells for the current area and filter them witn the
 	//persistence layer. If we can see it then it has been discovered.
 	//and should be drawn.
-	
-	///TODO: It would be a nice exercise to std::transform this?
-	///
-	///TODO: NOt really zero!!! I guess we need the automap_interface to be
-	///able to tell us an area from a map id, right?. That would be "easy"
-	///as long as we can later save it to the game session or something.
-	//const auto& area=automap_interface.get(current_area_id);
-	const auto& area=automap_interface.get(0);
+	std::vector<const app::map_cell*> cells;
 	for(const auto& cell : area.cells) {
 
 		//TODO: Maybe some cheat here too????
@@ -133,13 +118,24 @@ void pause::ready_map() {
 		ready_room(*cell);
 	}
 
-	//TODO: Is this working???
+	//TODO: Is this working??? It is, but the center should take into 
+	//consideration the visibility (or not) of the parts. That's good for
+	//a future patch.
 	auto center_box=view.get_by_id("automap_center_box");
 	map_representation.align(
 		*center_box, 
 		{
 			ldv::representation_alignment::h::center,
 			ldv::representation_alignment::v::center
+		}
+	);
+
+	auto area_name=view.get_by_id("area_name");
+	area_name->align(
+		*center_box,
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::inner_top
 		}
 	);
 }
@@ -244,6 +240,3 @@ void pause::ready_room(
 	}
 }
 
-void pause::set_area_name() {
-
-}

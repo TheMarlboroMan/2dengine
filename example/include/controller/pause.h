@@ -33,7 +33,6 @@ class pause:
 
 	void                        ready_map();
 	void                        ready_room(const app::map_cell&);
-	void                        set_area_name();
 
 	app::service_provider&      sp;
 	const appenv::env&          env;

@@ -80,6 +80,14 @@
 			"visible":false
 		},
 		{
+			"id":"area_name",
+			"type":"ttf",
+			"location":[8, 64],
+			"text":"This would be the map name here",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
 			"id":"treasure_icon",
 			"type":"bitmap",
 			"texture":"main",

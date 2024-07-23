@@ -17,14 +17,19 @@ class automap_game {
 	void            reset();
 
 /**
+*returns an area id from the given automap id.
+*/
+	int   area_id_from_map_id(int) const;
+
+/**
  *returns the current area.
  */
-	const map_area& get();
+	const map_area& get() const;
+
 /**
- * returns the automap area identified by the given id. Throws if it does not
- * exist.
+ * sets the current area id.
  */
-	const map_area& get(int);
+	void  set(int);
 /**
  * Chooses the next AVAILABLE zone.
  */
@@ -37,6 +42,6 @@ class automap_game {
 	private:
 
 	const automap&  map;
-	std::size_t     current_index{0};
+	int current_area_id{0};
 };
 }
