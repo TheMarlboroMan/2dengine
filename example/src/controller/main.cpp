@@ -1549,17 +1549,15 @@ void main::save_game(
 
 	app::savegame_io sio{};
 	sio.save_to_file(
-		//TODO: yeah, sure...
-		"/tmp/crapfile",
+		game_session.savegame_file,
 		save
 	);
 }
 
 void main::load_game() {
 
-	const std::string filename="/tmp/crapfile";
 	app::savegame_io sio{};
-	auto save=sio.load_from_file(filename);
+	auto save=sio.load_from_file(game_session.savegame_file);
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
 	reset_game();

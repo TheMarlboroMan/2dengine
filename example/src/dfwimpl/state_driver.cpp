@@ -196,7 +196,10 @@ void state_driver::prepare_state(
 
 				lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
 
-				service_provider->get_game_session().reset(menuc.get_selected_skill());
+				service_provider->get_game_session().reset(
+					menuc.get_selected_skill(),
+					menuc.get_slot_filename()
+				);
 				mainc.new_game();
 				menuc.set_can_continue();
 				return;
@@ -209,6 +212,10 @@ void state_driver::prepare_state(
 			case controller::menu::signals::load_game:
 
 				lm::log(log).info()<<"is load game, will instruct to load the savegame"<<std::endl;
+				service_provider->get_game_session().reset( //reset, data will be loaded.
+					menuc.get_selected_skill(),
+					menuc.get_slot_filename()
+				);
 				mainc.load_game();
 				menuc.set_can_continue();
 				return;
@@ -329,6 +336,12 @@ void state_driver::load_resources() {
 	ttf_manager.insert(
 		"menu_font",
 		16,
+		env.build_app_path("resources/fonts/publicpixel.ttf")
+	);
+
+	ttf_manager.insert(
+		"menu_font",
+		8,
 		env.build_app_path("resources/fonts/publicpixel.ttf")
 	);
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace app {
 
 struct game_session {
@@ -7,6 +9,7 @@ struct game_session {
 	int     skill_level{0},
 	        lives{0},
 	        seconds_elapsed{0};
+	std::string savegame_file;
 /**
  * an easy way to know where we are for the automap. This is just a number,
  * which is different from the map filename that is used in the game 
@@ -17,7 +20,7 @@ struct game_session {
 
 	bool    with_lives() const;
 	bool    with_timer() const;
-	void    reset(int);
+	void    reset(int, const std::string&);
 	void    set_skill_level(int);
 };
 }

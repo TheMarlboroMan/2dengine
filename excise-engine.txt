@@ -19,9 +19,6 @@ next steps:
 	fix crash at exit
 		seems to be something about music unloading. I just commented it out.
 
-	red_012 has nothing, it skips to red_013. We can make red_014 be red_012
-		and that would be it.
-
 	sound:
 		what about a very basic sound like 
 			play_sound(int)
@@ -38,18 +35,6 @@ next steps:
 
 		"something" to reskin the character?
 
-		better menu for loading shit.
-			start/load
-				slot 1 / new
-				slot 2 / new
-				slot 3 / new
-				-----------
-						easy
-						normal
-						hard
-			continue
-			exit
-
 		pause should run for at least some ms... That would be easy, just 
 		reset a counter on awakening and set the "can_leave_state" flag
 		accordingly.
@@ -58,6 +43,8 @@ next steps:
 			shows current items
 			shows current time (in negative steps XD)
 			shows current lives (if need be).
+
+	show data on savegame loading!
 
 	ideas:
 		- ?????? I am missing one here.

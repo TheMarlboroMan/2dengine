@@ -11,7 +11,9 @@ struct save_slot {
 
 	bool                    new_game{false};
 	std::string             filename{};
-	int                     collectibles{0};
+	int                     collectibles{0},
+	                        skill_setting{0}, //expressed in flags!
+	                        elapsed_seconds{0};
 };
 
 class savegame_manager {

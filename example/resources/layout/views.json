@@ -21,22 +21,46 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"menu_load",
+			"id":"menu_quit",
 			"type":"ttf",
 			"location":[32, 96],
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]
 		},
+
 		{
-			"id":"menu_quit",
+			"id":"menu_savegame_slot_1",
 			"type":"ttf",
-			"location":[32, 128],
+			"location":[64, 64],
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]
 		},
-
+		{
+			"id":"menu_savegame_slot_2",
+			"type":"ttf",
+			"location":[64, 96],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_savegame_slot_3",
+			"type":"ttf",
+			"location":[64, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_savegame_description",
+			"type":"ttf",
+			"location":[32, 160],
+			"text":"easy, 56% 01:23:03",
+			"font":"main_menu_small_font",
+			"rgba":[255, 255, 255, 255]
+		},
 		{
 			"id":"menu_skill_easy",
 			"type":"ttf",

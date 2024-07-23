@@ -9,6 +9,9 @@
 #include <ldv/ttf_representation.h>
 
 #include <iostream>
+#include <map>
+#include <sstream>
+#include <stdexcept>
 
 using namespace controller;
 
@@ -17,7 +20,8 @@ menu::menu(
 ):
 	sp{_sp},
 	env{_sp.get_env()},
-	logger{_sp.get_logger()}
+	logger{_sp.get_logger()},
+	savegame_manager{env}
 {
 
 	//Chicken and egg... can we parse first and map later so we can define
@@ -30,17 +34,27 @@ menu::menu(
 		)
 	);
 
+	view.map_font(
+		"main_menu_small_font",
+		sp.get_ttf_manager().get(
+			"menu_font",
+			8
+		)
+	);
+
 	const std::string layout_path=env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
 	view.parse(document["main_menu"]);
 
-	view.set_text("menu_start", sp.get_localization().get("main_menu-start"));
-	view.set_text("menu_continue", sp.get_localization().get("main_menu-continue"));
-	view.set_text("menu_load", sp.get_localization().get("main_menu-load"));
-	view.set_text("menu_quit", sp.get_localization().get("main_menu-quit"));
-	view.set_text("menu_skill_easy", sp.get_localization().get("main_menu-skill_easy"));
-	view.set_text("menu_skill_normal", sp.get_localization().get("main_menu-skill_normal"));
-	view.set_text("menu_skill_hard", sp.get_localization().get("main_menu-skill_hard"));
+
+	const auto& i8n=sp.get_localization();
+
+	view.set_text("menu_start", i8n.get("main_menu-start"));
+	view.set_text("menu_continue", i8n.get("main_menu-continue"));
+	view.set_text("menu_quit", i8n.get("main_menu-quit"));
+	view.set_text("menu_skill_easy", i8n.get("main_menu-skill_easy"));
+	view.set_text("menu_skill_normal", i8n.get("main_menu-skill_normal"));
+	view.set_text("menu_skill_hard", i8n.get("main_menu-skill_hard"));
 
 	enter_main();
 }
@@ -49,7 +63,9 @@ void menu::awake(
 	dfw::input& /*input*/
 ) {
 
+	savegame_manager.load();
 	refresh();
+	refresh_save_slots();
 }
 
 void menu::slumber(
@@ -112,6 +128,10 @@ void menu::next() {
 			curoption=&main_option; 
 			max=main_option_exit;
 		break;
+		case levels::slot:
+			curoption=&slot_option; 
+			max=slot_three;
+		break;
 		case levels::skill: 
 			curoption=&skill_option; 
 			max=skill_option_hard;
@@ -135,6 +155,9 @@ void menu::prev() {
 		case levels::main: 
 			curoption=&main_option; 
 		break;
+		case levels::slot: 
+			curoption=&slot_option; 
+		break;
 		case levels::skill: 
 			curoption=&skill_option; 
 		break;
@@ -157,30 +180,14 @@ void menu::select() {
 		case levels::main:
 
 			switch(main_option) {
-				case main_option_choose_skill:
+				case main_option_choose_slot:
 
-					curlevel=levels::skill;
-					enter_new_game();
+					enter_slot_select();
 					return;
+
 				case main_option_continue:
 
-					if(game_can_continue) {
-
-						action_signal=signals::continue_game;
-						push_state(state_main);
-						return;
-					}
-
-					//TODO: We should... I don't know, reserve a channel for this. We
-					//can hit the button until the cows come home xD!
-					play_sound(app::snd_defeat);
-					return;
-
-				case main_option_load:
-
-					//TODO: Next choice should be "continue" in the menu.
-					action_signal=signals::load_game;
-					push_state(state_main);
+					attempt_to_continue();
 					return;
 
 				case main_option_exit:
@@ -190,14 +197,14 @@ void menu::select() {
 
 			return;
 
+		case levels::slot:
+
+			choose_slot();
+			return;
+
 		case levels::skill:
 
-			//Do something extra, next time we are here we will be on "continue".
-			enter_main();
-			curlevel=levels::main;
-			main_option=main_option_continue;
-			push_state(state_main);
-			action_signal=signals::new_game;
+			choose_skill();
 			return;
 	}
 }
@@ -211,36 +218,115 @@ void menu::back() {
 			set_leave(true);
 			return;
 
+		case levels::slot:
+
+			enter_main();
+			return;
+
 		case levels::skill:
 
-			curlevel=levels::main;
-			enter_main();
+			curlevel=levels::slot;
+			enter_slot_select();
 			return;
 	}
 }
 
 void menu::enter_main() {
 
-	view.set_visible("menu_start", true);
-	view.set_visible("menu_continue", true);
-	view.set_visible("menu_load", true);
-	view.set_visible("menu_quit", true);
-	view.set_visible("menu_skill_easy", false);
-	view.set_visible("menu_skill_normal", false);
-	view.set_visible("menu_skill_hard", false);
+	curlevel=levels::main;
+	ready_main();
+}
+
+void menu::enter_slot_select() {
+
+	curlevel=levels::slot;
+	ready_slot_select();
+}
+
+void menu::enter_skill_select() {
+
+	curlevel=levels::skill;
+	ready_skill_select();
+}
+
+void menu::ready_main() {
+
+	for(const auto str : {
+		"menu_start", 
+		"menu_continue", 
+		"menu_quit"
+	}) {
+
+		view.set_visible(str, true);
+	}
+
+	for(const auto str : {
+		"menu_skill_easy", 
+		"menu_skill_normal",
+		"menu_skill_hard", 
+		"menu_savegame_slot_1", 
+		"menu_savegame_slot_2", 
+		"menu_savegame_slot_3",
+		"menu_savegame_description",
+	}) {
+
+		view.set_visible(str, false);
+	}
 
 	refresh();
 }
 
-void menu::enter_new_game() {
 
-	view.set_visible("menu_start", true);
-	view.set_visible("menu_continue", false);
-	view.set_visible("menu_load", false);
-	view.set_visible("menu_quit", false);
-	view.set_visible("menu_skill_easy", true);
-	view.set_visible("menu_skill_normal", true);
-	view.set_visible("menu_skill_hard", true);
+void menu::ready_slot_select() {
+
+	for(const auto str : {
+		"menu_start", 
+		"menu_savegame_slot_1", 
+		"menu_savegame_slot_2", 
+		"menu_savegame_slot_3",
+		"menu_savegame_description"
+	}) {
+
+		view.set_visible(str, true);
+	}
+
+	for(const auto str : {
+		"menu_continue",
+		"menu_quit",
+		"menu_skill_easy", 
+		"menu_skill_normal",
+		"menu_skill_hard"
+	}) {
+
+		view.set_visible(str, false);
+	}
+
+	refresh();
+}
+
+void menu::ready_skill_select() {
+
+	for(const auto str : {
+		"menu_start", 
+		"menu_skill_easy", 
+		"menu_skill_normal",
+		"menu_skill_hard"
+	}) {
+
+		view.set_visible(str, true);
+	}
+
+	for(const auto str : {
+		"menu_continue",
+		"menu_quit",
+		"menu_savegame_slot_1", 
+		"menu_savegame_slot_2", 
+		"menu_savegame_slot_3",
+		"menu_savegame_description",
+	}) {
+
+		view.set_visible(str, false);
+	}
 
 	refresh();
 }
@@ -255,7 +341,18 @@ int menu::get_selected_skill() const {
 		case skill_option_normal: return app::skill_normal;
 		case skill_option_hard: return app::skill_hard;
 		default:
-			return app::skill_normal;
+			throw std::runtime_error("bad skill");
+	}
+}
+
+const std::string& menu::get_slot_filename() const {
+
+	switch(slot_option) {
+		case slot_one: return savegame_manager.get_slots()[0].filename;
+		case slot_two: return savegame_manager.get_slots()[1].filename;
+		case slot_three: return savegame_manager.get_slots()[2].filename;
+		default:
+			throw std::runtime_error("bad slot");
 	}
 }
 
@@ -270,13 +367,20 @@ void menu::refresh() {
 		view.set_alpha(_id, alpha);
 	};
 
-	toggle("menu_start", false);
-	toggle("menu_continue", false);
-	toggle("menu_load", false);
-	toggle("menu_quit", false);
-	toggle("menu_skill_easy", false);
-	toggle("menu_skill_normal", false);
-	toggle("menu_skill_hard", false);
+	for(auto str : {
+		"menu_start",
+		"menu_continue",
+		"menu_quit",
+		"menu_skill_easy",
+		"menu_skill_normal",
+		"menu_skill_hard",
+		"menu_savegame_slot_1",
+		"menu_savegame_slot_2",
+		"menu_savegame_slot_3"
+	}) {
+
+		toggle(str, false);
+	}
 
 	switch(curlevel) {
 
@@ -284,7 +388,7 @@ void menu::refresh() {
 
 			switch(main_option) {
 
-				case main_option_choose_skill:
+				case main_option_choose_slot:
 
 					toggle("menu_start", true);
 					return;
@@ -294,15 +398,31 @@ void menu::refresh() {
 					toggle("menu_continue", true);
 					return;
 
-				case main_option_load:
-
-					toggle("menu_load", true);
-					return;
 				case main_option_exit:
 
 					toggle("menu_quit", true);
 					return;
 
+				default:
+					return;
+			}
+
+		case levels::slot:
+
+			toggle("menu_start", true);
+			set_savegame_description(slot_option);
+
+			switch(slot_option) {
+
+				case slot_one:
+					toggle("menu_savegame_slot_1", true);
+					return;
+				case slot_two:
+					toggle("menu_savegame_slot_2", true);
+					return;
+				case slot_three:
+					toggle("menu_savegame_slot_3", true);
+					return;
 				default:
 					return;
 			}
@@ -338,4 +458,108 @@ void menu::play_sound(
 	};
 
 	sp.get_audio().play_sound(snd);
+}
+
+/**
+ * attempt to continue an ongoing game.
+ */
+void menu::attempt_to_continue() {
+
+	if(game_can_continue) {
+
+		action_signal=signals::continue_game;
+		push_state(state_main);
+		return;
+	}
+
+	//TODO: We should... I don't know, reserve a channel for this. We
+	//can hit the button until the cows come home xD!
+	play_sound(app::snd_defeat);
+}
+
+void menu::choose_slot() {
+
+	const auto& slot=savegame_manager.get_slots()[slot_option];
+
+	//This is "load a game".
+	if(!slot.new_game) {
+
+		load_game();
+		return;
+	}
+
+	enter_skill_select();
+}
+
+void menu::choose_skill() {
+
+	//Do something extra, next time we are here we will be on "continue".
+	enter_main();
+	main_option=main_option_continue;
+	push_state(state_main);
+	action_signal=signals::new_game;
+}
+
+void menu::refresh_save_slots() {
+
+	const auto& slots=savegame_manager.get_slots();
+
+	std::map<int, std::string> slot_to_id={
+		{0, "menu_savegame_slot_1"},
+		{1, "menu_savegame_slot_2"},
+		{2, "menu_savegame_slot_3"}
+	};
+
+	for(const auto& pair: slot_to_id) {
+
+		std::stringstream ss;
+		ss<<(pair.first+1)<<": ";
+
+		if(slots[pair.first].new_game) {
+
+			ss<<sp.get_localization().get("main_menu-new_game");
+		}
+		else {
+
+			ss<<sp.get_localization().get("main_menu-continue_game");
+			//TODO: COllectibles, time, skill, etc...
+		}
+
+		view.set_text(pair.second, ss.str());
+	}
+
+}
+
+void menu::load_game() {
+
+	enter_main();
+	main_option=main_option_continue;
+	push_state(state_main);
+	action_signal=signals::load_game;
+}
+
+void menu::set_savegame_description(
+	int _slot
+) {
+
+	const auto& slot=savegame_manager.get_slots()[_slot];
+	view.set_visible("menu_savegame_description", !slot.new_game);
+
+	if(slot.new_game) {
+
+		return;
+	}
+
+	const auto& i8n=sp.get_localization();
+	std::stringstream ss;
+
+	switch(slot.skill_setting) {
+
+		case app::skill_easy: ss<<i8n.get("main_menu-skill_easy"); break;
+		case app::skill_normal: ss<<i8n.get("main_menu-skill_normal"); break;
+		case app::skill_hard: ss<<i8n.get("main_menu-skill_hard"); break;
+	}
+
+	ss<<", xx%, xx:xx:xx";
+	view.set_text("menu_savegame_description", ss.str());
 }

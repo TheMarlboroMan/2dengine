@@ -5,10 +5,12 @@
 using namespace app;
 
 void game_session::reset(
-	int _value
+	int _value,
+	const std::string& _savegame_file
 ) {
 
 	set_skill_level(_value);
+	savegame_file=_savegame_file;
 	lives=0;
 	seconds_elapsed=0;
 	current_map_id=0;
