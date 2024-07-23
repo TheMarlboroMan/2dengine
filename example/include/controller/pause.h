@@ -50,6 +50,10 @@ class pause:
 	                            wall_incomplete,
 	                            regular_fill,
 	                            current_fill;
+
+#ifdef IS_DEBUG_BUILD
+	bool                        display_all_maps{false};
+#endif 
 };
 
 }

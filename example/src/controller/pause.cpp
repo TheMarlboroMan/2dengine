@@ -26,7 +26,7 @@ pause::pause(
 	wall_complete{ldv::rgba8(255, 255, 255, 255)},
 	wall_incomplete{ldv::rgba8(157, 157, 157, 255)},
 	regular_fill{ldv::rgba8(164, 100, 34, 255)},
-	current_fill{ldv::rgba8(247, 266, 107, 255)}
+	current_fill{ldv::rgba8(190, 38, 51, 255)}
 {
 
 	view.map_font(
@@ -50,10 +50,31 @@ void pause::awake(
 	view.set_visible("lives_value", game_session.with_lives());
 	view.set_visible("time_value", game_session.with_timer());
 
+	//Update the automap so that we can go back and forth between discovered
+	//areas...
+	for(auto i=automap_interface.get_min_area_id(); i<=automap_interface.get_max_area_id(); i++) {
+
+		//guard against capricious data.
+		if(!automap_interface.has(i)) {
+
+			continue;
+		}
+
+		automap_interface.set(i);
+		for(const auto& cell : automap_interface.get().cells) {
+
+			if(persistence.has(app::pergr_automap, cell.id)) {
+
+				automap_interface.discover_area(i);
+				break;
+			}
+		}
+	}
+	
+	//Finally set the map.
 	lm::log(logger).debug()<<"attempting to locate area for "<<game_session.current_map_id<<"\n";
 	auto area_id=automap_interface.area_id_from_map_id(game_session.current_map_id);
 	automap_interface.set(area_id);
-	
 	ready_map();
 }
 
@@ -82,7 +103,29 @@ void pause::loop(
 		return;
 	}
 
-	//TODO: select other maps and so on.
+#ifdef IS_DEBUG_BUILD
+
+	if(_input.is_input_down(app::input::jump)) {
+
+		lm::log(logger).debug()<<"toggling 'display_all_maps'\n";
+		display_all_maps=!display_all_maps;
+		ready_map();
+	}
+#endif
+
+	if(_input.is_input_down(app::input::left)) {
+
+		automap_interface.previous();
+		ready_map();
+		return;
+	}
+
+	if(_input.is_input_down(app::input::right)) {
+
+		automap_interface.next();
+		ready_map();
+		return;
+	}
 }
 
 void pause::draw(
@@ -99,17 +142,22 @@ void pause::ready_map() {
 	const auto& area=automap_interface.get();
 	view.set_text("area_name", localization.get(area.localization_key));
 
-	//Get all cells for the current area and filter them witn the
+	//Get all cells for the current area and filter them with the
 	//persistence layer. If we can see it then it has been discovered.
 	//and should be drawn.
 	std::vector<const app::map_cell*> cells;
 	for(const auto& cell : area.cells) {
 
-		//TODO: Maybe some cheat here too????
-		if(persistence.has(app::pergr_automap, cell.id)) {
+#ifdef IS_DEBUG_BUILD
+		if(display_all_maps || persistence.has(app::pergr_automap, cell.id)) {
 
 			cells.push_back(&cell);
 		}
+#else
+		if(persistence.has(app::pergr_automap, cell.id)) {
+			cells.push_back(&cell);
+		}
+#endif
 	}
 
 	map_representation.clear();
@@ -118,9 +166,6 @@ void pause::ready_map() {
 		ready_room(*cell);
 	}
 
-	//TODO: Is this working??? It is, but the center should take into 
-	//consideration the visibility (or not) of the parts. That's good for
-	//a future patch.
 	auto center_box=view.get_by_id("automap_center_box");
 	map_representation.align(
 		*center_box, 
@@ -151,9 +196,11 @@ void pause::ready_room(
 	unsigned w=_cell.w*wu,
 		h=_cell.h*hu;
 
-	auto wall_color=persistence.get(app::pergr_automap, _cell.id)==app::am_discovered
-		? wall_incomplete
-		: wall_complete;
+	auto wall_color=!persistence.has(app::pergr_automap, _cell.id)
+			? wall_incomplete
+			: persistence.get(app::pergr_automap, _cell.id)==app::am_discovered
+				? wall_incomplete
+				: wall_complete;
 
 	auto fill_color=game_session.current_map_id==_cell.id
 		? current_fill
