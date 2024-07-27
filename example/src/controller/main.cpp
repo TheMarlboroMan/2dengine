@@ -125,8 +125,15 @@ void main::loop_scene(
 
 	if(_input.is_input_down(app::input::escape)) {
 
-		lm::log(logger).info()<<"will go back to main menu\n";
-		pop_state();
+		if(1!=state_size()) {
+
+			lm::log(logger).info()<<"will go back to main menu\n";
+			pop_state();
+			return;
+		}
+
+		lm::log(logger).info()<<"attemping to leave main state with no stack, exiting";
+		set_leave(true);
 		return;
 	}
 

@@ -4,6 +4,7 @@
 #include "app/definitions.h"
 
 #include <filesystem>
+#include <stdexcept>
 
 using namespace app;
 
@@ -12,6 +13,18 @@ savegame_manager::savegame_manager(
 ):
 	env{_env}
 { }
+
+const save_slot& savegame_manager::get(
+	std::size_t _index
+) const {
+
+	if(_index >= slots.size()) {
+
+		throw std::runtime_error("out of bounds slot");
+	}
+
+	return slots.at(_index);
+}
 
 void savegame_manager::load() {
 
@@ -44,4 +57,23 @@ void savegame_manager::load() {
 
 		slots.push_back({false, path, pickups, save.difficulty_setting, save.elapsed_seconds});
 	}
+}
+
+void savegame_manager::erase(
+	std::size_t _slot_index
+) {
+
+	if(_slot_index >= slots.size()) {
+
+		throw std::runtime_error("out of bounds slot");
+	}
+
+	const auto& slot=slots[_slot_index];
+	if(slot.new_game) {
+
+		throw std::runtime_error("will not erase non-existing slot");
+	}
+
+	std::filesystem::remove(slot.filename);
+	load();
 }

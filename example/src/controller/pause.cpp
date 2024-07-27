@@ -1,10 +1,12 @@
 #include "controller/controller_states.h"
 #include "controller/pause.h"
 #include "app/input.h"
+#include "app/inventory.h"
 
 #include <ldtools/ttf_manager.h>
 #include <tools/json.h>
 #include <tools/file_utils.h>
+#include <tools/time.h>
 #include <ldv/box_representation.h>
 
 #include <vector>
@@ -49,6 +51,31 @@ void pause::awake(
 	view.set_visible("lives_icon", game_session.with_lives());
 	view.set_visible("lives_value", game_session.with_lives());
 	view.set_visible("time_value", game_session.with_timer());
+
+	//Update the values to be shown...
+	std::stringstream ss;
+	ss<<" x "<<persistence.size(app::pergr_collectibles);
+	view.set_text("treasure_value", ss.str());
+
+	ss.str("");
+	ss<<" x "<<inventory.yellow_keys;
+	view.set_text("keys_value", ss.str());
+
+	if(game_session.with_lives()) {
+
+		ss.str("");
+		ss<<" x "<<game_session.lives;
+		view.set_text("lives_value", ss.str());
+	}
+
+	if(game_session.with_timer()) {
+
+		ss.str("");
+		tools::time t;
+		auto td=t.seconds_to_timedata(game_session.seconds_elapsed);
+		ss<<t.time_to_string(td.hours, td.minutes, td.seconds);
+		view.set_text("time_value", ss.str());
+	}
 
 	//Update the automap so that we can go back and forth between discovered
 	//areas...

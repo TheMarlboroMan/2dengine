@@ -32,6 +32,23 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
+	if(_cmd=="listentries") {
+
+		std::stringstream ss;
+		for(const auto& entry : current_map.entries) {
+
+			ss<<entry.id<<" ";
+		}
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="gotoentry") {
+
+		int id=_args[0].get_int();
+		take_player_to_entry(player, id, nullptr);
+		return {0, "ok"};
+	}
+
 	if(_cmd=="helpcmd") {
 
 		for(const auto& command : console->get_commands()) {
@@ -158,7 +175,7 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
-	return {0, "..."};
+	return {0, "unknown command"};
 }
 
 void main::setup_console(
@@ -172,7 +189,7 @@ void main::setup_console(
 
 	console_display.reset(
 		new appconsole::console{
-			{0,0,480, 100},
+			{0,0,200, 100},
 			_sp.get_ttf_manager().get("console_font", 8),
 			display_update
 		}
@@ -195,6 +212,8 @@ void main::setup_console(
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
 	console->map_command("skill", {{console::types::integer}});
 	console->map_command("getskill", {});
+	console->map_command("listentries", {});
+	console->map_command("gotoentry", {{console::types::integer}});
 	console->map_command("give", {{console::types::integer}});
 	console->map_command("map", {{console::types::string}, {console::types::integer, true, 1}});
 }

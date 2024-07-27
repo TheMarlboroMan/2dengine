@@ -1,5 +1,8 @@
 next steps:
 
+	forest_004, die and you get transported to the previous screen, bad 
+	positioning???, does not grab ladder??? check that.
+
 	group_draw center, take into account visibility in libdansdl2 
 
 	tile draw animated thing, make it equivalent to the other. 
@@ -8,13 +11,6 @@ next steps:
 	the console does not seem to stop capturing text after it exits
 
 	test map with EVERYTHING IN THE GAME and a shell script to start it.
-
-	forest_004, die and you get transported to the previous screen, bad 
-	positioning, does now grab ladder??? check that.
-		should be able to test this instantly in debug mode, right?
-		something like entries to list entry ids and gotoentry to go to it.
-
-	php script to read object properties, read maps and fill missing stuff.
 
 	fix crash at exit
 		seems to be something about music unloading. I just commented it out.
@@ -45,13 +41,36 @@ next steps:
 			shows current lives (if need be).
 
 	show data on savegame loading!
+		for this we need to store the items picked up
 
-	ideas:
-		- ?????? I am missing one here.
-		-forest area
-		-mountain area
-		-cave area
-		-river area
+	add lives
+		and game over screen
+		and lives remaining stuff
+		and gain a life each N bonuses
+
+	add timer
+
+	confirm on savegame deletion
+
+	general map:
+
+				<GREEN>
+			/         \
+		castle        cave
+			|          |
+	[SHORTCUT]        [SHORTCUT]
+			|          |
+		mountain      ???
+			|          |
+		<RED>          <BLUE>
+			|          |
+		forest        river
+			\	       /
+				START
+
+		- 2 keys on each regular area (not <> or []) for a total of 12
+		- 4 keys to enter each <>
+
 		-castle area
 			- front and back, moving through windows and doors
 			- secret on ceiling climbing lamp hole.

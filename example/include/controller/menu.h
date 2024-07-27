@@ -41,6 +41,7 @@ class menu:
 	void                        next();
 	void                        prev();
 	void                        select();
+	void                        remove();
 	void                        back();
 	//Do this when entering these menus...
 	void                        enter_main();

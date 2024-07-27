@@ -109,6 +109,11 @@ void menu::loop(
 		select();
 		return;
 	}
+
+	if(_input.is_input_down(app::input::pause)) {
+
+		remove();
+	}
 }
 
 void menu::draw(
@@ -348,9 +353,9 @@ int menu::get_selected_skill() const {
 const std::string& menu::get_slot_filename() const {
 
 	switch(slot_option) {
-		case slot_one: return savegame_manager.get_slots()[0].filename;
-		case slot_two: return savegame_manager.get_slots()[1].filename;
-		case slot_three: return savegame_manager.get_slots()[2].filename;
+		case slot_one: return savegame_manager.get(0).filename;
+		case slot_two: return savegame_manager.get(1).filename;
+		case slot_three: return savegame_manager.get(2).filename;
 		default:
 			throw std::runtime_error("bad slot");
 	}
@@ -479,7 +484,7 @@ void menu::attempt_to_continue() {
 
 void menu::choose_slot() {
 
-	const auto& slot=savegame_manager.get_slots()[slot_option];
+	const auto& slot=savegame_manager.get(slot_option);
 
 	//This is "load a game".
 	if(!slot.new_game) {
@@ -542,7 +547,7 @@ void menu::set_savegame_description(
 	int _slot
 ) {
 
-	const auto& slot=savegame_manager.get_slots()[_slot];
+	const auto& slot=savegame_manager.get(_slot);
 	view.set_visible("menu_savegame_description", !slot.new_game);
 
 	if(slot.new_game) {
@@ -562,4 +567,17 @@ void menu::set_savegame_description(
 
 	ss<<", xx%, xx:xx:xx";
 	view.set_text("menu_savegame_description", ss.str());
+}
+
+void menu::remove() {
+
+	if(levels::slot!=curlevel) {
+
+		return;
+	}
+
+	//TODO: Enter special confirm mode!!!!!
+	//
+	savegame_manager.erase(slot_option);
+	refresh_save_slots();
 }
