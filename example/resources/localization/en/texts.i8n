@@ -7,6 +7,8 @@
 [[main_menu-skill_hard]]{{hard}}
 [[main_menu-new_game]]{{new game}}
 [[main_menu-continue_game]]{{load game}}
+[[main_menu-delete_slot]]{{press pause to delete slot}}
+[[main_menu-delete_slot_confirm]]{{press pause again to delete}}
 [[automap-start]]{{Underground passageway}}
 [[automap-forest]]{{Valley forest}}
 [[automap-red_vault]]{{Red key vault}}

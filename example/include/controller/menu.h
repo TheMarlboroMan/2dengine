@@ -42,11 +42,13 @@ class menu:
 	void                        prev();
 	void                        select();
 	void                        remove();
+	void                        confirm_delete();
 	void                        back();
 	//Do this when entering these menus...
 	void                        enter_main();
 	void                        enter_slot_select();
 	void                        enter_skill_select();
+	void                        exit_confirm_delete();
 
 	//Ready views..
 	void                        ready_main();
@@ -70,7 +72,7 @@ class menu:
 
 	app::savegame_manager       savegame_manager;
 	ldtools::view_composer      view;
-	enum class levels{main, slot, skill}
+	enum class levels{main, slot, skill, confirm_delete}
 	                            curlevel{levels::main};
 
 	enum main_options{

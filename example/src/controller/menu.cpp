@@ -55,6 +55,8 @@ menu::menu(
 	view.set_text("menu_skill_easy", i8n.get("main_menu-skill_easy"));
 	view.set_text("menu_skill_normal", i8n.get("main_menu-skill_normal"));
 	view.set_text("menu_skill_hard", i8n.get("main_menu-skill_hard"));
+	view.set_text("menu_savegame_delete_hint", i8n.get("main_menu-delete_slot"));
+	view.set_text("menu_savegame_delete_confirm", i8n.get("main_menu-delete_slot_confirm"));
 
 	enter_main();
 }
@@ -112,7 +114,15 @@ void menu::loop(
 
 	if(_input.is_input_down(app::input::pause)) {
 
-		remove();
+		if(levels::slot==curlevel) {
+
+			remove();
+		}
+		else if(levels::confirm_delete==curlevel) {
+
+			confirm_delete();
+			return;
+		}
 	}
 }
 
@@ -141,6 +151,9 @@ void menu::next() {
 			curoption=&skill_option; 
 			max=skill_option_hard;
 		break;
+		case levels::confirm_delete:
+			exit_confirm_delete();
+			return;
 	}
 
 	if(*curoption == max) {
@@ -166,6 +179,9 @@ void menu::prev() {
 		case levels::skill: 
 			curoption=&skill_option; 
 		break;
+		case levels::confirm_delete:
+			exit_confirm_delete();
+			return;
 	}
 
 	if(*curoption == 0) {
@@ -211,6 +227,10 @@ void menu::select() {
 
 			choose_skill();
 			return;
+
+		case levels::confirm_delete:
+			exit_confirm_delete();
+			return;
 	}
 }
 
@@ -232,6 +252,10 @@ void menu::back() {
 
 			curlevel=levels::slot;
 			enter_slot_select();
+			return;
+
+		case levels::confirm_delete:
+			exit_confirm_delete();
 			return;
 	}
 }
@@ -273,6 +297,7 @@ void menu::ready_main() {
 		"menu_savegame_slot_2", 
 		"menu_savegame_slot_3",
 		"menu_savegame_description",
+		"menu_savegame_delete_hint"
 	}) {
 
 		view.set_visible(str, false);
@@ -289,7 +314,8 @@ void menu::ready_slot_select() {
 		"menu_savegame_slot_1", 
 		"menu_savegame_slot_2", 
 		"menu_savegame_slot_3",
-		"menu_savegame_description"
+		"menu_savegame_description",
+		"menu_savegame_delete_hint"
 	}) {
 
 		view.set_visible(str, true);
@@ -328,6 +354,7 @@ void menu::ready_skill_select() {
 		"menu_savegame_slot_2", 
 		"menu_savegame_slot_3",
 		"menu_savegame_description",
+		"menu_savegame_delete_hint"
 	}) {
 
 		view.set_visible(str, false);
@@ -450,6 +477,9 @@ void menu::refresh() {
 				default:
 					return;
 			}
+
+		case levels::confirm_delete:
+			return;
 	}
 }
 
@@ -549,6 +579,7 @@ void menu::set_savegame_description(
 
 	const auto& slot=savegame_manager.get(_slot);
 	view.set_visible("menu_savegame_description", !slot.new_game);
+	view.set_visible("menu_savegame_delete_hint", !slot.new_game);
 
 	if(slot.new_game) {
 
@@ -576,8 +607,28 @@ void menu::remove() {
 		return;
 	}
 
-	//TODO: Enter special confirm mode!!!!!
-	//
+	//Cannot remove a new-game file.
+	const auto& slot=savegame_manager.get(slot_option);
+	if(slot.new_game) {
+
+		return;
+	}
+
+	//Enter the confirm delete...
+	view.set_visible("menu_savegame_delete_hint", false);
+	view.set_visible("menu_savegame_delete_confirm", true);
+	curlevel=levels::confirm_delete;
+}
+
+void menu::confirm_delete() {
+
 	savegame_manager.erase(slot_option);
 	refresh_save_slots();
+	exit_confirm_delete();
+}
+
+void menu::exit_confirm_delete() {
+
+	enter_slot_select();
+	view.set_visible("menu_savegame_delete_confirm", false);
 }

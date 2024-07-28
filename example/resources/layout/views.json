@@ -62,6 +62,23 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
+			"id":"menu_savegame_delete_hint",
+			"type":"ttf",
+			"location":[32, 192],
+			"text":"",
+			"font":"main_menu_small_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_savegame_delete_confirm",
+			"type":"ttf",
+			"location":[32, 192],
+			"text":"",
+			"font":"main_menu_small_font",
+			"visible":false,
+			"rgba":[255, 0, 0, 255]
+		},
+		{
 			"id":"menu_skill_easy",
 			"type":"ttf",
 			"location":[64, 64],

@@ -50,8 +50,6 @@ next steps:
 
 	add timer
 
-	confirm on savegame deletion
-
 	general map:
 
 				<GREEN>
