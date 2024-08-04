@@ -6,6 +6,8 @@
 #include <tools/json.h>
 #include <tools/file_utils.h>
 #include <tools/i8n.h>
+#include <tools/time.h>
+
 #include <ldv/ttf_representation.h>
 
 #include <iostream>
@@ -596,7 +598,20 @@ void menu::set_savegame_description(
 		case app::skill_hard: ss<<i8n.get("main_menu-skill_hard"); break;
 	}
 
-	ss<<", xx%, xx:xx:xx";
+	//we always draw the amount of stuff collected.
+	//TODO: Should be a percentage!
+	int stuff_collected=slot.collectibles;
+
+	ss<<", "<<stuff_collected<<"%";
+
+	//Also, on hard and normal there is a time limit!
+	if(slot.skill_setting != app::skill_easy) {
+
+		tools::time t;
+		auto ts=t.seconds_to_timedata(slot.elapsed_seconds);
+		ss<<", "<<t.time_to_string(ts.hours, ts.minutes, ts.seconds);
+	}
+	
 	view.set_text("menu_savegame_description", ss.str());
 }
 

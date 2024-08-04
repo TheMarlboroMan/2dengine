@@ -196,11 +196,10 @@ void state_driver::prepare_state(
 
 				lm::log(log).info()<<"is new game, will reset everything"<<std::endl;
 
-				service_provider->get_game_session().reset(
+				mainc.new_game(
 					menuc.get_selected_skill(),
 					menuc.get_slot_filename()
 				);
-				mainc.new_game();
 				menuc.set_can_continue();
 				return;
 

@@ -12,8 +12,9 @@ void game_session::reset(
 	set_skill_level(_value);
 	savegame_file=_savegame_file;
 	lives=0;
-	seconds_elapsed=0;
+	elapsed_seconds=0;
 	current_map_id=0;
+	game_clock.reset();
 }
 
 void game_session::set_skill_level(

@@ -81,22 +81,30 @@ void main::start(
 	take_player_to_entry(player, _entry_id, nullptr);
 }
 
-void main::new_game() {
+void main::new_game(
+	int _skill,
+	const std::string& _slot_filename
+) {
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
-	reset_game();
+	reset_game(_skill, _slot_filename);
 	start("start_001", 1);
 }
 
 void main::awake(
 	dfw::input& /*input*/
 ) {
+
+	game_session.game_clock.is_paused()
+		? game_session.game_clock.resume()
+		: game_session.game_clock.start();
 }
 
 void main::slumber(
 	dfw::input& /*input*/
 ) {
 
+	game_session.game_clock.pause();
 }
 
 void main::loop(
@@ -1545,7 +1553,7 @@ void main::save_game(
 		persistence.save_to_string(),
 		_entry_id,
 		game_session.skill_level,
-		game_session.seconds_elapsed,
+		game_session.elapsed_seconds+(int)game_session.game_clock.get_seconds(),
 		game_session.lives,
 		inventory.yellow_keys,
 		inventory.blue_keys,
@@ -1567,7 +1575,7 @@ void main::load_game() {
 	auto save=sio.load_from_file(game_session.savegame_file);
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
-	reset_game();
+	reset_game(save.difficulty_setting, game_session.savegame_file);
 
 	inventory.red_keys=save.red_keys;
 	inventory.blue_keys=save.blue_keys;
@@ -1575,19 +1583,23 @@ void main::load_game() {
 	inventory.yellow_keys=save.yellow_keys;
 
 	game_session.skill_level=save.difficulty_setting;
+	game_session.elapsed_seconds=save.elapsed_seconds;
 
-	std::cout<<"persistence string is "<<save.persistence_string<<std::endl;
 	persistence.load_from_string(save.persistence_string);
 
 	start(save.map_filename, save.entry_id);
 }
 
-void main::reset_game() {
+void main::reset_game(
+	int _skill,
+	const std::string& _savegame_file
+) {
 
 	//TODO: Why should this go here in this controller?
 	persistence.reset();
 	player.reset();
 	inventory.reset();
+	game_session.reset(_skill, _savegame_file);
 }
 
 #ifdef IS_DEBUG_BUILD

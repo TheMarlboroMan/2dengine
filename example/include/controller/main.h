@@ -43,7 +43,7 @@ class main:
 	virtual void                slumber(dfw::input& /*input*/);
 	virtual bool                can_leave_state() const {return true;}
 
-	void                        new_game();
+	void                        new_game(int, const std::string&);
 	void                        start(const std::string&, int);
 	void                        load_game();
 
@@ -94,7 +94,7 @@ class main:
 	void                        activate_touch_trigger(app::touch_trigger&);
 	void                        play_sound(int);
 	void                        save_game(const std::string&, int);
-	void                        reset_game();
+	void                        reset_game(int, const std::string&);
 
 	//world methods.
 	void                        generate_projectile(const app::projectile_generator&);

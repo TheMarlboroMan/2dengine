@@ -47,6 +47,9 @@ void pause::awake(
 	dfw::input& /*input*/
 ) {
 
+	timeout_passed=false;
+	time_elapsed=0.0f;
+
 	//Hide or show stuff according to game mode.
 	view.set_visible("lives_icon", game_session.with_lives());
 	view.set_visible("lives_value", game_session.with_lives());
@@ -70,9 +73,13 @@ void pause::awake(
 
 	if(game_session.with_timer()) {
 
+		lm::log(logger).debug()<<"game session seconds: "<<game_session.elapsed_seconds<<"\n";
+		lm::log(logger).debug()<<"game clock seconds: "<<game_session.game_clock.get_seconds()<<"\n";
+
 		ss.str("");
 		tools::time t;
-		auto td=t.seconds_to_timedata(game_session.seconds_elapsed);
+		auto seconds_elapsed=game_session.elapsed_seconds+game_session.game_clock.get_seconds();
+		auto td=t.seconds_to_timedata(seconds_elapsed);
 		ss<<t.time_to_string(td.hours, td.minutes, td.seconds);
 		view.set_text("time_value", ss.str());
 	}
@@ -113,8 +120,13 @@ void pause::slumber(
 
 void pause::loop(
 	dfw::input& _input,
-	const dfw::loop_iteration_data& /*_lid*/
+	const dfw::loop_iteration_data& _lid
 ) {
+
+	if(!timeout_passed) {
+
+		evaluate_timeout(_lid.delta);
+	}
 
 	if(_input().is_exit_signal()) {
 		set_leave(true);
@@ -314,3 +326,21 @@ void pause::ready_room(
 	}
 }
 
+void pause::evaluate_timeout(
+	float _delta
+) {
+
+	//Can only leave this controller after a second has passed, to prevent
+	//crazy controller shifting.
+	time_elapsed+=_delta;
+	timeout_passed=time_elapsed >= 1.0f;
+
+#ifdef IS_DEBUG_BUILD
+
+	if(timeout_passed) {
+
+		lm::log(logger).debug()<<"timeout passed, can leave controller now\n";
+	}
+
+#endif
+}

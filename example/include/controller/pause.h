@@ -27,12 +27,13 @@ class pause:
 	virtual void                draw(ldv::screen&, int);
 	virtual void                awake(dfw::input& /*input*/);
 	virtual void                slumber(dfw::input& /*input*/);
-	virtual bool                can_leave_state() const {return true;}
+	virtual bool                can_leave_state() const {return timeout_passed;}
 
 	private:
 
 	void                        ready_map();
 	void                        ready_room(const app::map_cell&);
+	void                        evaluate_timeout(float);
 
 	app::service_provider&      sp;
 	const appenv::env&          env;
@@ -50,6 +51,9 @@ class pause:
 	                            wall_incomplete,
 	                            regular_fill,
 	                            current_fill;
+
+	bool                        timeout_passed{false};
+	float                       time_elapsed{0.0f};
 
 #ifdef IS_DEBUG_BUILD
 	bool                        display_all_maps{false};

@@ -31,15 +31,6 @@ next steps:
 
 		"something" to reskin the character?
 
-		pause should run for at least some ms... That would be easy, just 
-		reset a counter on awakening and set the "can_leave_state" flag
-		accordingly.
-
-		draw status (status screen??)
-			shows current items
-			shows current time (in negative steps XD)
-			shows current lives (if need be).
-
 	show data on savegame loading!
 		for this we need to store the items picked up
 
@@ -47,8 +38,6 @@ next steps:
 		and game over screen
 		and lives remaining stuff
 		and gain a life each N bonuses
-
-	add timer
 
 	general map:
 
@@ -72,6 +61,8 @@ next steps:
 		-castle area
 			- front and back, moving through windows and doors
 			- secret on ceiling climbing lamp hole.
+
+============================0
 
 	engine:
 		I guess slopes
