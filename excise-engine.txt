@@ -35,19 +35,15 @@ next steps:
 		for this we need to store the items picked up
 
 	add lives
-		and game over screen
-		and lives remaining stuff
+		each time the player is defeated show how many lives remain...
 		and gain a life each N bonuses
+		and game over screen
 
 	general map:
 
 				<GREEN>
 			/         \
-		castle        cave
-			|          |
-	[SHORTCUT]        [SHORTCUT]
-			|          |
-		mountain      ???
+		castle        mountain
 			|          |
 		<RED>          <BLUE>
 			|          |

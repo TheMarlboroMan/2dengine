@@ -10,7 +10,10 @@ struct inventory {
 	            blue_keys{0},
 	            red_keys{0},
 	            green_keys{0},
-				//TODO: Does this actually make any sense??
+/**
+ * this is a bit redundant considering the persistence layers, but it's easier
+ * this way.
+ * */
 	            total_collectibles{0};
 
 	void        reset();

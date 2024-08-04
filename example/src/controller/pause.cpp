@@ -54,7 +54,7 @@ void pause::awake(
 	view.set_visible("lives_icon", game_session.with_lives());
 	view.set_visible("lives_value", game_session.with_lives());
 	view.set_visible("time_value", game_session.with_timer());
-
+		
 	//Update the values to be shown...
 	std::stringstream ss;
 	ss<<" x "<<persistence.size(app::pergr_collectibles);
@@ -72,9 +72,6 @@ void pause::awake(
 	}
 
 	if(game_session.with_timer()) {
-
-		lm::log(logger).debug()<<"game session seconds: "<<game_session.elapsed_seconds<<"\n";
-		lm::log(logger).debug()<<"game clock seconds: "<<game_session.game_clock.get_seconds()<<"\n";
 
 		ss.str("");
 		tools::time t;
