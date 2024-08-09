@@ -51,9 +51,9 @@ void pause::awake(
 	time_elapsed=0.0f;
 
 	//Hide or show stuff according to game mode.
-	view.set_visible("lives_icon", game_session.with_lives());
-	view.set_visible("lives_value", game_session.with_lives());
-	view.set_visible("time_value", game_session.with_timer());
+	view.set_visible("lives_icon", game_session.is_with_lives());
+	view.set_visible("lives_value", game_session.is_with_lives());
+	view.set_visible("time_value", game_session.is_with_timer());
 		
 	//Update the values to be shown...
 	std::stringstream ss;
@@ -64,14 +64,14 @@ void pause::awake(
 	ss<<" x "<<inventory.yellow_keys;
 	view.set_text("keys_value", ss.str());
 
-	if(game_session.with_lives()) {
+	if(game_session.is_with_lives()) {
 
 		ss.str("");
 		ss<<" x "<<game_session.lives;
 		view.set_text("lives_value", ss.str());
 	}
 
-	if(game_session.with_timer()) {
+	if(game_session.is_with_timer()) {
 
 		ss.str("");
 		tools::time t;

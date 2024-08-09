@@ -20,6 +20,7 @@
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
 #include <d2d/video/debug_display.h>
+#include <d2d/components/timeouts.h>
 #include <lm/logger.h>
 #include <d2d/audio/music_player.h>
 #include <memory>
@@ -95,6 +96,7 @@ class main:
 	void                        play_sound(int);
 	void                        save_game(const std::string&, int);
 	void                        reset_game(int, const std::string&);
+	void                        game_over();
 
 	//world methods.
 	void                        generate_projectile(const app::projectile_generator&);
@@ -118,6 +120,7 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
+	d2d::components::timeout    lives_banner_timeout{4.f, -1.0, true};
 
 	struct breaking_platforms_fn{
 

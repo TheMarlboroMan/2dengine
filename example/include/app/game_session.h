@@ -26,8 +26,8 @@ struct game_session {
  */
 	int     current_map_id{0};
 
-	bool    with_lives() const;
-	bool    with_timer() const;
+	bool    is_with_lives() const;
+	bool    is_with_timer() const;
 	void    reset(int, const std::string&);
 	void    set_skill_level(int);
 };

@@ -124,6 +124,15 @@ void main::loop_scene(
 	const dfw::loop_iteration_data& _lid
 ) {
 
+	if(lives_banner_timeout.is_counting()) {
+
+		lives_banner_timeout.tic(_lid.delta);
+		if(lives_banner_timeout.is_expired()) {
+
+			lives_banner_timeout.pause();
+		}
+	}
+
 	if(_input().is_exit_signal()) {
 
 		lm::log(logger).info()<<"caught exit signal, quitting\n";
@@ -1067,6 +1076,11 @@ void main::tic_defeat(
 
 	if(!player.timeouts.is_counting(app::player::timeout_defeat)) {
 
+		if(game_session.is_with_lives()) {
+
+			lives_banner_timeout.reset().resume();
+		}
+
 		restart_level();
 		return;
 	}
@@ -1107,6 +1121,11 @@ void main::draw_scene(
 	);
 
 	gd.draw(current_map, player);
+
+	if(lives_banner_timeout.is_counting()) {
+
+		//TODO: Draw the remaining lives somewhere!!
+	}
 }
 
 
@@ -1299,6 +1318,17 @@ void main::defeat(
 		return; 
 	}
 
+	if(game_session.is_with_lives()) {
+
+		if(0==game_session.lives) {
+
+			game_over();
+			return;
+		}
+
+		--game_session.lives;
+	}
+
 	play_sound(app::snd_defeat);
 	_player.timeouts.reset(app::player::timeout_defeat);
 	_player.state=app::player::states::defeat;
@@ -1485,7 +1515,9 @@ app::entry main::find_entry_by_id(
 		return *it;
 	}
 
-	throw std::runtime_error("could not find entry by id");
+	std::stringstream ss;
+	ss<<"could not find entry "<<_id<<" by id";
+	throw std::runtime_error(ss.str());
 }
 
 void main::activate_tag(
@@ -1600,6 +1632,13 @@ void main::reset_game(
 	player.reset();
 	inventory.reset();
 	game_session.reset(_skill, _savegame_file);
+}
+
+void main::game_over() {
+
+	throw std::runtime_error("game over is not implemented!");
+	//TODO: This is only hard mode and it should remove the save xD
+
 }
 
 #ifdef IS_DEBUG_BUILD

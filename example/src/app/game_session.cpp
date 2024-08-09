@@ -34,12 +34,12 @@ void game_session::set_skill_level(
 	throw std::runtime_error("bad difficulty setting");
 }
 
-bool game_session::with_lives() const {
+bool game_session::is_with_lives() const {
 
 	return skill_level & app::skill_hard;
 }
 
-bool game_session::with_timer() const {
+bool game_session::is_with_timer() const {
 
 	return skill_level != app::skill_easy;
 }
