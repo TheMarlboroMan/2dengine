@@ -372,7 +372,7 @@ void main::take_player_to_entry(
 			}
 			else {
 
-				throw std::runtime_error("mismatch between ladder and entry");
+				throw std::runtime_error("mismatch between ladder and entry, check entry position, must be top or bottom edge");
 			}
 		}
 		else {
