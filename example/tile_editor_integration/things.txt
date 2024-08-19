@@ -227,7 +227,7 @@ beginobject
 	name breaking_platform
 	w 16
 	h 8
-	color 192 192 192 255
+	color 64 192 64 255
 	beginproperty
 		name ms_breaking
 		type int
