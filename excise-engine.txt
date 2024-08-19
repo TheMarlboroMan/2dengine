@@ -1,5 +1,7 @@
 next steps:
 
+	try to jump into a ladder that goes a map up. Does it fuck up? It 
+		does if there is a solid in the next room!! Use NON solids.
 	forest_004, die and you get transported to the previous screen, bad 
 	positioning???, does not grab ladder??? check that.
 
