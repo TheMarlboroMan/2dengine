@@ -231,14 +231,14 @@ beginobject
 	beginproperty
 		name ms_breaking
 		type int
-		default 2000
+		default 1000
 		comment how long it takes to break
 		linkedto nothing
 	endproperty
 	beginproperty
 		name ms_gone
 		type int
-		default 6000
+		default 2000
 		comment how long it stays gone
 		linkedto nothing
 	endproperty
