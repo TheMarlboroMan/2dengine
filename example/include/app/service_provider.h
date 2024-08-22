@@ -62,12 +62,12 @@ class service_provider {
 
 	public:
 
-	service_provider(const appenv::env&, const dfwimpl::config&, lm::logger&, dfw::kernel&);
+	service_provider(const appenv::env&, dfwimpl::config&, lm::logger&, dfw::kernel&);
 	~service_provider();
 
 //TODO: Review, some of these might just be private.
 	const appenv::env&		get_env() const;
-	const dfwimpl::config&	get_config() const;
+	dfwimpl::config&	    get_config();
 	lm::logger&				get_logger();
 	d2d::collision::shaper& get_shaper();
 	const app::tile_impl&   get_tile_impl();
@@ -93,7 +93,7 @@ class service_provider {
 	dfw::id_to_path_mapper& get_music_id_mapper();
 
 	const appenv::env&		env;
-	const dfwimpl::config&	config;
+	dfwimpl::config&	    config;
 	lm::logger&				logger;
 	ldv::resource_manager&	video_resource_manager;
 	lda::resource_manager&	audio_resource_manager;

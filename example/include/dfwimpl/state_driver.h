@@ -3,14 +3,9 @@
 #include "config.h"
 #include "app/service_provider.h"
 
-//Controllers.
-#include "controller/main.h"
-#include "controller/menu.h"
-#include "controller/pause.h"
-//[new-controller-header-mark]
-
 #include <lm/logger.h>
 #include <dfw/state_driver_interface.h>
+#include <dfw/controller_interface.h>
 
 #include <memory>
 
@@ -53,6 +48,7 @@ class state_driver:
 	ptr_controller                  c_main;
 	ptr_controller                  c_menu;
 	ptr_controller                  c_pause;
+	ptr_controller                  c_controls;
 	//[new-controller-property-mark]
 };
 

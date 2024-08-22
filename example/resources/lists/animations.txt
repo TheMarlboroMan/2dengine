@@ -14,23 +14,6 @@
 120	508	0
 120	509	0
 120	510	0
-*player-m-idle
-!100
-100	400	0
-*player-m-walk
-!101
-110	401	0
-110	402	0
-*player-m-jump
-!102
-100	401	0
-*player-m-climb
-!103
-100	403	0
-100	403	1
-*player-m-crouch
-!104
-100	404	0
 *player-m-defeat
 !105
 100	408	0

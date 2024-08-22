@@ -518,31 +518,26 @@ void game_draw::draw_player(
 		case app::player::states::ground:
 
 			animation_index=_player.velocity.x!=0.
-				? app::anim_m_walk
-				: app::anim_m_idle;
+				? app::anim_walk
+				: app::anim_idle;
 			is_animation=true;
 		break;
 		case app::player::states::air:
-			animation_index=app::anim_m_jump;
+			animation_index=app::anim_jump;
 		break;
 		case app::player::states::crouch:
-			animation_index=app::anim_m_crouch;
+			animation_index=app::anim_crouch;
 		break;
 		case app::player::states::defeat:
-			animation_index=app::anim_m_defeat;
+			animation_index=app::anim_defeat;
 			is_animation=true;
 		break;
 		case app::player::states::ladder:
-			animation_index=app::anim_m_climb;
+			animation_index=app::anim_climb;
 			int y_mod=(int)_player.ent.get_origin().y % 10;
 			frame_index=abs(y_mod) <= 4 ? 0 : 1;
 			draw_flags={false, false};
 		break;
-	}
-
-	if(_player.gender==app::player::genders::female) {
-
-		animation_index+=10; //they are exactly 10 indexes apart.
 	}
 
 	if(is_animation) {

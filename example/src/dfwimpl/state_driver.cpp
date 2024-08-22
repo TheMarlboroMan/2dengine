@@ -11,6 +11,12 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "controller/main.h"
+#include "controller/menu.h"
+#include "controller/pause.h"
+#include "controller/controls.h"
+//[new-controller-header-mark]
+//
 using namespace dfwimpl;
 
 state_driver::state_driver(
@@ -174,6 +180,12 @@ void state_driver::register_controllers(
 		c_pause,
 		controller::state_pause,
 		new controller::pause(*service_provider)
+	);
+
+	reg(
+		c_controls,
+		controller::state_controls,
+		new controller::controls(*service_provider)
 	);
 }
 

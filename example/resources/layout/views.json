@@ -21,9 +21,17 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"menu_quit",
+			"id":"menu_controls",
 			"type":"ttf",
 			"location":[32, 96],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_quit",
+			"type":"ttf",
+			"location":[32, 128],
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]

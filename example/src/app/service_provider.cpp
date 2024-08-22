@@ -28,7 +28,7 @@ using namespace app;
 
 service_provider::service_provider(
 	const appenv::env& _env, 
-	const dfwimpl::config& _config,
+	dfwimpl::config& _config,
 	lm::logger& _logger,
 	dfw::kernel& _kernel
 ):
@@ -51,7 +51,7 @@ const appenv::env& service_provider::get_env() const {
 	return env;
 }
 
-const dfwimpl::config& service_provider::get_config() const {
+dfwimpl::config& service_provider::get_config() {
 
 	return config;
 }

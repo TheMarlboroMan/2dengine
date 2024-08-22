@@ -64,18 +64,12 @@ enum animations{
 	anim_lava_surface=3,
 
 	//player
-	anim_m_idle=100,
-	anim_m_walk=101,
-	anim_m_jump=102,
-	anim_m_climb=103,
-	anim_m_crouch=104,
-	anim_m_defeat=105,
-	anim_f_idle=110,
-	anim_f_walk=111,
-	anim_f_jump=112,
-	anim_f_climb=113,
-	anim_f_crouch=114,
-	anim_f_defeat=115,
+	anim_idle=110,
+	anim_walk=111,
+	anim_jump=112,
+	anim_climb=113,
+	anim_crouch=114,
+	anim_defeat=115,
 
 	//monsters and traps
 	anim_scorpion=150,

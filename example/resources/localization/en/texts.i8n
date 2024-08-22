@@ -1,6 +1,7 @@
 [[window-title]]{{GAME GAME GAME}}
 [[main_menu-start]]{{start/load}}
 [[main_menu-continue]]{{continue}}
+[[main_menu-controls]]{{controls}}
 [[main_menu-quit]]{{quit}}
 [[main_menu-skill_easy]]{{easy}}
 [[main_menu-skill_normal]]{{normal}}
@@ -9,6 +10,12 @@
 [[main_menu-continue_game]]{{load game}}
 [[main_menu-delete_slot]]{{press pause to delete slot}}
 [[main_menu-delete_slot_confirm]]{{press pause again to delete}}
+[[controls-up]]{{up}}
+[[controls-down]]{{down}}
+[[controls-left]]{{left}}
+[[controls-right]]{{right}}
+[[controls-jump]]{{jump}}
+[[controls-pause]]{{pause / map}}
 [[automap-start]]{{Underground passageway}}
 [[automap-forest]]{{Valley forest}}
 [[automap-red_vault]]{{Red key vault}}

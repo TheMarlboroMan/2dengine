@@ -48,6 +48,7 @@ class menu:
 	void                        enter_main();
 	void                        enter_slot_select();
 	void                        enter_skill_select();
+	void                        enter_controls();
 	void                        exit_confirm_delete();
 
 	//Ready views..
@@ -78,6 +79,7 @@ class menu:
 	enum main_options{
 		main_option_choose_slot,
 		main_option_continue,
+		main_option_controls,
 		main_option_exit
 	};
 	int                         main_option=main_option_choose_slot;

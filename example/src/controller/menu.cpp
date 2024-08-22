@@ -53,6 +53,7 @@ menu::menu(
 
 	view.set_text("menu_start", i8n.get("main_menu-start"));
 	view.set_text("menu_continue", i8n.get("main_menu-continue"));
+	view.set_text("menu_controls", i8n.get("main_menu-controls"));
 	view.set_text("menu_quit", i8n.get("main_menu-quit"));
 	view.set_text("menu_skill_easy", i8n.get("main_menu-skill_easy"));
 	view.set_text("menu_skill_normal", i8n.get("main_menu-skill_normal"));
@@ -213,6 +214,11 @@ void menu::select() {
 					attempt_to_continue();
 					return;
 
+				case main_option_controls:
+
+					enter_controls();
+					return;
+
 				case main_option_exit:
 					set_leave(true);
 					return;
@@ -268,6 +274,11 @@ void menu::enter_main() {
 	ready_main();
 }
 
+void menu::enter_controls() {
+
+	push_state(state_controls);
+}
+
 void menu::enter_slot_select() {
 
 	curlevel=levels::slot;
@@ -285,6 +296,7 @@ void menu::ready_main() {
 	for(const auto str : {
 		"menu_start", 
 		"menu_continue", 
+		"menu_controls", 
 		"menu_quit"
 	}) {
 
@@ -325,6 +337,7 @@ void menu::ready_slot_select() {
 
 	for(const auto str : {
 		"menu_continue",
+		"menu_controls",
 		"menu_quit",
 		"menu_skill_easy", 
 		"menu_skill_normal",
@@ -351,6 +364,7 @@ void menu::ready_skill_select() {
 
 	for(const auto str : {
 		"menu_continue",
+		"menu_controls",
 		"menu_quit",
 		"menu_savegame_slot_1", 
 		"menu_savegame_slot_2", 
@@ -404,6 +418,7 @@ void menu::refresh() {
 	for(auto str : {
 		"menu_start",
 		"menu_continue",
+		"menu_controls",
 		"menu_quit",
 		"menu_skill_easy",
 		"menu_skill_normal",
@@ -430,6 +445,11 @@ void menu::refresh() {
 				case main_option_continue:
 
 					toggle("menu_continue", true);
+					return;
+
+				case main_option_controls:
+
+					toggle("menu_controls", true);
 					return;
 
 				case main_option_exit:

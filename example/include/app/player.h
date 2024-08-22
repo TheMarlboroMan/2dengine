@@ -26,9 +26,6 @@ class player {
 	bool                                        jump_shortened{false};
 	d2d::components::timeouts                   timeouts;
 	const app::ladder*                          current_ladder{nullptr};
-	enum class genders {
-		male, female
-	}                                           gender{genders::female};
 
 	void                                        reset();
 	void                                        tic(float);
