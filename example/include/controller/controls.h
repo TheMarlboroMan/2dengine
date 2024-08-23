@@ -4,6 +4,8 @@
 #include <dfw/controller_interface.h>
 #include <dfw/input_definitions.h>
 #include "dfwimpl/config.h"
+#include <ldtools/view_composer.h>
+#include <tools/i8n.h>
 #include <string>
 #include <vector>
 
@@ -29,8 +31,9 @@ class controls:
 
 	app::service_provider&      sp;
 	dfwimpl::config&            config;
+	const tools::i8n&           i8n;
+	ldtools::view_composer      view;
 	std::size_t                 index{0};
-	bool                        cancel_signal{false};
 
 	struct entry{
 		int         app_id;

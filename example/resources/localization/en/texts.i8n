@@ -10,6 +10,8 @@
 [[main_menu-continue_game]]{{load game}}
 [[main_menu-delete_slot]]{{press pause to delete slot}}
 [[main_menu-delete_slot_confirm]]{{press pause again to delete}}
+[[controls-legend]]{{press any input for}}
+[[controls-cancel]]{{press escape key to cancel}}
 [[controls-up]]{{up}}
 [[controls-down]]{{down}}
 [[controls-left]]{{left}}

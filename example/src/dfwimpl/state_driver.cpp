@@ -237,6 +237,7 @@ void state_driver::prepare_state(
 void state_driver::common_pre_loop_input(dfw::input& input, float /*delta*/) {
 
 	if(input().is_event_joystick_connected()) {
+
 		lm::log(log).info()<<"New joystick detected..."<<std::endl;
 		virtualize_input(input);
 	}
@@ -259,6 +260,7 @@ void state_driver::virtualize_input(dfw::input& input) {
 	lm::log(log).info()<<"trying to virtualize "<<input().get_joysticks_size()<<" controllers..."<<std::endl;
 
 	for(size_t i=0; i < input().get_joysticks_size(); ++i) {
+
 		input().virtualize_joystick_hats(i);
 		input().virtualize_joystick_axis(i, 15000);
 		lm::log(log).info()<<"Joystick virtualized "<<i<<std::endl;

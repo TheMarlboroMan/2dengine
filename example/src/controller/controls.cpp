@@ -1,5 +1,11 @@
 #include "controller/controls.h"
 #include "app/input.h"
+#include "app/env.h"
+#include <ldtools/ttf_manager.h>
+#include <tools/file_utils.h>
+#include <tools/json.h>
+#include <rapidjson/document.h>
+#include <ldi/filter.h>
 
 using namespace controller;
 
@@ -7,8 +13,26 @@ controls::controls(
 	app::service_provider& _sp
 ):
 	sp{_sp},
-	config{sp.get_config()}
+	config{sp.get_config()},
+	i8n{sp.get_localization()}
 {
+	//Prepare the view...
+	view.map_font(
+		"main_menu_font",
+		sp.get_ttf_manager().get(
+			"menu_font",
+			8
+		)
+	);
+
+	const auto& env=sp.get_env();
+
+	const std::string layout_path=env.build_app_path("resources/layout/views.json");
+	auto document=tools::parse_json_string(tools::dump_file(layout_path));
+	view.parse(document["controls"]);
+
+	view.set_text("enter_input_for", i8n.get("controls-legend"));
+	view.set_text("press_escape_to_cancel", i8n.get("controls-cancel"));
 
 	//The way this works, we have a list of structures that relate
 	//a config input entry with a i8n entry and an input entry itself.
@@ -28,63 +52,24 @@ controls::controls(
 }
 
 void controls::awake(
-	dfw::input& _input
+	dfw::input&
 ) {
 
 	//reset the question array, inputs, flags...
 	index=0;
-	cancel_signal=false;
 	dfw::input_description def{dfw::input_description::types::none, 0, 0};
 	for(auto& node : entries) {
 
 		node.input=def;
 	}
 
-	//setup a custom callback for the input, so we can learn stuff from it.
-	auto fn=[this, &_input](SDL_Event& _event, ldi::sdl_input::tf_default _default) -> bool {
-
-		using dfw::input_description;
-
-		if(SDL_KEYDOWN==_event.type) {
-
-			int scancode=_event.key.keysym.scancode;
-
-			if(SDL_SCANCODE_ESCAPE==scancode) {
-
-				cancel_signal=true;
-				return false;
-			}
-
-			learn(_input, index, input_description::types::keyboard, scancode, 0);
-			return true;
-		}
-
-		if(SDL_MOUSEBUTTONDOWN==_event.type) {
-
-			learn(_input, index, input_description::types::mouse, _event.button.button, 0);
-			return true;
-		}
-
-		if(SDL_JOYBUTTONDOWN==_event.type) {
-
-			auto joyid=_input().get_joystick_index_from_id(_event.jbutton.which);
-			learn(_input, index, input_description::types::joystick, _event.jbutton.button, joyid);
-			return true;
-		}
-
-		_default(_event);
-		return true;
-	};
-	
-	_input().set_event_processing_function(fn);
+	view.set_text("target_input", i8n.get(entries.at(index).i8n_key));
 }
 
 void controls::slumber(
-	dfw::input& _input
+	dfw::input& 
 ) {
 
-	//Finish "learn" mode.
-	_input().reset_event_processing_function();
 }
 
 void controls::loop(
@@ -97,19 +82,47 @@ void controls::loop(
 		return;
 	}
 
-	if(cancel_signal) {
+	if(_input().is_key_down(SDL_SCANCODE_DOWN)) {
 
 		pop_state();
 		return;
 	}
+
+	ldi::filter filter(_input());
+
+	using ldi::event;
+	using dfw::input_description;
+
+	int wanted=event::source_keyboard | event::source_joystick | event::source_mouse;
+
+	auto ev=filter.find_one(
+		wanted,
+		event::type_down
+	);
+
+	if(ev) {
+
+		switch(ev.source) {
+
+			case event::source_keyboard:
+				learn(_input, index, input_description::types::keyboard, ev.code, 0);
+			break;
+			case event::source_mouse:
+				learn(_input, index, input_description::types::mouse, ev.code, 0);
+			break;
+			case event::source_joystick:
+				learn(_input, index, input_description::types::joystick, ev.code, ev.source_index);
+			break;
+		}
+	}
 }
 
 void controls::draw(
-	ldv::screen& /*_screen*/,
+	ldv::screen& _screen,
 	int /*_fps*/
 ) {
 
-	//TODO: There is no view, no nothing...
+	view.draw(_screen);
 }
 
 void controls::learn(
@@ -126,7 +139,10 @@ void controls::learn(
 	if(index >= entries.size()) {
 
 		save_and_finish(_input);
+		return;
 	}
+
+	view.set_text("target_input", i8n.get(entries.at(index).i8n_key));
 }
 
 void controls::save_and_finish(
@@ -151,14 +167,40 @@ void controls::save_and_finish(
 
 		//overwrite the configuration now... what if there were more than one
 		//entries???
-		config.set_vector(
-			node.config_map_key,
-			std::vector<int>{
-				dfw::input_description_int_from_type(node.input.type),
-				node.input.device, 
-				node.input.code
-			}
+		//In any case, we have to dwelve in json stuff here...
+		
+		//TODO: Cannot the config HELP US produce these values?? it would be
+		//nice, to be honest... this is ugly AF.
+		//TODO: holy shit this is ugly. the config has ITS allocator already!!
+		//cannot it help us a bit???
+		using jsondoc=rapidjson::Document;
+		using jsonval=rapidjson::Value;
+
+		jsondoc base{rapidjson::kObjectType};
+		auto& allocator=base.GetAllocator();
+
+		jsonval jsonnode{rapidjson::kObjectType};
+
+		jsonnode.AddMember(
+			jsonval("type", allocator),
+			jsonval(dfw::input_description_int_from_type(node.input.type)),
+			allocator
 		);
+		jsonnode.AddMember(
+			jsonval("device", allocator), 
+			jsonval(node.input.device),
+			allocator
+		);
+		jsonnode.AddMember(
+			jsonval("code", allocator),
+			jsonval(node.input.code),
+			allocator
+		);
+
+		jsonval data_list{rapidjson::kArrayType};
+		data_list.PushBack(jsonnode, allocator);
+
+		config.set_vector(node.config_map_key, data_list);
 	}
 
 	//save configuration.

@@ -111,6 +111,36 @@
 			"rgba":[255, 255, 255, 255]
 		}
 	],
+	"controls":[
+		{
+			"type":"screen",
+			"rgba":[0,0,0,0]
+		},
+		{
+			"id":"enter_input_for",
+			"type":"ttf",
+			"location":[64, 32],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"target_input",
+			"type":"ttf",
+			"location":[64, 64],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"press_escape_to_cancel",
+			"type":"ttf",
+			"location":[64, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		}
+	],
 	"pause":[
 		{
 			"type":"screen",

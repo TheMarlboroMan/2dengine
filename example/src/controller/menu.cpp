@@ -96,25 +96,60 @@ void menu::loop(
 		return;
 	}
 
-	if(_input.is_input_down(app::input::down)) {
+	//There are two sets of input checks here: one is basic keyboard for
+	//navigation and the other is game-based. We try the generic first and
+	//if no input is detected we try the game part.
 
-		next();
-		return;
+	enum class menu_input {
+		up, down, select, none
+	} choice=menu_input::none;
+
+	if(_input().is_key_down(SDL_SCANCODE_DOWN)) {
+
+		choice=menu_input::down;
+	}
+	else if(_input().is_key_down(SDL_SCANCODE_UP)) {
+
+		choice=menu_input::up;
+	}
+	else if(_input().is_key_down(SDL_SCANCODE_SPACE)) {
+
+		choice=menu_input::select;
 	}
 
-	if(_input.is_input_down(app::input::up)) {
+	//Game part...
+	if(choice==menu_input::none) {
 
-		prev();
-		return;
+		if(_input.is_input_down(app::input::down)) {
+
+			choice=menu_input::down;
+		}
+		else if(_input.is_input_down(app::input::up)) {
+
+			choice=menu_input::up;
+		}
+		else if(_input.is_input_down(app::input::jump)) {
+
+			choice=menu_input::select;
+		}
 	}
 
-	//TODO: Jump, really? This is a placeholder.
-	if(_input.is_input_down(app::input::jump)) {
+	switch(choice) {
 
-		select();
-		return;
+		case menu_input::up:
+			prev();
+			return;
+		case menu_input::down:
+			next();
+			return;
+		case menu_input::select:
+			select();
+			return;
+		case menu_input::none:
+			break;
 	}
 
+	//And this is so specific we can just use the game controls.
 	if(_input.is_input_down(app::input::pause)) {
 
 		if(levels::slot==curlevel) {
