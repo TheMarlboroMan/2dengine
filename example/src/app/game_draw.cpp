@@ -1,3 +1,4 @@
+#include "app/definitions.h"
 #include "app/game_draw.h"
 #include "app/map.h"
 #include "app/player.h"
@@ -17,27 +18,62 @@
 #include <ldv/box_representation.h>
 #include <d2d/video/tools.h>
 
+#include <iostream>
+#include <sstream>
+
 using namespace app;
 
 game_draw::game_draw(
-	ldv::screen& _screen,
 	ldv::camera& _camera,
 	d2d::video::scenery_tile_draw_animated&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
-	d2d::video::sprite_draw_animated& _sprite_draw_animated
+	d2d::video::sprite_draw_animated& _sprite_draw_animated,
+	ldtools::ttf_manager& _ttf_manager
 ):
-	screen(_screen),
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
-	sprite_draw_animated(_sprite_draw_animated)
+	sprite_draw_animated(_sprite_draw_animated),
+	area_name_banner_text{
+		_ttf_manager.get("area_banner_font", 8),
+		ldv::rgba8(255,255,255,128),
+		"unset" //let us spend precious memory :P.
+	},
+	area_name_banner_background{
+		{0,0,app::logic_screen_w,tile_h*3},
+		ldv::rgba8(64,64,64,128)
+	}
 {
+
+	area_name_banner_text.go_to({16, 16});
+	area_name_banner_background.set_blend(ldv::representation::blends::alpha);
 
 	sprite_draw.set_camera(camera);
 	sprite_draw.set_with_camera(true);
 
 	scenery_tile_draw.set_camera(camera);
 	scenery_tile_draw.set_with_camera(true);
+}
+
+void game_draw::setup_area_name_banner(
+	const std::string& _area_name
+) {
+
+	std::stringstream ss;
+	ss<<"-- "<<_area_name<<" --";
+
+	area_name_banner_text.set_text(ss.str());
+}
+
+void game_draw::draw_area_name_banner(ldv::screen& _screen) {
+
+	area_name_banner_background.draw(_screen);
+	area_name_banner_text.draw(_screen);
+}
+
+void game_draw::draw_lives_banner(ldv::screen& _screen) {
+
+	//TODO: Unimplemented.
 }
 
 game_draw::~game_draw() {
@@ -51,52 +87,53 @@ game_draw::~game_draw() {
 }
 
 void game_draw::draw(
+	ldv::screen& _screen,
 	const app::map& _map,
 	const app::player& _player
 ) {
 
-	screen.clear(_map.background_color);
+	_screen.clear(_map.background_color);
 
-	scenery_tile_draw.draw(screen, _map.background_tiles);
+	scenery_tile_draw.draw(_screen, _map.background_tiles);
 
 	for(const auto& node : _map.buttons) {
 
-		draw_button(node);
+		draw_button(_screen, node);
 	}
 
 	for(const auto& node : _map.gates) {
 
-		draw_gate(node);
+		draw_gate(_screen, node);
 	}
 
 	for(const auto& block : _map.platform_blocks) {
 
-		draw_platform(block);
+		draw_platform(_screen, block);
 	}
 
 	for(const auto& block : _map.breaking_platforms) {
 
-		draw_breaking_platform(block);
+		draw_breaking_platform(_screen, block);
 	}
 
 	for(const auto& ladder : _map.ladders) {
 
-		draw_ladder(ladder);
+		draw_ladder(_screen, ladder);
 	}
 
 	for(const auto& collectible : _map.collectibles) {
 
-		draw_collectible(collectible);
+		draw_collectible(_screen, collectible);
 	}
 
 	for(const auto& monster : _map.linear_monsters) {
 
-		draw_linear_monster(monster);
+		draw_linear_monster(_screen, monster);
 	}
 
 	for(const auto& monster : _map.leaping_monsters) {
 
-		draw_leaping_monster(monster);
+		draw_leaping_monster(_screen, monster);
 	}
 
 	for(const auto& trap : _map.timed_traps) {
@@ -106,16 +143,16 @@ void game_draw::draw(
 			continue;
 		}
 
-		draw_timed_trap(trap);
+		draw_timed_trap(_screen, trap);
 	}
 
 	for(const auto& projectile : _map.projectiles) {
 
-		draw_projectile(projectile);
+		draw_projectile(_screen, projectile);
 	}
 
-	draw_player(_player);
-	scenery_tile_draw.draw(screen, _map.foreground_tiles);
+	draw_player(_screen, _player);
+	scenery_tile_draw.draw(_screen, _map.foreground_tiles);
 
 	for(const auto& secret_cover : _map.secret_covers) {
 
@@ -124,11 +161,12 @@ void game_draw::draw(
 			continue;
 		}
 
-		draw_secret_cover(secret_cover);
+		draw_secret_cover(_screen, secret_cover);
 	}
 }
 
 void game_draw::draw_button(
+	ldv::screen& _screen,
 	const app::button& _button
 ) {
 
@@ -157,13 +195,14 @@ void game_draw::draw_button(
 	auto origin=d2d::video::to_screen(_button.ent.get_origin());
 
 	sprite_draw.draw(
-		screen,
+		_screen,
 		origin,
 		sprite_index
 	);
 }
 
 void game_draw::draw_gate(
+	ldv::screen& _screen,
 	const app::gate& _gate
 ) {
 
@@ -175,7 +214,7 @@ void game_draw::draw_gate(
 		int sprite_index=app::spr_gate;
 
 		sprite_draw.draw(
-			screen,
+			_screen,
 			origin,
 			sprite_index
 		);
@@ -185,6 +224,7 @@ void game_draw::draw_gate(
 }
 
 void game_draw::draw_ladder(
+	ldv::screen& _screen,
 	const app::ladder& _ladder
 ) {
 
@@ -201,7 +241,7 @@ void game_draw::draw_ladder(
 		}
 
 		sprite_draw.draw(
-			screen,
+			_screen,
 			origin,
 			sprite_index
 		);
@@ -211,6 +251,7 @@ void game_draw::draw_ladder(
 }
 
 void game_draw::draw_collectible(
+	ldv::screen& _screen,
 	const app::collectible& _collectible
 ) {
 
@@ -230,13 +271,14 @@ void game_draw::draw_collectible(
 	}
 
 	sprite_draw.draw(
-		screen,
+		_screen,
 		origin,
 		sprite_index
 	);
 }
 
 void game_draw::draw_linear_monster(
+	ldv::screen& _screen,
 	const app::linear_monster& _monster
 ) {
 
@@ -266,7 +308,7 @@ void game_draw::draw_linear_monster(
 	draw_flags=sprite_draw_animated.flags(line, draw_flags);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
 		line.frame,
 		draw_flags
@@ -274,6 +316,7 @@ void game_draw::draw_linear_monster(
 }
 
 void game_draw::draw_leaping_monster(
+	ldv::screen& _screen,
 	const app::leaping_monster& _monster
 ) {
 
@@ -281,7 +324,7 @@ void game_draw::draw_leaping_monster(
 	auto draw_flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
 		line.frame,
 		draw_flags
@@ -289,6 +332,7 @@ void game_draw::draw_leaping_monster(
 }
 
 void game_draw::draw_timed_trap(
+	ldv::screen& _screen,
 	const app::timed_trap& _trap
 ) {
 
@@ -305,7 +349,7 @@ void game_draw::draw_timed_trap(
 	int sprite_index=app::spr_fire_trap_plaque;
 
 	sprite_draw.draw(
-		screen,
+		_screen,
 		origin,
 		sprite_index
 	);
@@ -319,7 +363,7 @@ void game_draw::draw_timed_trap(
 	auto draw_flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_trap.ent.get_origin()),
 		line.frame,
 		draw_flags
@@ -327,6 +371,7 @@ void game_draw::draw_timed_trap(
 }
 
 void game_draw::draw_breaking_platform(
+	ldv::screen& _screen,
 	const app::breaking_platform& _block
 ) {
 
@@ -338,7 +383,7 @@ void game_draw::draw_breaking_platform(
 	if(_block.is_ok()) {
 
 		sprite_draw.draw(
-			screen,
+			_screen,
 			d2d::video::to_screen(_block.get_origin()),
 			app::spr_breaking_block
 		);
@@ -367,7 +412,7 @@ void game_draw::draw_breaking_platform(
 	auto flags=sprite_draw_animated.flags(line);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_block.get_origin()),
 		line.frame,
 		flags
@@ -375,6 +420,7 @@ void game_draw::draw_breaking_platform(
 }
 
 void game_draw::draw_platform(
+	ldv::screen& _screen,
 	const app::platform_block& _block
 ) {
 
@@ -390,26 +436,28 @@ void game_draw::draw_platform(
 	}
 
 	sprite_draw.draw(
-		screen,
+		_screen,
 		d2d::video::to_screen(_block.get_origin()),
 		index
 	);
 }
 
 void game_draw::draw_projectile(
+	ldv::screen& _screen,
 	const app::projectile& _projectile
 ) {
 
 	switch(_projectile.get_type()) {
 
 		case app::projectile::types::horizontal:
-			return draw_projectile_linear(_projectile);
+			return draw_projectile_linear(_screen, _projectile);
 		case app::projectile::types::round:
-			return draw_projectile_directed(_projectile);
+			return draw_projectile_directed(_screen, _projectile);
 	}
 }
 
 void game_draw::draw_projectile_linear(
+	ldv::screen& _screen,
 	const app::projectile& _projectile
 ) {
 
@@ -429,7 +477,7 @@ void game_draw::draw_projectile_linear(
 		draw_flags=sprite_draw_animated.flags(line, draw_flags);
 
 		sprite_draw.draw(
-			screen, 
+			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
 			draw_flags
@@ -441,7 +489,7 @@ void game_draw::draw_projectile_linear(
 	draw_flags=sprite_draw_animated.flags(line, draw_flags);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
 		draw_flags
@@ -449,6 +497,7 @@ void game_draw::draw_projectile_linear(
 }
 
 void game_draw::draw_projectile_directed(
+	ldv::screen& _screen,
 	const app::projectile& _projectile
 ) {
 
@@ -460,7 +509,7 @@ void game_draw::draw_projectile_directed(
 		);
 
 		sprite_draw.draw(
-			screen, 
+			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
 			sprite_draw_animated.flags(line)
@@ -471,7 +520,7 @@ void game_draw::draw_projectile_directed(
 	auto line=sprite_draw_animated.get(app::anim_projectile_round);
 
 	sprite_draw.draw(
-		screen, 
+		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
 		sprite_draw_animated.flags(line)
@@ -479,6 +528,7 @@ void game_draw::draw_projectile_directed(
 }
 
 void game_draw::draw_secret_cover(
+	ldv::screen& _screen,
 	const app::secret_cover& _secret_cover
 ) {
 
@@ -496,10 +546,11 @@ void game_draw::draw_secret_cover(
 	}
 
 	box.set_blend(ldv::representation::blends::alpha);
-	box.draw(screen, camera);
+	box.draw(_screen, camera);
 }
 
 void game_draw::draw_player(
+	ldv::screen& _screen,
 	const app::player& _player
 ) {
 
@@ -546,7 +597,7 @@ void game_draw::draw_player(
 		draw_flags=sprite_draw_animated.flags(line, draw_flags);
 
 		sprite_draw.draw(
-			screen, 
+			_screen, 
 			d2d::video::to_screen(_player.ent.get_origin()),
 			line.frame,
 			draw_flags
@@ -561,7 +612,7 @@ void game_draw::draw_player(
 	draw_flags=sprite_draw_animated.flags(line, draw_flags);
 
 	sprite_draw.draw(
-		screen,
+		_screen,
 		d2d::video::to_screen(_player.ent.get_origin()),
 		line.frame,
 		draw_flags

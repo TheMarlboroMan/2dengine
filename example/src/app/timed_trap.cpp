@@ -36,7 +36,7 @@ void timed_trap::tic(
 ) {
 
 	timeout.tic(_delta);
-	if(!timeout.is_expired()) {
+	if(!timeout.is_finished()) {
 
 		return;
 	}

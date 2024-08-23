@@ -16,6 +16,8 @@
 #include "app/types.h"
 #include "app/inventory.h"
 #include "app/game_session.h"
+#include "app/automap_game.h" //to obtain area names...
+#include "app/game_draw.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -102,6 +104,7 @@ class main:
 	void                        generate_projectile(const app::projectile_generator&);
 	void                        activate_tag(int, bool);
 	void                        post_tic();
+	void                        setup_area_banner(const std::string&);
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;
@@ -113,14 +116,34 @@ class main:
 	app::inventory&             inventory;
 	app::game_session&          game_session;
 
-	//game state stuff.
+	//visual stuff.
 	ldv::camera                 camera;
+	app::game_draw              gd; //carries some state, so it must be a property
+
+	//game state stuff.
 	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
-	d2d::components::timeout    lives_banner_timeout{4.f, -1.0, true};
+
+	enum {
+		timeout_lives_banner=1,
+		timeout_area_banner=2
+	};
+
+	d2d::components::timeouts   game_timeouts;
+
+	struct {
+		int previous_id{0}, //previous automap area id
+		    current_id{0}; //current automap area id
+		void step(int _id) {
+
+			previous_id=current_id;
+			current_id=_id;
+		}
+		bool has_changed_area() const {return previous_id != current_id;}
+	}                           area_change_info;
 
 	struct breaking_platforms_fn{
 

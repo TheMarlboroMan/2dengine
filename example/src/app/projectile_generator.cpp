@@ -51,7 +51,7 @@ bool projectile_generator::tic(
 
 		case states::volley:
 
-			if(timeouts.is_expired(timeout_volley)) {
+			if(timeouts.is_finished(timeout_volley)) {
 
 				++volley_count;
 				timeouts.reset(timeout_volley);
@@ -59,9 +59,8 @@ bool projectile_generator::tic(
 				if(volley_total==volley_count) {
 
 					volley_count=0;
-					timeouts.pause(timeout_volley)
-						.reset(timeout_rest)
-						.resume(timeout_rest);
+					timeouts.pause(timeout_volley);
+					timeouts.restart(timeout_rest);
 					state=states::rest;
 				}
 
@@ -70,11 +69,10 @@ bool projectile_generator::tic(
 		break;
 		case states::rest:
 
-			if(timeouts.is_expired(timeout_rest)) {
+			if(timeouts.is_finished(timeout_rest)) {
 
-				timeouts.pause(timeout_rest)
-					.reset(timeout_volley)
-					.resume(timeout_volley);
+				timeouts.pause(timeout_rest);
+				timeouts.restart(timeout_volley);
 				state=states::volley;
 			}
 		break;
@@ -88,7 +86,8 @@ void projectile_generator::activate() {
 	active=true;
 	volley_count=0;
 	state=states::volley;
-	timeouts.reset(timeout_volley).reset(timeout_volley);
+	timeouts.reset(timeout_volley);
+	timeouts.reset(timeout_rest);
 }
 
 void projectile_generator::deactivate() {

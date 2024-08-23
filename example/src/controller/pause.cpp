@@ -327,10 +327,10 @@ void pause::evaluate_timeout(
 	float _delta
 ) {
 
-	//Can only leave this controller after a second has passed, to prevent
+	//Can only leave this controller after a X time has passed, to prevent
 	//crazy controller shifting.
 	time_elapsed+=_delta;
-	timeout_passed=time_elapsed >= 1.0f;
+	timeout_passed=time_elapsed >= 0.5f;
 
 #ifdef IS_DEBUG_BUILD
 

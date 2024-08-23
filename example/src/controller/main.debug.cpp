@@ -305,6 +305,8 @@ void main::loop_debug(
 	const dfw::loop_iteration_data& _lid
 ) {
 
+	game_timeouts.tic(_lid.delta);
+
 	if(_input().is_exit_signal()) {
 		set_leave(true);
 		return;
@@ -316,6 +318,11 @@ void main::loop_debug(
 		_input().start_text_input();
 		console_display->input(_input());
 		return;
+	}
+	else {
+
+		_input().stop_text_input();
+		_input().clear_text_input();
 	}
 
 	if(_input.is_input_down(app::input::escape)) {

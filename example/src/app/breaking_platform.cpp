@@ -37,7 +37,7 @@ void breaking_platform::tic(
 	}
 
 	timeout.tic(_delta);
-	if(timeout.is_counting()) {
+	if(timeout.is_running()) {
 
 		return;
 	}

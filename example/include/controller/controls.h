@@ -6,6 +6,7 @@
 #include "dfwimpl/config.h"
 #include <ldtools/view_composer.h>
 #include <tools/i8n.h>
+#include <lm/logger.h>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,7 @@ class controls:
 	void                        save_and_finish(dfw::input&);
 
 	app::service_provider&      sp;
+	lm::logger&                 logger;
 	dfwimpl::config&            config;
 	const tools::i8n&           i8n;
 	ldtools::view_composer      view;

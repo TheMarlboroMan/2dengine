@@ -38,7 +38,7 @@ void secret_cover::tic(
 		case states::discovered: return;
 		case states::dissapearing:
 
-			if(is_dissapearing() && timeout.is_expired()) {
+			if(is_dissapearing() && timeout.is_finished()) {
 
 				state=states::discovered;
 			}

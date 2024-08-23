@@ -38,7 +38,7 @@ void projectile::tic(
 
 	if(is_desintegrating()) {
 
-		if(timeout.is_expired()) {
+		if(timeout.is_finished()) {
 
 			finish();
 		}

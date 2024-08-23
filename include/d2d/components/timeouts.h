@@ -4,11 +4,13 @@
 
 namespace d2d { namespace components {
 
+//TODO: we could have at on_finish() callback that gets the timeout itself
+//again.
 /**
  * Timeouts count from zero to a limit. When the limit is reached we say the
  * timeout "is expired". The counter increases by a delta time whenever
  * "tic" is called. Once a timeout has expired it must be reset with "reset"
- * so it can be used again.
+ * so it can be used again. Once a timeout has expired it pauses on its own!
  */
 class timeout {
 
@@ -18,8 +20,8 @@ class timeout {
 */
 	                timeout(float, float=-1.0, bool=false);
 
-	bool            is_expired() const;
-	bool            is_counting() const;
+	bool            is_finished() const;
+	bool            is_running() const;
 	bool            is_paused() const;
 	float           get() const;
 	float           get_max() const;
@@ -33,11 +35,18 @@ class timeout {
  */
 	timeout&        set(float);
 /**
- * resets the current value to zero
+ * resets the current value to zero, does not resume!
  */
 	timeout&        reset();
 	timeout&        pause();
+/**
+ * resumes the counter after pausing.
+ */
 	timeout&        resume();
+/**
+ * resets and resumes in a single step.
+ */
+	timeout&        restart();
 
 	private:
 
@@ -60,9 +69,19 @@ class timeouts {
 	void            tic(float);
 
 /**
+ * tics one timeout
+ */
+	void            tic(int, float);
+
+/**
  * returns the given timeout value
  */
 	float           get(int) const;
+
+/**
+ * returns the given timeout.
+ */
+	timeout&        at(int _id) {return data.at(_id);}
 
 /**
  * returns the given timeout max
@@ -80,14 +99,15 @@ class timeouts {
 
 
 /**
- * forces the timeout to be set at the given value.
+ * forces the timeout to be set at the given value and returns it.
  */ 
-	timeouts&       set(int, float);
+	timeout&       set(int, float);
 
 /**
- * resets the timeout identified by the identifier to its max value.
+ * resets the timeout identified by the identifier to its max value and
+ * returns that timeout.
  */
-	timeouts&       reset(int);
+	timeout&       reset(int);
 
 /**
  * resets all timeouts.
@@ -98,12 +118,13 @@ class timeouts {
  * checks if the timeout identified by the identifier is ready (that is, 
  * its counter has reached zero.
  */
-	bool            is_expired(int) const;
+	bool            is_finished(int) const;
 
 /**
- * checks if the timeout identified by the identifier is still counting down.
+ * checks if the timeout identified by the identifier is still counting to
+ * the max value...
  */
-	bool            is_counting(int) const;
+	bool            is_running(int) const;
 
 /**
  * checks if the timeout identified by the identifier is paused.
@@ -112,14 +133,19 @@ class timeouts {
 	bool            is_paused(int) const;
 
 /**
- * pauses the given timeout.
+ * pauses the given timeout and returns it.
  */
-	timeouts&       pause(int);
+	timeout&       pause(int);
 
 /**
- * resumes the given timeout.
+ * resumes the given timeout and returns it.
  */
-	timeouts&       resume(int);
+	timeout&       resume(int);
+
+/**
+ * restarts the given timeout and returns it.
+ */
+	timeout&       restart(int);
 
 	private:
 

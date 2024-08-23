@@ -83,8 +83,10 @@ enum animations{
 	anim_projectile_round_end=158,
 	anim_timed_trap_fire=159,
 
+	//other stuff
 	anim_breaking_platform=200,
-	anim_breaking_platform_return=201
+	anim_breaking_platform_return=201,
+	anim_glint=202
 };
 
 enum sprites {

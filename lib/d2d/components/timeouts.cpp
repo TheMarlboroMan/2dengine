@@ -24,6 +24,7 @@ timeout& timeout::tic(
 	if(timer >= max) {
 
 		timer=max;
+		pause();
 	}
 
 	return *this;
@@ -40,6 +41,13 @@ timeout& timeout::target(
 timeout& timeout::reset() {
 
 	timer=0.f;
+	return *this;
+}
+
+timeout& timeout::restart() {
+
+	reset();
+	resume();
 	return *this;
 }
 
@@ -60,12 +68,12 @@ bool timeout::is_paused() const {
 	return paused;
 }
 
-bool timeout::is_counting() const {
+bool timeout::is_running() const {
 
 	return timer != max;
 }
 
-bool timeout::is_expired() const {
+bool timeout::is_finished() const {
 
 	return timer == max;
 }
@@ -100,6 +108,14 @@ void timeouts::tic(
 	}
 }
 
+void timeouts::tic(
+	int _id,
+	float _delta
+) {
+
+	data.at(_id).tic(_delta);
+}
+
 timeouts& timeouts::add(
 	int _id,
 	float _max_value,
@@ -129,35 +145,40 @@ float timeouts::get_max(
 	return data.at(_id).get_max();
 }
 
-bool timeouts::is_expired(
+bool timeouts::is_finished(
 	int _id
 ) const {
 
-	return data.at(_id).is_expired();
+	return data.at(_id).is_finished();
 }
 
-bool timeouts::is_counting(
+bool timeouts::is_running(
 	int _id
 ) const {
 
-	return data.at(_id).is_counting();
+	return data.at(_id).is_running();
 }
 
-timeouts& timeouts::set(
+timeout& timeouts::set(
 	int _id,
 	float _value
 ) {
 
-	data.at(_id).set(_value);
-	return *this;
+	return data.at(_id).set(_value);
 }
 
-timeouts& timeouts::reset(
+timeout& timeouts::reset(
 	int _id
 ) {
 
-	data.at(_id).reset();
-	return *this;
+	return data.at(_id).reset();
+}
+
+timeout& timeouts::restart(
+	int _id
+) {
+
+	return data.at(_id).restart();
 }
 
 timeouts& timeouts::reset() {
@@ -169,20 +190,18 @@ timeouts& timeouts::reset() {
 	return *this;
 }
 
-timeouts& timeouts::pause(
+timeout& timeouts::pause(
 	int _id
 ) {
 
-	data.at(_id).pause();
-	return *this;
+	return data.at(_id).pause();
 }
 
-timeouts& timeouts::resume(
+timeout& timeouts::resume(
 	int _id
 ) {
 
-	data.at(_id).resume();
-	return *this;
+	return data.at(_id).resume();
 }
 
 bool timeouts::is_paused(

@@ -112,7 +112,10 @@ void menu::loop(
 
 		choice=menu_input::up;
 	}
-	else if(_input().is_key_down(SDL_SCANCODE_SPACE)) {
+	else if(
+		_input().is_key_down(SDL_SCANCODE_SPACE)
+		|| _input().is_key_down(SDL_SCANCODE_RETURN)
+	) {
 
 		choice=menu_input::select;
 	}

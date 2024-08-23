@@ -37,7 +37,7 @@ void leaping_monster::tic(
 
 		timeout.tic(_delta);
 
-		if(timeout.is_expired()) {
+		if(timeout.is_finished()) {
 
 			velocity.y=leap_force;
 			on_air=true;

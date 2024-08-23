@@ -1,4 +1,5 @@
 #include "app/automap.h"
+#include <stdexcept>
 
 using namespace app;
 
@@ -51,3 +52,33 @@ std::ostream& app::operator<<(
 	_stream<<";"<<_feature.x<<" "<<_feature.y<<" "<<_feature.flags<<std::endl;
 	return _stream;
 }
+
+const map_area& automap::find_area_by_map_id(
+	int _map_id
+) const {
+
+	for(const auto& area : areas) {
+
+		if(area.has_map_id(_map_id)) {
+
+			return area;
+		}
+	}
+
+	throw std::runtime_error("could not find area for map id");
+}
+
+bool map_area::has_map_id(
+	int _map_id
+) const {
+
+	for(const auto& cell : cells) {
+
+		if(cell.id==_map_id) {
+
+			return true;
+		}
+	}
+	return false;
+}
+

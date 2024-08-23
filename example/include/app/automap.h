@@ -21,6 +21,7 @@ struct automap {
 
 	std::vector<map_area> areas;
 	std::size_t size() const {return areas.size();}
+	const map_area& find_area_by_map_id(int) const;
 };
 
 /**
@@ -31,6 +32,7 @@ struct map_area {
 	int id;
 	std::string localization_key;
 	std::vector<map_cell> cells;
+	bool has_map_id(int) const;
 };
 
 /**

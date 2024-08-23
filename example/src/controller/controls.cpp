@@ -13,6 +13,7 @@ controls::controls(
 	app::service_provider& _sp
 ):
 	sp{_sp},
+	logger{sp.get_logger()},
 	config{sp.get_config()},
 	i8n{sp.get_localization()}
 {
@@ -82,8 +83,9 @@ void controls::loop(
 		return;
 	}
 
-	if(_input().is_key_down(SDL_SCANCODE_DOWN)) {
+	if(_input().is_key_down(SDL_SCANCODE_ESCAPE)) {
 
+		lm::log(logger).info()<<"will cancel control configuration"<<std::endl;
 		pop_state();
 		return;
 	}
@@ -148,6 +150,8 @@ void controls::learn(
 void controls::save_and_finish(
 	dfw::input& _input
 ) {
+
+	lm::log(logger).info()<<"control configuration ready, will save"<<std::endl;
 
 	for(const auto& node : entries) {
 

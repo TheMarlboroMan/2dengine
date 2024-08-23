@@ -4,7 +4,6 @@
 #include "app/thing_loader.h"
 #include "app/map_attribute_loader.h"
 #include "app/tile_filter.h"
-#include "app/game_draw.h"
 #include "app/savegame.h"
 
 #include "dfwimpl/config.h"
@@ -23,6 +22,7 @@
 
 #include <tools/string_utils.h>
 #include <tools/ranged_value.h>
+#include <tools/i8n.h>
 
 #include <ldtools/ttf_manager.h>
 
@@ -51,7 +51,14 @@ main::main(
 	music_player{_sp.get_music_player()},
 	inventory{_sp.get_inventory()},
 	game_session{_sp.get_game_session()},
-	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}}
+	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
+	gd{
+		camera, 
+		_sp.get_game_scenery_tile_draw_animated(),
+		_sp.get_game_sprite_draw(),
+		_sp.get_game_sprite_draw_animated(),
+		_sp.get_ttf_manager()
+	}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -70,6 +77,9 @@ main::main(
 		app::logic_screen_w,
 		app::logic_screen_h
 	);
+
+	game_timeouts.add(timeout_lives_banner, 4.f, -1.0, true);
+	game_timeouts.add(timeout_area_banner, 3.f, -1.0, true);
 }
 
 void main::start(
@@ -124,14 +134,7 @@ void main::loop_scene(
 	const dfw::loop_iteration_data& _lid
 ) {
 
-	if(lives_banner_timeout.is_counting()) {
-
-		lives_banner_timeout.tic(_lid.delta);
-		if(lives_banner_timeout.is_expired()) {
-
-			lives_banner_timeout.pause();
-		}
-	}
+	game_timeouts.tic(_lid.delta);
 
 	if(_input().is_exit_signal()) {
 
@@ -246,6 +249,23 @@ void main::load_map(
 	//Setup the automap.
 	game_session.current_map_id=current_map.automap_id;
 
+	//Should we show a new area banner? We need first to infer the new
+	//area id... This will also make the banner show whenever a game is
+	//started or loaded.
+	const auto& automap=sp.get_automap();
+
+	//TODO: This is a bit absurd...
+	//TODO: we must infer new area_id from the map id
+	const auto& area=automap.find_area_by_map_id(current_map.automap_id);
+
+	area_change_info.step(area.id);
+	if(area_change_info.has_changed_area()) {
+
+		const auto& new_area_name=sp.get_localization().get(area.localization_key);
+		lm::log(logger).info()<<"will show area banner for '"<<new_area_name<<"'\n";
+		setup_area_banner(new_area_name);
+	}
+
 	//All activated switches should run their course now: all activated objects
 	//will not save their state but will be activated when the switches do
 	//their thing.
@@ -287,14 +307,14 @@ void main::load_map(
 	//Ok, discover this map...
 	if(!persistence.has(app::pergr_automap, current_map.automap_id)) {
 
-		lm::log(logger).info()<<"will add id "<<current_map.automap_id<<" to automap..."<<std::endl;
+		lm::log(logger).debug()<<"will add id "<<current_map.automap_id<<" to automap..."<<std::endl;
 		persistence.add(
 			app::pergr_automap, 
 			current_map.automap_id, 
 			current_map.collectibles.size() ? app::am_discovered : app::am_complete
 		);
 
-		std::cout<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
+		lm::log(logger).debug()<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
 	}
 
 //	std::cout<<current_map<<std::endl;
@@ -345,13 +365,6 @@ void main::take_player_to_entry(
 
 		lm::log(logger).info()<<"taking player to exit (hard mode)\n";
 
-/**
- * about ladder position:
- * when setting a ladder that must span maps we must extend the ladder up/down
- * enough so that it matches the top of the corresponding EXIT and crosses the
- * corresponding entry (or the bottom, if the ladder goes down). This is a
- * workaround on the level design.
- */
 		//This is crucial, if there is an entry with a ladder we favor it and
 		//place the player on it depending on how the last entry expected the
 		//player to be placed. The extra tile_h is to avoid the player colliding
@@ -364,11 +377,15 @@ void main::take_player_to_entry(
 
 			if(app::entry::inner_top_edge==map_entry.position) {
 
-				d2d::collision::match_top_of(_player.ent, *ladders[0], app::tile_h);
+				lm::log(logger).info()<<"will match the top of ladder\n";
+				//d2d::collision::match_top_of(_player.ent, *ladders[0], app::tile_h);
+				d2d::collision::match_top_of(_player.ent, map_entry.ent);
 			}
 			else if(app::entry::inner_bottom_edge==map_entry.position) {
 
-				d2d::collision::match_bottom_of(_player.ent, *ladders[0], app::tile_h);
+				lm::log(logger).info()<<"will match the bottom of ladder\n";
+				//d2d::collision::match_bottom_of(_player.ent, *ladders[0], app::tile_h);
+				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
 			}
 			else {
 
@@ -990,7 +1007,10 @@ void main::tic_air(
 
 	//do the vertical phase.
 	//Last chance to jump after we begin falling...
-	if(_pli.jump && _player.timeouts.is_counting(app::player::timeout_last_jump_chance) && _player.velocity.y < 0.) {
+	if(_pli.jump && 
+		_player.timeouts.is_running(app::player::timeout_last_jump_chance)
+		&& _player.velocity.y < 0.
+	) {
 
 		_player.jump(simulation.jump_force);
 	}
@@ -1074,11 +1094,11 @@ void main::tic_defeat(
 	simulation.gravity.apply_to(_player.velocity, _delta);
 	mover.apply(_player.ent, _player.velocity, _delta);
 
-	if(!player.timeouts.is_counting(app::player::timeout_defeat)) {
+	if(!player.timeouts.is_running(app::player::timeout_defeat)) {
 
 		if(game_session.is_with_lives()) {
 
-			lives_banner_timeout.reset().resume();
+			game_timeouts.restart(timeout_lives_banner);
 		}
 
 		restart_level();
@@ -1112,19 +1132,17 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	app::game_draw gd(
-		_screen, 
-		camera, 
-		sp.get_game_scenery_tile_draw_animated(),
-		sp.get_game_sprite_draw(),
-		sp.get_game_sprite_draw_animated()
-	);
+	gd.draw(_screen, current_map, player);
 
-	gd.draw(current_map, player);
+	if(game_timeouts.is_running(timeout_area_banner)) {
 
-	if(lives_banner_timeout.is_counting()) {
+		gd.draw_area_name_banner(_screen);
+	}
 
-		//TODO: Draw the remaining lives somewhere!!
+	if(game_timeouts.is_running(timeout_lives_banner)) {
+
+		//TODO: Unimplemented!
+		gd.draw_lives_banner(_screen);
 	}
 }
 
@@ -1149,7 +1167,7 @@ void main::walk_out_of_ladder(
 ) {
 	d2d::collision::snap_to_top_of(player.ent, _tile);
 	_player.state=app::player::states::ground;
-	_player.timeouts.reset(app::player::timeout_ladder);
+	_player.timeouts.restart(app::player::timeout_ladder);
 
 	_player.facing=_x_force > 0 
 		? app::faces::right
@@ -1169,7 +1187,7 @@ void main::jump_out_of_ladder(
 		? app::faces::right
 		: app::faces::left;
 	_player.current_ladder=nullptr;
-	_player.timeouts.reset(app::player::timeout_ladder);
+	_player.timeouts.restart(app::player::timeout_ladder);
 
 	_player.jump(simulation.jump_force);
 }
@@ -1181,7 +1199,7 @@ void main::drop_out_of_ladder(
 	_player.velocity.x=0.;
 	_player.current_ladder=nullptr;
 	_player.state=app::player::states::air;
-	_player.timeouts.reset(app::player::timeout_ladder);
+	_player.timeouts.restart(app::player::timeout_ladder);
 	//there is no last chance jump here.
 }
 
@@ -1258,7 +1276,7 @@ void main::start_falling(
 ) {
 
 	_player.state=app::player::states::air;
-	_player.timeouts.reset(app::player::timeout_last_jump_chance);
+	_player.timeouts.restart(app::player::timeout_last_jump_chance);
 	_player.velocity.x/=2.; 
 }
 
@@ -1330,7 +1348,7 @@ void main::defeat(
 	}
 
 	play_sound(app::snd_defeat);
-	_player.timeouts.reset(app::player::timeout_defeat);
+	_player.timeouts.restart(app::player::timeout_defeat);
 	_player.state=app::player::states::defeat;
 	_player.velocity.y=simulation.defeat_y_velocity;
 }
@@ -1416,7 +1434,7 @@ bool main::can_grab_ladder(
 	const app::ladder *&_ladderptr
 ) const {
 
-	if(!_player.timeouts.is_expired(app::player::timeout_ladder)) {
+	if(!_player.timeouts.is_finished(app::player::timeout_ladder)) {
 
 		return false;
 	}
@@ -1639,6 +1657,14 @@ void main::game_over() {
 	throw std::runtime_error("game over is not implemented!");
 	//TODO: This is only hard mode and it should remove the save xD
 
+}
+
+void main::setup_area_banner(
+	const std::string& _area_name
+) {
+
+	game_timeouts.restart(timeout_area_banner);
+	gd.setup_area_name_banner(_area_name);
 }
 
 #ifdef IS_DEBUG_BUILD
