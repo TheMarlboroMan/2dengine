@@ -36,7 +36,7 @@ void savegame_manager::load() {
 
 		if(!std::filesystem::exists(path)) {
 
-			slots.push_back({true, path, 0, 0, 0});
+			slots.push_back({true, path, "", 0, 0, 0});
 			continue;
 		}
 
@@ -55,7 +55,7 @@ void savegame_manager::load() {
 			[](int _val) -> bool {return 1==_val;}
 		);
 
-		slots.push_back({false, path, pickups, save.difficulty_setting, save.elapsed_seconds});
+		slots.push_back({false, path, save.map_filename, pickups, save.difficulty_setting, save.elapsed_seconds});
 	}
 }
 

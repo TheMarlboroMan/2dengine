@@ -3,6 +3,7 @@
 #include "app/definitions.h"
 #include "app/service_provider.h"
 #include "app/env.h"
+#include "app/automap_game.h"
 #include "app/savegame_manager.h"
 #include <dfw/controller_interface.h>
 #include <lm/logger.h>
@@ -72,6 +73,7 @@ class menu:
 	lm::logger&                 logger;
 
 	app::savegame_manager       savegame_manager;
+	app::automap_game           automap_interface;
 	ldtools::view_composer      view;
 	enum class levels{main, slot, skill, confirm_delete}
 	                            curlevel{levels::main};

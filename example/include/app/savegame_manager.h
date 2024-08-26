@@ -10,7 +10,8 @@ namespace app {
 struct save_slot {
 
 	bool                    new_game{false};
-	std::string             filename{};
+	std::string             filename{},
+							levelname{};
 	int                     collectibles{0},
 	                        skill_setting{0}, //expressed in flags!
 	                        elapsed_seconds{0};

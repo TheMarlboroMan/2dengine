@@ -5,19 +5,16 @@ using namespace app;
 
 map_attribute_loader::map_attribute_loader(
 	ldv::rgba_color& _background_color,
-	int& _music_id,
-	int& _automap_id
+	int& _music_id
 ):
 	background_color{_background_color},
-	music_id{_music_id},
-	automap_id{_automap_id}
+	music_id{_music_id}
 {}
 
 void map_attribute_loader::setup() {
 
 	background_color={0,0,0, 255};
 	music_id=0;
-	automap_id=0;
 }
 
 void map_attribute_loader::load(
@@ -34,7 +31,6 @@ void map_attribute_loader::load(
 	}
 
 	music_id=_attr_map.at("music_id").get_int();
-	automap_id=_attr_map.at("automap_id").get_int();
 
 /*
 	struct pair {

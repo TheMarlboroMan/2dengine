@@ -1,6 +1,7 @@
 #include "controller/controller_states.h"
 #include "controller/menu.h"
 #include "app/input.h"
+#include "app/map_attribute_loader.h"
 
 #include <ldtools/ttf_manager.h>
 #include <tools/json.h>
@@ -9,6 +10,8 @@
 #include <tools/time.h>
 
 #include <ldv/ttf_representation.h>
+
+#include <d2d/storage/map_loader.h>
 
 #include <iostream>
 #include <map>
@@ -23,7 +26,8 @@ menu::menu(
 	sp{_sp},
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
-	savegame_manager{env}
+	savegame_manager{env},
+	automap_interface{sp.get_automap()}
 {
 
 	//Chicken and egg... can we parse first and map later so we can define
@@ -669,6 +673,10 @@ void menu::set_savegame_description(
 		auto ts=t.seconds_to_timedata(slot.elapsed_seconds);
 		ss<<", "<<t.time_to_string(ts.hours, ts.minutes, ts.seconds);
 	}
+
+	int area_id=automap_interface.area_id_from_map(slot.levelname);
+	const auto& area=automap_interface.get(area_id);
+	ss<<"\n"<<sp.get_localization().get(area.localization_key);
 	
 	view.set_text("menu_savegame_description", ss.str());
 }

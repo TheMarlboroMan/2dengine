@@ -104,7 +104,8 @@ void pause::awake(
 	
 	//Finally set the map.
 	lm::log(logger).debug()<<"attempting to locate area for "<<game_session.current_map_id<<"\n";
-	auto area_id=automap_interface.area_id_from_map_id(game_session.current_map_id);
+	//TODO: again, service clusters, bad.
+	auto area_id=sp.get_automap().find_area_by_map_id(game_session.current_map_id).id;
 	automap_interface.set(area_id);
 	ready_map();
 }

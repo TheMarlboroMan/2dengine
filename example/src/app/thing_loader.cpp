@@ -310,9 +310,11 @@ void thing_loader::add_projectile_generator(
 		case 0:
 			type=app::projectile_generator::types::linear;
 		break;
-
 		case 1:
 			type=app::projectile_generator::types::directed;
+		break;
+		case 2:
+			type=app::projectile_generator::types::falling;
 		break;
 	}
 

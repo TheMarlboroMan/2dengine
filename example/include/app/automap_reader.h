@@ -11,18 +11,18 @@ namespace app {
  * class to produce a full map from a file. The file structure is a simple
  * text file like this:
 #mark id localization_key
-#list of cell id x y w h
+#list of cell filename x y w h
 #list of features for such a cell.
 * such as
 >1 map-start
-*id x y w h
+*start_001 x y w h
 ;x y flags
 ;x y flags
 ;x y flags
-*id x y w h
+*start_002 x y w h
 ;x y flags
 ;x y flags
-*id x y w h
+*start_003 x y w h
 ;x y flags
 ;x y flags
 * we understand that the x and y coordinates represent the top-left corner of
@@ -41,7 +41,7 @@ class automap_reader {
 	private:
 
 	void        parse_area(automap&);
-	void        parse_cell(map_area&);
+	void        parse_cell(map_area&, std::string&);
 	void        parse_feature(map_cell&);
 
 	std::ifstream infile;

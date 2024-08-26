@@ -453,6 +453,8 @@ void game_draw::draw_projectile(
 			return draw_projectile_linear(_screen, _projectile);
 		case app::projectile::types::round:
 			return draw_projectile_directed(_screen, _projectile);
+		case app::projectile::types::falling:
+			return draw_projectile_falling(_screen, _projectile);
 	}
 }
 
@@ -518,6 +520,37 @@ void game_draw::draw_projectile_directed(
 	}
 
 	auto line=sprite_draw_animated.get(app::anim_projectile_round);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_projectile.ent.get_origin()),
+		line.frame,
+		sprite_draw_animated.flags(line)
+	);
+}
+
+void game_draw::draw_projectile_falling(
+	ldv::screen& _screen,
+	const app::projectile& _projectile
+) {
+
+	if(!_projectile.is_moving()) {
+
+		auto line=sprite_draw_animated.get(
+			app::anim_projectile_falling_end, 
+			_projectile.get_timeout_value()
+		);
+
+		sprite_draw.draw(
+			_screen, 
+			d2d::video::to_screen(_projectile.ent.get_origin()),
+			line.frame,
+			sprite_draw_animated.flags(line)
+		);
+		return;
+	}
+
+	auto line=sprite_draw_animated.get(app::anim_projectile_falling);
 
 	sprite_draw.draw(
 		_screen, 

@@ -9,12 +9,14 @@ namespace app {
 
 class projectile_generator {
 
+
 	public:
 
 	//types of projectile that this generates...
 	enum class types {
-		linear,
-		directed
+		linear, //horizontal
+		directed,
+		falling
 	};
 
 /**
@@ -58,10 +60,7 @@ class projectile_generator {
 /**
  * must return the information about the projectile it will generate
  */
-	projectile_data         get_projectile_data() const {
-
-		return pr_data;
-	}
+	projectile_data         get_projectile_data() const;
 
 	private:
 
@@ -75,6 +74,8 @@ class projectile_generator {
 		rest
 	}                       state;
 
+	const d2d::collision::box    spawn_box;
+	const float             velocity;
 	bool                    active;
 	types                   type;
 	int                     tag;
@@ -82,8 +83,6 @@ class projectile_generator {
 	const int               volley_total;
 	int                     volley_count{0};
 	d2d::components::timeouts   timeouts;
-
-	projectile_data         pr_data;
 };
 
 std::ostream& operator<<(std::ostream&, const projectile_generator&);

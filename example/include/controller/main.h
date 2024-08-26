@@ -16,7 +16,6 @@
 #include "app/types.h"
 #include "app/inventory.h"
 #include "app/game_session.h"
-#include "app/automap_game.h" //to obtain area names...
 #include "app/game_draw.h"
 
 #include <dfw/controller_interface.h>

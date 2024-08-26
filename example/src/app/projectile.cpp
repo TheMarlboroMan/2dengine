@@ -26,6 +26,11 @@ projectile::projectile(
 			ent.set_w(projectile_round_w);
 			ent.set_h(projectile_round_h);
 		break;
+		case types::falling:
+
+			ent.set_w(projectile_falling_w);
+			ent.set_h(projectile_falling_h);
+		break;
 	}
 }
 
@@ -49,6 +54,13 @@ void projectile::tic(
 	if(is_moving()) {
 
 		_mover.apply(ent, velocity, _delta);
+
+		if(types::falling==type) {
+
+			//falling ones move faster as they go.
+			//TODO: I wish we could have an accelerator thingy
+			velocity.y+=(velocity.y * 0.05);
+		}
 		return;
 	}
 }

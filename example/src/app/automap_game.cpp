@@ -44,7 +44,14 @@ void automap_game::reset() {
 
 const map_area& automap_game::get() const {
 
-	std::size_t index=area_index.at(current_area_id).index;
+	return get(current_area_id);
+}
+
+const map_area& automap_game::get(
+	int _area_id
+) const {
+
+	std::size_t index=area_index.at(_area_id).index;
 	return map.areas.at(index);
 }
 
@@ -94,28 +101,18 @@ void automap_game::previous() {
 	}
 }
 
-int automap_game::area_id_from_map_id(
-	int _map_id
+int automap_game::area_id_from_map(
+	const std::string& _filename
 ) const {
 
-	for(const auto& area : map.areas) {
+	return map.find_area_by_map(_filename).id;
+}
 
-		bool has_cell=std::any_of(
-			std::begin(area.cells),
-			std::end(area.cells),
-			[_map_id](const map_cell& _cell) -> bool {
+int automap_game::map_id_from_map(
+	const std::string& _filename
+) const {
 
-				return _cell.id==_map_id;
-			}
-		);
-
-		if(has_cell) {
-
-			return area.id;
-		}
-	}
-
-	throw std::runtime_error("unable to find area by map id");
+	return map.file_to_id.at(_filename);
 }
 
 void automap_game::discover_area(

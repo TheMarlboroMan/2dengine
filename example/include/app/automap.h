@@ -7,6 +7,7 @@
 #include <vector>
 #include <ostream>
 #include <algorithm>
+#include <map>
 
 namespace app {
 
@@ -16,12 +17,17 @@ struct map_feature;
 
 /**
  * the whole container of areas, containing cells, containing features.
+ * plus a couple of maps from-to map filenames to map ids.
  */
 struct automap {
 
 	std::vector<map_area> areas;
 	std::size_t size() const {return areas.size();}
+	const map_area& find_area_by_map(const std::string&) const;
 	const map_area& find_area_by_map_id(int) const;
+
+	std::map<std::string, int>  file_to_id;
+	std::map<int, std::string>  id_to_file;
 };
 
 /**
@@ -32,7 +38,7 @@ struct map_area {
 	int id;
 	std::string localization_key;
 	std::vector<map_cell> cells;
-	bool has_map_id(int) const;
+	bool has_map(int) const;
 };
 
 /**

@@ -6,7 +6,7 @@
 
 /**
  * this is the part of the game that uses the automap and interacts with
- * it, changing areas and so on.
+ * it, changing areas, retrieving basic information and so on.
  */
 
 namespace app {
@@ -24,7 +24,12 @@ class automap_game {
 /**
 *returns an area id from the given automap id.
 */
-	int   area_id_from_map_id(int) const;
+	int             area_id_from_map(const std::string&) const;
+
+/**
+* returns the map id from its name
+*/
+	int             map_id_from_map(const std::string&) const;
 
 /**
  * returns true if there is an area with the given id.
@@ -38,6 +43,11 @@ class automap_game {
  *returns the current area.
  */
 	const map_area& get() const;
+
+/**
+ *returns an area by its id
+ */
+	const map_area& get(int _id) const;
 
 /**
  * sets the current area id.

@@ -13,7 +13,8 @@ class projectile {
 
 	enum class types {
 		horizontal,
-		round
+		round,
+		falling
 	};
 
 	                        projectile(d2d::collision::point, d2d::motion::motion_vector, types);
@@ -39,6 +40,9 @@ class projectile {
 
 	static const int        projectile_round_w{6};
 	static const int        projectile_round_h{6};
+
+	static const int        projectile_falling_w{6};
+	static const int        projectile_falling_h{6};
 
 	enum class states {
 		moving,

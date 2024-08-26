@@ -28,6 +28,7 @@ automap automap_reader::read_map(
 	}
 
 	automap result{};
+	std::string map_filename{};
 
 	while(true) {
 
@@ -42,13 +43,17 @@ automap automap_reader::read_map(
 			case '>':
 				parse_area(result);
 			break;
-			case '*':
+			case '*': {
 				if(!result.areas.size()) {
 
 					throw std::runtime_error("unexpected cell definition");
 				}
 
-				parse_cell(result.areas.back());
+				parse_cell(result.areas.back(), map_filename);
+				auto id=result.areas.back().cells.back().id;
+				result.file_to_id.insert(std::make_pair(map_filename, id));
+				result.id_to_file.insert(std::make_pair(id, map_filename));
+			}
 			break;
 			case ';':
 				if(!result.areas.size()) {
@@ -98,12 +103,13 @@ void automap_reader::parse_area(
 }
 
 void automap_reader::parse_cell(
-	map_area& _area
+	map_area& _area,
+	std::string& _filename
 ) {
 
 	int id{0}, x{0}, y{0}, w{0}, h{0};
 
-	infile>>id>>x>>y>>w>>h;
+	infile>>_filename>>id>>x>>y>>w>>h;
 
 	if(infile.fail()) {
 

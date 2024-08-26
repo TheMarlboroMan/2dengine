@@ -54,7 +54,6 @@ class map {
 	std::vector<app::projectile>            projectiles;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
-	int                                     automap_id{0}; //numeric id for the automap.
 	int                                     music_id{0};
 
 /**

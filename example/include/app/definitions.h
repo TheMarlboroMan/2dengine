@@ -82,6 +82,8 @@ enum animations{
 	anim_projectile_round=157,
 	anim_projectile_round_end=158,
 	anim_timed_trap_fire=159,
+	anim_projectile_falling=203,
+	anim_projectile_falling_end=204,
 
 	//other stuff
 	anim_breaking_platform=200,

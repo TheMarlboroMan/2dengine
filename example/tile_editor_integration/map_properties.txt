@@ -6,13 +6,6 @@ beginproperty
 endproperty
 
 beginproperty
-	name automap_id
-	type int
-	default 0
-	comment unique automap identifier
-endproperty
-
-beginproperty
 	name bg_color
 	type int
 	default 0

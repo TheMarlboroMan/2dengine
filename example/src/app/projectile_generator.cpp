@@ -13,15 +13,13 @@ projectile_generator::projectile_generator(
 	int _rest_time_ms,
 	bool _active
 ):
+	spawn_box{_box},
+	velocity{_velocity},
 	state{projectile_generator::states::volley},
 	active{_active},
 	type{_type},
 	tag{_tag},
-	volley_total{_volley},
-	pr_data{
-		{(double)_velocity, 0.0},
-		_box
-	}
+	volley_total{_volley}
 {
 	float pause_time=_pause_time_ms / 1000;
 	float rest_time=_rest_time_ms / 1000;
@@ -102,4 +100,16 @@ std::ostream& app::operator<<(
 
 	_stream<<"projectile generator[]";
 	return _stream;
+}
+
+projectile_generator::projectile_data projectile_generator::get_projectile_data() const {
+
+	switch(type) {
+		case types::linear:
+		case types::directed: //velocity will be used as an absolute value to measure speed.
+			return {{velocity, 0.0}, spawn_box};
+
+		case types::falling: 
+			return {{0.0, -fabs(velocity)}, spawn_box};
+	}
 }

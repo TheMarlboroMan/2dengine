@@ -1,7 +1,18 @@
 next steps:
 
+	fix the missing skill using --skill in command line
+
+	do the area names and stuff better, it is very bad right now.
+		identify needs
+		fix them.
+
+	fix order of properties at map editor
+
+	add avpage alternatives to animation editor
+
 	add glints to treasure, something like a particle system, so to say.
 		the animation and frames already exist.
+		- I am not happy with splitting the frame the way its done but...
 
 	try to jump into a ladder that goes a map up. Does it fuck up? It 
 		does if there is a solid in the next room!! Use NON solids.
@@ -10,8 +21,6 @@ next steps:
 
 	tile draw animated thing, make it equivalent to the other. 
 		I don't know what this means.
-
-	test map with EVERYTHING IN THE GAME and a shell script to start it.
 
 	fix crash at exit
 		seems to be something about music unloading. I just commented it out.
@@ -22,15 +31,15 @@ next steps:
 			play_looped(int) : int
 			play_exclusive(int)
 
-	make the first example game
-		- trap:
-			fire falling in drops from the ceiling, with gravity??
+	use the directed projectiles!!!! They are amazing xD
 
+	we have the "flame animation", what is it for???
+
+	make the first example game
 		make a paper map for it.
 
 	show data on savegame loading!
 		for this we need to store the items picked up
-		maybe show the area name too if possible??? don´t know.
 
 	add lives
 		each time the player is defeated show how many lives remain...

@@ -5,6 +5,7 @@
 #include "app/map_attribute_loader.h"
 #include "app/tile_filter.h"
 #include "app/savegame.h"
+#include "app/automap_game.h" //to obtain area names...
 
 #include "dfwimpl/config.h"
 
@@ -25,6 +26,7 @@
 #include <tools/i8n.h>
 
 #include <ldtools/ttf_manager.h>
+#include <ldt/box.h>
 
 #include <sstream>
 #include <iostream>
@@ -234,7 +236,7 @@ void main::load_map(
 	loader.load_thing_layer("things", tl);
 
 	//The loader takes references to the map data.
-	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id, current_map.automap_id};
+	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id};
 	loader.load_properties(attrl);
 	lm::log(logger).info()<<"map musicid is "
 		<<current_map.music_id
@@ -247,16 +249,20 @@ void main::load_map(
 	music_player.swap(current_map.music_id, 500);
 
 	//Setup the automap.
-	game_session.current_map_id=current_map.automap_id;
+	//TODO: Should this be a service?
+	//TODO: Should it be refactored?
+	app::automap_game automap{sp.get_automap()};
+	int automap_id=automap.map_id_from_map(_map_name);
+	game_session.current_map_id=automap_id;
 
 	//Should we show a new area banner? We need first to infer the new
 	//area id... This will also make the banner show whenever a game is
 	//started or loaded.
-	const auto& automap=sp.get_automap();
+	//
+	//TODO: This is a bit of a clusterfuck of services... should refactor it
+	//to something like "area_names" and be done with it xD
 
-	//TODO: This is a bit absurd...
-	//TODO: we must infer new area_id from the map id
-	const auto& area=automap.find_area_by_map_id(current_map.automap_id);
+	const auto& area=sp.get_automap().find_area_by_map(_map_name);
 
 	area_change_info.step(area.id);
 	if(area_change_info.has_changed_area()) {
@@ -305,12 +311,12 @@ void main::load_map(
 #endif
 
 	//Ok, discover this map...
-	if(!persistence.has(app::pergr_automap, current_map.automap_id)) {
+	if(!persistence.has(app::pergr_automap, automap_id)) {
 
-		lm::log(logger).debug()<<"will add id "<<current_map.automap_id<<" to automap..."<<std::endl;
+		lm::log(logger).debug()<<"will add id "<<automap_id<<" to automap..."<<std::endl;
 		persistence.add(
 			app::pergr_automap, 
-			current_map.automap_id, 
+			automap_id, 
 			current_map.collectibles.size() ? app::am_discovered : app::am_complete
 		);
 
@@ -639,7 +645,7 @@ void main::post_tic() {
 
 		persistence.set(
 			app::pergr_automap,
-			current_map.automap_id,
+			game_session.current_map_id,
 			app::am_complete
 		);
 	}
@@ -765,28 +771,37 @@ void main::generate_projectile(
 
 	const auto spawn_data=_pg.get_projectile_data();
 
-	auto type=app::projectile::types::horizontal;
+	auto transform_type=[](app::projectile_generator::types _type) -> app::projectile::types {
+
+		switch(_type) {
+
+			case app::projectile_generator::types::linear:
+				return app::projectile::types::horizontal;
+			case app::projectile_generator::types::falling:
+				return app::projectile::types::falling;
+			case app::projectile_generator::types::directed:
+				return app::projectile::types::round;
+		}
+
+		return app::projectile::types::horizontal;
+	};
+
 	auto velocity=spawn_data.velocity;
 
-	switch(_pg.get_type()) {
+	if(app::projectile_generator::types::directed==_pg.get_type()) {
 
-		case app::projectile_generator::types::linear:
-			//The defaults are above...
-		break;
-		case app::projectile_generator::types::directed:
-
-			type=app::projectile::types::round;
-			//TODO: Should aim FOR THE CENTER!
-			velocity=ldt::vector_from_points(spawn_data.box.origin, player.ent.get_origin());
-			velocity.normalize();
-			velocity*=fabs(spawn_data.velocity.x);
-		break;
+		velocity=ldt::vector_from_points(
+			ldt::get_center(spawn_data.box), 
+			ldt::get_center(player.ent.get_box())
+		);
+		velocity.normalize();
+		velocity*=fabs(spawn_data.velocity.x);
 	}
 
 	app::projectile proj{
 		spawn_data.box.origin,
 		velocity,
-		type
+		transform_type(_pg.get_type())
 	};
 
 	d2d::collision::center_vertically(proj.ent, spawn_data.box);
