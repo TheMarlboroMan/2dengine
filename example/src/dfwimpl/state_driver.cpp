@@ -273,21 +273,6 @@ void state_driver::start_app(
 
 #ifdef IS_DEBUG_BUILD
 
-	if(_argman.exists("--map")) {
-
-		states.set(controller::states::state_main);
-
-		int entry_id=1;
-
-		if(_argman.exists("--eid")) {
-
-			entry_id=std::stoi(_argman.get_following("--eid"));
-		}
-
-		auto& mainc=static_cast<controller::main&>(*c_main);
-		mainc.start(_argman.get_following("--map"), entry_id);
-	}
-
 	if(_argman.exists("--skill")) {
 
 		states.set(controller::states::state_main);
@@ -305,6 +290,21 @@ void state_driver::start_app(
 				lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
 			break;
 		}
+	}
+
+	if(_argman.exists("--map")) {
+
+		states.set(controller::states::state_main);
+
+		int entry_id=1;
+
+		if(_argman.exists("--eid")) {
+
+			entry_id=std::stoi(_argman.get_following("--eid"));
+		}
+
+		auto& mainc=static_cast<controller::main&>(*c_main);
+		mainc.start(_argman.get_following("--map"), entry_id);
 	}
 
 #endif
