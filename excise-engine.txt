@@ -24,14 +24,10 @@ next steps:
 		each time the player is defeated show how many lives remain...
 		and gain a life each N bonuses
 		and game over screen
-
-	add avpage alternatives to animation editor
-
+			- does the game over screen FUCK UP your save file???
 
 	try to jump into a ladder that goes a map up. Does it fuck up? It 
 		does if there is a solid in the next room!! Use NON solids.
-
-	group_draw center, take into account visibility in libdansdl2 
 
 	tile draw animated thing, make it equivalent to the other. 
 		I don't know what this means.

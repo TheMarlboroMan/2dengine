@@ -16,6 +16,7 @@
 
 #include <ldv/color.h>
 #include <ldv/box_representation.h>
+#include <ldv/resource_manager.h>
 #include <d2d/video/tools.h>
 
 #include <iostream>
@@ -28,7 +29,8 @@ game_draw::game_draw(
 	d2d::video::scenery_tile_draw_animated&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
 	d2d::video::sprite_draw_animated& _sprite_draw_animated,
-	ldtools::ttf_manager& _ttf_manager
+	ldtools::ttf_manager& _ttf_manager,
+	const ldv::resource_manager& _video_resource_manager
 ):
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
@@ -37,11 +39,25 @@ game_draw::game_draw(
 	area_name_banner_text{
 		_ttf_manager.get("area_banner_font", 8),
 		ldv::rgba8(255,255,255,128),
-		"unset" //let us spend precious memory :P.
+		""
 	},
 	area_name_banner_background{
 		{0,0,app::logic_screen_w,tile_h*3},
 		ldv::rgba8(64,64,64,128)
+	},
+	lives_banner_text{
+		_ttf_manager.get("lives_banner_font", 8),
+		ldv::rgba8(255,255,255,128),
+		""
+	},
+	lives_banner_background{
+		{0,0,app::logic_screen_w,tile_h*3},
+		ldv::rgba8(64,64,64,128)
+	},
+	lives_banner_icon{
+		_video_resource_manager.get_texture(tex_tiles),
+		{{0, 0}, 16, 10},
+		{{144, 8}, 16, 10}
 	}
 {
 
@@ -53,6 +69,16 @@ game_draw::game_draw(
 
 	scenery_tile_draw.set_camera(camera);
 	scenery_tile_draw.set_with_camera(true);
+}
+
+void game_draw::setup_lives_banner(
+	int _lives
+) {
+
+	std::stringstream ss;
+	ss<<"x "<<_lives;
+
+	lives_banner_text.set_text(ss.str());
 }
 
 void game_draw::setup_area_name_banner(
@@ -73,7 +99,9 @@ void game_draw::draw_area_name_banner(ldv::screen& _screen) {
 
 void game_draw::draw_lives_banner(ldv::screen& _screen) {
 
-	//TODO: Unimplemented.
+	lives_banner_background.draw(_screen);
+	lives_banner_text.draw(_screen);
+	lives_banner_icon.draw(_screen);
 }
 
 game_draw::~game_draw() {

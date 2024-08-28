@@ -8,6 +8,8 @@
 #include <ldv/camera.h>
 #include <ldv/ttf_representation.h>
 #include <ldv/box_representation.h>
+#include <ldv/bitmap_representation.h>
+#include <ldv/resource_manager.h>
 #include <string>
 
 namespace app {
@@ -38,7 +40,8 @@ class game_draw {
 		d2d::video::scenery_tile_draw_animated&, 
 		d2d::video::sprite_draw&,
 		d2d::video::sprite_draw_animated&,
-		ldtools::ttf_manager&
+		ldtools::ttf_manager&,
+		const ldv::resource_manager&
 	);
 	                            ~game_draw();
 
@@ -47,6 +50,7 @@ class game_draw {
 	void                        draw_lives_banner(ldv::screen&);
 
 	void                        setup_area_name_banner(const std::string&);
+	void                        setup_lives_banner(int);
 
 	private:
 
@@ -54,8 +58,12 @@ class game_draw {
 	d2d::video::scenery_tile_draw_animated&  scenery_tile_draw;
 	d2d::video::sprite_draw&        sprite_draw;
 	d2d::video::sprite_draw_animated& sprite_draw_animated;
+
 	ldv::ttf_representation     area_name_banner_text;
 	ldv::box_representation     area_name_banner_background;
+	ldv::ttf_representation     lives_banner_text;
+	ldv::box_representation     lives_banner_background;
+	ldv::bitmap_representation  lives_banner_icon;
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);

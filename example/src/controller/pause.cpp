@@ -190,8 +190,11 @@ void pause::ready_map() {
 
 			cells.push_back(&cell);
 		}
+
+		lm::log(logger).debug()<<"map ready with "<<cells.size()<<" cells\n";
 #else
 		if(persistence.has(app::pergr_automap, cell.id)) {
+
 			cells.push_back(&cell);
 		}
 #endif
@@ -203,6 +206,17 @@ void pause::ready_map() {
 		ready_room(*cell);
 	}
 
+	//only distant parts of the map (from 0.0) may be available, so in 
+	//order to make then center ok we trim the inner distances.
+	map_representation.trim();
+
+#ifdef IS_DEBUG_BUILD
+
+	lm::log(logger).debug()<<"map ready with "<<map_representation.size()<<" group nodes\n";
+	lm::log(logger).debug()<<"map view position: "<<map_representation.get_view_position()<<std::endl;
+
+#endif
+
 	auto center_box=view.get_by_id("automap_center_box");
 	map_representation.align(
 		*center_box, 
@@ -211,6 +225,12 @@ void pause::ready_map() {
 			ldv::representation_alignment::v::center
 		}
 	);
+
+#ifdef IS_DEBUG_BUILD
+
+	lm::log(logger).debug()<<"map view position after centering: "<<map_representation.get_view_position()<<std::endl;
+
+#endif
 
 	auto area_name=view.get_by_id("area_name");
 	area_name->align(

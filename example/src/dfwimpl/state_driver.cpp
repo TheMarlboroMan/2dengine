@@ -363,4 +363,10 @@ void state_driver::load_resources() {
 		8,
 		env.build_app_path("resources/fonts/publicpixel.ttf")
 	);
+
+	ttf_manager.insert(
+		"lives_banner_font",
+		8,
+		env.build_app_path("resources/fonts/publicpixel.ttf")
+	);
 }

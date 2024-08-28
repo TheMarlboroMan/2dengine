@@ -59,7 +59,8 @@ main::main(
 		_sp.get_game_scenery_tile_draw_animated(),
 		_sp.get_game_sprite_draw(),
 		_sp.get_game_sprite_draw_animated(),
-		_sp.get_ttf_manager()
+		_sp.get_ttf_manager(),
+		_sp.get_video_resource_manager()
 	}
 #ifdef IS_DEBUG_BUILD
 	,
@@ -1154,9 +1155,8 @@ void main::draw_scene(
 		gd.draw_area_name_banner(_screen);
 	}
 
-	if(game_timeouts.is_running(timeout_lives_banner)) {
+	if(game_session.is_with_lives() && game_timeouts.is_running(timeout_lives_banner)) {
 
-		//TODO: Unimplemented!
 		gd.draw_lives_banner(_screen);
 	}
 }
