@@ -12,13 +12,18 @@
 [[main_menu-delete_slot_confirm]]{{press pause again to delete}}
 [[controls-legend]]{{press any input for}}
 [[controls-cancel]]{{press escape key to cancel}}
-[[controls-up]]{{up}}
-[[controls-down]]{{down}}
+[[controls-up]]{{up / activate}}
+[[controls-down]]{{down / crouch}}
 [[controls-left]]{{left}}
 [[controls-right]]{{right}}
 [[controls-jump]]{{jump}}
 [[controls-pause]]{{pause / map}}
-[[automap-start]]{{Underground passageway}}
-[[automap-forest]]{{Valley forest}}
+[[automap-start]]{{Mines}}
+[[automap-forest]]{{Forest}}
 [[automap-red_vault]]{{Red key vault}}
+[[automap-blue_vault]]{{Blue key vault}}
+[[automap-green_vault]]{{Green key vault}}
 [[automap-river]]{{River}}
+[[automap-volcano]]{{Volcano}}
+[[automap-fortress]]{{Fortress}}
+[[automap-tower]]{{Wizard's tower}}

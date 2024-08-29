@@ -42,8 +42,8 @@ game_draw::game_draw(
 		""
 	},
 	area_name_banner_background{
-		{0,0,app::logic_screen_w,tile_h*3},
-		ldv::rgba8(64,64,64,128)
+		{0,0,app::logic_screen_w,(tile_h/2)+(tile_h*2)},
+		ldv::rgba8(0,0,0,128)
 	},
 	lives_banner_text{
 		_ttf_manager.get("lives_banner_font", 8),
@@ -61,7 +61,14 @@ game_draw::game_draw(
 	}
 {
 
-	area_name_banner_text.go_to({16, 16});
+	area_name_banner_background.align(
+		camera.get_pos_box(),
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::inner_bottom
+		}
+	);
+
 	area_name_banner_background.set_blend(ldv::representation::blends::alpha);
 
 	sprite_draw.set_camera(camera);
@@ -89,6 +96,13 @@ void game_draw::setup_area_name_banner(
 	ss<<"-- "<<_area_name<<" --";
 
 	area_name_banner_text.set_text(ss.str());
+	area_name_banner_text.align(
+		area_name_banner_background,
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::center
+		}
+	);
 }
 
 void game_draw::draw_area_name_banner(ldv::screen& _screen) {

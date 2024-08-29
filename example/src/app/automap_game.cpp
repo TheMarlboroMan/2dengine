@@ -20,15 +20,8 @@ automap_game::automap_game(
 
 		//Start at index zero, go up.
 		area_index.insert({area.id, {area_index.size(), false}});
-		if(area.id > max_area_id) {
-
-			max_area_id=area.id;
-		}
-
-		if(area.id < min_area_id) {
-
-			min_area_id=area.id;
-		}
+		max_area_id=std::max(area.id, max_area_id);
+		min_area_id=std::min(area.id, min_area_id);
 	}
 }
 
@@ -65,7 +58,19 @@ void automap_game::next() {
 			current_area_id=min_area_id;
 		}
 
-		std::cout<<current_area_id<<"/"<<max_area_id<<std::endl;
+#ifdef IS_DEBUG_BUILD
+
+		if(debug_all_discovered) {
+
+			if(!area_index.count(current_area_id)) {
+
+				continue;
+			}
+
+			return;
+		}
+#endif
+
 		if(!has(current_area_id)) {
 
 			continue;
@@ -88,7 +93,18 @@ void automap_game::previous() {
 			current_area_id=max_area_id;
 		}
 
-		std::cout<<current_area_id<<"/"<<max_area_id<<std::endl;
+#ifdef IS_DEBUG_BUILD
+
+		if(debug_all_discovered) {
+
+			if(!area_index.count(current_area_id)) {
+
+				continue;
+			}
+
+			return;
+		}
+#endif
 		if(!has(current_area_id)) {
 
 			continue;

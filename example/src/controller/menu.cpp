@@ -8,6 +8,7 @@
 #include <tools/file_utils.h>
 #include <tools/i8n.h>
 #include <tools/time.h>
+#include <tools/number_utils.h>
 
 #include <ldv/ttf_representation.h>
 
@@ -661,8 +662,8 @@ void menu::set_savegame_description(
 	}
 
 	//we always draw the amount of stuff collected.
-	//TODO: Should be a percentage!
-	int stuff_collected=slot.collectibles;
+	const int total_stuff=100; //TODO: This is a very meh number.
+	int stuff_collected=tools::percent(slot.collectibles, total_stuff);
 
 	ss<<", "<<stuff_collected<<"%";
 

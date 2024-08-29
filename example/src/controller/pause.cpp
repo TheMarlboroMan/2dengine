@@ -146,6 +146,7 @@ void pause::loop(
 
 		lm::log(logger).debug()<<"toggling 'display_all_maps'\n";
 		display_all_maps=!display_all_maps;
+		automap_interface.debug_all_discovered=display_all_maps;
 		ready_map();
 	}
 #endif

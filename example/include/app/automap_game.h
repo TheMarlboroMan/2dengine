@@ -68,6 +68,10 @@ class automap_game {
  */
 	void discover_area(int);
 
+#ifdef IS_DEBUG_BUILD
+	bool debug_all_discovered{false}; //a bit pointless sinc
+#endif
+
 	private:
 
 	struct area_info {
