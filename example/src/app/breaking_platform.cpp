@@ -24,7 +24,7 @@ void breaking_platform::start_breaking() {
 	}
 
 	state=states::breaking;
-	timeout.reset().target( (float)ms_breaking / 1000.f);
+	timeout.target( (float)ms_breaking / 1000.f).restart();
 }
 
 void breaking_platform::tic(
@@ -48,11 +48,11 @@ void breaking_platform::tic(
 			return;
 		case states::breaking:
 			state=states::gone;
-			timeout.reset().target((float)ms_gone/1000.f);
+			timeout.target((float)ms_gone/1000.f).restart();
 			return;
 		case states::gone:
 			state=states::returning;
-			timeout.reset().target((float)ms_returning/1000.f);
+			timeout.target((float)ms_returning/1000.f).restart();
 			return;
 		case states::returning:
 			state=states::ok;

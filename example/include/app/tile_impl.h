@@ -5,6 +5,7 @@
 #include <d2d/collision/tile_implementation.h>
 #include <d2d/collision/shaper_default.h>
 #include <ldv/color.h>
+#include <sstream>
 
 namespace app {
 
@@ -19,6 +20,7 @@ struct tile_impl:
 			case tile_full_no_camera:
 			case tile_harm:
 			case tile_monster_block:
+			case tile_camera_stop:
 				return d2d::collision::shaper_default::tiles::tile_full;
 			case tile_half_bottom:
 			case tile_half_bottom_passable:
@@ -40,7 +42,10 @@ struct tile_impl:
 				return d2d::collision::shaper_default::tiles::tile_quarter_top_right;
 		}
 
-		throw std::runtime_error("bad tile type");
+		std::stringstream ss;
+		ss<<"bad tile type "<<_tile.type<<" at "<<_tile.x<<","<<_tile.y;
+
+		throw std::runtime_error(ss.str());
 	}
 
 	virtual bool is_passable_edge(
@@ -73,10 +78,19 @@ struct tile_impl:
 					case d2d::collision::box_edge::left:
 					case d2d::collision::box_edge::bottom:
 						return true;
+
 				}
+			break;
+
+			case tile_full_no_camera:
+			case tile_camera_stop:
+				return true;
 		}
 
-		throw std::runtime_error("bad tile type");
+		std::stringstream ss;
+		ss<<"bad tile type "<<_tile.type<<" at "<<_tile.x<<","<<_tile.y;
+
+		throw std::runtime_error(ss.str());
 	}
 
 	virtual ldv::rgba_color get_outline_color(const d2d::collision::tile&) const {

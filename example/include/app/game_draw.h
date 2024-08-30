@@ -76,6 +76,7 @@ class game_draw {
 	void                        draw_gate(ldv::screen&, const app::gate&);
 	void                        draw_projectile(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);
+	void                        draw_projectile_vertical(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_directed(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_falling(ldv::screen&, const app::projectile&);
 	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);

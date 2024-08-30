@@ -15,6 +15,7 @@ class projectile_generator {
 	//types of projectile that this generates...
 	enum class types {
 		linear, //horizontal
+		vertical, //vertical flame column
 		directed,
 		falling
 	};
@@ -25,11 +26,11 @@ class projectile_generator {
  */
 	struct projectile_data {
 		d2d::motion::motion_vector  velocity;
-		d2d::collision::box         box;
+		d2d::collision::point         point;
 	};
 
 							projectile_generator(
-		d2d::collision::box,
+		d2d::collision::point,
 		types,
 		int,    //velocity
 		int,	//tag
@@ -74,7 +75,7 @@ class projectile_generator {
 		rest
 	}                       state;
 
-	const d2d::collision::box    spawn_box;
+	const d2d::collision::point    spawn_point;
 	const float             velocity;
 	bool                    active;
 	types                   type;

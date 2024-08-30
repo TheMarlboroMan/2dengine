@@ -493,7 +493,9 @@ void game_draw::draw_projectile(
 
 		case app::projectile::types::horizontal:
 			return draw_projectile_linear(_screen, _projectile);
-		case app::projectile::types::round:
+		case app::projectile::types::vertical:
+			return draw_projectile_vertical(_screen, _projectile);
+		case app::projectile::types::directed:
 			return draw_projectile_directed(_screen, _projectile);
 		case app::projectile::types::falling:
 			return draw_projectile_falling(_screen, _projectile);
@@ -540,6 +542,46 @@ void game_draw::draw_projectile_linear(
 	);
 }
 
+void game_draw::draw_projectile_vertical(
+	ldv::screen& _screen,
+	const app::projectile& _projectile
+) {
+
+	//Al sprites are facing right by default.
+	d2d::video::sprite_draw::flags draw_flags{
+		_projectile.velocity.x < 0., 
+		false
+	};
+
+	if(!_projectile.is_moving()) {
+
+		auto line=sprite_draw_animated.get(
+			app::anim_flames, 
+			_projectile.get_timeout_value()
+		);
+
+		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+		sprite_draw.draw(
+			_screen, 
+			d2d::video::to_screen(_projectile.ent.get_origin()),
+			line.frame,
+			draw_flags
+		);
+		return;
+	}
+
+	auto line=sprite_draw_animated.get(app::anim_projectile_falling_end);
+	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_projectile.ent.get_origin()),
+		line.frame,
+		draw_flags
+	);
+}
+
 void game_draw::draw_projectile_directed(
 	ldv::screen& _screen,
 	const app::projectile& _projectile
@@ -548,7 +590,7 @@ void game_draw::draw_projectile_directed(
 	if(!_projectile.is_moving()) {
 
 		auto line=sprite_draw_animated.get(
-			app::anim_projectile_round_end, 
+			app::anim_projectile_falling_end,
 			_projectile.get_timeout_value()
 		);
 

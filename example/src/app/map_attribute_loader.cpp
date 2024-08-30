@@ -26,6 +26,9 @@ void map_attribute_loader::load(
 		//sky blue.
 		case 1: background_color=ldv::rgba8(49, 162, 242, 255); break;
 
+		//orange
+		case 2: background_color=ldv::rgba8(235, 137, 49, 255); break;
+
 		default: //default is black.
 		case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;
 	}

@@ -390,7 +390,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment type of projectile generated 0=horizontal 1=directed 2=falling
+		comment type of projectile generated 0=horizontal 1=directed 2=falling 3=vertical flame
 		linkedto nothing
 	endproperty
 	beginproperty

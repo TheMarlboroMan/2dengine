@@ -45,17 +45,17 @@ void timed_trap::tic(
 
 		case states::pre:
 			state=states::harm;
-			timeout.reset().target(harm_s);
+			timeout.target(harm_s).restart();
 			return;
 
 		case states::harm:
 			state=states::post;
-			timeout.reset().target(post_s);
+			timeout.target(post_s).restart();
 			return;
 		
 		case states::post:
 			state=states::pre;
-			timeout.reset().target(pre_s);
+			timeout.target(pre_s).restart();
 			return;
 	}
 }

@@ -316,6 +316,9 @@ void thing_loader::add_projectile_generator(
 		case 2:
 			type=app::projectile_generator::types::falling;
 		break;
+		case 3:
+			type=app::projectile_generator::types::vertical;
+		break;
 	}
 
 	int velocity=_attributes.at("velocity").get_int();
@@ -325,9 +328,14 @@ void thing_loader::add_projectile_generator(
 	int rest_ms=_attributes.at("rest_ms").get_int();
 	bool active=_attributes.at("active").get_int()==1;
 
+	//position is adjusted to be exactly in the
+	//middle of a tile:
+	_pos.x+=app::tile_w/2;
+	_pos.y+=app::tile_h/2;
+
 	curmap.projectile_generators.push_back(
 		{
-			{_pos, app::tile_w, app::tile_h}, 
+			_pos, 
 			type,
 			velocity,
 			tag,

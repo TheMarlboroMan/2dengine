@@ -13,7 +13,8 @@ class projectile {
 
 	enum class types {
 		horizontal,
-		round,
+		vertical,
+		directed,
 		falling
 	};
 
@@ -37,6 +38,9 @@ class projectile {
 
 	static const int        projectile_horizontal_w{16};
 	static const int        projectile_horizontal_h{9};
+
+	static const int        projectile_vertical_w{10};
+	static const int        projectile_vertical_h{10};
 
 	static const int        projectile_round_w{6};
 	static const int        projectile_round_h{6};

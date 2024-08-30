@@ -141,7 +141,9 @@ enum tile_types {
 	tile_half_top_passable=11,
 	tile_harm=12,
 	tile_monster_block=13,
-	tile_full_no_camera=14
+	tile_full_no_camera=14, //fully solid block, does not restrict the camera
+	tile_camera_stop=15 //non solid block, camera affecting.
+
 };
 
 enum class faces {

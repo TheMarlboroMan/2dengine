@@ -299,8 +299,9 @@ void main::load_map(
 	//After loading the map, tell the camera where the limits are. We use
 	//removing harm tiles/solid but no camera, to allow for these to exist outside
 	//the camera boundaries.
-	d2d::collision::tile_limits_finder::filter_function ff=
-		[](const d2d::collision::tile& _tile) {return _tile.type==app::tile_harm || _tile.type==app::tile_full_no_camera;};
+	d2d::collision::tile_limits_finder::filter_function ff=[](const d2d::collision::tile& _tile) {
+		return _tile.type==app::tile_harm || _tile.type==app::tile_full_no_camera;
+	};
 
 	auto tile_limits_view=tlf.find_limits(current_map.collision_tiles, ff);
 
@@ -776,12 +777,16 @@ void main::generate_projectile(
 
 		switch(_type) {
 
+			//This is a bit absurd... 
+
 			case app::projectile_generator::types::linear:
 				return app::projectile::types::horizontal;
+			case app::projectile_generator::types::vertical:
+				return app::projectile::types::vertical;
 			case app::projectile_generator::types::falling:
 				return app::projectile::types::falling;
 			case app::projectile_generator::types::directed:
-				return app::projectile::types::round;
+				return app::projectile::types::directed;
 		}
 
 		return app::projectile::types::horizontal;
@@ -792,7 +797,7 @@ void main::generate_projectile(
 	if(app::projectile_generator::types::directed==_pg.get_type()) {
 
 		velocity=ldt::vector_from_points(
-			ldt::get_center(spawn_data.box), 
+			spawn_data.point,
 			ldt::get_center(player.ent.get_box())
 		);
 		velocity.normalize();
@@ -800,13 +805,15 @@ void main::generate_projectile(
 	}
 
 	app::projectile proj{
-		spawn_data.box.origin,
+		spawn_data.point,
 		velocity,
 		transform_type(_pg.get_type())
 	};
 
-	d2d::collision::center_vertically(proj.ent, spawn_data.box);
-	d2d::collision::center_horizontally(proj.ent, spawn_data.box);
+	//center it: the spawn point is the middle of a tile!
+	auto& box=proj.ent.get_box();
+	box.origin.x-=box.w/2;
+	box.origin.y-=box.h/2;
 	current_map.projectiles.push_back(proj);
 }
 
@@ -1034,7 +1041,7 @@ void main::tic_air(
 	//Letting go of the jump shortens it...
 	if(player.velocity.y > 0. && !_pli.hold_jump && !_player.jump_shortened) {
 
-		_player.velocity.y/=simulation.air_y_velocity_jump_shorten_factor;;
+		_player.velocity.y/=simulation.air_y_velocity_jump_shorten_factor;
 		_player.jump_shortened=true;
 	}
 
@@ -1053,7 +1060,7 @@ void main::tic_air(
 	}
 
 	//Collision...
-	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_monster_block{});
+	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_while_on_air{});
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 
 	cpv.detect_all(current_tiles);

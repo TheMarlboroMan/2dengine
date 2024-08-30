@@ -16,7 +16,7 @@ struct filter_tiles_ignore_one_way_above {
 		const d2d::collision::tile& _tile
 	) const {
 
-		if(_tile.type==app::tile_monster_block) {
+		if(_tile.type==app::tile_monster_block || _tile.type==app::tile_camera_stop) {
 
 			return false;
 		}
@@ -42,7 +42,10 @@ struct filter_tiles_ignore_one_way {
 		const d2d::collision::tile& _tile
 	) const {
 
-		if(_tile.type==app::tile_monster_block) {
+		if(
+			_tile.type==app::tile_monster_block
+			|| _tile.type==app::tile_camera_stop
+		) {
 
 			return false;
 		}
@@ -78,7 +81,10 @@ struct filter_tiles_check_on_air {
 		const d2d::collision::tile& _tile
 	) const {
 
-		if(_tile.type==app::tile_monster_block) {
+		if(
+			_tile.type==app::tile_monster_block
+			|| _tile.type==app::tile_camera_stop
+		) {
 
 			return false;
 		}
@@ -96,14 +102,14 @@ struct filter_tiles_check_on_air {
 /**
  * tiles that must be ignored when checking if we are on the air.
  */
-struct filter_tiles_ignore_monster_block {
+struct filter_tiles_ignore_while_on_air {
 
 	bool operator()(
 		const d2d::collision::box&,
 		const d2d::collision::tile& _tile
 	) const {
 
-		return _tile.type!=app::tile_monster_block;
+		return _tile.type!=app::tile_monster_block && _tile.type!=app::tile_camera_stop;
 	}
 };
 

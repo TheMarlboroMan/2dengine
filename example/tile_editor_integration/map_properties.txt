@@ -9,6 +9,6 @@ beginproperty
 	name bg_color
 	type int
 	default 0
-	comment 0=black 1=sky
+	comment 0=black 1=sky 2=orange
 endproperty
 
