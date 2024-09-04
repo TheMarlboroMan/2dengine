@@ -35,6 +35,7 @@ class projectile_generator {
 		int,    //velocity
 		int,	//tag
 		int,    //volley count
+		int,    //pre_ms
 		int,    //pause_ms
 		int,    //rest_ms
 		bool
@@ -66,11 +67,13 @@ class projectile_generator {
 	private:
 
 	enum timeouts {
+		timeout_pre,
 		timeout_volley,
 		timeout_rest
 	};
 
 	enum class states {
+		pre,
 		volley,
 		rest
 	}                       state;

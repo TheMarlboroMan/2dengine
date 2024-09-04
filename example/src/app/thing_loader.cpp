@@ -324,6 +324,7 @@ void thing_loader::add_projectile_generator(
 	int velocity=_attributes.at("velocity").get_int();
 	int tag=_attributes.at("tag").get_int();
 	int volley_count=_attributes.at("volley_count").get_int();
+	int pre_ms=_attributes.at("pre_ms").get_int();
 	int pause_ms=_attributes.at("pause_ms").get_int();
 	int rest_ms=_attributes.at("rest_ms").get_int();
 	bool active=_attributes.at("active").get_int()==1;
@@ -340,6 +341,7 @@ void thing_loader::add_projectile_generator(
 			velocity,
 			tag,
 			volley_count,
+			pre_ms,
 			pause_ms,
 			rest_ms,
 			active

@@ -9,22 +9,25 @@ projectile_generator::projectile_generator(
 	int _velocity,
 	int _tag,
 	int _volley,
+	int _pre_time_ms,
 	int _pause_time_ms,
 	int _rest_time_ms,
 	bool _active
 ):
 	spawn_point{_point},
-	state{projectile_generator::states::volley},
+	state{projectile_generator::states::pre},
 	velocity{_velocity},
 	active{_active},
 	type{_type},
 	tag{_tag},
 	volley_total{_volley}
 {
+	float pre_time=_pre_time_ms / 1000;
 	float pause_time=_pause_time_ms / 1000;
 	float rest_time=_rest_time_ms / 1000;
 	
 	//All timeouts start paused.
+	timeouts.add(timeout_pre, pre_time, pre_time, true);
 	timeouts.add(timeout_volley, pause_time, pause_time, true);
 	timeouts.add(timeout_rest, rest_time, rest_time, true);
 
@@ -47,6 +50,16 @@ bool projectile_generator::tic(
 
 	switch(state) {
 
+		case states::pre:
+
+			if(timeouts.is_finished(timeout_pre)) {
+
+				state=states::volley;
+				timeouts.restart(timeout_volley);
+				return true;
+			}
+		break;
+
 		case states::volley:
 
 			if(timeouts.is_finished(timeout_volley)) {
@@ -57,7 +70,6 @@ bool projectile_generator::tic(
 				if(volley_total==volley_count) {
 
 					volley_count=0;
-					timeouts.pause(timeout_volley);
 					timeouts.restart(timeout_rest);
 					state=states::rest;
 				}
@@ -69,9 +81,8 @@ bool projectile_generator::tic(
 
 			if(timeouts.is_finished(timeout_rest)) {
 
-				timeouts.pause(timeout_rest);
-				timeouts.restart(timeout_volley);
-				state=states::volley;
+				state=states::pre;
+				timeouts.restart(timeout_pre);
 			}
 		break;
 	}

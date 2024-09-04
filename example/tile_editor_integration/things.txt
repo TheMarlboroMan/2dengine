@@ -373,6 +373,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name pre_ms
+		type int
+		default 0
+		comment milliseconds before activating
+		linkedto nothing
+	endproperty
+	beginproperty
 		name pause_ms
 		type int
 		default 1000
@@ -469,7 +476,7 @@ beginobject
 		name pre_ms
 		type int
 		default 3000
-		comment milliseconds between before activating
+		comment milliseconds before activating
 		linkedto nothing
 	endproperty
 	beginproperty
