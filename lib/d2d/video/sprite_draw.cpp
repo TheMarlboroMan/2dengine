@@ -106,19 +106,49 @@ void sprite_draw::draw(
 	//This is the one method the rest end up in. Assume all sprites are 
 
 	bmp.set_clip({{_frame.box.origin.x, _frame.box.origin.y}, _frame.box.w, _frame.box.h});
+
 	auto pt=d2d::video::to_screen_coordinates(_rect.origin, _rect.h);
 
-	//TODO: Do we really understand the displacement????? It means that the 
-	//full sprite will be drawn as it its top-left corner was the displacement,
-	//right?. I wonder, why even bother?
-	pt.x-=_frame.disp_x;
-	pt.y-=_frame.disp_y;
+	bool invert_horizontal=_modifiers.flags & modifiers::flip_horizontal;
+	bool invert_vertical=_modifiers.flags & modifiers::flip_vertical;
+
+	//Displacement will be used as top-left corner.
+	pt.x+=(invert_horizontal ? 1 : -1) * _frame.disp_x; 
+	pt.y+=(invert_vertical ? 1 : -1) * _frame.disp_y;
 	_rect.origin=pt;
 
-	bmp.set_location(_rect);
+	if(_modifiers.flags & modifiers::use_sprite_box) {
 
-	bmp.set_invert_horizontal(_modifiers.flags & sprite_draw::modifiers::flip_horizontal);
-	bmp.set_invert_vertical(_modifiers.flags & sprite_draw::modifiers::flip_vertical);
+		//Uses the frame dimensions...
+		bmp.set_location(_frame.box);
+
+		if(_modifiers.flags & modifiers::match_right) {
+
+			pt.x+=_rect.w-_frame.box.w;
+		}
+		else if(_modifiers.flags & modifiers::center_horizontal) {
+
+			pt.x+=(_rect.w / 2) - (_frame.box.w / 2);
+		}
+
+		if(_modifiers.flags & modifiers::match_bottom) {
+
+			pt.y+=_rect.h-_frame.box.h;
+		}
+		else if(_modifiers.flags & modifiers::center_vertical) {
+
+			pt.y+=(_rect.h / 2) - (_frame.box.h / 2);
+		}
+
+		bmp.go_to(pt);
+	}
+	else {
+
+		bmp.set_location(_rect);
+	}
+
+	bmp.set_invert_horizontal(invert_horizontal);
+	bmp.set_invert_vertical(invert_vertical);
 
 	bmp.center_rotation_center();
 	bmp.set_rotation(_modifiers.rotation_degrees);

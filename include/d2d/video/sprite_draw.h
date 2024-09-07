@@ -23,7 +23,12 @@ class sprite_draw {
 
 		enum {
 			flip_horizontal=1,
-			flip_vertical=2
+			flip_vertical=2,
+			use_sprite_box=4, //use the sprite box for sizing, no scaling.
+			match_right=8, //match the right side of the sprite with the right side of the box. Only used with use_sprite_box.
+			match_bottom=16,
+			center_horizontal=32, //precludes match_right, centers in the "physical" box.
+			center_vertical=64 //same as above.
 		};
 
 		int     flags{0};

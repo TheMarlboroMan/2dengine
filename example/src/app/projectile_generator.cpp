@@ -56,12 +56,14 @@ bool projectile_generator::tic(
 
 				state=states::volley;
 				timeouts.restart(timeout_volley);
-				return true;
+				return false;
 			}
 		break;
 
 		case states::volley:
 
+			//TODO: Bad, if there are volleys we don't start firing right
+			//away but after the end of this timeout.
 			if(timeouts.is_finished(timeout_volley)) {
 
 				++volley_count;

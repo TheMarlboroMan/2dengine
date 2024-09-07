@@ -7,6 +7,10 @@
 
 namespace app {
 
+/**
+ * does not actually generate the projectile, but the data that will be used
+ * to create it.
+ */
 class projectile_generator {
 
 
@@ -91,8 +95,8 @@ class projectile_generator {
 	d2d::components::timeouts   timeouts;
 
 	//TODO; Why should these be in the executable.
-	static const int        projectile_horizontal_w{6};
-	static const int        projectile_horizontal_h{6};
+	static const int        projectile_horizontal_w{7};
+	static const int        projectile_horizontal_h{7};
 	static const int        projectile_horizontal_desintegration_ms{300};
 
 	static const int        projectile_vertical_w{10};

@@ -512,14 +512,17 @@ void game_draw::draw_projectile_linear(
 	const app::projectile& _projectile
 ) {
 
+	using modifiers=d2d::video::sprite_draw::modifiers;
+
+	//TODO: This is repeated, should be a method.
 	//Al sprites are facing right by default.
-	int flags=0;
-	if(_projectile.velocity.x < 0) {
+	int flags=modifiers::use_sprite_box;
 
-		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
-	}
+	flags |= _projectile.velocity.x < 0
+		? modifiers::flip_horizontal
+		: modifiers::match_right;
 
-	d2d::video::sprite_draw::modifiers mod{flags};
+	modifiers mod{flags};
 
 	if(!_projectile.is_moving()) {
 
@@ -528,11 +531,13 @@ void game_draw::draw_projectile_linear(
 			_projectile.get_timeout_value()
 		);
 
+		mod.flags |= modifiers::center_vertical;
+
 		mod=sprite_draw_animated.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
+			d2d::video::to_screen(_projectile.ent.get_box()),
 			line.frame,
 			mod
 		);
@@ -544,7 +549,7 @@ void game_draw::draw_projectile_linear(
 
 	sprite_draw.draw(
 		_screen, 
-		d2d::video::to_screen(_projectile.ent.get_origin()),
+		d2d::video::to_screen(_projectile.ent.get_box()),
 		line.frame,
 		mod
 	);
@@ -555,14 +560,17 @@ void game_draw::draw_projectile_vertical(
 	const app::projectile& _projectile
 ) {
 
+	using modifiers=d2d::video::sprite_draw::modifiers;
+
 	//Al sprites are facing right by default.
-	int flags=0;
+	int flags=modifiers::use_sprite_box;
+
 	if(_projectile.velocity.x < 0.) {
 
-		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+		flags |= modifiers::flip_horizontal;
 	}	
 
-	d2d::video::sprite_draw::modifiers mod{flags};
+	modifiers mod{flags};
 
 	if(!_projectile.is_moving()) {
 
@@ -571,6 +579,7 @@ void game_draw::draw_projectile_vertical(
 			_projectile.get_timeout_value()
 		);
 
+		mod.flags |= modifiers::match_bottom | modifiers::center_horizontal;
 		mod=sprite_draw_animated.modifiers(line, mod);
 
 		sprite_draw.draw(
@@ -629,6 +638,10 @@ void game_draw::draw_projectile_falling(
 	const app::projectile& _projectile
 ) {
 
+	using modifiers=d2d::video::sprite_draw::modifiers;
+	int flags=modifiers::center_horizontal | modifiers::use_sprite_box;
+	modifiers mod{flags};
+
 	if(!_projectile.is_moving()) {
 
 		auto line=sprite_draw_animated.get(
@@ -636,11 +649,13 @@ void game_draw::draw_projectile_falling(
 			_projectile.get_timeout_value()
 		);
 
+		mod.flags |= modifiers::match_bottom;
+
 		sprite_draw.draw(
 			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
+			d2d::video::to_screen(_projectile.ent.get_box()),
 			line.frame,
-			sprite_draw_animated.modifiers(line)
+			sprite_draw_animated.modifiers(line, mod)
 		);
 		return;
 	}
@@ -649,9 +664,9 @@ void game_draw::draw_projectile_falling(
 
 	sprite_draw.draw(
 		_screen, 
-		d2d::video::to_screen(_projectile.ent.get_origin()),
+		d2d::video::to_screen(_projectile.ent.get_box()),
 		line.frame,
-		sprite_draw_animated.modifiers(line)
+		sprite_draw_animated.modifiers(line, mod)
 	);
 }
 

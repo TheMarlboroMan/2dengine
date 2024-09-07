@@ -1,21 +1,23 @@
 next steps:
 
 	make the first example game
+
+		0_test_map_002 
+
+		projectile_generator.cpp -> fix volley part, should fire JUST ONE and
+do it right.
+
 		make a paper map for it.
 		do the area names and stuff better, it is very bad right now.
 			identify needs
 			fix them.
 		add:
-			monster moving and stopping to fire
 			intro controller
 		add glints to treasure, something like a particle system, so to say.
 			the animation and frames already exist.
 			- I am not happy with splitting the frame the way its done but...
 
 		use the directed projectiles!!!! They are amazing xD
-
-		we have the "flame animation", what is it for???
-			?????
 
 		play and balance each level.
 
