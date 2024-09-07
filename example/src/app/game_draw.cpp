@@ -18,6 +18,7 @@
 #include <ldv/box_representation.h>
 #include <ldv/resource_manager.h>
 #include <d2d/video/tools.h>
+#include <d2d/video/sprite_draw.h>
 
 #include <iostream>
 #include <sstream>
@@ -325,10 +326,13 @@ void game_draw::draw_linear_monster(
 ) {
 
 	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_monster.facing==app::faces::left,
-		false
-	};
+	int flags=0;
+	if(_monster.facing==app::faces::left) {
+
+		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+	}
+
+	d2d::video::sprite_draw::modifiers mod{flags};
 
 	int animation_index=0;
 	switch(_monster.type) {
@@ -347,13 +351,13 @@ void game_draw::draw_linear_monster(
 	}
 
 	const auto& line=sprite_draw_animated.get(animation_index);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+	mod=sprite_draw_animated.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }
 
@@ -363,13 +367,13 @@ void game_draw::draw_leaping_monster(
 ) {
 
 	const auto& line=sprite_draw_animated.get(app::anim_piranha);
-	auto draw_flags=sprite_draw_animated.flags(line);
+	auto mod=sprite_draw_animated.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_monster.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }
 
@@ -402,13 +406,13 @@ void game_draw::draw_timed_trap(
 	}
 
 	const auto& line=sprite_draw_animated.get(app::anim_timed_trap_fire);
-	auto draw_flags=sprite_draw_animated.flags(line);
+	auto mod=sprite_draw_animated.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_trap.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }
 
@@ -451,13 +455,14 @@ void game_draw::draw_breaking_platform(
 		_block.get_timer(), 
 		anim_len
 	);
-	auto flags=sprite_draw_animated.flags(line);
+
+	auto mod=sprite_draw_animated.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_block.get_origin()),
 		line.frame,
-		flags
+		mod
 	);
 }
 
@@ -508,10 +513,13 @@ void game_draw::draw_projectile_linear(
 ) {
 
 	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_projectile.velocity.x < 0., 
-		false
-	};
+	int flags=0;
+	if(_projectile.velocity.x < 0) {
+
+		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+	}
+
+	d2d::video::sprite_draw::modifiers mod{flags};
 
 	if(!_projectile.is_moving()) {
 
@@ -520,25 +528,25 @@ void game_draw::draw_projectile_linear(
 			_projectile.get_timeout_value()
 		);
 
-		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+		mod=sprite_draw_animated.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			draw_flags
+			mod
 		);
 		return;
 	}
 
 	auto line=sprite_draw_animated.get(app::anim_projectile);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+	mod=sprite_draw_animated.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }
 
@@ -548,10 +556,13 @@ void game_draw::draw_projectile_vertical(
 ) {
 
 	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_projectile.velocity.x < 0., 
-		false
-	};
+	int flags=0;
+	if(_projectile.velocity.x < 0.) {
+
+		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+	}	
+
+	d2d::video::sprite_draw::modifiers mod{flags};
 
 	if(!_projectile.is_moving()) {
 
@@ -560,25 +571,25 @@ void game_draw::draw_projectile_vertical(
 			_projectile.get_timeout_value()
 		);
 
-		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+		mod=sprite_draw_animated.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			draw_flags
+			mod
 		);
 		return;
 	}
 
 	auto line=sprite_draw_animated.get(app::anim_projectile_falling_end);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+	mod=sprite_draw_animated.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }
 
@@ -598,7 +609,7 @@ void game_draw::draw_projectile_directed(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			sprite_draw_animated.flags(line)
+			sprite_draw_animated.modifiers(line)
 		);
 		return;
 	}
@@ -609,7 +620,7 @@ void game_draw::draw_projectile_directed(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		sprite_draw_animated.flags(line)
+		sprite_draw_animated.modifiers(line)
 	);
 }
 
@@ -629,7 +640,7 @@ void game_draw::draw_projectile_falling(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			sprite_draw_animated.flags(line)
+			sprite_draw_animated.modifiers(line)
 		);
 		return;
 	}
@@ -640,7 +651,7 @@ void game_draw::draw_projectile_falling(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		sprite_draw_animated.flags(line)
+		sprite_draw_animated.modifiers(line)
 	);
 }
 
@@ -672,10 +683,13 @@ void game_draw::draw_player(
 ) {
 
 	//Al sprites are facing right by default.
-	d2d::video::sprite_draw::flags draw_flags{
-		_player.facing==app::faces::left,
-		false
-	};
+	int flags=0;
+	if( _player.facing==app::faces::left) {
+
+		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+	}
+
+	d2d::video::sprite_draw::modifiers mod{flags};
 
 	int animation_index=0;
 	int frame_index=0;
@@ -704,20 +718,20 @@ void game_draw::draw_player(
 			animation_index=app::anim_climb;
 			int y_mod=(int)_player.ent.get_origin().y % 10;
 			frame_index=abs(y_mod) <= 4 ? 0 : 1;
-			draw_flags={false, false};
+			mod.flags=0;
 		break;
 	}
 
 	if(is_animation) {
 
 		const auto& line=sprite_draw_animated.get(animation_index);
-		draw_flags=sprite_draw_animated.flags(line, draw_flags);
+		mod=sprite_draw_animated.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
 			d2d::video::to_screen(_player.ent.get_origin()),
 			line.frame,
-			draw_flags
+			mod
 		);
 
 		return;
@@ -726,12 +740,12 @@ void game_draw::draw_player(
 
 	const auto& animation=sprite_draw_animated.animation(animation_index);
 	const auto& line=animation.get(frame_index);
-	draw_flags=sprite_draw_animated.flags(line, draw_flags);
+	mod=sprite_draw_animated.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen,
 		d2d::video::to_screen(_player.ent.get_origin()),
 		line.frame,
-		draw_flags
+		mod
 	);
 }

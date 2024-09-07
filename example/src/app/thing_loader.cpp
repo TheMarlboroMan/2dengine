@@ -304,11 +304,11 @@ void thing_loader::add_projectile_generator(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	app::projectile_generator::types type{app::projectile_generator::types::linear};
+	app::projectile_generator::types type{app::projectile_generator::types::horizontal};
 	switch(_attributes.at("type").get_int()) {
 
 		case 0:
-			type=app::projectile_generator::types::linear;
+			type=app::projectile_generator::types::horizontal;
 		break;
 		case 1:
 			type=app::projectile_generator::types::directed;

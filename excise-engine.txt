@@ -7,7 +7,6 @@ next steps:
 			fix them.
 		add:
 			monster moving and stopping to fire
-			vertical art projectile
 			intro controller
 		add glints to treasure, something like a particle system, so to say.
 			the animation and frames already exist.
@@ -17,6 +16,8 @@ next steps:
 
 		we have the "flame animation", what is it for???
 			?????
+
+		play and balance each level.
 
 		show data on savegame loading!
 			for this we need to store the items picked up... Does this go

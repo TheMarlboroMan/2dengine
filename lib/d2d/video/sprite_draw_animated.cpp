@@ -79,42 +79,43 @@ const ldtools::animation_line& sprite_draw_animated::get(
 }
 
 
-sprite_draw::flags sprite_draw_animated::flags(
+sprite_draw::modifiers sprite_draw_animated::modifiers(
 	const ldtools::animation_line& _line
 ) const {
 
-	return flags(_line, sprite_draw::flags{});
+	return modifiers(_line, sprite_draw::modifiers{});
 }
 
-sprite_draw::flags sprite_draw_animated::flags(
+sprite_draw::modifiers sprite_draw_animated::modifiers(
 	const ldtools::animation_line& _line,
-	sprite_draw::flags _flags
+	sprite_draw::modifiers _modifiers
 ) const {
+
 
 	//The animation may ask for the frame to be flipped.
 	if(_line.is_flipped_horizontally()) {
 
-		_flags.flip_horizontal=!_flags.flip_horizontal;
+		_modifiers.flags ^= sprite_draw::modifiers::flip_horizontal;
 	}
 
 	if(_line.is_flipped_vertically()) {
 
-		_flags.flip_vertical=!_flags.flip_vertical;
+		_modifiers.flags ^= sprite_draw::modifiers::flip_vertical;
 	}
 
 	//The frame ITSELF might be flipped too xD
 	if(_line.frame.flags & ldtools::sprite_frame::horizontal_flip) { 
 
-		_flags.flip_horizontal=!_flags.flip_horizontal;
+		_modifiers.flags ^= sprite_draw::modifiers::flip_horizontal;
 	}
 
 	if(_line.frame.flags & ldtools::sprite_frame::vertical_flip) { 
 
-		_flags.flip_vertical=!_flags.flip_vertical;
+		_modifiers.flags ^= sprite_draw::modifiers::flip_vertical;
 	}
 
-	int degrees=_line.get_rotation() + _line.frame.get_rotation() + _flags.rotation_degrees;
-	_flags.rotation_degrees=degrees % 360;
+	int degrees=_line.get_rotation() + _line.frame.get_rotation() + _modifiers.rotation_degrees;
+	_modifiers.rotation_degrees=degrees % 360;
 
-	return _flags;
+	return _modifiers;
 }

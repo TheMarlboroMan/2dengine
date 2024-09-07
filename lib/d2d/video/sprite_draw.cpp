@@ -42,10 +42,10 @@ void sprite_draw::draw(
 	ldv::screen& _screen,
 	ldv::point _point,
 	const ldtools::sprite_frame& _frame,
-	sprite_draw::flags _flags
+	sprite_draw::modifiers _modifiers
 ) {
 
-	draw(_screen, {_point, _frame.box.w, _frame.box.h}, _frame, _flags);
+	draw(_screen, {_point, _frame.box.w, _frame.box.h}, _frame, _modifiers);
 }
 
 void sprite_draw::draw(
@@ -54,11 +54,21 @@ void sprite_draw::draw(
 	const ldtools::sprite_frame& _frame
 ) {
 
+	int flags=0;
+	if(_frame.flags & ldtools::sprite_frame::horizontal_flip) {
+
+		flags &= sprite_draw::modifiers::flip_horizontal;
+	}
+
+	if(_frame.flags & ldtools::sprite_frame::vertical_flip) {
+
+		flags &= sprite_draw::modifiers::flip_vertical;
+	}
+
 	draw(
 		_screen, _point, _frame, 
 		{
-			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			flags,
 			_frame.get_rotation()
 		}
 	);
@@ -68,11 +78,11 @@ void sprite_draw::draw(
 	ldv::screen& _screen, 
 	ldv::point _point, 
 	int _index,
-	sprite_draw::flags _flags
+	sprite_draw::modifiers _modifiers
 ) {
 
 	const auto& frame=sprite_table->get(_index);
-	draw(_screen, _point, frame, _flags);
+	draw(_screen, _point, frame, _modifiers);
 }
 
 void sprite_draw::draw(
@@ -91,21 +101,27 @@ void sprite_draw::draw(
 	ldv::screen& _screen,
 	ldv::rect _rect,
 	const ldtools::sprite_frame& _frame,
-	sprite_draw::flags _flags
+	sprite_draw::modifiers _modifiers
 ) {
-	//This is the one method the rest end up in.
+	//This is the one method the rest end up in. Assume all sprites are 
 
 	bmp.set_clip({{_frame.box.origin.x, _frame.box.origin.y}, _frame.box.w, _frame.box.h});
 	auto pt=d2d::video::to_screen_coordinates(_rect.origin, _rect.h);
+
+	//TODO: Do we really understand the displacement????? It means that the 
+	//full sprite will be drawn as it its top-left corner was the displacement,
+	//right?. I wonder, why even bother?
 	pt.x-=_frame.disp_x;
 	pt.y-=_frame.disp_y;
 	_rect.origin=pt;
+
 	bmp.set_location(_rect);
-	bmp.set_invert_horizontal(_flags.flip_horizontal);
-	bmp.set_invert_vertical(_flags.flip_vertical);
+
+	bmp.set_invert_horizontal(_modifiers.flags & sprite_draw::modifiers::flip_horizontal);
+	bmp.set_invert_vertical(_modifiers.flags & sprite_draw::modifiers::flip_vertical);
 
 	bmp.center_rotation_center();
-	bmp.set_rotation(_flags.rotation_degrees);
+	bmp.set_rotation(_modifiers.rotation_degrees);
 
 	nullptr!=camera && with_camera
 		? bmp.draw(_screen, *camera)
@@ -118,11 +134,21 @@ void sprite_draw::draw(
 	const ldtools::sprite_frame& _frame
 ) {
 
+	int flags=0;
+	if(_frame.flags & ldtools::sprite_frame::horizontal_flip) {
+
+		flags |= modifiers::flip_horizontal;
+	}
+
+	if(_frame.flags & ldtools::sprite_frame::vertical_flip) {
+
+		flags |= modifiers::flip_vertical;
+	}
+
 	draw(
 		_screen, _rect, _frame, 
 		{
-			(bool)(_frame.flags & ldtools::sprite_frame::horizontal_flip),
-			(bool)(_frame.flags & ldtools::sprite_frame::vertical_flip),
+			flags,
 			_frame.get_rotation()
 		}
 	);
@@ -132,7 +158,7 @@ void sprite_draw::draw(
 	ldv::screen& _screen, 
 	ldv::rect _rect, 
 	int _index,
-	sprite_draw::flags _flags
+	sprite_draw::modifiers _flags
 ) {
 
 	const auto& frame=sprite_table->get(_index);

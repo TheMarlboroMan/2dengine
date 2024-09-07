@@ -33,7 +33,7 @@ projectile_generator::projectile_generator(
 
 	if(active) {
 
-		timeouts.resume(timeout_volley);
+		timeouts.restart(timeout_pre);
 	}
 }
 
@@ -67,7 +67,7 @@ bool projectile_generator::tic(
 				++volley_count;
 				timeouts.restart(timeout_volley);
 
-				if(volley_total==volley_count) {
+				if(volley_total>=volley_count) {
 
 					volley_count=0;
 					timeouts.restart(timeout_rest);
@@ -115,17 +115,27 @@ std::ostream& app::operator<<(
 
 projectile_generator::projectile_data projectile_generator::get_projectile_data() const {
 
-	//projectiles should actually generate from the middle
-	//of the box, 
+	auto build=[this]() -> projectile_data {
 
-	switch(type) {
-		default:
-		case types::linear:
-		case types::directed: //velocity will be used as an absolute value to measure speed.
-			return {{velocity, 0.0}, spawn_point};
-		case types::vertical: //vertical flame column.
-			return {{0.0, velocity}, spawn_point};
-		case types::falling: 
-			return {{0.0, -fabs(velocity)}, spawn_point};
-	}
+		switch(type) {
+			default:
+			case types::horizontal:
+				return {{velocity, 0.0}, {spawn_point, projectile_horizontal_w, projectile_horizontal_h}, projectile_horizontal_desintegration_ms };
+
+			case types::vertical: //vertical flame column.
+				return {{0.0, velocity}, {spawn_point, projectile_vertical_w, projectile_vertical_h}, projectile_vertical_desintegration_ms};
+
+			case types::directed: //velocity will be used as an absolute value to measure speed.
+				return {{velocity, 0.0}, {spawn_point, projectile_round_w, projectile_round_h}, projectile_round_desintegration_ms};
+
+			case types::falling: 
+				return {{0.0, -fabs(velocity)}, {spawn_point, projectile_falling_w, projectile_falling_h}, projectile_falling_desintegration_ms};
+		}
+	};
+
+	auto result=build();
+	result.box.origin.x-=result.box.w/2;
+	result.box.origin.y-=result.box.h/2;
+
+	return result;
 }

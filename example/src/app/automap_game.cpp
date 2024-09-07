@@ -128,6 +128,15 @@ int automap_game::map_id_from_map(
 	const std::string& _filename
 ) const {
 
+#ifdef IS_DEBUG_BUILD
+
+	if(0==map.file_to_id.count(_filename)) {
+
+		return -1;
+	}
+
+#endif
+
 	return map.file_to_id.at(_filename);
 }
 

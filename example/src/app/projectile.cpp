@@ -5,40 +5,16 @@
 using namespace app;
 
 projectile::projectile(
-	d2d::collision::point _pt, 
+	d2d::collision::box _box, 
 	d2d::motion::motion_vector _velocity,
-	types _type
+	types _type,
+	float _desintegration_ms
 ):
-	ent{_pt, 0, 0},
+	ent{_box},
 	velocity{_velocity},
 	type{_type},
-	timeout{0.1f, 0.0f, true}
-{
-	
-	switch(type) {
-
-		case types::horizontal:
-
-			ent.set_w(projectile_horizontal_w);
-			ent.set_h(projectile_horizontal_h);
-		break;
-		case types::vertical:
-
-			ent.set_w(projectile_vertical_w);
-			ent.set_h(projectile_vertical_h);
-		break;
-		case types::directed:
-
-			ent.set_w(projectile_round_w);
-			ent.set_h(projectile_round_h);
-		break;
-		case types::falling:
-
-			ent.set_w(projectile_falling_w);
-			ent.set_h(projectile_falling_h);
-		break;
-	}
-}
+	timeout{_desintegration_ms / 1000.f, 0.0f, true}
+{ }
 
 void projectile::tic(
 	float _delta,
@@ -96,7 +72,6 @@ void projectile::desintegrate() {
 	//velocity for that.
 	//velocity={0.0, 0.0};
 	state=states::desintegrating;
-	//TODO: Should set its length according to type...
 	timeout.restart();
 }
 

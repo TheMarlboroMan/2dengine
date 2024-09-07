@@ -19,9 +19,14 @@ class sprite_draw {
  * these can be passed to draw methods that accept it to modify the behaviour
  * of the drawing algorithm.
  */
-	struct flags {
-		bool    flip_horizontal{false},
-		        flip_vertical{false};
+	struct modifiers {
+
+		enum {
+			flip_horizontal=1,
+			flip_vertical=2
+		};
+
+		int     flags{0};
 		int     rotation_degrees{0};
 	};
 
@@ -34,18 +39,20 @@ class sprite_draw {
 /**
  * draw sprites by sprite or by index in the given point / rect, with flags
  * or using the default sprite flags.
+ * Using the point will draw at the size of the sprite. Using the rect will
+ * scale.
  */
 
 //TODO: Can we just skip the screen too???
-	void                            draw(ldv::screen&, ldv::point, const ldtools::sprite_frame&, flags);
+	void                            draw(ldv::screen&, ldv::point, const ldtools::sprite_frame&, modifiers);
 	void                            draw(ldv::screen&, ldv::point, const ldtools::sprite_frame&);
-	void                            draw(ldv::screen&, ldv::point, int, flags);
+	void                            draw(ldv::screen&, ldv::point, int, modifiers);
 	void                            draw(ldv::screen&, ldv::point, int);
 
 //TODO: Can we just skip the screen too?
-	void                            draw(ldv::screen&, ldv::rect, const ldtools::sprite_frame&, flags);
+	void                            draw(ldv::screen&, ldv::rect, const ldtools::sprite_frame&, modifiers);
 	void                            draw(ldv::screen&, ldv::rect, const ldtools::sprite_frame&);
-	void                            draw(ldv::screen&, ldv::rect, int, flags);
+	void                            draw(ldv::screen&, ldv::rect, int, modifiers);
 	void                            draw(ldv::screen&, ldv::rect, int);
 
 /**

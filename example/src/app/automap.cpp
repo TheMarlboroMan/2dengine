@@ -57,6 +57,15 @@ const map_area& automap::find_area_by_map(
 	const std::string& _filename
 ) const {
 
+
+#ifdef IS_DEBUG_BUILD
+
+	if(0==file_to_id.count(_filename)) {
+
+		return *std::begin(areas);
+	}
+#endif
+
 	return find_area_by_map_id(file_to_id.at(_filename));
 }
 

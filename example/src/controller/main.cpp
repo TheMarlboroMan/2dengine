@@ -777,9 +777,9 @@ void main::generate_projectile(
 
 		switch(_type) {
 
-			//This is a bit absurd... 
+			//This is a bit absurd... Both should share the same shizzz.
 
-			case app::projectile_generator::types::linear:
+			case app::projectile_generator::types::horizontal:
 				return app::projectile::types::horizontal;
 			case app::projectile_generator::types::vertical:
 				return app::projectile::types::vertical;
@@ -797,7 +797,7 @@ void main::generate_projectile(
 	if(app::projectile_generator::types::directed==_pg.get_type()) {
 
 		velocity=ldt::vector_from_points(
-			spawn_data.point,
+			ldt::get_center(spawn_data.box),
 			ldt::get_center(player.ent.get_box())
 		);
 		velocity.normalize();
@@ -805,15 +805,12 @@ void main::generate_projectile(
 	}
 
 	app::projectile proj{
-		spawn_data.point,
+		spawn_data.box,
 		velocity,
-		transform_type(_pg.get_type())
+		transform_type(_pg.get_type()),
+		spawn_data.desintegration_time
 	};
 
-	//center it: the spawn point is the middle of a tile!
-	auto& box=proj.ent.get_box();
-	box.origin.x-=box.w/2;
-	box.origin.y-=box.h/2;
 	current_map.projectiles.push_back(proj);
 }
 

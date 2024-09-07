@@ -14,7 +14,7 @@ class projectile_generator {
 
 	//types of projectile that this generates...
 	enum class types {
-		linear, //horizontal
+		horizontal, //horizontal
 		vertical, //vertical flame column
 		directed,
 		falling
@@ -22,11 +22,13 @@ class projectile_generator {
 
 /**
  * indicates the direction projectiles will spawn in. The box means that
- * projectiles will spawn centered on it
+ * projectiles will spawn exactly on that position, with their aligment 
+ * already calculated.
  */
 	struct projectile_data {
 		d2d::motion::motion_vector  velocity;
-		d2d::collision::point         point;
+		d2d::collision::box         box; 
+		float                       desintegration_time;
 	};
 
 							projectile_generator(
@@ -87,6 +89,24 @@ class projectile_generator {
 	const int               volley_total;
 	int                     volley_count{0};
 	d2d::components::timeouts   timeouts;
+
+	//TODO; Why should these be in the executable.
+	static const int        projectile_horizontal_w{6};
+	static const int        projectile_horizontal_h{6};
+	static const int        projectile_horizontal_desintegration_ms{300};
+
+	static const int        projectile_vertical_w{10};
+	static const int        projectile_vertical_h{10};
+	static const int        projectile_vertical_desintegration_ms{530};
+
+	static const int        projectile_round_w{6};
+	static const int        projectile_round_h{6};
+	static const int        projectile_round_desintegration_ms{300};
+
+	static const int        projectile_falling_w{6};
+	static const int        projectile_falling_h{6};
+	static const int        projectile_falling_desintegration_ms{300};
+
 };
 
 std::ostream& operator<<(std::ostream&, const projectile_generator&);

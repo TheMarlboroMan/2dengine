@@ -53,8 +53,8 @@ class sprite_draw_animated {
  * get the flags for the given line. The second version uses the original
  * flags as the point of starting.
  */
-	sprite_draw::flags             flags(const ldtools::animation_line&) const;
-	sprite_draw::flags             flags(const ldtools::animation_line&, sprite_draw::flags) const;
+	sprite_draw::modifiers  modifiers(const ldtools::animation_line&) const;
+	sprite_draw::modifiers  modifiers(const ldtools::animation_line&, sprite_draw::modifiers) const;
 
 	private:
 

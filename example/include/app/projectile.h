@@ -18,7 +18,12 @@ class projectile {
 		falling
 	};
 
-	                        projectile(d2d::collision::point, d2d::motion::motion_vector, types);
+	                        projectile(
+		d2d::collision::box, 
+		d2d::motion::motion_vector, 
+		types, 
+		float
+	);
 
 	entity                  ent;
 	d2d::motion::motion_vector velocity;
@@ -35,18 +40,6 @@ class projectile {
 	types                   get_type() const {return type;}
 
 	private:
-
-	static const int        projectile_horizontal_w{16};
-	static const int        projectile_horizontal_h{9};
-
-	static const int        projectile_vertical_w{10};
-	static const int        projectile_vertical_h{10};
-
-	static const int        projectile_round_w{6};
-	static const int        projectile_round_h{6};
-
-	static const int        projectile_falling_w{6};
-	static const int        projectile_falling_h{6};
 
 	enum class states {
 		moving,
