@@ -80,7 +80,8 @@ class projectile_generator {
 
 	enum class states {
 		pre,
-		volley,
+		fire,
+		volley_pause,
 		rest
 	}                       state;
 

@@ -22,14 +22,15 @@ projectile_generator::projectile_generator(
 	tag{_tag},
 	volley_total{_volley}
 {
-	float pre_time=_pre_time_ms / 1000;
-	float pause_time=_pause_time_ms / 1000;
-	float rest_time=_rest_time_ms / 1000;
-	
+
+	float pre_time=(float)_pre_time_ms / 1000.f;
+	float pause_time=(float)_pause_time_ms / 1000.f;
+	float rest_time=(float)_rest_time_ms / 1000.f;
+
 	//All timeouts start paused.
-	timeouts.add(timeout_pre, pre_time, pre_time, true);
-	timeouts.add(timeout_volley, pause_time, pause_time, true);
-	timeouts.add(timeout_rest, rest_time, rest_time, true);
+	timeouts.add(timeout_pre, pre_time, -1.f, true);
+	timeouts.add(timeout_volley, pause_time, -1.f, true);
+	timeouts.add(timeout_rest, rest_time, -1.f, true);
 
 	if(active) {
 
@@ -48,36 +49,45 @@ bool projectile_generator::tic(
 
 	timeouts.tic(_delta);
 
+//This goes [ pre -> [ fire -> volley_pause ] -> post.]
+
 	switch(state) {
 
 		case states::pre:
 
 			if(timeouts.is_finished(timeout_pre)) {
 
-				state=states::volley;
-				timeouts.restart(timeout_volley);
-				return false;
+				state=states::fire;
 			}
 		break;
 
-		case states::volley:
+		case states::fire:
 
-			//TODO: Bad, if there are volleys we don't start firing right
-			//away but after the end of this timeout.
+			++volley_count;
+			//Always go into volley pause now...
+			timeouts.restart(timeout_volley);
+			state=states::volley_pause;
+
+			return true;
+
+		case states::volley_pause:
+
 			if(timeouts.is_finished(timeout_volley)) {
 
-				++volley_count;
-				timeouts.restart(timeout_volley);
-
-				if(volley_total>=volley_count) {
+				//Last shot?
+				if(volley_count >= volley_total) {
 
 					volley_count=0;
 					timeouts.restart(timeout_rest);
 					state=states::rest;
 				}
+				//Do we have shots left?
+				else {
 
-				return true;
-			}
+					state=states::fire;
+				}
+			 }
+
 		break;
 		case states::rest:
 
@@ -96,9 +106,8 @@ void projectile_generator::activate() {
 
 	active=true;
 	volley_count=0;
-	state=states::volley;
-	timeouts.restart(timeout_volley);
-	timeouts.restart(timeout_rest);
+	state=states::pre;
+	timeouts.restart(timeout_pre);
 }
 
 void projectile_generator::deactivate() {

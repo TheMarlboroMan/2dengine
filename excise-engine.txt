@@ -4,9 +4,6 @@ next steps:
 
 		0_test_map_002 
 
-		projectile_generator.cpp -> fix volley part, should fire JUST ONE and
-do it right.
-
 		make a paper map for it.
 		do the area names and stuff better, it is very bad right now.
 			identify needs

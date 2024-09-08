@@ -561,14 +561,9 @@ void game_draw::draw_projectile_vertical(
 ) {
 
 	using modifiers=d2d::video::sprite_draw::modifiers;
-
-	//Al sprites are facing right by default.
-	int flags=modifiers::use_sprite_box;
-
-	if(_projectile.velocity.x < 0.) {
-
-		flags |= modifiers::flip_horizontal;
-	}	
+	int flags=modifiers::center_horizontal 
+		| modifiers::use_sprite_box
+		| modifiers::center_vertical;
 
 	modifiers mod{flags};
 
@@ -607,6 +602,13 @@ void game_draw::draw_projectile_directed(
 	const app::projectile& _projectile
 ) {
 
+	using modifiers=d2d::video::sprite_draw::modifiers;
+	int flags=modifiers::center_horizontal 
+		| modifiers::use_sprite_box
+		| modifiers::center_vertical;
+
+	modifiers mod{flags};
+
 	if(!_projectile.is_moving()) {
 
 		auto line=sprite_draw_animated.get(
@@ -618,7 +620,7 @@ void game_draw::draw_projectile_directed(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			sprite_draw_animated.modifiers(line)
+			sprite_draw_animated.modifiers(line, mod)
 		);
 		return;
 	}
@@ -629,7 +631,7 @@ void game_draw::draw_projectile_directed(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		sprite_draw_animated.modifiers(line)
+		sprite_draw_animated.modifiers(line, mod)
 	);
 }
 
