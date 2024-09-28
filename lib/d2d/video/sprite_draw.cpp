@@ -57,12 +57,12 @@ void sprite_draw::draw(
 	int flags=0;
 	if(_frame.flags & ldtools::sprite_frame::horizontal_flip) {
 
-		flags &= sprite_draw::modifiers::flip_horizontal;
+		flags |= sprite_draw::modifiers::flip_horizontal;
 	}
 
 	if(_frame.flags & ldtools::sprite_frame::vertical_flip) {
 
-		flags &= sprite_draw::modifiers::flip_vertical;
+		flags |= sprite_draw::modifiers::flip_vertical;
 	}
 
 	draw(
@@ -104,6 +104,7 @@ void sprite_draw::draw(
 	sprite_draw::modifiers _modifiers
 ) {
 	//This is the one method the rest end up in. Assume all sprites are 
+	//"facing right".
 
 	bmp.set_clip({{_frame.box.origin.x, _frame.box.origin.y}, _frame.box.w, _frame.box.h});
 
@@ -113,8 +114,8 @@ void sprite_draw::draw(
 	bool invert_vertical=_modifiers.flags & modifiers::flip_vertical;
 
 	//Displacement will be used as top-left corner.
-	pt.x+=(invert_horizontal ? 1 : -1) * _frame.disp_x; 
-	pt.y+=(invert_vertical ? 1 : -1) * _frame.disp_y;
+	pt.x-=_frame.disp_x;
+	pt.y-=_frame.disp_y;
 	_rect.origin=pt;
 
 	if(_modifiers.flags & modifiers::use_sprite_box) {

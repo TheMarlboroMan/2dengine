@@ -699,11 +699,13 @@ void game_draw::draw_player(
 	const app::player& _player
 ) {
 
+	using modifiers=d2d::video::sprite_draw::modifiers;
+
 	//Al sprites are facing right by default.
 	int flags=0;
 	if( _player.facing==app::faces::left) {
 
-		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+		flags |= modifiers::flip_horizontal;
 	}
 
 	d2d::video::sprite_draw::modifiers mod{flags};
@@ -735,7 +737,7 @@ void game_draw::draw_player(
 			animation_index=app::anim_climb;
 			int y_mod=(int)_player.ent.get_origin().y % 10;
 			frame_index=abs(y_mod) <= 4 ? 0 : 1;
-			mod.flags=0;
+			//This is the wonkiest fix ever...
 		break;
 	}
 
