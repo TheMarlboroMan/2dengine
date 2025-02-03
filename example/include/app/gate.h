@@ -21,6 +21,7 @@ class gate {
 
 	void                            tic(float);
 	void                            activate();
+	bool                            is_closed() const;
 /**
  * instantly opens the door.
  */

@@ -1566,12 +1566,16 @@ void main::activate_tag(
 
 		if(gate.tag==_tag) {
 
+			bool was_closed=gate.is_closed();
+
 			//there is an "animation" here we might want to skip.
 			_previously_activated
 				? gate.open()
 				: gate.activate();
 
-			if(!_previously_activated) {
+			//Only make noise if the gate was closed beforehand. This comes
+			//in handy if two switches activate the same gate.
+			if(!_previously_activated && was_closed) {
 
 				play_sound(app::snd_open_gate);
 			}

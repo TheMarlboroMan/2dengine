@@ -16,7 +16,7 @@ projectile_generator::projectile_generator(
 ):
 	spawn_point{_point},
 	state{projectile_generator::states::pre},
-	velocity{_velocity},
+	velocity{(float)_velocity},
 	active{_active},
 	type{_type},
 	tag{_tag},

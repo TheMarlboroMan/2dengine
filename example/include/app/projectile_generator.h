@@ -83,9 +83,10 @@ class projectile_generator {
 		fire,
 		volley_pause,
 		rest
-	}                       state;
+	};
 
 	const d2d::collision::point    spawn_point;
+	states                  state;
 	const float             velocity;
 	bool                    active;
 	types                   type;

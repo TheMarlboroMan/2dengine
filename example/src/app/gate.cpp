@@ -52,6 +52,11 @@ void gate::open() {
 	state=states::open;
 }
 
+bool gate::is_closed() const {
+
+	return states::closed==state;
+}
+
 std::ostream& app::operator<<(
 	std::ostream& _stream,
 	const gate& _gate
