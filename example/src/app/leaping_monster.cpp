@@ -51,7 +51,7 @@ void leaping_monster::tic(
 	//Is the entity under the original position?
 	if(ent.get_y() <= spawn_y) {
 
-		timeout.reset();
+		timeout.restart();
 		ent.set_y(spawn_y);
 		velocity.y=0.;
 		on_air=false;
