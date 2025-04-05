@@ -273,26 +273,30 @@ void state_driver::start_app(
 
 #ifdef IS_DEBUG_BUILD
 
-	if(_argman.exists("--skill")) {
+	if(_argman.exists("--map")) {
 
-		states.set(controller::states::state_main);
-
-		int skill=std::stoi(_argman.get_following("--skill"));
 		auto& gs=service_provider->get_game_session();
 
-		switch(skill) {
+		if(_argman.exists("--skill")) {
 
-			case 1: gs.set_skill_level(app::skill_easy); break;
-			case 2: gs.set_skill_level(app::skill_normal); break;
-			case 3: gs.set_skill_level(app::skill_hard); break;
-			default:
-				gs.set_skill_level(app::skill_normal);
-				lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
-			break;
+			int skill=std::stoi(_argman.get_following("--skill"));
+
+			switch(skill) {
+
+				case 1: gs.set_skill_level(app::skill_easy); break;
+				case 2: gs.set_skill_level(app::skill_normal); break;
+				case 3: gs.set_skill_level(app::skill_hard); break;
+				default:
+					gs.set_skill_level(app::skill_normal);
+					lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
+				break;
+			}
 		}
-	}
+		else {
 
-	if(_argman.exists("--map")) {
+			gs.set_skill_level(app::skill_normal);
+			lm::log(log).notice()<<"skill set to normal by default, use --skill to choose, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
+		}
 
 		states.set(controller::states::state_main);
 
