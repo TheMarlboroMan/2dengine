@@ -59,7 +59,11 @@ void linear_monster::tic(
 		? ent.get_x()
 		: ent.get_y();
 
-	if(pos <= bounds.lower || pos >= bounds.upper) {
+	double dimension=is_horizontal_movement() 
+		? ent.get_w()
+		: ent.get_h();
+
+	if(pos <= bounds.lower || pos+dimension >= bounds.upper) {
 
 		reverse();
 		return;
