@@ -422,7 +422,7 @@ double thing_loader::find_upper_x_bound(
 
 		if(curmap.tile_finder.has({x, _tile.y})) {
 
-			upper_bound=curmap.tile_finder.to_point({x, _tile.y}).x-app::tile_w;
+			upper_bound=curmap.tile_finder.to_point({x, _tile.y}).x;
 			break;
 		}
 	}

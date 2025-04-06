@@ -109,7 +109,7 @@ enum sprites {
 	//Special world elements
 	spr_ladder_yellow=350,
 	spr_gate=351,
-	spr_chain=352,
+	spr_chain=368,
 	spr_vine=353,
 	spr_yellow_keyhole=354,
 	spr_blue_keyhole=355,

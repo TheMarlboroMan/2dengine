@@ -4,6 +4,8 @@ next steps:
 
 		segmentation fault when loading with --map
 
+		show colored keys on automap!!
+
 		what happens if we start below forest_16, go down and try to jump up?
 
 		0_test_map_002 
