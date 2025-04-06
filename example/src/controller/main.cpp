@@ -980,6 +980,16 @@ void main::tic_air(
 	app::player_input _pli
 ) {
 
+	if(_pli.activate) {
+
+		//Attempt to activate a switch!
+		app::button * btnptr{nullptr};
+		if(can_activate_button(_player, btnptr)) {
+
+			activate_button(_player, *btnptr);
+		}
+	}
+
 	//Attempt to grab a ladder with up or down.
 	const app::ladder * ladderptr{nullptr};
 	if(_pli.y && can_grab_ladder(_player, ladderptr)) {
