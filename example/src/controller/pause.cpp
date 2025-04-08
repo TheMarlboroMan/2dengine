@@ -25,6 +25,7 @@ pause::pause(
 	game_session{_sp.get_game_session()},
 	automap_interface{_sp.get_automap()},
 	map_representation{{0,0}},
+	//TODO: Maybe 3 colors: current, complete and incomplete???
 	wall_complete{ldv::rgba8(255, 255, 255, 255)},
 	wall_incomplete{ldv::rgba8(157, 157, 157, 255)},
 	regular_fill{ldv::rgba8(164, 100, 34, 255)},
