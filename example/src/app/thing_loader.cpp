@@ -63,6 +63,7 @@ void thing_loader::load(
 			case 51: return add_projectile_generator(pos, _attributes);
 			case 52: return add_leaping_monster(pos, _attributes);
 			case 53: return add_timed_trap(pos, _attributes);
+			case 54: return add_push_trigger(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 		}
@@ -256,6 +257,27 @@ void thing_loader::add_timed_trap(
 
 	curmap.timed_traps.push_back(
 		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, active, tag, pre_ms, active_ms, post_ms}
+	);
+}
+
+void thing_loader::add_push_trigger(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
+	double push_x=_attributes.at("pushx").get_int();
+	double push_y=_attributes.at("pushy").get_int();
+	int width=_attributes.at("width").get_int();
+	int height=_attributes.at("height").get_int();
+
+	curmap.push_triggers.push_back(
+		{ {_pos, width, height}, {push_x, push_y}}
 	);
 }
 

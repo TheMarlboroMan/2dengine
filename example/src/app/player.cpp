@@ -54,3 +54,24 @@ void player::reset() {
 	current_ladder=nullptr;
 	jump_shortened=false;
 }
+
+/**
+* launch means "be launched by a push trigger".
+**/
+void player::launch(
+	const d2d::motion::motion_vector _vec
+) {
+
+	if(0.0 != _vec.y) {
+
+		velocity.y=_vec.y;
+		state=states::air;
+		jump_shortened=true; //The player cannot influence this.
+	}
+
+	if(0.0 != _vec.x) {
+
+		velocity.x=_vec.x;
+		state=states::air;
+	}
+}

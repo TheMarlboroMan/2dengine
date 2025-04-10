@@ -30,6 +30,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/automap_game.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/inventory.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/game_session.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/push_trigger.cpp
 	PARENT_SCOPE
 )
 

@@ -32,6 +32,7 @@ class player {
 	void                                        crouch();
 	void                                        stand_up();
 	void                                        jump(double);
+	void                                        launch(const d2d::motion::motion_vector);
 
 	bool                                        is_defeated() const;
 

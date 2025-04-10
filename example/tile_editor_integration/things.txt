@@ -503,6 +503,49 @@ beginobject
 endobject
 
 beginobject
+	id 54
+	name push trigger
+	w 16
+	h 16
+	color 32 32 190 255
+	beginproperty
+		name width
+		type int
+		default 16
+		comment entry width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment entry height.
+		linkedto h
+	endproperty
+	beginproperty
+		name pushx
+		type int
+		default 0
+		comment x push, zero to ignore
+		linkedto nothing
+	endproperty
+	beginproperty
+		name pushy
+		type int
+		default 300
+		comment y push, zero to ignore
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

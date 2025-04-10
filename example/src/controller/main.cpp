@@ -672,6 +672,17 @@ void main::post_tic() {
 		}
 	}
 
+	//are we about to be launched somewhere?
+	for(auto& block : current_map.push_triggers) {
+
+		if(block.is_active() && d2d::collision::collides_with(player.ent, block.ent)) {
+
+			block.activate();
+			player.launch(block.velocity);
+		//TODO: PLay a sound!
+		}
+	}
+
 	//at the end of the tic, are we touching an exit?
 	const app::exit * exitptr{nullptr};
 	if(is_on_exit(player, exitptr, true)) {
@@ -764,6 +775,11 @@ void main::tic_world(
 
 		bp.tic(_delta);
 		//TODO: Make a sound when breaking!
+	}
+
+	for(auto& pt : current_map.push_triggers) {
+
+		pt.tic(_delta);
 	}
 }
 
