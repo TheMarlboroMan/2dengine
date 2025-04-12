@@ -18,11 +18,6 @@ breaking_platform::breaking_platform(
 
 void breaking_platform::start_breaking() {
 
-	if(!is_ok()) {
-
-		return;
-	}
-
 	state=states::breaking;
 	timeout.target( (float)ms_breaking / 1000.f).restart();
 }

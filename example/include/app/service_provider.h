@@ -44,6 +44,7 @@ namespace d2d{
 
 	namespace audio {
 		class music_player;
+		class sound_player;
 	}
 
 	namespace collision{
@@ -80,6 +81,7 @@ class service_provider {
 	lda::resource_manager&  get_audio_resource_manager();
 	app::tpersistence&      get_persistence();
 	d2d::audio::music_player& get_music_player();
+	d2d::audio::sound_player& get_sound_player();
 	d2d::video::sprite_draw& get_game_sprite_draw();
 	d2d::video::sprite_draw_animated& get_game_sprite_draw_animated();
 	d2d::video::scenery_tile_draw_animated& get_game_scenery_tile_draw_animated();
@@ -103,6 +105,7 @@ class service_provider {
 	std::unique_ptr<app::tile_impl>	tile_impl{nullptr};
 	std::unique_ptr<ldtools::ttf_manager>	ttf_manager{nullptr};
 	std::unique_ptr<d2d::audio::music_player> music_player{nullptr};
+	std::unique_ptr<d2d::audio::sound_player> sound_player{nullptr};
 	std::unique_ptr<dfw::id_to_path_mapper> music_id_mapper{nullptr};
 	std::unique_ptr<d2d::video::spritesheet_manager> spritesheet_manager{nullptr};
 	std::unique_ptr<d2d::video::animation_manager> animation_manager{nullptr};

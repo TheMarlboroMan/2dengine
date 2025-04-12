@@ -31,33 +31,36 @@ timed_trap::timed_trap(
 }
 
 
-void timed_trap::tic(
+int timed_trap::tic(
 	float _delta
 ) {
 
 	timeout.tic(_delta);
 	if(!timeout.is_finished()) {
 
-		return;
+		return 0;
 	}
 
+	//What would our next state be???
 	switch(state) {
 
 		case states::pre:
 			state=states::harm;
 			timeout.target(harm_s).restart();
-			return;
+			return 1; //Will start sound!
 
 		case states::harm:
 			state=states::post;
 			timeout.target(post_s).restart();
-			return;
+			return -1; //will stop sound...
 		
 		case states::post:
 			state=states::pre;
 			timeout.target(pre_s).restart();
-			return;
+			return 0; //will do nothing.
 	}
+
+	return 0;
 }
 
 

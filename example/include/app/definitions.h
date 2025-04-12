@@ -20,7 +20,10 @@ enum sound {
 	snd_projectile=4,
 	snd_switch=5,
 	snd_defeat=6,
-	snd_secret=7
+	snd_secret=7,
+	snd_fire=8,
+	snd_launch_player=9,
+	snd_block_break=10,
 };
 
 /**

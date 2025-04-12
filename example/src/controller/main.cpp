@@ -51,6 +51,7 @@ main::main(
 	tile_impl{_sp.get_tile_impl()},
 	persistence{_sp.get_persistence()},
 	music_player{_sp.get_music_player()},
+	sound_player{_sp.get_sound_player()},
 	inventory{_sp.get_inventory()},
 	game_session{_sp.get_game_session()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
@@ -215,6 +216,7 @@ void main::load_map(
 	d2d::storage::map_loader loader(map_path);
 
 	current_map.clear();
+	clear_transient_state();
 
 	loader.load_collision_tiles(
 		"logic",
@@ -482,6 +484,7 @@ void main::take_player_to_entry(
 
 void main::restart_level() {
 
+	clear_transient_state();
 	current_map.projectiles.clear();
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -545,6 +548,13 @@ void main::tic(
 }
 
 void main::post_tic() {
+
+	//Are we touching a lethal tile?
+	if(is_into_harm(player)) {
+
+		defeat(player);
+		return;
+	}
 
 	//Are we touching a monster?
 	for(const auto& monster : current_map.linear_monsters) {
@@ -667,19 +677,24 @@ void main::post_tic() {
 
 			if(d2d::collision::collides_with(block, player_box_copy)) {
 
-				block.start_breaking();
+				if(block.is_ok()) {
+
+					block.start_breaking();
+					play_sound(app::snd_block_break);
+				}
 			}
 		}
 	}
 
-	//are we about to be launched somewhere?
+	//are we about to be launched somewhere? 
 	for(auto& block : current_map.push_triggers) {
 
 		if(block.is_active() && d2d::collision::collides_with(player.ent, block.ent)) {
 
 			block.activate();
 			player.launch(block.velocity);
-		//TODO: PLay a sound!
+			play_sound(app::snd_launch_player);
+			break; //just one launch per tic.
 		}
 	}
 
@@ -699,8 +714,28 @@ void main::tic_world(
 	d2d::motion::mover mover{};
 	for(auto& trap : current_map.timed_traps) {
 
-		//TODO: Make sound.
-		trap.tic(_delta);
+		//We accumulate a count of active traps here. This can also 
+		//decrement the counter...
+		trap_sound.active_count+=trap.tic(_delta);
+	}
+
+	//Do we have active traps now? Are we playing the sound? Must we stop?
+	//This is a bit low-level crappy stuff, but should work... We could 
+	//pass an event handler to the timed_trap but hey...
+	if(0!=trap_sound.active_count) {
+
+		if(-1==trap_sound.channel_index) {
+
+			//TODO: it makes a sound even if outside the camera... is that 
+			//good? In any case, we cannot solve it easily.
+			trap_sound.channel_index=sound_player.play_repeat(app::snd_fire);
+		}
+	}
+	//Active cound must be zero... Must we stop the sound?
+	else if(-1!=trap_sound.channel_index) {
+
+		sound_player.stop(trap_sound.channel_index);
+		trap_sound.channel_index=-1;
 	}
 
 	for(auto& monster : current_map.linear_monsters) {
@@ -761,7 +796,6 @@ void main::tic_world(
 
 		if(pg.tic(_delta)) {
 
-			//TODO: Make a sound...
 			generate_projectile(pg);
 		}
 	}
@@ -774,7 +808,6 @@ void main::tic_world(
 	for(auto& bp : current_map.breaking_platforms) {
 
 		bp.tic(_delta);
-		//TODO: Make a sound when breaking!
 	}
 
 	for(auto& pt : current_map.push_triggers) {
@@ -828,6 +861,7 @@ void main::generate_projectile(
 	};
 
 	current_map.projectiles.push_back(proj);
+	play_sound(app::snd_projectile);
 }
 
 void main::tic_ground(
@@ -929,7 +963,7 @@ void main::tic_ladder(
 	app::player& _player,
 	app::player_input _pli
 ) {
-
+	
 	//While in a ladder all collisions with the world are ignored and
 	//the horizontal velocity is unset.
 	
@@ -1070,17 +1104,6 @@ void main::tic_air(
 
 	simulation.gravity.apply_to(_player.velocity, _delta);
 	mover.apply_y(_player.ent, _player.velocity.y, _delta);
-
-	//TODO:
-	//Actually, this is very bad xD!. We cannot walk onto a ledge... It would
-	//be better to just ignore these and check at the END of the tic if the
-	//player ended up in a bad position.
-	//The first collision to take into account is harm tiles... 
-	if(is_into_harm(_player)) {
-
-		defeat(_player);
-		return;
-	}
 
 	//Collision...
 	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_while_on_air{});
@@ -1629,15 +1652,17 @@ void main::activate_tag(
 /**
  * basic fire and forget sound playing.
  */
-void main::play_sound(
+int main::play_sound(
 	int _index
 ) {
 
-	lda::sound_struct snd{
-		sp.get_audio_resource_manager().get_sound(_index)
-	};
+	auto result=sound_player.play_once(_index);
+	if(result < 0) {
 
-	sp.get_audio().play_sound(snd);
+		lm::log(logger).notice()<<"could not play sound, result was "<<result<<"\n";
+	}
+
+	return result;
 }
 
 void main::save_game(
@@ -1714,6 +1739,19 @@ void main::setup_area_banner(
 
 	game_timeouts.restart(timeout_area_banner);
 	gd.setup_area_name_banner(_area_name);
+}
+
+void main::clear_transient_state() {
+
+	//active count is guaranteeed not to rise if no sound can be played,
+	//so this is safe.
+	if(trap_sound.active_count > 0) {
+
+		sound_player.stop(trap_sound.channel_index);
+	}
+
+	trap_sound.active_count=0;
+	trap_sound.channel_index=-1;
 }
 
 #ifdef IS_DEBUG_BUILD

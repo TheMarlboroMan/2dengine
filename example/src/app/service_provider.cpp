@@ -8,6 +8,7 @@
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
+#include <d2d/audio/sound_player.h>
 #include <d2d/video/spritesheet_manager.h>
 #include <d2d/video/animation_manager.h>
 #include <d2d/video/scenery_tile_draw_animated.h>
@@ -149,6 +150,16 @@ d2d::audio::music_player& service_provider::get_music_player() {
 	}
 
 	return *music_player;
+}
+
+d2d::audio::sound_player& service_provider::get_sound_player() {
+
+	if(nullptr==sound_player.get()) {
+
+		sound_player.reset(new d2d::audio::sound_player(get_logger(), dfwaudio, audio_resource_manager));
+	}
+
+	return *sound_player;
 }
 
 dfw::id_to_path_mapper& service_provider::get_music_id_mapper() {

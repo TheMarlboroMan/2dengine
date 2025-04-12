@@ -8,7 +8,8 @@ namespace app {
 
 /**
  * a timed trap is something lethal to the touch that has a pre-count, a
- * count and a post-count, so a few of them can be sinchronized.
+ * count and a post-count, so a few of them can be sinchronized. The player
+ * will be defeated if entering into its area when active.
  */
 class timed_trap {
 
@@ -26,7 +27,7 @@ class timed_trap {
  */
 	                    timed_trap(d2d::collision::point, types, bool, int, int, int, int);
 
-	void                tic(float);
+	int                 tic(float);
 	bool                is_harmful() const {return active && state==states::harm;}
 	types               get_type() const {return type;}
 	bool                is_active() const {return active;}

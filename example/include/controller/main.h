@@ -24,6 +24,7 @@
 #include <d2d/components/timeouts.h>
 #include <lm/logger.h>
 #include <d2d/audio/music_player.h>
+#include <d2d/audio/sound_player.h>
 #include <memory>
 
 namespace controller {
@@ -94,10 +95,11 @@ class main:
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
-	void                        play_sound(int);
+	int                         play_sound(int);
 	void                        save_game(const std::string&, int);
 	void                        reset_game(int, const std::string&);
 	void                        game_over();
+	void                        clear_transient_state();
 
 	//world methods.
 	void                        generate_projectile(const app::projectile_generator&);
@@ -112,6 +114,7 @@ class main:
 	const app::tile_impl&       tile_impl;
 	app::tpersistence&          persistence;
 	d2d::audio::music_player&   music_player;
+	d2d::audio::sound_player&   sound_player;
 	app::inventory&             inventory;
 	app::game_session&          game_session;
 
@@ -125,6 +128,11 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
+
+	struct {
+		int                     active_count{0},
+		                        channel_index{-1};
+	}                           trap_sound;
 
 	enum {
 		timeout_lives_banner=1,
