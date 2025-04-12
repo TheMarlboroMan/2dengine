@@ -6,6 +6,7 @@
 #include "app/automap_game.h"
 #include "app/savegame_manager.h"
 #include <dfw/controller_interface.h>
+#include <d2d/audio/sound_player.h>
 #include <lm/logger.h>
 #include <ldtools/view_composer.h>
 #include <string>
@@ -66,11 +67,11 @@ class menu:
 	void                        refresh();
 	void                        refresh_save_slots();
 	void                        set_savegame_description(int);
-	void                        play_sound(int);
 
 	app::service_provider&      sp;
 	const appenv::env&          env;
 	lm::logger&                 logger;
+	d2d::audio::sound_player&   sound_player;
 
 	app::savegame_manager       savegame_manager;
 	app::automap_game           automap_interface;
@@ -102,6 +103,12 @@ class menu:
 
 	signals                     action_signal{signals::new_game};
 	bool                        game_can_continue=false;
+
+	struct : d2d::audio::sound_player_then {
+		bool playing=false;
+		void on_start() {playing=true;}
+		void on_end() {playing=false;}
+	}                           sound_guard;
 };
 
 }

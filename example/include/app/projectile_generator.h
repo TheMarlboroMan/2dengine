@@ -96,7 +96,8 @@ class projectile_generator {
 	int                     volley_count{0};
 	d2d::components::timeouts   timeouts;
 
-	//TODO; Why should these be in the executable.
+	//TODO; Why should these be in the executable when we can have a table
+	//for these kind of things? They would not be const, I guess...
 	static const int        projectile_horizontal_w{7};
 	static const int        projectile_horizontal_h{7};
 	static const int        projectile_horizontal_desintegration_ms{300};

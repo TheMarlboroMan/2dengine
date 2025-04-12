@@ -2,6 +2,7 @@ set(SOURCE
 	${SOURCE}
 	${CMAKE_CURRENT_SOURCE_DIR}/mover.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/gravity.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/accelerator.cpp
 	PARENT_SCOPE
 )
 

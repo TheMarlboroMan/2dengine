@@ -252,20 +252,15 @@ void main::load_map(
 	music_player.swap(current_map.music_id, 500);
 
 	//Setup the automap.
-	//TODO: Should this be a service?
-	//TODO: Should it be refactored?
-	app::automap_game automap{sp.get_automap()};
+	const auto& automap_srv=sp.get_automap();
+	app::automap_game automap{automap_srv};
 	int automap_id=automap.map_id_from_map(_map_name);
 	game_session.current_map_id=automap_id;
 
 	//Should we show a new area banner? We need first to infer the new
 	//area id... This will also make the banner show whenever a game is
 	//started or loaded.
-	//
-	//TODO: This is a bit of a clusterfuck of services... should refactor it
-	//to something like "area_names" and be done with it xD
-
-	const auto& area=sp.get_automap().find_area_by_map(_map_name);
+	const auto& area=automap_srv.find_area_by_map(_map_name);
 
 	area_change_info.step(area.id);
 	if(area_change_info.has_changed_area()) {

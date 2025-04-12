@@ -27,6 +27,7 @@ menu::menu(
 	sp{_sp},
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
+	sound_player{_sp.get_sound_player()},
 	savegame_manager{env},
 	automap_interface{sp.get_automap()}
 {
@@ -94,8 +95,9 @@ void menu::loop(
 		return;
 	}
 
-	//TODO: Or a specific SDL key for each of these inputs.
-	if(_input.is_input_down(app::input::escape)) {
+	if(_input.is_input_down(app::input::escape)
+		|| _input().is_key_down(SDL_SCANCODE_ESCAPE)
+	) {
 
 		back();
 		return;
@@ -125,7 +127,7 @@ void menu::loop(
 		choice=menu_input::select;
 	}
 
-	//Game part...
+	//Attempt to detect input from game configuration.
 	if(choice==menu_input::none) {
 
 		if(_input.is_input_down(app::input::down)) {
@@ -207,7 +209,7 @@ void menu::next() {
 		return;
 	}
 
-	play_sound(app::snd_switch);
+	sound_player.play_once(app::snd_switch);
 	++(*curoption);
 	refresh();
 }
@@ -235,7 +237,7 @@ void menu::prev() {
 		return;
 	}
 
-	play_sound(app::snd_switch);
+	sound_player.play_once(app::snd_switch);
 	--(*curoption);
 	refresh();
 }
@@ -548,18 +550,6 @@ void menu::refresh() {
 	}
 }
 
-//TODO: Repeated :/. This appears on main too.
-void menu::play_sound(
-	int _index
-) {
-
-	lda::sound_struct snd{
-		sp.get_audio_resource_manager().get_sound(_index)
-	};
-
-	sp.get_audio().play_sound(snd);
-}
-
 /**
  * attempt to continue an ongoing game.
  */
@@ -572,9 +562,10 @@ void menu::attempt_to_continue() {
 		return;
 	}
 
-	//TODO: We should... I don't know, reserve a channel for this. We
-	//can hit the button until the cows come home xD!
-	play_sound(app::snd_defeat);
+	if(!sound_guard.playing) {
+
+		sound_player.play_once_then(app::snd_defeat, sound_guard);
+	}
 }
 
 void menu::choose_slot() {
@@ -662,7 +653,9 @@ void menu::set_savegame_description(
 	}
 
 	//we always draw the amount of stuff collected.
-	const int total_stuff=100; //TODO: This is a very meh number.
+	
+	//TODO: Count the real items!!...
+	const int total_stuff=100;
 	int stuff_collected=tools::percent(slot.collectibles, total_stuff);
 
 	ss<<", "<<stuff_collected<<"%";

@@ -56,6 +56,23 @@ int sound_player::play_sound(
 	return channel.get_index();
 }
 
+int sound_player::play_once_then(
+	int _sound_id,
+	sound_player_then& _then
+) {
+
+	int index=play_once(_sound_id);
+	if(0 > index) {
+
+		return index;
+	}
+
+	auto channel=audio().get_channel(index);
+	_then.ready(channel);
+	_then.on_start();
+	return index;
+}
+
 void sound_player::stop(
 	int _channel_id
 ) {

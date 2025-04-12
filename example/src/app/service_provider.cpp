@@ -215,14 +215,17 @@ d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_
 			false
 		));
 
-		//TODO: This kind of shit could come from any file.
+		//TODO: This kind of shit could come from any file and be a search
+		//into a vector.
 		game_scenery_tile_draw_animated->set_is_animation_fn(
 			[](int _index) -> bool {
-				return _index==app::spr_water_surface || _index==app::spr_waterfall || _index==app::spr_lava_surface;
+				return _index==app::spr_water_surface
+				|| _index==app::spr_waterfall
+				|| _index==app::spr_lava_surface;
 			}
 		);
 
-		//TODO: Same, this should come from a file.
+		//TODO: Same, this should come from a file and map x to y
 		game_scenery_tile_draw_animated->set_index_to_animation_fn(
 			[](int _index) -> int {
 

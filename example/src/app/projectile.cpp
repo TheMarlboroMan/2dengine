@@ -1,4 +1,5 @@
 #include "app/projectile.h"
+#include <d2d/motion/accelerator.h>
 #include <iostream>
 #include <algorithm>
 
@@ -38,16 +39,21 @@ void projectile::tic(
 
 		switch(type) {
 
-			//falling ones move faster as they go.
-			//TODO: I wish we could have an accelerator thingy
-			case types::falling:
-				velocity.y+=(velocity.y * 0.05);
+			//falling ones move faster as they go. We could have a non-linear
+			//thing, but this will do.
+			case types::falling: {
+
+				d2d::motion::accelerator ac{{0.0, 600.0}};
+				ac.accelerate_y(velocity, 0.05*velocity.y);
+			}
 			break;
+			//Flames rising...
 			case types::vertical:{
 
 				auto factor=std::max(0.4, (velocity.y * 0.02));
 
-				velocity.y-=factor;
+				d2d::motion::accelerator ac{{0.0, 0.0}};
+				ac.decelerate_y(velocity, factor);
 				if(velocity.y <= 0.1) {
 
 					desintegrate();
@@ -68,9 +74,8 @@ void projectile::finish() {
 
 void projectile::desintegrate() {
 
-	//this would make the whole animation impossible to orient, we use the
-	//velocity for that.
-	//velocity={0.0, 0.0};
+	//we don't set velocity to zerp because this would make the whole animation 
+	//impossible to orient (velocity is used for that)
 	state=states::desintegrating;
 	timeout.restart();
 }

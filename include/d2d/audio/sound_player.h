@@ -1,5 +1,6 @@
 #pragma once
 
+#include "sound_player_then.h"
 #include <lda/resource_manager.h>
 #include <dfw/audio.h>
 #include <lm/logger.h>
@@ -25,6 +26,10 @@ class sound_player {
  */
 	int                     play_repeat(int, int=-1);
 
+/**
+ *Plays a sound and executes the thenable when it stops.
+ */
+	int                     play_once_then(int, sound_player_then&);
 /**
 *This is just a passthrough to the library to stop a playing sound. It must
 *get the channel of the playing sound, which is returned by any of the
