@@ -47,7 +47,6 @@ void savegame_manager::load() {
 		tpersistence persistence_temp;
 		persistence_temp.load_from_string(save.persistence_string);
 
-		//TODO: Shall we just save/read this from the inventory??
 		//Filter the stuff in the collectible group that has 1 as a its value,
 		//meaning it has been seen and picked up.
 		int pickups=persistence_temp.size(

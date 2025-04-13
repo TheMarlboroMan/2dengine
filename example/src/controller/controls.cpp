@@ -169,42 +169,13 @@ void controls::save_and_finish(
 			_input.configure({desc, node.app_id});
 		}
 
-		//overwrite the configuration now... what if there were more than one
-		//entries???
-		//In any case, we have to dwelve in json stuff here...
-		
-		//TODO: Cannot the config HELP US produce these values?? it would be
-		//nice, to be honest... this is ugly AF.
-		//TODO: holy shit this is ugly. the config has ITS allocator already!!
-		//cannot it help us a bit???
-		using jsondoc=rapidjson::Document;
-		using jsonval=rapidjson::Value;
-
-		jsondoc base{rapidjson::kObjectType};
-		auto& allocator=base.GetAllocator();
-
-		jsonval jsonnode{rapidjson::kObjectType};
-
-		jsonnode.AddMember(
-			jsonval("type", allocator),
-			jsonval(dfw::input_description_int_from_type(node.input.type)),
-			allocator
+		//overwrite the configuration now...
+		config.set_control_data(
+			node.config_map_key,
+			node.input.type,
+			node.input.code,
+			node.input.device
 		);
-		jsonnode.AddMember(
-			jsonval("device", allocator), 
-			jsonval(node.input.device),
-			allocator
-		);
-		jsonnode.AddMember(
-			jsonval("code", allocator),
-			jsonval(node.input.code),
-			allocator
-		);
-
-		jsonval data_list{rapidjson::kArrayType};
-		data_list.PushBack(jsonnode, allocator);
-
-		config.set_vector(node.config_map_key, data_list);
 	}
 
 	//save configuration.

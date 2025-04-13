@@ -25,7 +25,9 @@ class map_loader {
 										map_loader(const std::string&);
 
 /**
- * TODO:
+*loads map property data using an instance that implements the property 
+*processor interface. This can be used to load data bits that belong to the
+*whole map (say, its name, or the "sector" it belongs to...)
  */
 	void                                load_properties(
 	                                        property_processor&,
@@ -37,7 +39,7 @@ class map_loader {
 */
 	void                                load_collision_tiles(
 	                                        const std::string&,
-											std::vector<d2d::collision::tile>&,
+	                                        std::vector<d2d::collision::tile>&,
 	                                        d2d::collision::shaper&,
 	                                        const d2d::collision::tile_implementation&
 	                                    );
@@ -56,9 +58,9 @@ class map_loader {
 *thing_processor interface. The layer is assumed to exist.
 */
 	void                                load_thing_layer(
-											const std::string&,
-											thing_processor&
-										);
+	                                        const std::string&,
+	                                        thing_processor&
+	                                    );
 
 	rapidjson::Document                 doc;
 

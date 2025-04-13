@@ -233,9 +233,6 @@ class persistence {
 		l.erase(it);
 	}
 
-	//TODO: Change this shit so that we can use streams. Right? This way
-	//we can use different implementations and save the stuff however we need.
-
 /**
  * stores the persisted state into a regular text file. The state can be 
  * retrieved with "load_from_file".
@@ -274,8 +271,6 @@ class persistence {
 		std::stringstream ss(_data);
 		load(ss);
 	}
-
-	private:
 
 /**
  * generic save method, writes everything into a stream.
@@ -359,6 +354,8 @@ class persistence {
 			iss.clear();
 		}
 	}
+
+	private:
 
 	struct node {
 		idtype id;

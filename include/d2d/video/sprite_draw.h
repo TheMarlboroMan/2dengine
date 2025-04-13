@@ -21,6 +21,7 @@ class sprite_draw {
  */
 	struct modifiers {
 
+		//These are the "flags".
 		enum {
 			flip_horizontal=1,
 			flip_vertical=2,
@@ -37,10 +38,6 @@ class sprite_draw {
 
 	                                sprite_draw(const ldtools::sprite_table&, const ldv::texture&, ldv::camera* =nullptr, bool=false);
 
-//TODO: The fact that these use the frame flags could be problematic if we
-//later want to use additional effects - like colorizing - without discarding
-//the frame info.
- 
 /**
  * draw sprites by sprite or by index in the given point / rect, with flags
  * or using the default sprite flags.
@@ -48,13 +45,11 @@ class sprite_draw {
  * scale.
  */
 
-//TODO: Can we just skip the screen too???
 	void                            draw(ldv::screen&, ldv::point, const ldtools::sprite_frame&, modifiers);
 	void                            draw(ldv::screen&, ldv::point, const ldtools::sprite_frame&);
 	void                            draw(ldv::screen&, ldv::point, int, modifiers);
 	void                            draw(ldv::screen&, ldv::point, int);
 
-//TODO: Can we just skip the screen too?
 	void                            draw(ldv::screen&, ldv::rect, const ldtools::sprite_frame&, modifiers);
 	void                            draw(ldv::screen&, ldv::rect, const ldtools::sprite_frame&);
 	void                            draw(ldv::screen&, ldv::rect, int, modifiers);
