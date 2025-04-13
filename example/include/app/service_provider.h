@@ -38,7 +38,7 @@ namespace d2d{
 		class spritesheet_manager;
 		class animation_manager;
 		class sprite_draw;
-		class sprite_draw_animated;
+		class animation_sprite_finder;
 		class scenery_tile_draw_animated;
 	}
 
@@ -83,7 +83,7 @@ class service_provider {
 	d2d::audio::music_player& get_music_player();
 	d2d::audio::sound_player& get_sound_player();
 	d2d::video::sprite_draw& get_game_sprite_draw();
-	d2d::video::sprite_draw_animated& get_game_sprite_draw_animated();
+	d2d::video::animation_sprite_finder& get_game_animation_sprite_finder();
 	d2d::video::scenery_tile_draw_animated& get_game_scenery_tile_draw_animated();
 	tools::i8n&             get_localization();
 	automap&                get_automap();
@@ -111,7 +111,7 @@ class service_provider {
 	std::unique_ptr<d2d::video::animation_manager> animation_manager{nullptr};
 	std::unique_ptr<tpersistence> persistence{nullptr};
 	std::unique_ptr<d2d::video::sprite_draw> game_sprite_draw{nullptr};
-	std::unique_ptr<d2d::video::sprite_draw_animated> game_sprite_draw_animated{nullptr};
+	std::unique_ptr<d2d::video::animation_sprite_finder> game_animation_sprite_finder{nullptr};
 	std::unique_ptr<d2d::video::scenery_tile_draw_animated> game_scenery_tile_draw_animated{nullptr};
 	std::unique_ptr<tools::i8n> localization{nullptr};
 	std::unique_ptr<automap> game_automap{nullptr};

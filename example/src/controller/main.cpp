@@ -59,7 +59,7 @@ main::main(
 		camera, 
 		_sp.get_game_scenery_tile_draw_animated(),
 		_sp.get_game_sprite_draw(),
-		_sp.get_game_sprite_draw_animated(),
+		_sp.get_game_animation_sprite_finder(),
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager()
 	}
@@ -490,7 +490,7 @@ void main::tic(
 ) {
 
 	sp.get_game_scenery_tile_draw_animated().tic(_delta);
-	sp.get_game_sprite_draw_animated().tic(_delta);
+	sp.get_game_animation_sprite_finder().tic(_delta);
 	player.tic(_delta);
 
 	switch(player.state) {
@@ -929,10 +929,27 @@ void main::tic_ground(
 
 		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
 
-		//Collision...
-		auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way_above{});
-		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+		//We can easily make composite filters by chaining calls.
+		struct {
+			bool operator() (
+				const d2d::collision::box& _box,
+				const d2d::collision::tile& _tile
+			) {
 
+				app::filter_tiles_ignore_one_way_above f{};
+				app::filter_remove_harm_tiles f2{};
+				return f(_box, _tile) && f2(_box, _tile);
+			}
+		} composite_filter;
+
+		//Collision...
+		auto current_tiles=adapter.find(
+			_player.ent, 
+			current_map.tile_finder, 
+			composite_filter		
+		);
+
+		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
 		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
 		//cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.platform_blocks);
 		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
@@ -1075,7 +1092,6 @@ void main::tic_air(
 
 	if(cph.has_collision()) {
 
-		//TODO; A method would be nice.
 		cph.response_generic();
 		collide_with_wall(_player);
 	}
@@ -1101,7 +1117,11 @@ void main::tic_air(
 	mover.apply_y(_player.ent, _player.velocity.y, _delta);
 
 	//Collision...
-	current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_while_on_air{});
+	current_tiles=adapter.find(
+		_player.ent, 
+		current_map.tile_finder, 
+		app::filter_tiles_ignore_while_on_air{}
+	);
 	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
 
 	cpv.detect_all(current_tiles);
@@ -1445,7 +1465,11 @@ bool main::is_on_air(
 
 	//Quicky filter out tiles not in contact...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-	auto contacting_tiles=adapter.find(player_box_copy, current_map.tile_finder, app::filter_tiles_check_on_air{});
+	auto contacting_tiles=adapter.find(
+		player_box_copy, 
+		current_map.tile_finder, 
+		app::filter_tiles_check_on_air{}
+	);
 
 	//fine collision phase now..
 	d2d::collision::checker cc;

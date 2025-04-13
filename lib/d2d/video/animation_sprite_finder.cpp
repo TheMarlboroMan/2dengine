@@ -1,21 +1,21 @@
-#include "d2d/video/sprite_draw_animated.h"
+#include "d2d/video/animation_sprite_finder.h"
 
 using namespace d2d::video;
 
-sprite_draw_animated::sprite_draw_animated(
+animation_sprite_finder::animation_sprite_finder(
 	const ldtools::animation_table& _animation_table
 ):
 	animation_table{&_animation_table}
 {}
 
-void sprite_draw_animated::tic(
+void animation_sprite_finder::tic(
 	float _delta
 ) {
 
 	internal_timer+=_delta;
 }
 
-sprite_draw_animated& sprite_draw_animated::reset_animation(
+animation_sprite_finder& animation_sprite_finder::reset_table(
 	const ldtools::animation_table& _table
 ) {
 
@@ -23,14 +23,14 @@ sprite_draw_animated& sprite_draw_animated::reset_animation(
 	return *this;
 }
 
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	const ldtools::animation& _animation
 ) const {
 
 	return get(_animation, internal_timer);
 }
 
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	int _animation_index
 ) const {
 
@@ -38,7 +38,7 @@ const ldtools::animation_line& sprite_draw_animated::get(
 	return get(animation, internal_timer);
 }
 
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	const ldtools::animation& _animation,
 	float _timer
 ) const {
@@ -46,7 +46,7 @@ const ldtools::animation_line& sprite_draw_animated::get(
 	return _animation.get_for_time(_timer);
 }
 
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	int _animation_index,
 	float _timer
 ) const {
@@ -59,7 +59,7 @@ const ldtools::animation_line& sprite_draw_animated::get(
 * get frame line from animation using the given float time if the animation
 * lasted that other float time.
 */
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	const ldtools::animation& _animation,
 	float _timer,
 	float _length
@@ -68,7 +68,7 @@ const ldtools::animation_line& sprite_draw_animated::get(
 	return _animation.get_for_time(_timer, _length);
 }
 
-const ldtools::animation_line& sprite_draw_animated::get(
+const ldtools::animation_line& animation_sprite_finder::get(
 	int _animation_index,
 	float _timer,
 	float _length
@@ -79,14 +79,14 @@ const ldtools::animation_line& sprite_draw_animated::get(
 }
 
 
-sprite_draw::modifiers sprite_draw_animated::modifiers(
+sprite_draw::modifiers animation_sprite_finder::modifiers(
 	const ldtools::animation_line& _line
 ) const {
 
 	return modifiers(_line, sprite_draw::modifiers{});
 }
 
-sprite_draw::modifiers sprite_draw_animated::modifiers(
+sprite_draw::modifiers animation_sprite_finder::modifiers(
 	const ldtools::animation_line& _line,
 	sprite_draw::modifiers _modifiers
 ) const {

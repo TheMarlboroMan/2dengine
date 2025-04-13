@@ -29,14 +29,14 @@ game_draw::game_draw(
 	ldv::camera& _camera,
 	d2d::video::scenery_tile_draw_animated&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
-	d2d::video::sprite_draw_animated& _sprite_draw_animated,
+	d2d::video::animation_sprite_finder& _animation_sprite_finder,
 	ldtools::ttf_manager& _ttf_manager,
 	const ldv::resource_manager& _video_resource_manager
 ):
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
-	sprite_draw_animated(_sprite_draw_animated),
+	animation_sprite_finder(_animation_sprite_finder),
 	area_name_banner_text{
 		_ttf_manager.get("area_banner_font", 8),
 		ldv::rgba8(255,255,255,128),
@@ -350,8 +350,8 @@ void game_draw::draw_linear_monster(
 		break;
 	}
 
-	const auto& line=sprite_draw_animated.get(animation_index);
-	mod=sprite_draw_animated.modifiers(line, mod);
+	const auto& line=animation_sprite_finder.get(animation_index);
+	mod=animation_sprite_finder.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
@@ -366,8 +366,8 @@ void game_draw::draw_leaping_monster(
 	const app::leaping_monster& _monster
 ) {
 
-	const auto& line=sprite_draw_animated.get(app::anim_piranha);
-	auto mod=sprite_draw_animated.modifiers(line);
+	const auto& line=animation_sprite_finder.get(app::anim_piranha);
+	auto mod=animation_sprite_finder.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
@@ -405,8 +405,8 @@ void game_draw::draw_timed_trap(
 		return;
 	}
 
-	const auto& line=sprite_draw_animated.get(app::anim_timed_trap_fire);
-	auto mod=sprite_draw_animated.modifiers(line);
+	const auto& line=animation_sprite_finder.get(app::anim_timed_trap_fire);
+	auto mod=animation_sprite_finder.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
@@ -450,13 +450,13 @@ void game_draw::draw_breaking_platform(
 		animation_index=app::anim_breaking_platform_return;
 	}
 
-	const auto& line=sprite_draw_animated.get(
+	const auto& line=animation_sprite_finder.get(
 		animation_index, 
 		_block.get_timer(), 
 		anim_len
 	);
 
-	auto mod=sprite_draw_animated.modifiers(line);
+	auto mod=animation_sprite_finder.modifiers(line);
 
 	sprite_draw.draw(
 		_screen, 
@@ -526,14 +526,14 @@ void game_draw::draw_projectile_linear(
 
 	if(!_projectile.is_moving()) {
 
-		auto line=sprite_draw_animated.get(
+		auto line=animation_sprite_finder.get(
 			app::anim_projectile_end, 
 			_projectile.get_timeout_value()
 		);
 
 		mod.flags |= modifiers::center_vertical;
 
-		mod=sprite_draw_animated.modifiers(line, mod);
+		mod=animation_sprite_finder.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
@@ -544,8 +544,8 @@ void game_draw::draw_projectile_linear(
 		return;
 	}
 
-	auto line=sprite_draw_animated.get(app::anim_projectile);
-	mod=sprite_draw_animated.modifiers(line, mod);
+	auto line=animation_sprite_finder.get(app::anim_projectile);
+	mod=animation_sprite_finder.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
@@ -569,13 +569,13 @@ void game_draw::draw_projectile_vertical(
 
 	if(!_projectile.is_moving()) {
 
-		auto line=sprite_draw_animated.get(
+		auto line=animation_sprite_finder.get(
 			app::anim_flames, 
 			_projectile.get_timeout_value()
 		);
 
 		mod.flags |= modifiers::match_bottom | modifiers::center_horizontal;
-		mod=sprite_draw_animated.modifiers(line, mod);
+		mod=animation_sprite_finder.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
@@ -586,8 +586,8 @@ void game_draw::draw_projectile_vertical(
 		return;
 	}
 
-	auto line=sprite_draw_animated.get(app::anim_projectile_falling_end);
-	mod=sprite_draw_animated.modifiers(line, mod);
+	auto line=animation_sprite_finder.get(app::anim_projectile_falling_end);
+	mod=animation_sprite_finder.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen, 
@@ -611,7 +611,7 @@ void game_draw::draw_projectile_directed(
 
 	if(!_projectile.is_moving()) {
 
-		auto line=sprite_draw_animated.get(
+		auto line=animation_sprite_finder.get(
 			app::anim_projectile_falling_end,
 			_projectile.get_timeout_value()
 		);
@@ -620,18 +620,18 @@ void game_draw::draw_projectile_directed(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_origin()),
 			line.frame,
-			sprite_draw_animated.modifiers(line, mod)
+			animation_sprite_finder.modifiers(line, mod)
 		);
 		return;
 	}
 
-	auto line=sprite_draw_animated.get(app::anim_projectile_round);
+	auto line=animation_sprite_finder.get(app::anim_projectile_round);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_origin()),
 		line.frame,
-		sprite_draw_animated.modifiers(line, mod)
+		animation_sprite_finder.modifiers(line, mod)
 	);
 }
 
@@ -646,7 +646,7 @@ void game_draw::draw_projectile_falling(
 
 	if(!_projectile.is_moving()) {
 
-		auto line=sprite_draw_animated.get(
+		auto line=animation_sprite_finder.get(
 			app::anim_projectile_falling_end, 
 			_projectile.get_timeout_value()
 		);
@@ -657,18 +657,18 @@ void game_draw::draw_projectile_falling(
 			_screen, 
 			d2d::video::to_screen(_projectile.ent.get_box()),
 			line.frame,
-			sprite_draw_animated.modifiers(line, mod)
+			animation_sprite_finder.modifiers(line, mod)
 		);
 		return;
 	}
 
-	auto line=sprite_draw_animated.get(app::anim_projectile_falling);
+	auto line=animation_sprite_finder.get(app::anim_projectile_falling);
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_projectile.ent.get_box()),
 		line.frame,
-		sprite_draw_animated.modifiers(line, mod)
+		animation_sprite_finder.modifiers(line, mod)
 	);
 }
 
@@ -743,8 +743,8 @@ void game_draw::draw_player(
 
 	if(is_animation) {
 
-		const auto& line=sprite_draw_animated.get(animation_index);
-		mod=sprite_draw_animated.modifiers(line, mod);
+		const auto& line=animation_sprite_finder.get(animation_index);
+		mod=animation_sprite_finder.modifiers(line, mod);
 
 		sprite_draw.draw(
 			_screen, 
@@ -757,9 +757,9 @@ void game_draw::draw_player(
 	}
 
 
-	const auto& animation=sprite_draw_animated.animation(animation_index);
+	const auto& animation=animation_sprite_finder.animation(animation_index);
 	const auto& line=animation.get(frame_index);
-	mod=sprite_draw_animated.modifiers(line, mod);
+	mod=animation_sprite_finder.modifiers(line, mod);
 
 	sprite_draw.draw(
 		_screen,

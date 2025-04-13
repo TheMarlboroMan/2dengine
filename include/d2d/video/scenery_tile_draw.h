@@ -7,7 +7,9 @@ namespace d2d { namespace video {
 
 /**
  * specialized class to draw scenery tiles. It owns the sprite draw but does
- * not own the texture and sprite_table it contains.
+ * not own the texture and sprite_table it contains. This class may be used
+ * when the tiles are static and there are no animations. If animations are
+ * to be used, scenery_tile_draw_animated is a better bet.
  */
 class scenery_tile_draw{
 

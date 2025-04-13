@@ -6,25 +6,27 @@
 namespace d2d { namespace video {
 
 /*
- * TODO: What a terrible name xD!
+ * State-aware class. Must be fed with an animation table and it allows
+ * the retrieval of animations and frames according to an internal timer or
+ * to external information. It also allows for the calculation of sprite
+ * modifiers as expressed by sprite_draw. The animation table can be replaced 
+ * at runtime.
  */
-class sprite_draw_animated {
+class animation_sprite_finder {
 
 	public:
 
-	                                sprite_draw_animated(
-										const ldtools::animation_table&
-									);
+	                               animation_sprite_finder(const ldtools::animation_table&);
 
 /**
  * the timer must be fed from the outside.
  */
-	void                            tic(float);
+	void                           tic(float);
 
 /**
  * replaces the current animation table.
  */
-	sprite_draw_animated&           reset_animation(const ldtools::animation_table&);
+	animation_sprite_finder&       reset_table(const ldtools::animation_table&);
 
 /**
  * gets an animation by index.
@@ -51,14 +53,14 @@ class sprite_draw_animated {
 
 /**
  * get the flags for the given line. The second version uses the original
- * flags as the point of starting.
+ * flags as the starting point.
  */
-	sprite_draw::modifiers  modifiers(const ldtools::animation_line&) const;
-	sprite_draw::modifiers  modifiers(const ldtools::animation_line&, sprite_draw::modifiers) const;
+	sprite_draw::modifiers         modifiers(const ldtools::animation_line&) const;
+	sprite_draw::modifiers         modifiers(const ldtools::animation_line&, sprite_draw::modifiers) const;
 
 	private:
 
 	const ldtools::animation_table * animation_table{nullptr};
-	float                           internal_timer{0.f};
+	float                            internal_timer{0.f};
 };
 }}

@@ -12,7 +12,6 @@ namespace d2d { namespace video {
 /**
  * a ready-made class to draw stuff in debug mode, assuming a cartesian 
  * coordinate system. Assumes the origin of things is the bottom-left.
- * TODO: So far it assumes 
  */
 class debug_display {
 
@@ -32,7 +31,6 @@ class debug_display {
  */
 	void						draw(ldv::screen&, const std::vector<d2d::collision::spatiable>&);
 	void						draw(ldv::screen&, const d2d::collision::spatiable&);
-	//TODO: Provide a variadic alternative.
 /**
  *centers the debug camera on a given point. 
  */

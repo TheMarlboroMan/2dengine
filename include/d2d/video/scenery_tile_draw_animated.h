@@ -11,16 +11,22 @@ namespace d2d { namespace video {
  * draw regular tiles. To make use of this class two functions must be 
  * injected, one to tell if a tile is animated and another to tell the
  * animation that corresponds to a tile index.
- * It has full ownership of the sprite_draw but NOT of the texture and
+ * It has full ownership of the scenery_tile_draw but NOT of the texture and
  * sprite table it contains!.
  */
 class scenery_tile_draw_animated {
 
-	//TODO: A bit... meh. The should be the counterpart of the sprite_draw_animated thingy.
+	//TODO: A bit... meh. The should be the counterpart of the animation_sprite_finder thingy.
+	//but it is actually some sort of a mix... Ok, I get it now... There is
+	//no reason NOT to have the animation_sprite_finder thing to retrieve
+	//shit but... This is a bit more complicated, right???
 
 	public:
 	                                scenery_tile_draw_animated(
-		const ldtools::sprite_table&, const ldv::texture&, int, int, 
+		const ldtools::sprite_table&, 
+		const ldv::texture&, 
+		int, 
+		int, 
 		const ldtools::animation_table&,
 		ldv::camera * =nullptr,
 		bool=false

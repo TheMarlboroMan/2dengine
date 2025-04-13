@@ -13,7 +13,7 @@
 #include <d2d/video/animation_manager.h>
 #include <d2d/video/scenery_tile_draw_animated.h>
 #include <d2d/video/sprite_draw.h>
-#include <d2d/video/sprite_draw_animated.h>
+#include <d2d/video/animation_sprite_finder.h>
 
 #include <dfw/id_to_path_mapper.h>
 
@@ -191,16 +191,16 @@ d2d::video::sprite_draw& service_provider::get_game_sprite_draw() {
 	return *game_sprite_draw;
 }
 
-d2d::video::sprite_draw_animated& service_provider::get_game_sprite_draw_animated() {
+d2d::video::animation_sprite_finder& service_provider::get_game_animation_sprite_finder() {
 
-	if(nullptr==game_sprite_draw_animated) {
+	if(nullptr==game_animation_sprite_finder) {
 
-		game_sprite_draw_animated.reset(new d2d::video::sprite_draw_animated(
+		game_animation_sprite_finder.reset(new d2d::video::animation_sprite_finder(
 			get_animation_manager().at(app::animgr_tiles)
 		));
 	}
 
-	return *game_sprite_draw_animated;
+	return *game_animation_sprite_finder;
 }
 
 d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_draw_animated() {

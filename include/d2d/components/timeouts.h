@@ -4,8 +4,6 @@
 
 namespace d2d { namespace components {
 
-//TODO: we could have at on_finish() callback that gets the timeout itself
-//again.
 /**
  * Timeouts count from zero to a limit. When the limit is reached we say the
  * timeout "is expired". The counter increases by a delta time whenever

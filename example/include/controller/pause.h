@@ -4,6 +4,7 @@
 #include "app/service_provider.h"
 #include "app/env.h"
 #include "app/automap_game.h"
+#include "app/automap.h"
 #include "app/types.h"
 #include "app/game_session.h"
 
@@ -35,13 +36,13 @@ class pause:
 	void                        ready_room(const app::map_cell&);
 	void                        evaluate_timeout(float);
 
-	app::service_provider&      sp;
 	const appenv::env&          env;
 	lm::logger&                 logger;
 	const app::inventory&       inventory;
 	const tools::i8n&           localization;
 	const app::tpersistence&    persistence;
 	const app::game_session&    game_session;
+	const app::automap&         automap;
 
 	app::automap_game           automap_interface;
 	ldtools::view_composer      view;

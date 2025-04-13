@@ -16,14 +16,14 @@ using namespace controller;
 pause::pause(
 	app::service_provider& _sp
 ):
-	sp{_sp},
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
 	inventory{_sp.get_inventory()},
 	localization{_sp.get_localization()},
 	persistence{_sp.get_persistence()},
 	game_session{_sp.get_game_session()},
-	automap_interface{_sp.get_automap()},
+	automap{_sp.get_automap()},
+	automap_interface{automap},
 	map_representation{{0,0}},
 	//TODO: Maybe 3 colors: current, complete and incomplete???
 	wall_complete{ldv::rgba8(255, 255, 255, 255)},
@@ -34,10 +34,10 @@ pause::pause(
 
 	view.map_font(
 		"pause_font",
-		sp.get_ttf_manager().get("pause_font", 8)
+		_sp.get_ttf_manager().get("pause_font", 8)
 	);
 
-	view.map_texture("main", sp.get_video_resource_manager().get_texture(app::tex_tiles));
+	view.map_texture("main", _sp.get_video_resource_manager().get_texture(app::tex_tiles));
 
 	const std::string layout_path=env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
@@ -105,8 +105,7 @@ void pause::awake(
 	
 	//Finally set the map.
 	lm::log(logger).debug()<<"attempting to locate area for "<<game_session.current_map_id<<"\n";
-	//TODO: again, service clusters, bad.
-	auto area_id=sp.get_automap().find_area_by_map_id(game_session.current_map_id).id;
+	auto area_id=automap.find_area_by_map_id(game_session.current_map_id).id;
 	automap_interface.set(area_id);
 	ready_map();
 }

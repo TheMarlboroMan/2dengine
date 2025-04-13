@@ -109,7 +109,9 @@ struct filter_tiles_ignore_while_on_air {
 		const d2d::collision::tile& _tile
 	) const {
 
-		return _tile.type!=app::tile_monster_block && _tile.type!=app::tile_camera_stop;
+		return _tile.type!=app::tile_monster_block 
+			&& _tile.type!=app::tile_camera_stop
+			&& _tile.type!=app::tile_harm; //harm tiles are ignored for collision purposes but checked at the end of the tic.
 	}
 };
 
@@ -127,4 +129,17 @@ struct filter_tiles_projectile {
 	}
 };
 
+/**
+ *ignore harm tiles...
+ */
+struct filter_remove_harm_tiles {
+
+	bool operator()(
+		const d2d::collision::box&,
+		const d2d::collision::tile& _tile
+	) const {
+
+		return _tile.type!=app::tile_harm;
+	}
+};
 }

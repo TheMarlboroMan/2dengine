@@ -2,7 +2,7 @@
 
 #include <d2d/video/scenery_tile_draw_animated.h>
 #include <d2d/video/sprite_draw.h>
-#include <d2d/video/sprite_draw_animated.h>
+#include <d2d/video/animation_sprite_finder.h>
 #include <ldtools/ttf_manager.h>
 #include <ldv/screen.h>
 #include <ldv/camera.h>
@@ -39,7 +39,7 @@ class game_draw {
 		ldv::camera&,
 		d2d::video::scenery_tile_draw_animated&, 
 		d2d::video::sprite_draw&,
-		d2d::video::sprite_draw_animated&,
+		d2d::video::animation_sprite_finder&,
 		ldtools::ttf_manager&,
 		const ldv::resource_manager&
 	);
@@ -57,7 +57,7 @@ class game_draw {
 	ldv::camera&                camera;
 	d2d::video::scenery_tile_draw_animated&  scenery_tile_draw;
 	d2d::video::sprite_draw&        sprite_draw;
-	d2d::video::sprite_draw_animated& sprite_draw_animated;
+	d2d::video::animation_sprite_finder& animation_sprite_finder;
 
 	ldv::ttf_representation     area_name_banner_text;
 	ldv::box_representation     area_name_banner_background;

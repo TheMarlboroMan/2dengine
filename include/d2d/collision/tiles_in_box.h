@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <initializer_list>
 
 namespace d2d { namespace collision {
 
@@ -82,6 +83,51 @@ class tiles_in_box {
 	}
 
 /**
+ * same as before but with a list of callables! Test on all callables
+ * must return true and should be all of the same type, so fiddling is required.
+ */
+
+	template<typename C>
+	std::vector<const d2d::collision::tile *> find(
+		const d2d::collision::spatiable& _spatiable,
+		const d2d::collision::tile_finder& _finder,
+		std::initializer_list<C> _callables
+	) const {
+
+		return find(_spatiable.get_box(), _finder, _callables);
+	}
+
+	template<typename C>
+	std::vector<const d2d::collision::tile *> find(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile_finder& _finder,
+		std::initializer_list<C> _callables
+	) const {
+
+		const auto& previous_results=find(_box, _finder);
+		std::vector<const d2d::collision::tile *> result{};
+		std::copy_if(
+			std::begin(previous_results),
+			std::end(previous_results),
+			std::back_inserter(result),
+			[&](const d2d::collision::tile * _tile) -> bool {
+
+				for(const auto& callable : _callables) {
+
+					if(!callable(_box, *_tile)) {
+
+						return false;
+					}
+				}
+
+				return true;
+			}
+		);
+
+		return result;
+	}
+
+/**
  * early returning version of find that just checks if a collision exists.
  */
 	template<typename C>
@@ -108,6 +154,40 @@ class tiles_in_box {
 
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	template<typename C>
+	bool has(
+		const d2d::collision::spatiable& _spatiable,
+		const d2d::collision::tile_finder& _finder,
+		std::initializer_list<C> _callables
+	) const {
+
+		return this->has(_spatiable.get_box(), _finder, _callables);
+	}
+
+	template<typename C>
+	bool has(
+		const d2d::collision::box& _box,
+		const d2d::collision::tile_finder& _finder,
+		std::initializer_list<C> _callables
+	) const {
+
+		const auto& previous_results=find(_box, _finder);
+		for(const auto& _node : find(_box, _finder)) {
+
+			for(const auto& callable : _callables) {
+
+				if(!callable(_box, *_node)) {
+
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		return false;
