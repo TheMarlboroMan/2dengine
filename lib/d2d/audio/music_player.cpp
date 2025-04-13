@@ -19,11 +19,10 @@ music_player::music_player(
 
 music_player::~music_player() {
 
-	//TODO: Investigate, if need be. I guess this could go at service_provider
-	//destruction time, but music might still be playing, as the audio part
-	//is a layer above it.
-	//Errr.... yeah, no, music MIGHT still be playing and this causes a crash
-	//audio().remove_music_stop_callback("d2d::music_player");
+	lm::log(log).info()<<"unmounting music player, stopping music...\n";
+	audio().stop_music();
+	lm::log(log).info()<<"unmounting music player, unregistering callback...\n";
+	audio().remove_music_stop_callback("d2d::music_player");
 }
 
 void music_player::play(

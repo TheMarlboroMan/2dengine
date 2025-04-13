@@ -24,6 +24,7 @@
 #include <appenv/env.h>
 
 #include "tools/i8n.h"
+#include <lm/log.h>
 
 using namespace app;
 
@@ -45,6 +46,7 @@ service_provider::service_provider(
 
 service_provider::~service_provider() {
 
+	lm::log(logger).info()<<"unmounting service provider...\n";
 }
 
 const appenv::env& service_provider::get_env() const {

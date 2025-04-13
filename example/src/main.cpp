@@ -34,21 +34,22 @@ int main(int argc, char ** argv)
 		const std::string config_file{env->build_user_path("config.json")};
 		dfwimpl::config config(config_file);
 
-		//Init the state driver, this should NOT start system stuff yet!.
-		lm::log(app_log).info()<<"building state driver..."<<std::endl;
-		int initial_state=controller::state_menu;
-		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
-
 		lm::log(app_log).info()<<"init sdl2..."<<std::endl;
 		if(!ldt::sdl_init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK)) {
 
 			throw std::runtime_error("unable to init sdl2");
 		}
 
-		//Start the kernel. 
+		//Create the kernel, which will own all system stuff, thus cannot be
+		//destroyed BEFORE the state driver.
 		tools::arg_manager carg(argc, argv);
 		lm::log(app_log).info()<<"creating kernel..."<<std::endl;
 		dfw::kernel kernel(app_log, carg);
+
+		//Init the state driver, this should NOT start system stuff yet!.
+		lm::log(app_log).info()<<"building state driver..."<<std::endl;
+		int initial_state=controller::state_menu;
+		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
 
 		//Init system-dependant stuff and application stuff.
 		lm::log(app_log).info()<<"init state driver..."<<std::endl;
