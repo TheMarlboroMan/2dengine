@@ -27,7 +27,7 @@ using namespace app;
 
 game_draw::game_draw(
 	ldv::camera& _camera,
-	d2d::video::scenery_tile_draw_animated&  _scenery_tile_draw,
+	d2d::video::scenery_tile_draw&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
 	d2d::video::animation_sprite_finder& _animation_sprite_finder,
 	ldtools::ttf_manager& _ttf_manager,
@@ -137,7 +137,7 @@ void game_draw::draw(
 
 	_screen.clear(_map.background_color);
 
-	scenery_tile_draw.draw(_screen, _map.background_tiles);
+	scenery_tile_draw.draw_animation(_screen, _map.background_tiles);
 
 	for(const auto& node : _map.buttons) {
 
@@ -195,7 +195,7 @@ void game_draw::draw(
 	}
 
 	draw_player(_screen, _player);
-	scenery_tile_draw.draw(_screen, _map.foreground_tiles);
+	scenery_tile_draw.draw_animation(_screen, _map.foreground_tiles);
 
 	for(const auto& secret_cover : _map.secret_covers) {
 

@@ -57,7 +57,7 @@ main::main(
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	gd{
 		camera, 
-		_sp.get_game_scenery_tile_draw_animated(),
+		_sp.get_game_scenery_tile_draw(),
 		_sp.get_game_sprite_draw(),
 		_sp.get_game_animation_sprite_finder(),
 		_sp.get_ttf_manager(),
@@ -489,7 +489,7 @@ void main::tic(
 	app::player_input _pli
 ) {
 
-	sp.get_game_scenery_tile_draw_animated().tic(_delta);
+	sp.get_game_scenery_tile_draw().tic(_delta);
 	sp.get_game_animation_sprite_finder().tic(_delta);
 	player.tic(_delta);
 

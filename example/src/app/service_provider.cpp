@@ -11,7 +11,7 @@
 #include <d2d/audio/sound_player.h>
 #include <d2d/video/spritesheet_manager.h>
 #include <d2d/video/animation_manager.h>
-#include <d2d/video/scenery_tile_draw_animated.h>
+#include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
 #include <d2d/video/animation_sprite_finder.h>
 
@@ -203,23 +203,23 @@ d2d::video::animation_sprite_finder& service_provider::get_game_animation_sprite
 	return *game_animation_sprite_finder;
 }
 
-d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_draw_animated() {
+d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 
-	if(nullptr==game_scenery_tile_draw_animated) {
+	if(nullptr==game_scenery_tile_draw) {
 
-		game_scenery_tile_draw_animated.reset(new d2d::video::scenery_tile_draw_animated(
+		game_scenery_tile_draw.reset(new d2d::video::scenery_tile_draw(
 			get_spritesheet_manager().at(app::ss_tiles),
 			get_video_resource_manager().get_texture(app::tex_tiles),
 			app::tile_w, 
 			app::tile_h,
-			get_animation_manager().at(app::animgr_tiles),
+			&get_animation_manager().at(app::animgr_tiles),
 			nullptr,
 			false
 		));
 
 		//TODO: This kind of shit could come from any file and be a search
 		//into a vector.
-		game_scenery_tile_draw_animated->set_is_animation_fn(
+		game_scenery_tile_draw->set_is_animation_fn(
 			[](int _index) -> bool {
 				return _index==app::spr_water_surface
 				|| _index==app::spr_waterfall
@@ -228,7 +228,7 @@ d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_
 		);
 
 		//TODO: Same, this should come from a file and map x to y
-		game_scenery_tile_draw_animated->set_index_to_animation_fn(
+		game_scenery_tile_draw->set_index_to_animation_fn(
 			[](int _index) -> int {
 
 				switch(_index) {
@@ -242,7 +242,7 @@ d2d::video::scenery_tile_draw_animated& service_provider::get_game_scenery_tile_
 		);
 	}
 
-	return *game_scenery_tile_draw_animated;
+	return *game_scenery_tile_draw;
 }
 
 
