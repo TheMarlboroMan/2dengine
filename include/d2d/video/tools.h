@@ -17,7 +17,6 @@ namespace d2d { namespace video {
  * elements.
  */
 
-//TODO: are there terrible names??? Should be "to_cartesian_screen"? To_cartesian_camera?
 ldv::point to_screen(d2d::collision::point);
 ldv::rect to_screen(const d2d::collision::box&);
 ldv::rect to_screen(const d2d::collision::spatiable&);
