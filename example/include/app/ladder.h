@@ -17,7 +17,8 @@ class ladder:
 
 		t_ladder=0,
 		t_chain=1,
-		t_vine=2
+		t_vine=2,
+		t_invisible=3
 	};
 
 /**

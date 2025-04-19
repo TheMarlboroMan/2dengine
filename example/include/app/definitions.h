@@ -90,8 +90,7 @@ enum animations{
 
 	//other stuff
 	anim_breaking_platform=200,
-	anim_breaking_platform_return=201,
-	anim_glint=202
+	anim_breaking_platform_return=201
 };
 
 enum sprites {

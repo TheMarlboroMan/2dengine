@@ -273,15 +273,17 @@ void game_draw::draw_ladder(
 
 	auto origin=d2d::video::to_screen(_ladder.get_origin());
 
+	int sprite_index=app::spr_ladder_yellow;
+	switch(_ladder.type) {
+		case app::ladder::t_ladder: sprite_index=app::spr_ladder_yellow; break;
+		case app::ladder::t_chain:  sprite_index=app::spr_chain; break;
+		case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
+		case app::ladder::t_invisible:
+			return;
+	}
+
 	int max_step=_ladder.get_h() / app::tile_h;
 	for(int i=0; i<max_step; i++) { 
-
-		int sprite_index=app::spr_ladder_yellow;
-		switch(_ladder.type) {
-			case app::ladder::t_ladder: sprite_index=app::spr_ladder_yellow; break;
-			case app::ladder::t_chain:  sprite_index=app::spr_chain; break;
-			case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
-		}
 
 		sprite_draw.draw(
 			_screen,

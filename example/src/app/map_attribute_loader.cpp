@@ -29,6 +29,9 @@ void map_attribute_loader::load(
 		//orange
 		case 2: background_color=ldv::rgba8(235, 137, 49, 255); break;
 
+		//winter
+		case 3: background_color=ldv::rgba8(224, 111, 139, 255); break;
+
 		default: //default is black.
 		case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;
 	}
