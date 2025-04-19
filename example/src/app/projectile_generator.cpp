@@ -55,6 +55,8 @@ bool projectile_generator::tic(
 
 		case states::pre:
 
+std::cout<<spawn_point<<" PRE "<<timeouts.at(timeout_pre)<<std::endl;
+
 			if(timeouts.is_finished(timeout_pre)) {
 
 				state=states::fire;
@@ -71,6 +73,8 @@ bool projectile_generator::tic(
 			return true;
 
 		case states::volley_pause:
+
+std::cout<<spawn_point<<" PAUSE "<<timeouts.at(timeout_volley)<<std::endl;
 
 			if(timeouts.is_finished(timeout_volley)) {
 
@@ -90,6 +94,8 @@ bool projectile_generator::tic(
 
 		break;
 		case states::rest:
+
+std::cout<<spawn_point<<" REST "<<timeouts.at(timeout_rest)<<std::endl;
 
 			if(timeouts.is_finished(timeout_rest)) {
 

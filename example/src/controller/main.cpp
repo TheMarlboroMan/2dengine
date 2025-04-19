@@ -226,6 +226,7 @@ void main::load_map(
 	);
 
 	loader.load_scenery_tiles("foreground", current_map.foreground_tiles);
+	loader.load_scenery_tiles("middle", current_map.middle_tiles);
 	loader.load_scenery_tiles("background", current_map.background_tiles);
 
 	current_map.sync_tile_finder();

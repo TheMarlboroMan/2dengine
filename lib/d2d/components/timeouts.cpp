@@ -210,3 +210,27 @@ bool timeouts::is_paused(
 
 	return data.at(_id).is_paused();
 }
+
+std::ostream& d2d::components::operator<<(
+	std::ostream& _stream,
+	const timeout& _timeout
+) {
+
+	_stream<<"timeout "<<_timeout.get()<<" / "<<_timeout.get_max()<<" [";
+
+	if(_timeout.is_running()) {
+
+		_stream<<"running]";
+	}
+	else if(_timeout.is_finished()) {
+
+		_stream<<"finished]";
+	}
+
+	if(_timeout.is_paused()) {
+
+		_stream<<" [paused]";
+	}
+
+	return _stream;
+}

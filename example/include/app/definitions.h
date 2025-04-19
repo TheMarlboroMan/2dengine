@@ -65,6 +65,7 @@ enum animations{
 	anim_water_surface=1,
 	anim_waterfall=2,
 	anim_lava_surface=3,
+	anim_wall_torch=4,
 
 	//player
 	anim_idle=110,
@@ -97,6 +98,7 @@ enum sprites {
 	spr_water_surface=500,
 	spr_waterfall=504,
 	spr_lava_surface=508,
+	spr_wall_torch=215,
 
 	//Collectibles
 	spr_gold_ingot=300,
@@ -112,6 +114,7 @@ enum sprites {
 	spr_ladder_yellow=350,
 	spr_gate=351,
 	spr_chain=368,
+	spr_chain_secret=352,
 	spr_vine=353,
 	spr_yellow_keyhole=354,
 	spr_blue_keyhole=355,

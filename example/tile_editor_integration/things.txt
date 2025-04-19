@@ -87,7 +87,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment 0=ladder 1=chain 2=vine 3=invisible
+		comment 0=ladder 1=chain 2=vine 3=chain-secret
 		linkedto nothing
 	endproperty
 	beginproperty

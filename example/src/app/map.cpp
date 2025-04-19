@@ -21,6 +21,7 @@ std::ostream& app::operator<<(
 	print_node("platform_blocks", _map.platform_blocks, _stream);
 	print_node("ladders", _map.ladders, _stream);
 	print_node("background_tiles", _map.background_tiles, _stream);
+	print_node("middle_tiles", _map.middle_tiles, _stream);
 	print_node("foreground_tiles", _map.foreground_tiles, _stream);
 	print_node("entries", _map.entries, _stream);
 	print_node("exits", _map.exits, _stream);
@@ -47,6 +48,7 @@ void map::clear() {
 	tile_finder.clear();
 	ladders.clear();
 	background_tiles.clear();
+	middle_tiles.clear();
 	foreground_tiles.clear();
 	entries.clear();
 	exits.clear();

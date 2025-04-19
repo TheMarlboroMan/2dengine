@@ -4,6 +4,7 @@
 	"layers":[
 		{"meta":{"set":1,"gridset":1,"alpha":255,"type":"things","id":"things"},"data":[]},
 		{"meta":{"set":2,"gridset":1,"alpha":255,"type":"tiles","id":"foreground"},"data":[]},
+		{"meta":{"set":2,"gridset":1,"alpha":255,"type":"tiles","id":"middle"},"data":[]},
 		{"meta":{"set":2,"gridset":1,"alpha":255,"type":"tiles","id":"background"},"data":[]},
 		{"meta":{"set":1,"gridset":1,"alpha":255,"type":"tiles","id":"logic"},"data":[]}
 	]

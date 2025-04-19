@@ -223,7 +223,8 @@ d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 			[](int _index) -> bool {
 				return _index==app::spr_water_surface
 				|| _index==app::spr_waterfall
-				|| _index==app::spr_lava_surface;
+				|| _index==app::spr_lava_surface
+				|| _index==app::spr_wall_torch;
 			}
 		);
 
@@ -235,6 +236,7 @@ d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 					case app::spr_water_surface: return app::anim_water_surface;
 					case app::spr_waterfall: return app::anim_waterfall;
 					case app::spr_lava_surface: return app::anim_lava_surface;
+					case app::spr_wall_torch: return app::anim_wall_torch;
 				}
 
 				return 0;

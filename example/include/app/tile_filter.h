@@ -7,6 +7,11 @@
 namespace app {
 
 /**
+ * A bunch of filters...tiles that return "true" will be considered for 
+ * collision. Tiles that return "false" will not.
+ */
+
+/**
  * tile filter to ignore the one way tiles above the player.
  */
 struct filter_tiles_ignore_one_way_above {
@@ -125,7 +130,10 @@ struct filter_tiles_projectile {
 		const d2d::collision::tile& _tile
 	) const {
 
-		return _tile.type!=app::tile_monster_block;
+		return !(
+			_tile.type==app::tile_half_top_passable
+			|| _tile.type==app::tile_monster_block
+		);
 	}
 };
 

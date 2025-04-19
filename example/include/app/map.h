@@ -51,6 +51,7 @@ class map {
 	std::vector<timed_trap>                 timed_traps;
 	std::vector<push_trigger>               push_triggers;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
+	std::vector<d2d::video::scenery_tile>   middle_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 
 	std::vector<app::projectile>            projectiles;

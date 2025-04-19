@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <ostream>
 
 namespace d2d { namespace components {
 
@@ -149,4 +150,6 @@ class timeouts {
 
 	std::map<int, timeout>  data;
 };
+
+std::ostream& operator<<(std::ostream&, const timeout&);
 }}

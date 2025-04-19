@@ -139,6 +139,9 @@ void game_draw::draw(
 
 	scenery_tile_draw.draw_animation(_screen, _map.background_tiles);
 
+	//Middle tiles are like "complements" to the background.
+	scenery_tile_draw.draw_animation(_screen, _map.middle_tiles);
+
 	for(const auto& node : _map.buttons) {
 
 		draw_button(_screen, node);
@@ -278,8 +281,7 @@ void game_draw::draw_ladder(
 		case app::ladder::t_ladder: sprite_index=app::spr_ladder_yellow; break;
 		case app::ladder::t_chain:  sprite_index=app::spr_chain; break;
 		case app::ladder::t_vine:   sprite_index=app::spr_vine; break;
-		case app::ladder::t_invisible:
-			return;
+		case app::ladder::t_chain_secret: sprite_index=app::spr_chain_secret; break;
 	}
 
 	int max_step=_ladder.get_h() / app::tile_h;
