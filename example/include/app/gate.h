@@ -2,6 +2,7 @@
 
 #include "entity.h"
 #include <iostream>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -19,7 +20,7 @@ class gate {
 	entity                          ent;
 	int                             tag;
 
-	void                            tic(float);
+	void                            tic(ldtools::tdelta);
 	void                            activate();
 	bool                            is_closed() const;
 /**

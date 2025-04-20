@@ -4,6 +4,7 @@
 #include <d2d/components/timeouts.h>
 #include <d2d/motion/definitions.h>
 #include <d2d/collision/definitions.h>
+#include <ldtools/time_definitions.h>
 #include <ostream>
 
 namespace app {
@@ -15,7 +16,7 @@ class push_trigger {
 	                                push_trigger(const d2d::collision::box&, d2d::motion::motion_vector);
 
 	bool                            is_active() const;
-	void                            tic(float);
+	void                            tic(ldtools::tdelta);
 	void                            activate();
 
 	entity                          ent;

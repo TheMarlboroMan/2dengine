@@ -3,18 +3,19 @@
 using namespace d2d::components;
 
 timeout::timeout(
-	float _max,
-	float _timer,
+	ldtools::tdelta _max,
+	ldtools::tdelta _timer,
 	bool _paused
 ):
-	timer{_timer==-1.0f ? 0.f : _timer},
+	timer{_timer==-1.0 ? 0. : _timer},
 	max{_max},
 	paused{_paused}
 {}
 
 timeout& timeout::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
+
 	if(paused) {
 
 		return *this;
@@ -31,7 +32,7 @@ timeout& timeout::tic(
 }
 
 timeout& timeout::target(
-	float _value
+	ldtools::tdelta _value
 ) {
 
 	max=_value;
@@ -40,7 +41,7 @@ timeout& timeout::target(
 
 timeout& timeout::reset() {
 
-	timer=0.f;
+	timer=0.;
 	return *this;
 }
 
@@ -78,18 +79,18 @@ bool timeout::is_finished() const {
 	return timer == max;
 }
 
-float timeout::get() const {
+ldtools::tdelta timeout::get() const {
 
 	return timer;
 }
 
-float timeout::get_max() const {
+ldtools::tdelta timeout::get_max() const {
 
 	return max;
 }
 
 timeout& timeout::set(
-	float _val
+	ldtools::tdelta _val
 ) {
 
 	timer=_val;
@@ -99,7 +100,7 @@ timeout& timeout::set(
 ////////////////////////////////
 
 void timeouts::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	for(auto& pair : data) {
@@ -110,7 +111,7 @@ void timeouts::tic(
 
 void timeouts::tic(
 	int _id,
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	data.at(_id).tic(_delta);
@@ -118,27 +119,27 @@ void timeouts::tic(
 
 timeouts& timeouts::add(
 	int _id,
-	float _max_value,
-	float _value,
+	ldtools::tdelta _max_value,
+	ldtools::tdelta _value,
 	bool _paused
 ) {
 
-	float val=_value==-1.0f
-		? 0.f
+	ldtools::tdelta val=_value==-1.0
+		? 0.
 		: _value;
 
 	data.try_emplace(_id, _max_value, val, _paused);
 	return *this;
 }
 
-float timeouts::get(
+ldtools::tdelta timeouts::get(
 	int _id
 ) const {
 
 	return data.at(_id).get();
 }
 
-float timeouts::get_max(
+ldtools::tdelta timeouts::get_max(
 	int _id
 ) const {
 
@@ -161,7 +162,7 @@ bool timeouts::is_running(
 
 timeout& timeouts::set(
 	int _id,
-	float _value
+	ldtools::tdelta _value
 ) {
 
 	return data.at(_id).set(_value);

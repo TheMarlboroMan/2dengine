@@ -5,6 +5,7 @@
 #include <d2d/motion/definitions.h>
 #include <d2d/motion/mover.h>
 #include <iostream>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -43,7 +44,7 @@ class linear_monster {
 	types                   type;
 	faces                   facing;
 
-	void                    tic(float _delta, d2d::motion::mover);
+	void                    tic(ldtools::tdelta _delta, d2d::motion::mover);
 
 	private:
 

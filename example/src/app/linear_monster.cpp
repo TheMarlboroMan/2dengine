@@ -49,7 +49,7 @@ linear_monster::linear_monster(
 }
 
 void linear_monster::tic(
-	float _delta,
+	ldtools::tdelta _delta,
 	d2d::motion::mover _mover
 ) {
 

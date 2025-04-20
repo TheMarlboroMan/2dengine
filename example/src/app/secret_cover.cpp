@@ -8,7 +8,7 @@ secret_cover::secret_cover(
 ):
 	ent{_box},
 	id{_id},
-	timeout{2.5f, 0.f, true}
+	timeout{2.5, 0., true}
 {}
 
 bool secret_cover::is_discovered() const {
@@ -27,7 +27,7 @@ bool secret_cover::is_dissapearing() const {
 }
 
 void secret_cover::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	timeout.tic(_delta);

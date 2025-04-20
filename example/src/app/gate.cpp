@@ -14,7 +14,7 @@ gate::gate(
 {}
 
 void gate::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	switch(state) {
@@ -25,7 +25,7 @@ void gate::tic(
 
 		case states::opening:{
 
-			float y=ent.get_y()+(_delta * 16.);
+			double y=ent.get_y()+(_delta * 16.);
 			ent.set_y(y);
 			ent.sync_boxes();
 			if(y >= destination_y) {

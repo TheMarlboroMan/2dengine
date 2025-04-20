@@ -3,6 +3,7 @@
 #include "entity.h"
 #include <d2d/components/timeouts.h>
 #include <iostream>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -27,7 +28,7 @@ class timed_trap {
  */
 	                    timed_trap(d2d::collision::point, types, bool, int, int, int, int);
 
-	int                 tic(float);
+	int                 tic(ldtools::tdelta);
 	bool                is_harmful() const {return active && state==states::harm;}
 	types               get_type() const {return type;}
 	bool                is_active() const {return active;}
@@ -48,7 +49,7 @@ class timed_trap {
 
 	int                         tag{0};
 	bool                        active{true};
-	float                       pre_s,
+	double                      pre_s,
 	                            harm_s,
 	                            post_s;
 	d2d::components::timeout    timeout;

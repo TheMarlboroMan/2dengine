@@ -22,7 +22,7 @@ void push_trigger::activate() {
 }
 
 void push_trigger::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	if(is_active()) {

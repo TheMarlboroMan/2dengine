@@ -12,18 +12,18 @@ breaking_platform::breaking_platform(
 	ms_breaking{_breaking_ms},
 	ms_gone{_gone_ms},
 	ms_returning{_return_ms},
-	timeout{ms_breaking / 1000.f},
+	timeout{(double)ms_breaking / 1000.},
 	collision_box{_pt, w, h}
 {}
 
 void breaking_platform::start_breaking() {
 
 	state=states::breaking;
-	timeout.target( (float)ms_breaking / 1000.f).restart();
+	timeout.target( (double)ms_breaking / 1000.).restart();
 }
 
 void breaking_platform::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	if(is_ok()) {
@@ -43,11 +43,11 @@ void breaking_platform::tic(
 			return;
 		case states::breaking:
 			state=states::gone;
-			timeout.target((float)ms_gone/1000.f).restart();
+			timeout.target(ms_gone/1000.).restart();
 			return;
 		case states::gone:
 			state=states::returning;
-			timeout.target((float)ms_returning/1000.f).restart();
+			timeout.target(ms_returning/1000.).restart();
 			return;
 		case states::returning:
 			state=states::ok;

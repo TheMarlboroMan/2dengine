@@ -3,6 +3,7 @@
 #include <d2d/motion/definitions.h>
 #include <d2d/collision/definitions.h>
 #include <d2d/components/timeouts.h>
+#include <ldtools/time_definitions.h>
 #include <ostream>
 
 namespace app {
@@ -32,7 +33,7 @@ class projectile_generator {
 	struct projectile_data {
 		d2d::motion::motion_vector  velocity;
 		d2d::collision::box         box; 
-		float                       desintegration_time;
+		ldtools::tdelta             desintegration_time;
 	};
 
 							projectile_generator(
@@ -53,7 +54,7 @@ class projectile_generator {
 /**
 *Returns true if must generate a projectile.
 */
-	bool                    tic(float _delta);
+	bool                    tic(ldtools::tdelta _delta);
 
 /**
  * activates the generator, resets to the first volley shot, in pause state.
@@ -73,9 +74,9 @@ class projectile_generator {
 	private:
 
 	enum timeouts {
-		timeout_pre,
-		timeout_volley,
-		timeout_rest
+		timeout_pre=0,
+		timeout_volley=1,
+		timeout_rest=2
 	};
 
 	enum class states {
@@ -114,6 +115,7 @@ class projectile_generator {
 	static const int        projectile_falling_h{6};
 	static const int        projectile_falling_desintegration_ms{300};
 
+	friend std::ostream& operator<<(std::ostream&, const projectile_generator&);
 };
 
 std::ostream& operator<<(std::ostream&, const projectile_generator&);

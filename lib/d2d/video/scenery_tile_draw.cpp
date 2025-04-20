@@ -47,7 +47,7 @@ void scenery_tile_draw::draw_animation(
 void scenery_tile_draw::draw_animation(
 	ldv::screen& _screen, 
 	const scenery_tile& _tile,
-	float _timer
+	ldtools::tdelta _timer
 ) {
 
 	if(!index_is_animation || !index_is_animation(_tile.type)) {
@@ -71,7 +71,8 @@ void scenery_tile_draw::draw_animation(
 }
 
 
-void scenery_tile_draw::tic( float _delta
+void scenery_tile_draw::tic(
+	ldtools::tdelta _delta
 ) {
 
 	internal_timer+=_delta;

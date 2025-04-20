@@ -6,6 +6,7 @@
 #include <d2d/motion/mover.h>
 #include <d2d/components/timeouts.h>
 #include <iostream>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -32,7 +33,7 @@ class leaping_monster {
 	d2d::motion::motion_vector velocity;
 	types                   type;
 
-	void                    tic(float _delta, d2d::motion::mover);
+	void                    tic(ldtools::tdelta _delta, d2d::motion::mover);
 	bool                    is_on_air() const {return on_air;}
 
 	private:

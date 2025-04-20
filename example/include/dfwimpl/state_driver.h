@@ -6,6 +6,7 @@
 #include <lm/logger.h>
 #include <dfw/state_driver_interface.h>
 #include <dfw/controller_interface.h>
+#include <ldtools/time_definitions.h>
 
 #include <memory>
 
@@ -18,12 +19,12 @@ class state_driver:
 	                                state_driver(dfwimpl::config& config, lm::logger&, const appenv::env&, int);
 
 
-	virtual void                    common_pre_loop_input(dfw::input& input, float delta);
-	virtual void                    common_pre_loop_step(float delta);
-	virtual void                    common_loop_input(dfw::input& input, float delta);
-	virtual void                    common_loop_step(float delta);
+	virtual void                    common_pre_loop_input(dfw::input& input, ldtools::tdelta delta);
+	virtual void                    common_pre_loop_step(ldtools::tdelta delta);
+	virtual void                    common_loop_input(dfw::input& input, ldtools::tdelta delta);
+	virtual void                    common_loop_step(ldtools::tdelta delta);
 	virtual void                    prepare_state(int, int);
-	virtual float                   get_max_timestep() const {return 0.03f;}
+	virtual ldtools::tdelta         get_max_timestep() const {return 0.03;}
 	virtual	void					init(dfw::kernel&);
 
 	private:

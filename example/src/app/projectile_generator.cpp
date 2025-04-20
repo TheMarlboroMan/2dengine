@@ -23,14 +23,14 @@ projectile_generator::projectile_generator(
 	volley_total{_volley}
 {
 
-	float pre_time=(float)_pre_time_ms / 1000.f;
-	float pause_time=(float)_pause_time_ms / 1000.f;
-	float rest_time=(float)_rest_time_ms / 1000.f;
+	double pre_time=(double)_pre_time_ms / 1000.;
+	double pause_time=(double)_pause_time_ms / 1000.;
+	double rest_time=(double)_rest_time_ms / 1000.;
 
 	//All timeouts start paused.
-	timeouts.add(timeout_pre, pre_time, -1.f, true);
-	timeouts.add(timeout_volley, pause_time, -1.f, true);
-	timeouts.add(timeout_rest, rest_time, -1.f, true);
+	timeouts.add(timeout_pre, pre_time, 0., true);
+	timeouts.add(timeout_volley, pause_time, 0., true);
+	timeouts.add(timeout_rest, rest_time, 0., true);
 
 	if(active) {
 
@@ -39,7 +39,7 @@ projectile_generator::projectile_generator(
 }
 
 bool projectile_generator::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	if(!active) {
@@ -47,21 +47,19 @@ bool projectile_generator::tic(
 		return false;
 	}
 
-	timeouts.tic(_delta);
-
 //This goes [ pre -> [ fire -> volley_pause ] -> post.]
 
 	switch(state) {
 
 		case states::pre:
 
-std::cout<<spawn_point<<" PRE "<<timeouts.at(timeout_pre)<<std::endl;
-
+			timeouts.tic(timeout_pre, _delta);
 			if(timeouts.is_finished(timeout_pre)) {
 
 				state=states::fire;
 			}
-		break;
+
+			return false;
 
 		case states::fire:
 
@@ -74,8 +72,7 @@ std::cout<<spawn_point<<" PRE "<<timeouts.at(timeout_pre)<<std::endl;
 
 		case states::volley_pause:
 
-std::cout<<spawn_point<<" PAUSE "<<timeouts.at(timeout_volley)<<std::endl;
-
+			timeouts.tic(timeout_volley, _delta);
 			if(timeouts.is_finished(timeout_volley)) {
 
 				//Last shot?
@@ -92,17 +89,18 @@ std::cout<<spawn_point<<" PAUSE "<<timeouts.at(timeout_volley)<<std::endl;
 				}
 			 }
 
-		break;
+			return false;
+
 		case states::rest:
 
-std::cout<<spawn_point<<" REST "<<timeouts.at(timeout_rest)<<std::endl;
-
+			timeouts.tic(timeout_rest, _delta);
 			if(timeouts.is_finished(timeout_rest)) {
 
-				state=states::pre;
 				timeouts.restart(timeout_pre);
+				state=states::pre;
 			}
-		break;
+
+			return false;
 	}
 
 	return false;
@@ -123,10 +121,14 @@ void projectile_generator::deactivate() {
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,
-	const app::projectile_generator&
+	const app::projectile_generator& _generator
 ) {
 
-	_stream<<"projectile generator[]";
+	_stream<<"projectile generator[ pos:"<<_generator.spawn_point
+		<<" pre:"<<_generator.timeouts.at(projectile_generator::timeout_pre)
+		<<" pause:"<<_generator.timeouts.at(projectile_generator::timeout_volley)
+		<<" post:"<<_generator.timeouts.at(projectile_generator::timeout_rest)<<"]";
+
 	return _stream;
 }
 

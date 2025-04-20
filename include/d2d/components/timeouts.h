@@ -2,6 +2,7 @@
 
 #include <map>
 #include <ostream>
+#include <ldtools/time_definitions.h>
 
 namespace d2d { namespace components {
 
@@ -14,25 +15,26 @@ namespace d2d { namespace components {
 class timeout {
 
 	public:
+
 /**
  * maximum, current and paused.
 */
-	                timeout(float, float=-1.0, bool=false);
+	                timeout(ldtools::tdelta, ldtools::tdelta=-1.0, bool=false);
 
 	bool            is_finished() const;
 	bool            is_running() const;
 	bool            is_paused() const;
-	float           get() const;
-	float           get_max() const;
-	timeout&        tic(float);
+	ldtools::tdelta get() const;
+	ldtools::tdelta get_max() const;
+	timeout&        tic(ldtools::tdelta);
 /**
  * sets the new maximum value.
  */
-	timeout&        target(float);
+	timeout&        target(ldtools::tdelta);
 /**
  * sets the current value.
  */
-	timeout&        set(float);
+	timeout&        set(ldtools::tdelta);
 /**
  * resets the current value to zero, does not resume!
  */
@@ -49,8 +51,8 @@ class timeout {
 
 	private:
 
-	float   timer{0.f},
-			max{0.f};
+	ldtools::tdelta   timer{0.},
+	        max{0.};
 	bool    paused{false};
 
 };
@@ -65,17 +67,17 @@ class timeouts {
 /**
  * tics all timeouts.
  */
-	void            tic(float);
+	void            tic(ldtools::tdelta);
 
 /**
  * tics one timeout
  */
-	void            tic(int, float);
+	void            tic(int, ldtools::tdelta);
 
 /**
  * returns the given timeout value
  */
-	float           get(int) const;
+	ldtools::tdelta get(int) const;
 
 /**
  * returns the given timeout.
@@ -83,9 +85,14 @@ class timeouts {
 	timeout&        at(int _id) {return data.at(_id);}
 
 /**
+ * returns the given timeout.
+ */
+	const timeout&  at(int _id) const {return data.at(_id);}
+
+/**
  * returns the given timeout max
  */
-	float           get_max(int) const;
+	ldtools::tdelta get_max(int) const;
 
 /**
  * adds a new timeout to the list with an identifier and its max value. If
@@ -94,13 +101,13 @@ class timeouts {
  * paused.
  */
 
-	timeouts&       add(int, float, float=-1.0, bool=false);
+	timeouts&       add(int, ldtools::tdelta, ldtools::tdelta=-1.0, bool=false);
 
 
 /**
  * forces the timeout to be set at the given value and returns it.
  */ 
-	timeout&       set(int, float);
+	timeout&       set(int, ldtools::tdelta);
 
 /**
  * resets the timeout identified by the identifier to its max value and

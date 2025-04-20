@@ -2,6 +2,7 @@
 
 #include "sprite_draw.h"
 #include <ldtools/animation_table.h>
+#include <ldtools/time_definitions.h>
 
 namespace d2d { namespace video {
 
@@ -21,7 +22,7 @@ class animation_sprite_finder {
 /**
  * the timer must be fed from the outside.
  */
-	void                           tic(float);
+	void                           tic(ldtools::tdelta);
 
 /**
  * replaces the current animation table.
@@ -39,17 +40,17 @@ class animation_sprite_finder {
 	const ldtools::animation_line& get(const ldtools::animation&) const;
 	const ldtools::animation_line& get(int) const;
 /**
- * get frame line from animation using the given float time.
+ * get frame line from animation using the given doubletime.
  */
-	const ldtools::animation_line& get(const ldtools::animation&, float) const;
-	const ldtools::animation_line& get(int, float) const;
+	const ldtools::animation_line& get(const ldtools::animation&, ldtools::tdelta) const;
+	const ldtools::animation_line& get(int, ldtools::tdelta) const;
 
 /**
- * get frame line from animation using the given float time if the animation
- * lasted that other float time.
+ * get frame line from animation using the given double time if the animation
+ * lasted that other double time.
  */
-	const ldtools::animation_line& get(const ldtools::animation&, float, float) const;
-	const ldtools::animation_line& get(int, float, float) const;
+	const ldtools::animation_line& get(const ldtools::animation&, ldtools::tdelta, ldtools::tdelta) const;
+	const ldtools::animation_line& get(int, ldtools::tdelta, ldtools::tdelta) const;
 
 /**
  * get the flags for the given line. The second version uses the original
@@ -61,6 +62,6 @@ class animation_sprite_finder {
 	private:
 
 	const ldtools::animation_table * animation_table{nullptr};
-	float                            internal_timer{0.f};
+	ldtools::tdelta                  internal_timer{0.};
 };
 }}

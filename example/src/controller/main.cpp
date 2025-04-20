@@ -323,7 +323,7 @@ void main::load_map(
 		lm::log(logger).debug()<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
 	}
 
-//	std::cout<<current_map<<std::endl;
+	std::cout<<current_map<<std::endl;
 }
 
 void main::exit_to(
@@ -486,7 +486,7 @@ void main::restart_level() {
 }
 
 void main::tic(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player_input _pli
 ) {
 
@@ -704,7 +704,7 @@ void main::post_tic() {
 }
 
 void main::tic_world(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	d2d::motion::mover mover{};
@@ -861,7 +861,7 @@ void main::generate_projectile(
 }
 
 void main::tic_ground(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -972,7 +972,7 @@ void main::tic_ground(
 }
 
 void main::tic_ladder(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1038,7 +1038,7 @@ void main::tic_ladder(
 }
 
 void main::tic_air(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1149,7 +1149,7 @@ void main::tic_air(
 }
 
 void main::tic_crouch(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1166,7 +1166,7 @@ void main::tic_crouch(
 }
 
 void main::tic_defeat(
-	float _delta,
+	ldtools::tdelta _delta,
 	app::player& _player,
 	app::player_input
 ) {

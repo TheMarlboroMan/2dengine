@@ -3,6 +3,7 @@
 #include "entity.h"
 #include <d2d/components/timeouts.h>
 #include <iostream>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -25,9 +26,9 @@ class secret_cover {
 	bool                        is_hidden() const;
 	bool                        is_dissapearing() const;
 
-	void                        tic(float);
+	void                        tic(ldtools::tdelta);
 	void                        discover();
-	float                       get_timer() const {return timeout.get();}
+	ldtools::tdelta             get_timer() const {return timeout.get();}
 
 	private:
 

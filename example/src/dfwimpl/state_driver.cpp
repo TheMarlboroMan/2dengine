@@ -234,7 +234,7 @@ void state_driver::prepare_state(
 	}
 }
 
-void state_driver::common_pre_loop_input(dfw::input& input, float /*delta*/) {
+void state_driver::common_pre_loop_input(dfw::input& input, ldtools::tdelta /*delta*/) {
 
 	if(input().is_event_joystick_connected()) {
 
@@ -243,15 +243,15 @@ void state_driver::common_pre_loop_input(dfw::input& input, float /*delta*/) {
 	}
 }
 
-void state_driver::common_loop_input(dfw::input& /*input*/, float /*delta*/) {
+void state_driver::common_loop_input(dfw::input& /*input*/, ldtools::tdelta /*delta*/) {
 
 }
 
-void state_driver::common_pre_loop_step(float /*delta*/) {
+void state_driver::common_pre_loop_step(ldtools::tdelta /*delta*/) {
 
 }
 
-void state_driver::common_loop_step(float /*delta*/) {
+void state_driver::common_loop_step(ldtools::tdelta /*delta*/) {
 
 }
 

@@ -2,6 +2,7 @@
 
 #include <d2d/collision/spatiable.h>
 #include <d2d/components/timeouts.h>
+#include <ldtools/time_definitions.h>
 #include <iostream>
 
 namespace app {
@@ -16,7 +17,7 @@ class breaking_platform:
     * ms
     **/
 	                                        breaking_platform(d2d::collision::point, int, int, int);
-	void                                    tic(float);
+	void                                    tic(ldtools::tdelta);
 	void                                    start_breaking();
 	bool                                    is_ok() const {return state==states::ok;}
 	bool                                    is_breaking() const {return state==states::breaking;}
@@ -25,7 +26,7 @@ class breaking_platform:
 	bool                                    is_solid() const {return !is_gone();}
 	int                                     get_breaking_ms() const {return ms_breaking;}
 	int                                     get_returning_ms() const {return ms_returning;}
-	float                                   get_timer() const {return timeout.get();}
+	ldtools::tdelta                         get_timer() const {return timeout.get();}
 
 //Begin implementation of spatiable
 

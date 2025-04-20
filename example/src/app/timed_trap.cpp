@@ -15,9 +15,9 @@ timed_trap::timed_trap(
 	type{_type},
 	tag{_tag},
 	active{_active},
-	pre_s{(float)_pre_ms / 1000.f},
-	harm_s{(float)_harm_ms / 1000.f},
-	post_s{(float)_post_ms / 1000.f},
+	pre_s{(double)_pre_ms / 1000.},
+	harm_s{(double)_harm_ms / 1000.},
+	post_s{(double)_post_ms / 1000.},
 	timeout{pre_s}
 {
 	switch(type) {
@@ -32,7 +32,7 @@ timed_trap::timed_trap(
 
 
 int timed_trap::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	timeout.tic(_delta);

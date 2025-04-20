@@ -9,7 +9,7 @@ projectile::projectile(
 	d2d::collision::box _box, 
 	d2d::motion::motion_vector _velocity,
 	types _type,
-	float _desintegration_ms
+	ldtools::tdelta _desintegration_ms
 ):
 	ent{_box},
 	velocity{_velocity},
@@ -18,7 +18,7 @@ projectile::projectile(
 { }
 
 void projectile::tic(
-	float _delta,
+	ldtools::tdelta _delta,
 	d2d::motion::mover _mover
 ) {
 

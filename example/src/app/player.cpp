@@ -13,7 +13,7 @@ player::player():
 }
 
 void player::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	timeouts.tic(_delta);

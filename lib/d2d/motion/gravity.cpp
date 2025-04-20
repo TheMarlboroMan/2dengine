@@ -18,7 +18,7 @@ gravity::gravity(
 
 void gravity::apply_to(
 	d2d::motion::motion_vector& _target, 
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	_target+=force*_delta;

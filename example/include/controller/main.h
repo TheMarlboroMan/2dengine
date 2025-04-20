@@ -26,6 +26,7 @@
 #include <d2d/audio/music_player.h>
 #include <d2d/audio/sound_player.h>
 #include <memory>
+#include <ldtools/time_definitions.h>
 
 namespace controller {
 
@@ -55,13 +56,13 @@ class main:
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
 
-	void                        tic(float, app::player_input);
-	void                        tic_world(float);
-	void                        tic_ground(float, app::player&, app::player_input);
-	void                        tic_ladder(float, app::player&, app::player_input);
-	void                        tic_air(float, app::player&, app::player_input);
-	void                        tic_crouch(float, app::player&, app::player_input);
-	void                        tic_defeat(float, app::player&, app::player_input);
+	void                        tic(ldtools::tdelta, app::player_input);
+	void                        tic_world(ldtools::tdelta);
+	void                        tic_ground(ldtools::tdelta, app::player&, app::player_input);
+	void                        tic_ladder(ldtools::tdelta, app::player&, app::player_input);
+	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
+	void                        tic_crouch(ldtools::tdelta, app::player&, app::player_input);
+	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);

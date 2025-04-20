@@ -4,6 +4,7 @@
 #include <d2d/motion/definitions.h>
 #include <d2d/motion/mover.h>
 #include <d2d/components/timeouts.h>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -22,7 +23,7 @@ class projectile {
 		d2d::collision::box, 
 		d2d::motion::motion_vector, 
 		types, 
-		float
+		ldtools::tdelta
 	);
 
 	entity                  ent;
@@ -32,11 +33,11 @@ class projectile {
 	bool                    is_desintegrating() const {return state==states::desintegrating;}
 	bool                    is_done() const {return state==states::done;}
 
-	void                    tic(float _delta, d2d::motion::mover);
+	void                    tic(ldtools::tdelta _delta, d2d::motion::mover);
 	void                    desintegrate();
 	void                    finish();
 
-	float                   get_timeout_value() const {return timeout.get();}
+	ldtools::tdelta         get_timeout_value() const {return timeout.get();}
 	types                   get_type() const {return type;}
 
 	private:

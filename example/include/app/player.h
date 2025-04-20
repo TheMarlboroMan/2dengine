@@ -4,6 +4,7 @@
 #include "definitions.h"
 #include <d2d/components/timeouts.h>
 #include <d2d/motion/definitions.h>
+#include <ldtools/time_definitions.h>
 
 namespace app {
 
@@ -28,7 +29,7 @@ class player {
 	const app::ladder*                          current_ladder{nullptr};
 
 	void                                        reset();
-	void                                        tic(float);
+	void                                        tic(ldtools::tdelta);
 	void                                        crouch();
 	void                                        stand_up();
 	void                                        jump(double);

@@ -11,6 +11,7 @@
 #include <dfw/controller_interface.h>
 #include <lm/logger.h>
 #include <ldtools/view_composer.h>
+#include <ldtools/time_definitions.h>
 #include <tools/i8n.h>
 #include <ldv/group_representation.h>
 #include <ldv/color.h>
@@ -34,7 +35,7 @@ class pause:
 
 	void                        ready_map();
 	void                        ready_room(const app::map_cell&);
-	void                        evaluate_timeout(float);
+	void                        evaluate_timeout(ldtools::tdelta);
 
 	const appenv::env&          env;
 	lm::logger&                 logger;
@@ -54,7 +55,7 @@ class pause:
 	                            current_fill;
 
 	bool                        timeout_passed{false};
-	float                       time_elapsed{0.0f};
+	ldtools::tdelta             time_elapsed{0.0};
 
 #ifdef IS_DEBUG_BUILD
 	bool                        display_all_maps{false};

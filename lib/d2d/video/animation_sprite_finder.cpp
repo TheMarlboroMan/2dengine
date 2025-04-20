@@ -9,7 +9,7 @@ animation_sprite_finder::animation_sprite_finder(
 {}
 
 void animation_sprite_finder::tic(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	internal_timer+=_delta;
@@ -40,7 +40,7 @@ const ldtools::animation_line& animation_sprite_finder::get(
 
 const ldtools::animation_line& animation_sprite_finder::get(
 	const ldtools::animation& _animation,
-	float _timer
+	ldtools::tdelta _timer
 ) const {
 
 	return _animation.get_for_time(_timer);
@@ -48,21 +48,17 @@ const ldtools::animation_line& animation_sprite_finder::get(
 
 const ldtools::animation_line& animation_sprite_finder::get(
 	int _animation_index,
-	float _timer
+	ldtools::tdelta _timer
 ) const {
 
 	const auto& animation=animation_table->get(_animation_index);
 	return get(animation, _timer);
 }
 
-/**
-* get frame line from animation using the given float time if the animation
-* lasted that other float time.
-*/
 const ldtools::animation_line& animation_sprite_finder::get(
 	const ldtools::animation& _animation,
-	float _timer,
-	float _length
+	ldtools::tdelta _timer,
+	ldtools::tdelta _length
 ) const {
 
 	return _animation.get_for_time(_timer, _length);
@@ -70,8 +66,8 @@ const ldtools::animation_line& animation_sprite_finder::get(
 
 const ldtools::animation_line& animation_sprite_finder::get(
 	int _animation_index,
-	float _timer,
-	float _length
+	ldtools::tdelta _timer,
+	ldtools::tdelta _length
 ) const {
 
 	const auto& animation=animation_table->get(_animation_index);

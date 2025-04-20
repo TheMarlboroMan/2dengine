@@ -5,7 +5,7 @@ using namespace d2d::motion;
 void mover::apply(
 	d2d::collision::spatiable& _subject,
 	const d2d::motion::motion_vector& _vector,
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	auto& box=_subject.get_box();
@@ -16,7 +16,7 @@ void mover::apply(
 void mover::apply_x(
 	d2d::collision::spatiable& _subject,
 	double _force,
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	auto& box=_subject.get_box();
@@ -26,7 +26,7 @@ void mover::apply_x(
 void mover::apply_y(
 	d2d::collision::spatiable& _subject,
 	double _force,
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	auto& box=_subject.get_box();

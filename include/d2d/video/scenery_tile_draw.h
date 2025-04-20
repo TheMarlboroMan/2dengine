@@ -4,6 +4,7 @@
 #include "scenery_tile.h"
 
 #include <ldtools/animation_table.h>
+#include <ldtools/time_definitions.h>
 #include <functional>
 
 namespace d2d { namespace video {
@@ -54,7 +55,7 @@ class scenery_tile_draw{
 /**
  * version to be called with an outside timer.
  */
-	void            draw_animation(ldv::screen&, const scenery_tile&, float);
+	void            draw_animation(ldv::screen&, const scenery_tile&, ldtools::tdelta);
 
 /**
  * templated methods of the previous ones for ranged containers.
@@ -69,7 +70,7 @@ class scenery_tile_draw{
 	}
 
 	template<typename T>
-	void            draw_animation(ldv::screen& _screen, const T& _container, float _timer) {
+	void            draw_animation(ldv::screen& _screen, const T& _container, ldtools::tdelta _timer) {
 
 		for(const auto& tile : _container) {
 
@@ -83,7 +84,7 @@ class scenery_tile_draw{
 /**
  * the timer must be fed from the outside.
  */
-	void                            tic(float);
+	void                            tic(ldtools::tdelta);
 
 /**
  * replaces the current animation table.
@@ -125,7 +126,7 @@ class scenery_tile_draw{
 	const ldtools::animation_table * animation_table{nullptr};
 	std::function<bool(int)>        index_is_animation{nullptr};
 	std::function<int(int)>         index_to_animation{nullptr};
-	float                           internal_timer{0.f};
+	ldtools::tdelta                 internal_timer{0.};
 };
 }}
 

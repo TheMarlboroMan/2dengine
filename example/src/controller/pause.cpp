@@ -346,7 +346,7 @@ void pause::ready_room(
 }
 
 void pause::evaluate_timeout(
-	float _delta
+	ldtools::tdelta _delta
 ) {
 
 	//Can only leave this controller after a X time has passed, to prevent
