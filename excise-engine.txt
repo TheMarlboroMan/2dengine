@@ -2,8 +2,6 @@ next steps:
 
 	make the first example game
 
-		fortress_011 -> make the key be in a mini room below.
-
 		segmentation fault when loading with --map
 
 		show colored keys on automap!!
@@ -66,7 +64,7 @@ next steps:
 			\    |    /
 			   START[1]
 
-		- 2 keys on each regular area (not <> or []) for a total of 12
+		- 3 keys on each regular area (not <> or []) for a total of 12
 		- 4 keys to enter each <>
 
 ============================0
