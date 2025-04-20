@@ -7,7 +7,7 @@ timeout::timeout(
 	ldtools::tdelta _timer,
 	bool _paused
 ):
-	timer{_timer==-1.0 ? 0. : _timer},
+	timer{_timer},
 	max{_max},
 	paused{_paused}
 {}
@@ -124,11 +124,7 @@ timeouts& timeouts::add(
 	bool _paused
 ) {
 
-	ldtools::tdelta val=_value==-1.0
-		? 0.
-		: _value;
-
-	data.try_emplace(_id, _max_value, val, _paused);
+	data.try_emplace(_id, _max_value, _value, _paused);
 	return *this;
 }
 
@@ -187,6 +183,15 @@ timeouts& timeouts::reset() {
 	for(auto& node : data) {
 
 		node.second.reset();
+	}
+	return *this;
+}
+
+timeouts& timeouts::restart() {
+
+	for(auto& node : data) {
+
+		node.second.restart();
 	}
 	return *this;
 }

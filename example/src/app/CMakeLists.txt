@@ -31,6 +31,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/inventory.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/game_session.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/push_trigger.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
 	PARENT_SCOPE
 )
 

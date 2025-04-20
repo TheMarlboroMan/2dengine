@@ -25,7 +25,6 @@ class player {
 	d2d::motion::motion_vector                  velocity{0.0, 0.0};
 	faces                                       facing{faces::right};
 	bool                                        jump_shortened{false};
-	d2d::components::timeouts                   timeouts;
 	const app::ladder*                          current_ladder{nullptr};
 
 	void                                        reset();
@@ -34,8 +33,17 @@ class player {
 	void                                        stand_up();
 	void                                        jump(double);
 	void                                        launch(const d2d::motion::motion_vector);
+	void                                        defeat(double);
+	void                                        start_falling();
+	void                                        walk_out_of_ladder(int);
+	void                                        jump_out_of_ladder(double, double);
+	void                                        drop_out_of_ladder();
 
 	bool                                        is_defeated() const;
+	bool                                        is_defeat_timeout_done() const;
+	bool                                        has_jump_last_chance() const;
+	//When this timeout is done, ladders can be grabbed again. It resets each time a ladder is grabbed.
+	bool                                        is_ladder_timeout_done() const;
 
 	enum class states {
 		ground,
@@ -46,6 +54,8 @@ class player {
 	} state{states::ground};
 
 	private:
+
+	d2d::components::timeouts                   timeouts;
 
 	static const int player_w=12;
 	static const int player_h=24;

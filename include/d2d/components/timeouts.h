@@ -19,7 +19,7 @@ class timeout {
 /**
  * maximum, current and paused.
 */
-	                timeout(ldtools::tdelta, ldtools::tdelta=-1.0, bool=false);
+	                timeout(ldtools::tdelta, ldtools::tdelta=0., bool=false);
 
 	bool            is_finished() const;
 	bool            is_running() const;
@@ -101,10 +101,10 @@ class timeouts {
  * paused.
  */
 
-	timeouts&       add(int, ldtools::tdelta, ldtools::tdelta=-1.0, bool=false);
+	timeouts&       add(int, ldtools::tdelta, ldtools::tdelta=0., bool=false);
 
 
-/**
+/*
  * forces the timeout to be set at the given value and returns it.
  */ 
 	timeout&       set(int, ldtools::tdelta);
@@ -119,6 +119,11 @@ class timeouts {
  * resets all timeouts.
  */
 	timeouts&       reset();
+
+/**
+ * restart all timeouts.
+ */
+	timeouts&       restart();
 
 /**
  * checks if the timeout identified by the identifier is ready (that is, 

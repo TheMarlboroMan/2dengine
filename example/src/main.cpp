@@ -1,4 +1,5 @@
 #include "app/env.h"
+#include "app/debug.h"
 #include "controller/controller_states.h"
 #include "dfwimpl/config.h"
 #include "dfwimpl/state_driver.h"
@@ -9,7 +10,7 @@ std::unique_ptr<appenv::env> make_env(lm::logger&);
 
 int main(int argc, char ** argv)
 {
-		
+
 	//Init application log.
 	//std::string log_path{env.get_app_path()+"logs/app.log"};
 	//lm::fileapp_log app_log(log_path.c_str());
@@ -20,6 +21,10 @@ int main(int argc, char ** argv)
 	try {
 
 #ifdef IS_DEBUG_BUILD
+
+		//Init the debug logger... Which is a static reference to the app logger xD
+		app::debug::init(app_log);
+		app::debug::log().debug()<<"debug logger is active!\n";
 
 		ldt::log_lsdl::set_type(ldt::log_lsdl::types::out);
 		lm::log(app_log).info()<<"ldsdl2 will output its logging to the std out"<<std::endl;

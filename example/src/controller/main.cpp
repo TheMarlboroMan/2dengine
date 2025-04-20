@@ -1007,11 +1007,13 @@ void main::tic_ladder(
 
 			if(-1==_pli.y) {
 
-				drop_out_of_ladder(_player);
+				_player.drop_out_of_ladder();
 			}
 			else {
 
-				jump_out_of_ladder(_player, _pli.x);
+				//_x_force is -1 or 1.
+				double velocity=(double)_pli.x*simulation.walk_max_velocity;
+				player.jump_out_of_ladder(velocity, simulation.jump_force);
 				play_sound(app::snd_jump);
 			}
 		}
@@ -1099,8 +1101,8 @@ void main::tic_air(
 
 	//do the vertical phase.
 	//Last chance to jump after we begin falling...
-	if(_pli.jump && 
-		_player.timeouts.is_running(app::player::timeout_last_jump_chance)
+	if(_pli.jump 
+		&& _player.has_jump_last_chance()
 		&& _player.velocity.y < 0.
 	) {
 
@@ -1179,7 +1181,7 @@ void main::tic_defeat(
 	simulation.gravity.apply_to(_player.velocity, _delta);
 	mover.apply(_player.ent, _player.velocity, _delta);
 
-	if(!player.timeouts.is_running(app::player::timeout_defeat)) {
+	if(_player.is_defeat_timeout_done()) {
 
 		if(game_session.is_with_lives()) {
 
@@ -1250,41 +1252,7 @@ void main::walk_out_of_ladder(
 	int _x_force
 ) {
 	d2d::collision::snap_to_top_of(player.ent, _tile);
-	_player.state=app::player::states::ground;
-	_player.timeouts.restart(app::player::timeout_ladder);
-
-	_player.facing=_x_force > 0 
-		? app::faces::right
-		: app::faces::left;
-
-	_player.current_ladder=nullptr;
-}
-
-void main::jump_out_of_ladder(
-	app::player& _player,
-	int _x_force
-) {
-
-	//_x_force is -1 or 1.
-	_player.velocity.x=(double)_x_force*simulation.walk_max_velocity;
-	_player.facing=_x_force > 0 
-		? app::faces::right
-		: app::faces::left;
-	_player.current_ladder=nullptr;
-	_player.timeouts.restart(app::player::timeout_ladder);
-
-	_player.jump(simulation.jump_force);
-}
-
-void main::drop_out_of_ladder(
-	app::player& _player
-) {
-
-	_player.velocity.x=0.;
-	_player.current_ladder=nullptr;
-	_player.state=app::player::states::air;
-	_player.timeouts.restart(app::player::timeout_ladder);
-	//there is no last chance jump here.
+	_player.walk_out_of_ladder(_x_force);
 }
 
 void main::pick_up_collectible(
@@ -1359,9 +1327,7 @@ void main::start_falling(
 	app::player& _player
 ) {
 
-	_player.state=app::player::states::air;
-	_player.timeouts.restart(app::player::timeout_last_jump_chance);
-	_player.velocity.x/=2.; 
+	_player.start_falling();
 }
 
 void main::activate_button(
@@ -1432,9 +1398,7 @@ void main::defeat(
 	}
 
 	play_sound(app::snd_defeat);
-	_player.timeouts.restart(app::player::timeout_defeat);
-	_player.state=app::player::states::defeat;
-	_player.velocity.y=simulation.defeat_y_velocity;
+	_player.defeat(simulation.defeat_y_velocity);
 }
 
 void main::setup_camera(
@@ -1522,7 +1486,7 @@ bool main::can_grab_ladder(
 	const app::ladder *&_ladderptr
 ) const {
 
-	if(!_player.timeouts.is_finished(app::player::timeout_ladder)) {
+	if(!_player.is_ladder_timeout_done()) {
 
 		return false;
 	}

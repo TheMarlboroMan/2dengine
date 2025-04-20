@@ -90,8 +90,6 @@ class main:
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
-	void                        jump_out_of_ladder(app::player&, int);
-	void                        drop_out_of_ladder(app::player&);
 	void                        pick_up_collectible(app::player&, const app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
