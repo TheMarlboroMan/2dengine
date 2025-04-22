@@ -1183,6 +1183,8 @@ void main::tic_defeat(
 
 	if(_player.is_defeat_timeout_done()) {
 
+		clear_transient_state();
+
 		if(game_session.is_with_lives()) {
 
 			game_timeouts.restart(timeout_lives_banner);
