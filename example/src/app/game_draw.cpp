@@ -184,11 +184,6 @@ void game_draw::draw(
 
 	for(const auto& trap : _map.timed_traps) {
 
-		if(!trap.is_active()) {
-
-			continue;
-		}
-
 		draw_timed_trap(_screen, trap);
 	}
 
