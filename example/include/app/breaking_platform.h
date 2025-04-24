@@ -18,6 +18,7 @@ class breaking_platform:
     **/
 	                                        breaking_platform(d2d::collision::point, int, int, int);
 	void                                    tic(ldtools::tdelta);
+	void                                    reset();
 	void                                    start_breaking();
 	bool                                    is_ok() const {return state==states::ok;}
 	bool                                    is_breaking() const {return state==states::breaking;}

@@ -323,7 +323,7 @@ void main::load_map(
 		lm::log(logger).debug()<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
 	}
 
-	std::cout<<current_map<<std::endl;
+	//std::cout<<current_map<<std::endl;
 }
 
 void main::exit_to(
@@ -482,6 +482,25 @@ void main::restart_level() {
 
 	clear_transient_state();
 	current_map.projectiles.clear();
+
+	//Timed traps and projectile generators do reset, same as platforms.
+	//Monsters do not. This may cause desync in planning between monsters and
+	//traps but just exit the level and enter again xD
+	for(auto& trap : current_map.timed_traps) {
+
+		trap.reset();
+	}
+
+	for(auto& generator : current_map.projectile_generators) {
+
+		generator.reset();
+	}
+
+	for(auto& platform : current_map.breaking_platforms) {
+
+		platform.reset();
+	}
+	
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
 
@@ -718,16 +737,14 @@ void main::tic_world(
 	//Do we have active traps now? Are we playing the sound? Must we stop?
 	//This is a bit low-level crappy stuff, but should work... We could 
 	//pass an event handler to the timed_trap but hey...
-	if(0!=trap_sound.active_count) {
+	if(0 < trap_sound.active_count) {
 
 		if(-1==trap_sound.channel_index) {
 
-			//TODO: it makes a sound even if outside the camera... is that 
-			//good? In any case, we cannot solve it easily.
 			trap_sound.channel_index=sound_player.play_repeat(app::snd_fire);
 		}
 	}
-	//Active cound must be zero... Must we stop the sound?
+	//Active count must be zero... Must we stop the sound?
 	else if(-1!=trap_sound.channel_index) {
 
 		sound_player.stop(trap_sound.channel_index);
@@ -1183,8 +1200,6 @@ void main::tic_defeat(
 
 	if(_player.is_defeat_timeout_done()) {
 
-		clear_transient_state();
-
 		if(game_session.is_with_lives()) {
 
 			game_timeouts.restart(timeout_lives_banner);
@@ -1263,7 +1278,7 @@ void main::pick_up_collectible(
 ) {
 
 	//Does not actually make the collectible dissapear :P.
-	std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
+	//std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 
 	//play a jingle :D.
@@ -1303,7 +1318,7 @@ void main::discover_secret(
 ) {
 
 	//Does not actually make the collectible dissapear :P.
-	std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
+	//std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
 	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
 	_secret_cover.discover();
 	play_sound(app::snd_secret);

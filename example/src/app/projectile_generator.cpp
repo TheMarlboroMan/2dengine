@@ -38,6 +38,14 @@ projectile_generator::projectile_generator(
 	}
 }
 
+void projectile_generator::reset() {
+
+	//Does not reset active status!
+	state=projectile_generator::states::pre;
+	timeouts.reset();
+	volley_count=0;
+}
+
 bool projectile_generator::tic(
 	ldtools::tdelta _delta
 ) {

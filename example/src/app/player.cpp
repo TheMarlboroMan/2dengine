@@ -8,7 +8,7 @@ player::player():
 	ent{0, 0, player_w, player_h}
 {
 
-	timeouts.add(timeout_ladder, 0.5);
+	timeouts.add(timeout_ladder, 0.3);
 	timeouts.add(timeout_last_jump_chance, 0.05);
 	timeouts.add(timeout_defeat, 2.);
 }

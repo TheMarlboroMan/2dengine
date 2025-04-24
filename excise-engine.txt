@@ -2,6 +2,8 @@ next steps:
 
 	make the first example game
 
+		what's wrong with the torch animation??
+
 		segmentation fault when loading with --map
 
 		show colored keys on automap!!
@@ -10,19 +12,11 @@ next steps:
 
 		0_test_map_002 
 
-		make a paper map for it.
-		do the area names and stuff better, it is very bad right now.
-			identify needs
-			fix them.
 		add:
 			intro controller
 		add glints to treasure, something like a particle system, so to say.
 			the animation and frames already exist.
 			- I am not happy with splitting the frame the way its done but...
-
-		use the directed projectiles!!!! They are amazing xD
-
-		play and balance each level.
 
 		show data on savegame loading!
 			for this we need to store the items picked up... Does this go
@@ -39,33 +33,6 @@ next steps:
 
 	try to jump into a ladder that goes a map up. Does it fuck up? It 
 		does if there is a solid in the next room!! Use NON solids.
-
-	tile draw animated thing, make it equivalent to the other. 
-		I don't know what this means.
-
-	fix crash at exit
-		seems to be something about music unloading. I just commented it out.
-
-	sound:
-		what about a very basic sound like 
-			play_sound(int)
-			play_looped(int) : int
-			play_exclusive(int)
-
-	general map:
-
-			  <GREEN> [5]
-			/         \
-		castle [6]  volcano [4]
-			|          |
-	<RED> [7]  <END>  <BLUE> [3]
-			|    |     |
-	forest [8]   |   river [2]
-			\    |    /
-			   START[1]
-
-		- 3 keys on each regular area (not <> or []) for a total of 12
-		- 4 keys to enter each <>
 
 ============================0
 

@@ -66,6 +66,8 @@ class projectile_generator {
  */
 	void                    deactivate();
 
+	void                    reset();
+
 /**
  * must return the information about the projectile it will generate
  */

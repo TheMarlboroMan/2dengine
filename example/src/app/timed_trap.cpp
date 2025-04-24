@@ -30,6 +30,11 @@ timed_trap::timed_trap(
 	}
 }
 
+void timed_trap::reset() {
+
+	state=states::pre;
+	timeout.target(pre_s).restart();
+}
 
 int timed_trap::tic(
 	ldtools::tdelta _delta

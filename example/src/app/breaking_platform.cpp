@@ -16,6 +16,11 @@ breaking_platform::breaking_platform(
 	collision_box{_pt, w, h}
 {}
 
+void breaking_platform::reset() {
+
+	state=states::ok;
+}
+
 void breaking_platform::start_breaking() {
 
 	state=states::breaking;

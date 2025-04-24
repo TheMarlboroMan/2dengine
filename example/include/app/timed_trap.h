@@ -34,6 +34,7 @@ class timed_trap {
 	bool                is_active() const {return active;}
 	int                 get_tag() const {return tag;}
 	void                activate() {active=true;}
+	void                reset();
 
 	entity              ent;
 
