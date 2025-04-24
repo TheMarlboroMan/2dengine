@@ -1,9 +1,11 @@
 #pragma once
 
+#include "app/env.h"
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
 #include <d2d/video/animation_sprite_finder.h>
 #include <ldtools/ttf_manager.h>
+#include <ldtools/view_composer.h>
 #include <ldv/screen.h>
 #include <ldv/camera.h>
 #include <ldv/ttf_representation.h>
@@ -41,7 +43,8 @@ class game_draw {
 		d2d::video::sprite_draw&,
 		d2d::video::animation_sprite_finder&,
 		ldtools::ttf_manager&,
-		const ldv::resource_manager&
+		const ldv::resource_manager&,
+		const appenv::env&
 	);
 	                            ~game_draw();
 
@@ -59,11 +62,8 @@ class game_draw {
 	d2d::video::sprite_draw&        sprite_draw;
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
 
-	ldv::ttf_representation     area_name_banner_text;
-	ldv::box_representation     area_name_banner_background;
-	ldv::ttf_representation     lives_banner_text;
-	ldv::box_representation     lives_banner_background;
-	ldv::bitmap_representation  lives_banner_icon;
+	ldtools::view_composer      area_name_view;
+	ldtools::view_composer      lives_banner_view;
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);

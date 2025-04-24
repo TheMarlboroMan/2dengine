@@ -218,6 +218,66 @@
 			"text":"01:32:34",
 			"font":"pause_font",
 			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"red_key_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[80, 3, 16, 10],
+			"location":[16, 48, 16, 10]
+		},
+		{
+			"id":"blue_key_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[64, 3, 16, 10],
+			"location":[36, 48, 16, 10]
+		},
+		{
+			"id":"green_key_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[48, 19, 16, 10],
+			"location":[56, 48, 16, 10]
+		}
+	],
+	"lives_banner":[
+		{
+			"id":"background",
+			"type":"box",
+			"location":[0, 0, 288, 16],
+			"rgba":[64, 64, 64, 128]
+		},
+		{
+			"id":"icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[144,8, 16, 10],
+			"location":[0, 0, 16, 10]
+		},
+		{
+			"id":"lives",
+			"type":"ttf",
+			"location":[16, 0],
+			"text":"...",
+			"font":"font",
+			"rgba":[255, 255, 255, 128]
+		}
+	],
+	"area_name_banner":[
+		{
+			"id":"area_name_bg",
+			"type":"box",
+			"location":[0, 0, 288, 24],
+			"rgba":[0, 0, 0, 128]
+		},
+		{
+			"id":"area_name",
+			"type":"ttf",
+			"location":[0, 0],
+			"text":"...",
+			"font":"font",
+			"rgba":[255, 255, 255, 128]
 		}
 	]
 }

@@ -175,6 +175,18 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
+	if(_cmd=="setinmortal") {
+
+		inmortal=(bool)_args[0].get_int();
+
+		if(inmortal) {
+
+			return {0, "player is inmortal"};
+		}
+
+		return {0, "player is mortal"};
+	}
+
 	return {0, "unknown command"};
 }
 
@@ -207,6 +219,7 @@ void main::setup_console(
 	console->map_command("tell", {});
 	console->map_command("debugdraw", {});
 	console->map_command("gamedraw", {});
+	console->map_command("setinmortal", {{console::types::integer}});
 	console->map_command("get_collision_tiles", {});
 	console->map_command("goto", {{console::types::integer}, {console::types::integer}});
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});

@@ -55,6 +55,10 @@ void pause::awake(
 	view.set_visible("lives_icon", game_session.is_with_lives());
 	view.set_visible("lives_value", game_session.is_with_lives());
 	view.set_visible("time_value", game_session.is_with_timer());
+
+	view.set_visible("red_key_icon", inventory.red_keys!=0);
+	view.set_visible("blue_key_icon", inventory.red_keys!=0);
+	view.set_visible("green_key_icon", inventory.red_keys!=0);
 		
 	//Update the values to be shown...
 	std::stringstream ss;

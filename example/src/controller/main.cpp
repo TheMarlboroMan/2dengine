@@ -61,7 +61,8 @@ main::main(
 		_sp.get_game_sprite_draw(),
 		_sp.get_game_animation_sprite_finder(),
 		_sp.get_ttf_manager(),
-		_sp.get_video_resource_manager()
+		_sp.get_video_resource_manager(),
+		env
 	}
 #ifdef IS_DEBUG_BUILD
 	,
@@ -82,8 +83,8 @@ main::main(
 		app::logic_screen_h
 	);
 
-	game_timeouts.add(timeout_lives_banner, 4.f, -1.0, true);
-	game_timeouts.add(timeout_area_banner, 3.f, -1.0, true);
+	game_timeouts.add(timeout_lives_banner, 4.f, 4.f, true);
+	game_timeouts.add(timeout_area_banner, 3.f, 0, true);
 }
 
 void main::start(
@@ -1397,6 +1398,15 @@ void main::defeat(
 	app::player& _player
 ) {
 
+#ifdef IS_DEBUG_BUILD
+
+	//God mode :D.
+	if(inmortal) {
+
+		return;
+	}
+#endif
+
 	//Avoid being defeated time and again.
 	if(app::player::states::defeat==_player.state) {
 
@@ -1412,6 +1422,10 @@ void main::defeat(
 		}
 
 		--game_session.lives;
+		gd.setup_lives_banner(game_session.lives);
+		//TODO: save game at our current map and entry id!
+		//TODO: What is the name of our map xD????
+		//save_game(, last_entry_id);
 	}
 
 	play_sound(app::snd_defeat);
@@ -1697,9 +1711,9 @@ void main::save_game(
 void main::load_game() {
 
 	app::savegame_io sio{};
-	auto save=sio.load_from_file(game_session.savegame_file);
+	lm::log(logger).info()<<"loading game from "<<game_session.savegame_file<<std::endl;
 
-	lm::log(logger).info()<<"starting new game..."<<std::endl;
+	auto save=sio.load_from_file(game_session.savegame_file);
 	reset_game(save.difficulty_setting, game_session.savegame_file);
 
 	inventory.red_keys=save.red_keys;
@@ -1709,6 +1723,7 @@ void main::load_game() {
 
 	game_session.skill_level=save.difficulty_setting;
 	game_session.elapsed_seconds=save.elapsed_seconds;
+	game_session.lives=save.lives;
 
 	persistence.load_from_string(save.persistence_string);
 
@@ -1729,8 +1744,8 @@ void main::reset_game(
 
 void main::game_over() {
 
-	throw std::runtime_error("game over is not implemented!");
 	//TODO: This is only hard mode and it should remove the save xD
+	throw std::runtime_error("game over is not implemented!");
 
 }
 

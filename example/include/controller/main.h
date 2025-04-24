@@ -176,6 +176,7 @@ class main:
 	console::result             execute_cmd(const std::string&, const std::vector<console::argument>&);
 
 	bool                        debug_draw{false};
+	bool                        inmortal{false};
 	d2d::video::debug_display	dd;
 	std::unique_ptr<console::console>   console{nullptr};
 	std::unique_ptr<appconsole::console> console_display{nullptr};

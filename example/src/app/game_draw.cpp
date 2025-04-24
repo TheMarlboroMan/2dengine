@@ -20,6 +20,9 @@
 #include <d2d/video/tools.h>
 #include <d2d/video/sprite_draw.h>
 
+#include <tools/json.h>
+#include <tools/file_utils.h>
+
 #include <iostream>
 #include <sstream>
 
@@ -31,38 +34,26 @@ game_draw::game_draw(
 	d2d::video::sprite_draw&        _sprite_draw,
 	d2d::video::animation_sprite_finder& _animation_sprite_finder,
 	ldtools::ttf_manager& _ttf_manager,
-	const ldv::resource_manager& _video_resource_manager
+	const ldv::resource_manager& _video_resource_manager,
+	const appenv::env& _env
 ):
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
-	animation_sprite_finder(_animation_sprite_finder),
-	area_name_banner_text{
-		_ttf_manager.get("area_banner_font", 8),
-		ldv::rgba8(255,255,255,128),
-		""
-	},
-	area_name_banner_background{
-		{0,0,app::logic_screen_w,(tile_h/2)+(tile_h*2)},
-		ldv::rgba8(0,0,0,128)
-	},
-	lives_banner_text{
-		_ttf_manager.get("lives_banner_font", 8),
-		ldv::rgba8(255,255,255,128),
-		""
-	},
-	lives_banner_background{
-		{0,0,app::logic_screen_w,tile_h*3},
-		ldv::rgba8(64,64,64,128)
-	},
-	lives_banner_icon{
-		_video_resource_manager.get_texture(tex_tiles),
-		{{0, 0}, 16, 10},
-		{{144, 8}, 16, 10}
-	}
+	animation_sprite_finder(_animation_sprite_finder)
 {
+	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
+	auto document=tools::parse_json_string(tools::dump_file(layout_path));
 
-	area_name_banner_background.align(
+	//setup area name view
+	area_name_view.map_font(
+		"font",
+		_ttf_manager.get("lives_banner_font", 8)
+	);
+	area_name_view.map_texture("main", _video_resource_manager.get_texture(app::tex_tiles));
+	area_name_view.parse(document["area_name_banner"]);
+	auto area_name_banner_background=area_name_view.get_by_id("area_name_bg");
+	area_name_banner_background->align(
 		camera.get_pos_box(),
 		{
 			ldv::representation_alignment::h::center,
@@ -70,8 +61,43 @@ game_draw::game_draw(
 		}
 	);
 
-	area_name_banner_background.set_blend(ldv::representation::blends::alpha);
+	//Setup lives banner view...
+	lives_banner_view.map_font(
+		"font",
+		_ttf_manager.get("area_banner_font", 8)
+	);
+	lives_banner_view.map_texture("main", _video_resource_manager.get_texture(app::tex_tiles));
+	lives_banner_view.parse(document["lives_banner"]);
+	auto lives_banner_bg=lives_banner_view.get_by_id("background");
+	auto lives_banner_icon=lives_banner_view.get_by_id("icon");
+	auto lives_banner_text=lives_banner_view.get_by_id("lives");
+	lives_banner_bg->align(
+		camera.get_pos_box(),
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::inner_bottom
+		}
+	);
 
+	lives_banner_icon->align(
+		*lives_banner_bg,
+		{
+			ldv::representation_alignment::h::inner_left,
+			ldv::representation_alignment::v::center,
+			10, 0
+		}
+	);
+
+	lives_banner_text->align(
+		*lives_banner_icon,
+		{
+			ldv::representation_alignment::h::outer_right,
+			ldv::representation_alignment::v::center,
+			10, 0
+		}
+	);
+
+	//And setup the rest.
 	sprite_draw.set_camera(camera);
 	sprite_draw.set_with_camera(true);
 
@@ -86,7 +112,7 @@ void game_draw::setup_lives_banner(
 	std::stringstream ss;
 	ss<<"x "<<_lives;
 
-	lives_banner_text.set_text(ss.str());
+	lives_banner_view.set_text("lives", ss.str());
 }
 
 void game_draw::setup_area_name_banner(
@@ -96,9 +122,12 @@ void game_draw::setup_area_name_banner(
 	std::stringstream ss;
 	ss<<"-- "<<_area_name<<" --";
 
-	area_name_banner_text.set_text(ss.str());
-	area_name_banner_text.align(
-		area_name_banner_background,
+	area_name_view.set_text("area_name", ss.str());
+
+	auto area_name_banner_text=area_name_view.get_by_id("area_name");
+	auto area_name_banner_background=area_name_view.get_by_id("area_name_bg");
+	area_name_banner_text->align(
+		*area_name_banner_background,
 		{
 			ldv::representation_alignment::h::center,
 			ldv::representation_alignment::v::center
@@ -108,15 +137,12 @@ void game_draw::setup_area_name_banner(
 
 void game_draw::draw_area_name_banner(ldv::screen& _screen) {
 
-	area_name_banner_background.draw(_screen);
-	area_name_banner_text.draw(_screen);
+	area_name_view.draw(_screen);
 }
 
 void game_draw::draw_lives_banner(ldv::screen& _screen) {
 
-	lives_banner_background.draw(_screen);
-	lives_banner_text.draw(_screen);
-	lives_banner_icon.draw(_screen);
+	lives_banner_view.draw(_screen);
 }
 
 game_draw::~game_draw() {
@@ -126,7 +152,6 @@ game_draw::~game_draw() {
 
 	scenery_tile_draw.unset_camera();
 	scenery_tile_draw.set_with_camera(false);
-
 }
 
 void game_draw::draw(

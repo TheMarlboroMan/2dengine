@@ -24,12 +24,20 @@ void game_session::set_skill_level(
 	switch(_value) {
 
 		case app::skill_easy:
-		case app::skill_normal:
-		case app::skill_hard:
+			skill_level=_value;
+			return;
 
+		case app::skill_normal:
+			skill_level=_value;
+			return;
+
+		case app::skill_hard:
+			lives=3;
 			skill_level=_value;
 			return;
 	}
+
+	
 
 	throw std::runtime_error("bad difficulty setting");
 }
