@@ -121,6 +121,11 @@ class timeouts {
 	timeouts&       reset();
 
 /**
+ * pauses all timeouts.
+ */
+	timeouts&       pause();
+
+/**
  * restart all timeouts.
  */
 	timeouts&       restart();

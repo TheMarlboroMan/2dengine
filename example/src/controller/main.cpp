@@ -1646,12 +1646,12 @@ void main::activate_tag(
 		}
 	}
 
-	//Activate all traps by this tag...
+	//Toggle all traps by this tag...
 	for(auto& trap : current_map.timed_traps) {
 
 		if(trap.get_tag()==_tag) {
 
-			trap.activate();
+			trap.toggle();
 		}
 	}
 
@@ -1659,7 +1659,7 @@ void main::activate_tag(
 
 		if(generator.get_tag()==_tag) {
 
-			generator.activate();
+			generator.toggle();
 		}
 	}
 }

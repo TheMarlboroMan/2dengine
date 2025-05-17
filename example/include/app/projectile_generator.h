@@ -56,6 +56,17 @@ class projectile_generator {
 */
 	bool                    tic(ldtools::tdelta _delta);
 
+	void                    toggle();
+
+	void                    reset();
+
+/**
+ * must return the information about the projectile it will generate
+ */
+	projectile_data         get_projectile_data() const;
+
+	private:
+
 /**
  * activates the generator, resets to the first volley shot, in pause state.
  */
@@ -66,14 +77,6 @@ class projectile_generator {
  */
 	void                    deactivate();
 
-	void                    reset();
-
-/**
- * must return the information about the projectile it will generate
- */
-	projectile_data         get_projectile_data() const;
-
-	private:
 
 	enum timeouts {
 		timeout_pre=0,

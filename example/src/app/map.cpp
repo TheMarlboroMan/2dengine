@@ -35,6 +35,7 @@ std::ostream& app::operator<<(
 	print_node("projectile_generators", _map.projectile_generators, _stream);
 	print_node("breaking_platforms", _map.breaking_platforms, _stream);
 	print_node("timed_traps", _map.timed_traps, _stream);
+	print_node("push_triggers", _map.push_triggers, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -61,6 +62,7 @@ void map::clear() {
 	gates.clear();
 	breaking_platforms.clear();
 	timed_traps.clear();
+	push_triggers.clear();
 
 	projectiles.clear();
 }

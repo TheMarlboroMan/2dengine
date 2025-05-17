@@ -298,7 +298,7 @@ void state_driver::start_app(
 			lm::log(log).notice()<<"skill set to normal by default, use --skill to choose, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;
 		}
 
-		states.set(controller::states::state_main);
+		states.push(controller::states::state_main);
 
 		int entry_id=1;
 

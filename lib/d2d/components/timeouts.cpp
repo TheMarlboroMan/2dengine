@@ -187,6 +187,15 @@ timeouts& timeouts::reset() {
 	return *this;
 }
 
+timeouts& timeouts::pause() {
+
+	for(auto& node : data) {
+
+		node.second.pause();
+	}
+	return *this;
+}
+
 timeouts& timeouts::restart() {
 
 	for(auto& node : data) {

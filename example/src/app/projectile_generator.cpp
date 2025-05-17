@@ -15,7 +15,7 @@ projectile_generator::projectile_generator(
 	bool _active
 ):
 	spawn_point{_point},
-	state{projectile_generator::states::pre},
+	state{states::pre},
 	velocity{(float)_velocity},
 	active{_active},
 	type{_type},
@@ -41,8 +41,9 @@ projectile_generator::projectile_generator(
 void projectile_generator::reset() {
 
 	//Does not reset active status!
-	state=projectile_generator::states::pre;
 	timeouts.reset();
+	timeouts.restart(timeout_pre);
+	state=states::pre;
 	volley_count=0;
 }
 
@@ -112,6 +113,13 @@ bool projectile_generator::tic(
 	}
 
 	return false;
+}
+
+void projectile_generator::toggle() {
+
+	active
+		? deactivate()
+		: activate();
 }
 
 void projectile_generator::activate() {

@@ -36,3 +36,13 @@ void push_trigger::tic(
 		timeout.pause();
 	}
 }
+
+std::ostream& app::operator<<(
+	std::ostream& _stream,
+	const push_trigger& _trigger
+) {
+
+	_stream<<"push_trigger["<<_trigger.ent<<"]";
+	return _stream;
+}
+
