@@ -48,6 +48,11 @@ int timed_trap::tic(
 	ldtools::tdelta _delta
 ) {
 
+	if(!active) {
+
+		return 0;
+	}
+
 	timeout.tic(_delta);
 	if(!timeout.is_finished()) {
 

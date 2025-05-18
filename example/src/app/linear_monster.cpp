@@ -117,13 +117,15 @@ void linear_monster::reset_velocity() {
 		break;
 		case types::snake:
 
-			ent.set_w(snake_w);
-			ent.set_h(snake_h);
+			velocity.x=facing==app::faces::right 
+				? snake_velocity
+				: -snake_velocity;
 		break;
 		case types::bat:
 
-			ent.set_w(bat_w);
-			ent.set_h(bat_h);
+			velocity.x=facing==app::faces::right 
+				? bat_velocity
+				: -bat_velocity;
 		break;
 	}
 }

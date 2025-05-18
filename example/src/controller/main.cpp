@@ -1662,7 +1662,12 @@ void main::activate_tag(
 
 		if(trap.get_tag()==_tag) {
 
+			bool was_active=trap.is_active();
 			trap.toggle();
+			if(was_active) {
+
+				--trap_sound.active_count;
+			}
 		}
 	}
 
