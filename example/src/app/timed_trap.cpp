@@ -6,6 +6,7 @@ timed_trap::timed_trap(
 	d2d::collision::point _pt, 
 	types _type, 
 	bool _active,
+	bool _keep_active,
 	int _tag,
 	int _pre_ms,
 	int _harm_ms,
@@ -15,6 +16,8 @@ timed_trap::timed_trap(
 	type{_type},
 	tag{_tag},
 	active{_active},
+	starting_active{active},
+	keep_active_when_reset{_keep_active},
 	pre_s{(double)_pre_ms / 1000.},
 	harm_s{(double)_harm_ms / 1000.},
 	post_s{(double)_post_ms / 1000.},
@@ -31,6 +34,11 @@ timed_trap::timed_trap(
 }
 
 void timed_trap::reset() {
+
+	if(!keep_active_when_reset) {
+
+		active=starting_active;
+	}
 
 	state=states::pre;
 	timeout.target(pre_s).restart();

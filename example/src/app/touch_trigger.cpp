@@ -6,13 +6,23 @@ touch_trigger::touch_trigger(
 	const d2d::collision::box& _box,
 	int _id,
 	int _tag,
-	bool _used
+	bool _used,
+	bool _keep_used
 ):
 	ent{_box},
 	id{_id},
 	tag{_tag},
-	used{_used}
+	used{_used},
+	keep_used_when_reset{_keep_used}
 {}
+
+void touch_trigger::reset() {
+
+	if(!keep_used_when_reset) {
+
+		used=false;
+	}
+}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,

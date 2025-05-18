@@ -26,7 +26,7 @@ class timed_trap {
 /**
  * integer args are tag, pre-count, duration and post-count
  */
-	                    timed_trap(d2d::collision::point, types, bool, int, int, int, int);
+	                    timed_trap(d2d::collision::point, types, bool, bool, int, int, int, int);
 
 	int                 tic(ldtools::tdelta);
 	bool                is_harmful() const {return active && state==states::harm;}
@@ -49,7 +49,9 @@ class timed_trap {
 	types                       type{types::fire};
 
 	int                         tag{0};
-	bool                        active{true};
+	bool                        active{true},
+	                            starting_active{true},
+	                            keep_active_when_reset{true};
 	double                      pre_s,
 	                            harm_s,
 	                            post_s;

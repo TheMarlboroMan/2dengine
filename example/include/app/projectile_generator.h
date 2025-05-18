@@ -45,7 +45,8 @@ class projectile_generator {
 		int,    //pre_ms
 		int,    //pause_ms
 		int,    //rest_ms
-		bool
+		bool,   //active
+		bool    //keep active when restart
 	);
 
 	int                     get_tag() const {return tag;}
@@ -94,7 +95,9 @@ class projectile_generator {
 	const d2d::collision::point    spawn_point;
 	states                  state;
 	const float             velocity;
-	bool                    active;
+	bool                    active,
+	                        starting_active,
+	                        keep_active_when_reset;
 	types                   type;
 	int                     tag;
 

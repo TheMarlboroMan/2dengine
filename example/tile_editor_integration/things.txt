@@ -294,6 +294,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name keep_used_reset
+		type int 
+		default 1
+		comment 1=keeps used status between level resets
+		linkedto nothing
+	endproperty
+	beginproperty
 		name width
 		type int
 		default 16
@@ -349,6 +356,13 @@ beginobject
 		type int
 		default 1
 		comment 1=active 0=inactive
+		linkedto nothing
+	endproperty
+	beginproperty
+		name keep_active_reset
+		type int 
+		default 1
+		comment 1=keeps active status between level resets
 		linkedto nothing
 	endproperty
 	beginproperty
@@ -463,6 +477,13 @@ beginobject
 		type int
 		default 1
 		comment 1=active 0=inactive
+		linkedto nothing
+	endproperty
+	beginproperty
+		name keep_active_reset
+		type int 
+		default 1
+		comment 1=keeps active status between level resets
 		linkedto nothing
 	endproperty
 	beginproperty

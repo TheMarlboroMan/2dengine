@@ -247,6 +247,7 @@ void thing_loader::add_timed_trap(
 	}
 
 	bool active=_attributes.at("active").get_int()==1;
+	bool keep_active=_attributes.at("keep_active_reset").get_int()==1;
 	int tag=_attributes.at("tag").get_int();
 	int pre_ms=_attributes.at("pre_ms").get_int();
 	int active_ms=_attributes.at("active_ms").get_int();
@@ -256,7 +257,7 @@ void thing_loader::add_timed_trap(
 	_pos.x+=(app::tile_w / 2)- (app::timed_trap::fire_w / 2);
 
 	curmap.timed_traps.push_back(
-		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, active, tag, pre_ms, active_ms, post_ms}
+		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, active, keep_active, tag, pre_ms, active_ms, post_ms}
 	);
 }
 
@@ -350,6 +351,7 @@ void thing_loader::add_projectile_generator(
 	int pause_ms=_attributes.at("pause_ms").get_int();
 	int rest_ms=_attributes.at("rest_ms").get_int();
 	bool active=_attributes.at("active").get_int()==1;
+	bool keep_active=_attributes.at("keep_active_reset").get_int()==1;
 
 	//position is adjusted to be exactly in the
 	//middle of a tile:
@@ -366,7 +368,8 @@ void thing_loader::add_projectile_generator(
 			pre_ms,
 			pause_ms,
 			rest_ms,
-			active
+			active,
+			keep_active
 		} 
 	);
 }
@@ -495,10 +498,14 @@ void thing_loader::add_touch_trigger(
 	int tag=_attributes.at("tag").get_int();
 	int width=_attributes.at("width").get_int();
 	int height=_attributes.at("height").get_int();
-	bool used=persistence.has(pergr_touch_triggers, id);
+	bool keep_used=(bool)_attributes.at("keep_used_reset").get_int();
+
+	bool used=keep_used
+		? persistence.has(pergr_touch_triggers, id)
+		: false;
 
 	curmap.touch_triggers.push_back(
-		{ {_pos, width, height}, id, tag, used}
+		{ {_pos, width, height}, id, tag, used, keep_used}
 	);
 }
 

@@ -12,12 +12,15 @@ projectile_generator::projectile_generator(
 	int _pre_time_ms,
 	int _pause_time_ms,
 	int _rest_time_ms,
-	bool _active
+	bool _active,
+	bool _keep_active_when_reset
 ):
 	spawn_point{_point},
 	state{states::pre},
 	velocity{(float)_velocity},
 	active{_active},
+	starting_active{_active},
+	keep_active_when_reset{_keep_active_when_reset},
 	type{_type},
 	tag{_tag},
 	volley_total{_volley}
@@ -40,7 +43,11 @@ projectile_generator::projectile_generator(
 
 void projectile_generator::reset() {
 
-	//Does not reset active status!
+	if(!keep_active_when_reset) {
+
+		active=starting_active;
+	}
+
 	timeouts.reset();
 	timeouts.restart(timeout_pre);
 	state=states::pre;

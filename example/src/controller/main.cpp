@@ -503,6 +503,11 @@ void main::restart_level() {
 
 		platform.reset();
 	}
+
+	for(auto& trigger : current_map.touch_triggers) {
+
+		trigger.reset();
+	}
 	
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -1384,7 +1389,11 @@ void main::activate_touch_trigger(
 	app::touch_trigger& _trigger
 ) {
 
-	persistence.add(app::pergr_touch_triggers, _trigger.id, 1);
+	if(_trigger.is_keep_used_when_reset()) {
+
+		persistence.add(app::pergr_touch_triggers, _trigger.id, 1);
+	}
+
 	_trigger.used=true;
 	activate_tag(_trigger.tag, false);
 }
