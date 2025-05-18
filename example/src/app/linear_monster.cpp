@@ -16,6 +16,8 @@ linear_monster::linear_monster(
 	velocity{0., 0.},
 	type{_type},
 	facing{_facing_right ? app::faces::right : app::faces::left},
+	starting_pos{_pt},
+	starting_face{facing},
 	bounds{_bounds}
 {
 
@@ -25,27 +27,20 @@ linear_monster::linear_monster(
 
 			ent.set_w(scorpion_w);
 			ent.set_h(scorpion_h);
-			velocity.x=facing==app::faces::right 
-				? scorpion_velocity
-				: -scorpion_velocity;
 		break;
 		case types::snake:
 
 			ent.set_w(snake_w);
 			ent.set_h(snake_h);
-			velocity.x=facing==app::faces::right 
-				? snake_velocity
-				: -snake_velocity;
 		break;
 		case types::bat:
 
 			ent.set_w(bat_w);
 			ent.set_h(bat_h);
-			velocity.y=facing==app::faces::right  //right equals up in this case.
-				? bat_velocity
-				: -bat_velocity;
 		break;
 	}
+
+	reset_velocity();
 }
 
 void linear_monster::tic(
@@ -101,4 +96,34 @@ bool linear_monster::is_horizontal_movement() const {
 	}
 
 	return false;
+}
+
+void linear_monster::reset() {
+
+	ent.set_origin(starting_pos);
+	facing=starting_face;
+	reset_velocity();
+}
+
+void linear_monster::reset_velocity() {
+
+	switch(type) {
+
+		case types::scorpion:
+
+			velocity.x=facing==app::faces::right 
+				? scorpion_velocity
+				: -scorpion_velocity;
+		break;
+		case types::snake:
+
+			ent.set_w(snake_w);
+			ent.set_h(snake_h);
+		break;
+		case types::bat:
+
+			ent.set_w(bat_w);
+			ent.set_h(bat_h);
+		break;
+	}
 }

@@ -45,8 +45,15 @@ class linear_monster {
 	faces                   facing;
 
 	void                    tic(ldtools::tdelta _delta, d2d::motion::mover);
+	void                    reset();
 
 	private:
+
+	void                    reset_velocity();
+
+	d2d::collision::point   starting_pos;
+	app::faces              starting_face;
+	boundaries              bounds;
 
 	static const int        scorpion_w{16};
 	static const int        scorpion_h{15};
@@ -63,7 +70,6 @@ class linear_monster {
 	void                    reverse();
 	bool                    is_horizontal_movement() const;
 
-	boundaries              bounds;
 };
 
 std::ostream& operator<<(std::ostream&, const linear_monster&);

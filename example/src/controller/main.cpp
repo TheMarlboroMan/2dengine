@@ -484,9 +484,11 @@ void main::restart_level() {
 	clear_transient_state();
 	current_map.projectiles.clear();
 
-	//Timed traps and projectile generators do reset, same as platforms.
-	//Monsters do not. This may cause desync in planning between monsters and
-	//traps but just exit the level and enter again xD
+	for(auto& monster: current_map.linear_monsters) {
+
+		monster.reset();
+	}
+
 	for(auto& trap : current_map.timed_traps) {
 
 		trap.reset();
