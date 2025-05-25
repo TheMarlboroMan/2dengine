@@ -25,6 +25,12 @@ class aabb_phase{
 	bool                has_collision() const {return collision_found;}
 
 /**
+ * restores original collision status to that the object can be 
+ * reused
+ */
+	aabb_phase&              reset();
+
+/**
  * resets all modifiers (flags / early exit). All modifiers are reset after
  * a call to detect_*
  */

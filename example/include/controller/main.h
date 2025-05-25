@@ -152,6 +152,8 @@ class main:
 		bool has_changed_area() const {return previous_id != current_id;}
 	}                           area_change_info;
 
+	/** filter for collisions with breaking platforms. */
+	//TODO: Might as well mode this stuff out of here...
 	struct breaking_platforms_fn{
 
 		bool operator()(const app::breaking_platform& _block) const {

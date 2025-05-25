@@ -14,6 +14,8 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_checker.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_finder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_solver.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_phase.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ray_builder.cpp
 	PARENT_SCOPE
 )
 

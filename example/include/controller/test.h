@@ -39,8 +39,6 @@ class test:
 	void                        real_draw(ldv::screen&, int);
 	void                        test_draw(ldv::screen&, int);
 
-	ldt::segment_2d<double>     get_player_ray() const;
-
 	app::service_provider&      sp;
 	const appenv::env&          env;
 	lm::logger&                 logger;

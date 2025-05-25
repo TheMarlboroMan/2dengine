@@ -13,7 +13,9 @@
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/video/tools.h>
 #include <d2d/motion/mover.h>
-#include <d2d/collision/aabb_phase.h>
+#include <d2d/collision/ray_aabb_phase.h>
+#include <d2d/collision/ray_aabb_solver.h>
+#include <d2d/collision/ray_builder.h>
 #include <d2d/collision/aabb_checker.h>
 #include <d2d/collision/tiles_in_box.h>
 #include <d2d/collision/tile_limits.h>
@@ -325,7 +327,7 @@ void main::load_map(
 	}
 
 	//std::cout<<current_map<<std::endl;
-	DEV_add_moving_block();
+	//DEV_add_moving_block();
 }
 
 void main::DEV_add_moving_block() {
@@ -977,7 +979,8 @@ void main::tic_ground(
 			? app::faces::right
 			: app::faces::left;
 
-		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
+//		mover.apply_x(_player.ent, _player.velocity.x, _delta); //instant acceleration..
+		mover.apply(_player.ent, _player.velocity, _delta); //instant acceleration..
 
 		//We can easily make composite filters by chaining calls.
 		struct {
@@ -999,12 +1002,15 @@ void main::tic_ground(
 			composite_filter
 		);
 
-		d2d::collision::aabb_phase cph(_player.ent, d2d::collision::aabb_checker::phases::horizontal);
+		d2d::collision::ray_builder rb;
+		auto player_ray=rb.get_previous(_player.ent, player.velocity)*_delta;
+		d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
+
 		cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
-		//cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_map.platform_blocks);
 		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
+		//TODO: Why are the gates not working now????
 		cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
-		cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+//		cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 		if(cph.has_collision()) {
 
@@ -1118,11 +1124,18 @@ void main::tic_air(
 		return;
 	}
 
-	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	//Last chance to jump after we begin falling...
+	if(_pli.jump 
+		&& _player.has_jump_last_chance()
+		&& _player.velocity.y < 0.
+	) {
+
+		_player.jump(simulation.jump_force);
+	}
+
 	d2d::motion::mover mover{};
 
-	//Do the horizontal phase...
-	//Air control is limited, but one can attempt to do it.
+	//Some controls apply here: Air control is limited, but one can attempt to do it.
 	if(_pli.x) {
 
 		tools::ranged_value<double> velocity{-simulation.walk_max_velocity, simulation.walk_max_velocity, player.velocity.x};
@@ -1136,34 +1149,6 @@ void main::tic_air(
 		_player.velocity.x/=simulation.air_x_velocity_reduce_factor;
 	}
 
-	mover.apply_x(_player.ent, _player.velocity.x, _delta);
-
-	//Collision...
-	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
-	d2d::collision::aabb_phase cph(_player.ent, d2d::collision::aabb_checker::phases::horizontal);
-	
-	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
-	//cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
-	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
-	cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
-
-	if(cph.has_collision()) {
-
-		cph.response_generic();
-		collide_with_wall(_player);
-	}
-
-	//do the vertical phase.
-	//Last chance to jump after we begin falling...
-	if(_pli.jump 
-		&& _player.has_jump_last_chance()
-		&& _player.velocity.y < 0.
-	) {
-
-		_player.jump(simulation.jump_force);
-	}
-
 	//Letting go of the jump shortens it...
 	if(player.velocity.y > 0. && !_pli.hold_jump && !_player.jump_shortened) {
 
@@ -1172,40 +1157,59 @@ void main::tic_air(
 	}
 
 	simulation.gravity.apply_to(_player.velocity, _delta);
-	mover.apply_y(_player.ent, _player.velocity.y, _delta);
+	mover.apply(_player.ent, _player.velocity, _delta);
+
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+
+	struct {
+		bool operator() (
+			const d2d::collision::box& _box,
+			const d2d::collision::tile& _tile
+		) {
+
+			app::filter_tiles_ignore_one_way_above f{};
+			app::filter_remove_harm_tiles f2{};
+			return f(_box, _tile) && f2(_box, _tile);
+		}
+	} composite_filter;
 
 	//Collision...
-	current_tiles=adapter.find(
+	auto current_tiles=adapter.find(
 		_player.ent, 
 		current_map.tile_finder, 
-		app::filter_tiles_ignore_while_on_air{}
+		composite_filter
 	);
-	d2d::collision::aabb_phase cpv(_player.ent, d2d::collision::aabb_checker::phases::vertical);
 
-	cpv.detect_all(current_tiles);
+	d2d::collision::ray_builder rb;
+	auto player_ray=rb.get_previous(_player.ent, player.velocity)*_delta;
+	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
-	cpv.detect_all(current_map.platform_blocks);
-	cpv.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-	cpv.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
-	cpv.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+	d2d::collision::ray_aabb_finder rayfinder;
+	
+	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
+	//TODO: Ok, these only applied on the vertical phase... Did we break something?
+	cph.detect_all(current_map.platform_blocks); 
+	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
+	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+//	cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
-	if(cpv.has_collision()) {
+	if(cph.has_collision()) {
 
-std::cout<<"there actually was a collision here!"<<std::endl;
+		int sides=cph.response_generic();
 
-		auto response=cpv.response_complex();
-		response.solve(_player.ent);
+		using d2d::collision::ray_aabb_solver;
+		if((sides & ray_aabb_solver::right) || (sides & ray_aabb_solver::left)) {
 
-		//Only when colliding when the top of a box can we jump again.
-		if(response.edges & d2d::collision::aabb_response::tedges::top) {
+			collide_with_wall(_player);
+		}
 
-std::cout<<"hey, landed on ground!"<<std::endl;
+		if(sides & ray_aabb_solver::top) {
+
 			land_on_ground(_player);
 		}
-		else if(response.edges & d2d::collision::aabb_response::tedges::bottom) {
+		else if(sides & ray_aabb_solver::bottom) {
 
 			touch_ceiling(_player);
-std::cout<<"hey, touched ceiling"<<std::endl;
 		}
 	}
 }
@@ -1524,6 +1528,7 @@ bool main::is_on_air(
 		return false;
 	}
 
+/**
 	for(const auto& plat : current_map.moving_blocks) {
 
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
@@ -1531,6 +1536,7 @@ bool main::is_on_air(
 			return false;
 		}
 	}
+*/
 
 	for(const auto& plat : current_map.breaking_platforms) {
 

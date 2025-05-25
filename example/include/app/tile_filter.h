@@ -106,6 +106,7 @@ struct filter_tiles_check_on_air {
 
 /**
  * tiles that must be ignored when checking if we are on the air.
+ * TODO: I think we can remove this..
  */
 struct filter_tiles_ignore_while_on_air {
 

@@ -38,8 +38,10 @@ struct ray_aabb_info {
  * "previous box". 
  * The ray method itself is "predictive" (reports if a collision will happen
  * from a point when tracing a ray into the future) so the algorithms used
- * will attempt some black magic to work in a "corrective" way.
+ * depend on the collision having already happened but that the ray will be
+ * represented as the ray on its previous tic!
 */
+
 class ray_aabb_finder {
 
 	public:
@@ -47,16 +49,22 @@ class ray_aabb_finder {
 /**
  * produces a response for a single collision but does not assume that a 
  * collision has taken place (the response can be used as a bool for that
- * purpose). The ray is assumed to be the movement that took place in this
- * current tic, it is also assumed that the first spatiable box is its current
+ * purpose). The ray is assumed to be the movement that took place in the
+ * previous tic, it is also assumed that the first spatiable box is its current
  * position (where a collision may be taking place) and its previous box 
  * represents the previous tic (where no collisions took place).
+ * Assumes the ray starts in the center of the previous position of the target.
  */
-	ray_aabb_info find(const ray&, const collision::spatiable&, const collision::spatiable&) const;
+	ray_aabb_info find(
+		const ray&, 
+		const collision::spatiable&, 
+		const collision::spatiable&
+	) const;
 
 /**
  * Templated version for vectors of elements that can behave as spatiables.
- * Returns a vector of collisions that really took place.
+ * Returns a vector of collisions that really took place. Same assumptions
+ * as above.
  */
 	template<typename T>
 	std::vector<ray_aabb_info> find(
@@ -65,19 +73,10 @@ class ray_aabb_finder {
 		const std::vector<T>& _obstacles
 	) const {
 
-		double half_w=_target.get_w()/2.0,
-	        half_h=_target.get_h()/2.0;
-
-		ray r_copy=_ray;
-		const auto& before=_target.get_previous_box();
-		r_copy.point=before.origin;
-		r_copy.point.x+=half_w;
-		r_copy.point.y+=half_h;
-
 		std::vector<ray_aabb_info> result;
 		for(const auto& node : _obstacles) {
 
-			auto info=this->find_with_previous_ray(r_copy, node, half_w, half_h);
+			auto info=this->find(_ray, _target, node);
 			if(info) {
 
 				result.push_back(std::move(info));
@@ -86,19 +85,6 @@ class ray_aabb_finder {
 
 		return result;
 	}
-
-	private:
-
-	/**
-	* saves some repetitive calculations.
-	*/
-	ray_aabb_info find_with_previous_ray(
-		const ray&, 
-		const collision::spatiable&, 
-		double,
-		double
-	) const;
-
 };
 
 }}

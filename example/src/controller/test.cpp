@@ -9,6 +9,7 @@
 #include <d2d/collision/ray_aabb_finder.h>
 #include <d2d/collision/ray_aabb_finder.h>
 #include <d2d/collision/ray_aabb_solver.h>
+#include <d2d/collision/ray_builder.h>
 #include <d2d/collision/aabb_checker.h>
 #include <d2d/collision/tools.h>
 #include <ldv/draw.h>
@@ -179,7 +180,8 @@ void test::real_loop(
 	mover.apply(player, player_vector, _lid.delta);
 
 	//Very important: we only need the current fraction of the ray!!!
-	auto ray=get_player_ray()*_lid.delta;
+	d2d::collision::ray_builder rb;
+	auto ray=rb.get_previous(player, player_vector)*_lid.delta;
 
 //TODO: Not working when we jump and PUSH AGAINST A WALL...
 //a collision is detected there... what do we do???
@@ -211,7 +213,6 @@ std::cout<<player.get_box()<<std::endl;
 
 	player.commit_box();
 
-	next_tic=false;
 }
 
 
@@ -278,17 +279,6 @@ void test::test_draw(
 	}
 }
 
-ldt::segment_2d<double> test::get_player_ray() const {
-
-	return segment_2d<double> {
-		{
-			player.get_x()+player.get_w() / 2,
-			player.get_y()+player.get_h() / 2
-		},
-		player_vector
-	};
-}
-
 void test::test_loop(
 	dfw::input& _input,
 	const dfw::loop_iteration_data& _lid
@@ -324,7 +314,8 @@ void test::test_loop(
 	player_vector.y=input_y*speed;
 
 	//Ready some stuff for drawing purposes!
-	player_ray=get_player_ray();
+	d2d::collision::ray_builder rb;
+	player_ray=rb.get(player, player_vector);
 
 std::cout<<player.get_box()<<std::endl;
 
@@ -334,7 +325,7 @@ std::cout<<player.get_box()<<std::endl;
 		mover.apply(player, player_vector, _lid.delta);
 
 		//Very important: we only need the current fraction of the ray!!!
-		auto ray=get_player_ray()*_lid.delta;
+		auto ray=rb.get_previous(player, player_vector)*_lid.delta;
 
 		d2d::collision::ray_aabb_finder finder;
 		collision_responses=finder.find(ray, player, obstacles);
