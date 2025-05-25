@@ -77,7 +77,7 @@ console::result main::execute_cmd(
 			y=_args[1].get_int();
 
 		player.ent.set_origin({x, y});
-		player.ent.sync_boxes();
+		player.ent.commit_box();
 		dd.center_on(player.ent);
 
 		std::stringstream ss;
@@ -142,7 +142,7 @@ console::result main::execute_cmd(
 		pt+={x, y};
 
 		player.ent.set_origin(pt);
-		player.ent.sync_boxes();
+		player.ent.commit_box();
 		dd.center_on(player.ent);
 
 		std::stringstream ss;

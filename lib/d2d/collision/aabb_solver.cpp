@@ -1,4 +1,4 @@
-#include "d2d/collision/solver.h"
+#include "d2d/collision/aabb_solver.h"
 #include "d2d/collision/tools.h"
 
 #include <cassert>
@@ -7,7 +7,7 @@
 
 using namespace d2d::collision;
 
-void response::solve(spatiable& _subject) {
+void aabb_response::solve(spatiable& _subject) {
 
 	if(edges & top) {
 
@@ -34,7 +34,7 @@ void response::solve(spatiable& _subject) {
 	}
 }
 
-void solver::horizontal(
+void aabb_solver::horizontal(
 	collision::spatiable& _box,
 	const std::vector<collision::spatiable const *>& _boxes
 ) {
@@ -60,7 +60,7 @@ void solver::horizontal(
 	}
 }
 
-void solver::vertical(
+void aabb_solver::vertical(
 	collision::spatiable& _box,
 	const std::vector<collision::spatiable const*>& _boxes
 ) {
@@ -86,60 +86,51 @@ void solver::vertical(
 	return;
 }
 
-response solver::horizontal_complex(
+aabb_response aabb_solver::horizontal_complex(
 	const collision::spatiable& _subject,
 	const std::vector<collision::spatiable const *>& _obstacles
 ) {
 
 	assert(_obstacles.size());
 
-	response res;
+	const auto& subject_box=use_subject_previous
+		? _subject.get_previous_box()
+		: _subject.get_box();
+
+	aabb_response res;
 	for(const auto obstacle : _obstacles) {
+
+		const auto& obstacle_box=use_obstacle_previous
+			? (*obstacle).get_previous_box()
+			: (*obstacle).get_box();
 
 		int current_edge=0;
 
-		if(
-			collision::is_left_of(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
-		) {
-			current_edge=response::left;
+		if(collision::is_left_of(subject_box, obstacle_box)) {
+			current_edge=aabb_response::left;
 		}
-		else if(
-			collision::is_right_of(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
-		) {
-			current_edge=response::right;
+		else if(collision::is_right_of(subject_box, obstacle_box)) {
+			current_edge=aabb_response::right;
 		}
-//This should never happen if the horizontal movement is evaluated first and
-//moving blocks commit their position after each axis unless the level design
-//itself is broken.
-		else if(
-			collision::collides_with(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
-		) {
-			current_edge=response::right | response::left;
+		else if(collision::collides_with(subject_box, obstacle_box)) {
+			current_edge=aabb_response::right | aabb_response::left;
 		}
 		else {
 			std::stringstream ss;
 			ss<<"error in horizontal pass, obstacle was nor left, nor right, nor colliding (previous positions used). subject current pos: "
 				<<_subject.get_box()
+				<<", subject position: "<<_subject.get_box()
 				<<", subject prev position: "<<_subject.get_previous_box()
 				<<", obstacle position: "<<(*obstacle).get_box()
 				<<", obstacle prev position: "<<(*obstacle).get_previous_box();
 
-			throw response_exception{ss.str()};
+			throw aabb_response_exception{ss.str()};
 		}
 
 		res.edges|=current_edge;
 
 		//use current position to calculate penetration.
-		double magnitude=current_edge==response::left
+		double magnitude=current_edge==aabb_response::left
 			? _subject.get_right() - obstacle->get_x()
 			: obstacle->get_right() - _subject.get_x();
 
@@ -153,61 +144,61 @@ response solver::horizontal_complex(
 	return res;
 }
 
-response solver::vertical_complex(
+aabb_response aabb_solver::vertical_complex(
 	const collision::spatiable& _subject,
 	const std::vector<collision::spatiable const *>& _obstacles
 ) {
 
 	assert(_obstacles.size());
 
-	response res;
+	const auto& subject_box=use_subject_previous
+		? _subject.get_previous_box()
+		: _subject.get_box();
+
+	aabb_response res;
 	for(const auto obstacle : _obstacles) {
+
+		const auto& obstacle_box=use_obstacle_previous
+			? (*obstacle).get_previous_box()
+			: (*obstacle).get_box();
 
 		int current_edge=0;
 
 		if(
-			collision::is_below(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
+			collision::is_below(subject_box, obstacle_box)
 		) {
 
-			current_edge=response::bottom;
+			current_edge=aabb_response::bottom;
 		}
 		else if(
-			collision::is_above(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
+			collision::is_above(subject_box, obstacle_box)
 		) {
 
-			current_edge=response::top;
+			current_edge=aabb_response::top;
 		}
 		else if(
-			collision::collides_with(
-				_subject.get_previous_box(),
-				(*obstacle).get_previous_box()
-			)
+			collision::collides_with(subject_box, obstacle_box)
 		) {
 
-			current_edge=response::top | response::bottom;
+			current_edge=aabb_response::top | aabb_response::bottom;
 		}
 		else {
 			std::stringstream ss;
 
 			ss<<"error in vertical pass, obstacle was nor above, nor below, nor colliding (previous positions used). subject current pos: "
 				<<_subject.get_box()
+				<<", subject position: "<<_subject.get_box()
 				<<", subject prev position: "<<_subject.get_previous_box()
 				<<", obstacle position: "<<(*obstacle).get_box()
 				<<", obstacle prev position: "<<(*obstacle).get_previous_box();
 
-			throw response_exception{ss.str()};
+			throw aabb_response_exception{ss.str()};
 		}
 
 		res.edges|=current_edge;
 
 		//use current position to calculate penetration.
-		double magnitude=current_edge==response::bottom
+		double magnitude=current_edge==aabb_response::bottom
 			? _subject.get_top() - obstacle->get_y()
 			: obstacle->get_top() - _subject.get_y();
 

@@ -1,10 +1,10 @@
-#include "d2d/collision/checker.h"
+#include "d2d/collision/aabb_checker.h"
 #include "d2d/collision/exception.h"
 #include <iostream>
 
 using namespace d2d::collision;
 
-bool checker::check(
+bool aabb_checker::check(
 	const d2d::collision::spatiable& _subject,
 	const d2d::collision::spatiable& _obstacle,
 	phases _phase,
@@ -45,3 +45,4 @@ bool checker::check(
 
 	return false; //never gonna happen.
 }
+

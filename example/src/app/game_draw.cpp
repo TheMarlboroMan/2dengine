@@ -217,6 +217,11 @@ void game_draw::draw(
 		draw_projectile(_screen, projectile);
 	}
 
+	for(const auto& platform : _map.moving_blocks) {
+
+		draw_moving_block(_screen, platform);
+	}
+
 	draw_player(_screen, _player);
 	scenery_tile_draw.draw_animation(_screen, _map.foreground_tiles);
 
@@ -716,6 +721,19 @@ void game_draw::draw_secret_cover(
 
 	box.set_blend(ldv::representation::blends::alpha);
 	box.draw(_screen, camera);
+}
+
+void game_draw::draw_moving_block(
+	ldv::screen& _screen,
+	const app::moving_block& _block
+) {
+
+	//This is a repeating sprite...
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_block.ent.get_box()),
+		1
+	);
 }
 
 void game_draw::draw_player(

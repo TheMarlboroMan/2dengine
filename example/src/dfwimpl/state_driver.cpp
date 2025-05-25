@@ -15,6 +15,9 @@
 #include "controller/menu.h"
 #include "controller/pause.h"
 #include "controller/controls.h"
+#ifdef IS_DEBUG_BUILD
+	#include "controller/test.h"
+#endif
 //[new-controller-header-mark]
 //
 using namespace dfwimpl;
@@ -187,7 +190,18 @@ void state_driver::register_controllers(
 		controller::state_controls,
 		new controller::controls(*service_provider)
 	);
+
+#ifdef IS_DEBUG_BUILD
+
+	reg(
+		c_test,
+		controller::state_test,
+		new controller::test(*service_provider)
+	);
+
+#endif
 }
+
 
 void state_driver::prepare_state(
 	int _next,

@@ -53,7 +53,13 @@ int main(int argc, char ** argv)
 
 		//Init the state driver, this should NOT start system stuff yet!.
 		lm::log(app_log).info()<<"building state driver..."<<std::endl;
+#ifdef IS_DEBUG_BUILD
+		int initial_state=carg.exists("--test") 
+			? controller::state_test
+			: controller::state_menu;
+#else
 		int initial_state=controller::state_menu;
+#endif
 		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
 
 		//Init system-dependant stuff and application stuff.

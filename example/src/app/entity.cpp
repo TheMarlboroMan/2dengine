@@ -28,9 +28,14 @@ entity::entity(
 	previous_box{collision_box}
 {}
 
-void entity::sync_boxes() {
+void entity::commit_box() {
 
 	previous_box=collision_box;
+}
+
+void entity::rollback_box() {
+
+	collision_box=previous_box;
 }
 
 std::ostream& app::operator<<(

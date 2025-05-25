@@ -6,7 +6,10 @@
 
 namespace d2d {namespace collision {
 
-class checker {
+/**
+*Collision checker for phase-separated aabb collision modes.
+*/
+class aabb_checker {
 
 	public:
 
@@ -23,10 +26,18 @@ class checker {
 /**
  * generic get_collisions version that will return a vector of pointers to 
  * targets preserving their type. Does not take into account collision phase
- * at all, just checks if the nodes intersect with the target.
+ * at all, just checks if the nodes intersect with the target. The target
+ * type might be an spatiable or a box.
+ * Before you go and delete this, notice that we cannot use a vector of 
+ * derived classes (like... block) as a vector of spatiable, they are 
+ * just different classes... Yes, you can convert them to spatiable but,
+ * what if you really wanted blocks instead of spatiables?
  */
 	template<typename T, typename O>
-	std::vector<O const *>          get_collisions(const T& _target, const std::vector<O>& _nodes) const {
+	std::vector<O const *>          get_collisions(
+		const T& _target, 
+		const std::vector<O>& _nodes
+	) const {
 
 		std::vector<O const*> result{};
 
@@ -41,8 +52,14 @@ class checker {
 		return result;
 	}
 
+/**
+*Same as above but takes a vector of pointers.
+*/
 	template<typename T, typename O>
-	std::vector<O const *>          get_collisions(const T& _target, const std::vector<O*>& _nodes) const {
+	std::vector<O const *>          get_collisions(
+		const T& _target, 
+		const std::vector<O*>& _nodes
+	) const {
 
 		std::vector<O const*> result{};
 
@@ -62,7 +79,10 @@ class checker {
  * and discard any other information.
  */
 	template<typename T, typename O>
-	bool                            has_collision(const T& _target, const std::vector<O>& _nodes) const {
+	bool                            has_collision(
+		const T& _target, 
+		const std::vector<O>& _nodes
+	) const {
 
 		for(const auto& node : _nodes) {
 
@@ -75,8 +95,14 @@ class checker {
 		return false;
 	}
 
+/**
+ * same as above but takes a vector of pointers.
+ */
 	template<typename T, typename O>
-	bool                            has_collision(const T& _target, const std::vector<const O*>& _nodes) const {
+	bool                            has_collision(
+		const T& _target, 
+		const std::vector<const O*>& _nodes
+	) const {
 
 		for(const auto& node : _nodes) {
 
@@ -95,7 +121,12 @@ class checker {
 *position can be taken into account when it matters. For collisions against
 *boxes we can just use the free floating function "collides_with".
 */
-	bool                            check(const d2d::collision::spatiable&, const d2d::collision::spatiable&, phases, int=0) const;
+	bool                            check(
+		const d2d::collision::spatiable&, 
+		const d2d::collision::spatiable&, 
+		phases,
+		int=0
+	) const;
 };
 
 }}

@@ -32,6 +32,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/game_session.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/push_trigger.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/moving_block.cpp
 	PARENT_SCOPE
 )
 

@@ -5,6 +5,10 @@
 
 namespace d2d { namespace collision {
 
+/**
+*Suite of collision and resolving primitives for aabb vs aabb boxes.
+*/
+
 //These are always to be read as is_(first_arg)_verb_of(second_arg).
 bool            collides_with(const spatiable&, const spatiable&);
 bool            collides_with(const spatiable&, const box&);

@@ -1,0 +1,50 @@
+#include "d2d/collision/ray_aabb_solver.h"
+#include "d2d/collision/tools.h"
+
+#ifdef IS_DEBUG_BUILD
+	#include <iostream>
+#endif
+
+using namespace d2d::collision;
+
+int ray_aabb_solver::solve(
+	d2d::collision::spatiable& _target,
+	std::vector<ray_aabb_info>& _info
+) const {
+
+	std::sort(std::begin(_info), std::end(_info));
+	
+	//TODO: We need to return something a bit more sophisticated xD:
+	int edges=0;
+	for(const auto& info : _info) {
+
+		//What if we moved out of collision by then????? Just skip, right??
+		if(!collides_with(_target, *info.obstacle)) {
+
+			continue;
+		}
+
+		int current_edge=0;
+		if(info.normal.x) {
+
+			current_edge=info.normal.x < 0 ? tedges::left : tedges::right;
+		}
+		else if(info.normal.y) {
+
+			current_edge=info.normal.y < 0 ? tedges::bottom : tedges::top;
+		}
+
+		switch(current_edge) {
+			case top: d2d::collision::snap_to_top_of(_target, *info.obstacle); break;
+			case bottom: d2d::collision::snap_to_bottom_of(_target, *info.obstacle); break;
+			case left: d2d::collision::snap_to_left_of(_target, *info.obstacle); break;
+			case right: d2d::collision::snap_to_right_of(_target, *info.obstacle); break;
+		}
+
+		edges|=current_edge;
+	}
+
+	//TODO: This is a temporary return type.
+	return edges;
+}
+

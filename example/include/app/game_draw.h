@@ -29,6 +29,7 @@ class gate;
 class projectile;
 class breaking_platform;
 class platform_block;
+class moving_block;
 
 /**
  * business class to draw the main game state.
@@ -81,5 +82,6 @@ class game_draw {
 	void                        draw_projectile_falling(ldv::screen&, const app::projectile&);
 	void                        draw_breaking_platform(ldv::screen&, const app::breaking_platform&);
 	void                        draw_platform(ldv::screen&, const app::platform_block&);
+	void                        draw_moving_block(ldv::screen&, const app::moving_block&);
 };
 }

@@ -43,6 +43,9 @@ class breaking_platform:
 	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
 	virtual d2d::collision::color           get_debug_outline_color() const {return ldv::rgba8(255,0,64,255);}
 	virtual d2d::collision::color           get_debug_fill_color() const {return ldv::rgba8(128, 0, 64, 255);}
+	virtual void                            commit_box() {};
+	virtual void                            rollback_box() {};
+
 
 //End implementation of spatiable
 

@@ -1,5 +1,8 @@
 next steps:
 
+	excise collision stuff from libdansdl2???? This will make the template
+project no longer work :/
+
 	make the first example game
 
 		enter tower_004 and exit game, segfault.
@@ -31,8 +34,11 @@ next steps:
 ============================0
 
 	engine:
-		I guess slopes
 		Or moving blocks, which were originally there too.
+		Does it make sense to always have the "previous block" methods? 
+			I guess it does not really hurt, as it is more of an interface
+			thing.
+		I guess slopes
 		tile graphics
 			maybe import the whole composer thingy.
 		the tile drawer cannot do stuff like scale or more sophisticated

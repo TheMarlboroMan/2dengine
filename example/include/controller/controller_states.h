@@ -8,6 +8,9 @@ enum states {
 	state_main,
 	state_pause,
 	state_controls,
+#ifdef IS_DEBUG_BUILD
+	state_test,
+#endif
 	state_max
 };
 }

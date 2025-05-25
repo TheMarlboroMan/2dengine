@@ -18,7 +18,8 @@ class entity:
 	                                    entity(int, int, int, int);
 	                                    entity(d2d::collision::point, int, int);
 	                                    entity(d2d::collision::box);
-	void                                sync_boxes();
+	void                                commit_box();
+	void                                rollback_box();
 
 //Begin implementation of spatiable
 

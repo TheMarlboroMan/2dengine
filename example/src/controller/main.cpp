@@ -13,8 +13,8 @@
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/video/tools.h>
 #include <d2d/motion/mover.h>
-#include <d2d/collision/phase.h>
-#include <d2d/collision/checker.h>
+#include <d2d/collision/aabb_phase.h>
+#include <d2d/collision/aabb_checker.h>
 #include <d2d/collision/tiles_in_box.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/tools/algorithm.h>
@@ -325,6 +325,18 @@ void main::load_map(
 	}
 
 	//std::cout<<current_map<<std::endl;
+	DEV_add_moving_block();
+}
+
+void main::DEV_add_moving_block() {
+
+	current_map.moving_blocks.push_back(
+		app::moving_block(13*app::tile_w, 0*app::tile_h, app::tile_w, app::tile_w, 1)
+	);
+
+	current_map.moving_blocks.push_back(
+		app::moving_block(6*app::tile_w, 4*app::tile_h, app::tile_w, app::tile_w, 2)
+	);
 }
 
 void main::exit_to(
@@ -360,7 +372,7 @@ void main::take_player_to_entry(
 
 	auto find_ladders=[this, &map_entry]() {
 
-		d2d::collision::checker cc;
+		d2d::collision::aabb_checker cc;
 		const auto ladders=cc.get_collisions(map_entry.ent, current_map.ladders);
 		lm::log(logger).info()<<"found "<<ladders.size()<<" ladders in the last entry point\n";
 		return ladders;
@@ -461,7 +473,7 @@ void main::take_player_to_entry(
 	}
 
 	//Commit positions so we don't get phantom collisions later!
-	_player.ent.sync_boxes();
+	_player.ent.commit_box();
 
 	lm::log(logger).debug()<<"new player position is "<<_player.ent.get_origin()<<"\n";
 	lm::log(logger).debug()<<"player box at "<<_player.ent.get_box()<<"\n";
@@ -519,6 +531,10 @@ void main::tic(
 
 	sp.get_game_scenery_tile_draw().tic(_delta);
 	sp.get_game_animation_sprite_finder().tic(_delta);
+
+	//Tic and move the world first, because the player state-aware tic methods
+	//will also solve collisions and we need a "level" playing field!
+	tic_world(_delta);
 	player.tic(_delta);
 
 	switch(player.state) {
@@ -544,27 +560,30 @@ void main::tic(
 		break;
 	}
 
-	tic_world(_delta);
+	const auto player_moved=player.ent.has_moved();
+	const auto player_defeated=player.is_defeated();
 
-	//aftermath
-	if(player.ent.get_origin() != player.ent.get_previous_box().origin) {
-	
-		player.ent.sync_boxes();
+	//Commit al movement boxes now...
+	player.ent.commit_box();
+	for(auto& block : current_map.moving_blocks) {
 
-		if(app::player::states::defeat != player.state) {
+		block.ent.commit_box();
+	}
 
-			camera.center_on(
-				d2d::video::to_screen(player.ent)
-			);
+	//Attempt to save a bit on camera calculations...
+	if(player_moved && ! player_defeated) {
+
+		camera.center_on(
+			d2d::video::to_screen(player.ent)
+		);
 
 #ifdef IS_DEBUG_BUILD
-			dd.center_on(player.ent);
+		dd.center_on(player.ent);
 #endif
-		}
 	}
 
 	//If the player can do things in the world, run them.
-	if(!player.is_defeated()) {
+	if(!player_defeated) {
 
 		post_tic();
 	}
@@ -835,6 +854,11 @@ void main::tic_world(
 
 		pt.tic(_delta);
 	}
+
+	for(auto& bl : current_map.moving_blocks) {
+
+		bl.tic(_delta);
+	}
 }
 
 void main::generate_projectile(
@@ -972,14 +996,15 @@ void main::tic_ground(
 		auto current_tiles=adapter.find(
 			_player.ent, 
 			current_map.tile_finder, 
-			composite_filter		
+			composite_filter
 		);
 
-		d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
-		cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
-		//cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.platform_blocks);
+		d2d::collision::aabb_phase cph(_player.ent, d2d::collision::aabb_checker::phases::horizontal);
+		cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
+		//cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_map.platform_blocks);
 		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 		cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+		cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 		if(cph.has_collision()) {
 
@@ -1021,12 +1046,16 @@ void main::tic_ladder(
 	}
 	
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-	d2d::collision::checker cc;
+	d2d::collision::aabb_checker cc;
 
 	//Jump out or jump down...
 	if(_pli.jump && (_pli.x || -1==_pli.y)) {
 
 		//There can be no ladder exit if there are collisions with tiles.
+		//TODO: SHIT SHIT SHIT, the tiles ARE NOT A VECTOR OF SPATIABLES
+		//but a completely different type :/... And I don't want this :(.
+		//
+
 		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
 		if(!cc.has_collision(_player.ent, tiles_to_check)) {
 
@@ -1111,12 +1140,13 @@ void main::tic_air(
 
 	//Collision...
 	auto current_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_ignore_one_way{});
-	d2d::collision::phase cph(_player.ent, d2d::collision::checker::phases::horizontal);
+	d2d::collision::aabb_phase cph(_player.ent, d2d::collision::aabb_checker::phases::horizontal);
 	
-	cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_tiles);
-	//cph.flags(d2d::collision::checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
+	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
+	//cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_map.solid_blocks);
 	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+	cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 	if(cph.has_collision()) {
 
@@ -1150,27 +1180,32 @@ void main::tic_air(
 		current_map.tile_finder, 
 		app::filter_tiles_ignore_while_on_air{}
 	);
-	d2d::collision::phase cpv(_player.ent, d2d::collision::checker::phases::vertical);
+	d2d::collision::aabb_phase cpv(_player.ent, d2d::collision::aabb_checker::phases::vertical);
 
 	cpv.detect_all(current_tiles);
 
 	cpv.detect_all(current_map.platform_blocks);
 	cpv.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
 	cpv.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+	cpv.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 	if(cpv.has_collision()) {
+
+std::cout<<"there actually was a collision here!"<<std::endl;
 
 		auto response=cpv.response_complex();
 		response.solve(_player.ent);
 
 		//Only when colliding when the top of a box can we jump again.
-		if(response.edges & d2d::collision::response::tedges::top) {
+		if(response.edges & d2d::collision::aabb_response::tedges::top) {
 
+std::cout<<"hey, landed on ground!"<<std::endl;
 			land_on_ground(_player);
 		}
-		else if(response.edges & d2d::collision::response::tedges::bottom) {
+		else if(response.edges & d2d::collision::aabb_response::tedges::bottom) {
 
 			touch_ceiling(_player);
+std::cout<<"hey, touched ceiling"<<std::endl;
 		}
 	}
 }
@@ -1479,7 +1514,7 @@ bool main::is_on_air(
 	);
 
 	//fine collision phase now..
-	d2d::collision::checker cc;
+	d2d::collision::aabb_checker cc;
 
 	if(
 		 cc.has_collision(player_box_copy, contacting_tiles) 
@@ -1487,6 +1522,14 @@ bool main::is_on_air(
 	) {
 
 		return false;
+	}
+
+	for(const auto& plat : current_map.moving_blocks) {
+
+		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
+
+			return false;
+		}
 	}
 
 	for(const auto& plat : current_map.breaking_platforms) {
@@ -1533,7 +1576,7 @@ bool main::can_grab_ladder(
 		return false;
 	}
 
-	d2d::collision::checker cc;
+	d2d::collision::aabb_checker cc;
 	const auto ladders=cc.get_collisions(_player.ent, current_map.ladders);
 	if(0==ladders.size()) {
 
@@ -1578,7 +1621,7 @@ bool main::is_into_harm(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto harm_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_harm_only{});
 
-	d2d::collision::checker cc;
+	d2d::collision::aabb_checker cc;
 	return cc.has_collision(_player.ent, harm_tiles);
 }
 

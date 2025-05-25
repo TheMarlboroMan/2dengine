@@ -16,6 +16,7 @@
 #include "breaking_platform.h"
 #include "timed_trap.h"
 #include "push_trigger.h"
+#include "moving_block.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -53,6 +54,7 @@ class map {
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   middle_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
+	std::vector<moving_block>               moving_blocks;
 
 	std::vector<app::projectile>            projectiles;
 	d2d::collision::tile_finder_matrix      tile_finder;

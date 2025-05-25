@@ -1,8 +1,8 @@
 #pragma once
 
 #include <d2d/collision/spatiable.h>
-#include <d2d/collision/checker.h>
-#include <d2d/collision/solver.h>
+#include <d2d/collision/aabb_checker.h>
+#include <d2d/collision/aabb_solver.h>
 #include <d2d/tools/to_ref.h>
 
 namespace d2d { namespace collision {
@@ -16,11 +16,11 @@ namespace d2d { namespace collision {
  * Phases can be "horizontal" or "vertical" with slightly different solving
  * rules.
  */
-class phase{
+class aabb_phase{
 
 	public:
 
-	                    phase(d2d::collision::spatiable&, d2d::collision::checker::phases);
+	                    aabb_phase(d2d::collision::spatiable&, d2d::collision::aabb_checker::phases);
 
 	bool                has_collision() const {return collision_found;}
 
@@ -28,17 +28,17 @@ class phase{
  * resets all modifiers (flags / early exit). All modifiers are reset after
  * a call to detect_*
  */
-	phase&              reset_modifiers();
+	aabb_phase&              reset_modifiers();
 
 /**
  * sets the given flags for the next call to detect_*
  */
-	phase&              flags(int);
+	aabb_phase&              flags(int);
 
 /**
  * sets the early exit for the next call to detect_*
  */
-	phase&              early_exit(bool);
+	aabb_phase&              early_exit(bool);
 
 /**
  * Checks and adds the result of checking the collision against given spatiable.
@@ -154,16 +154,16 @@ class phase{
  * attempts to return the complex response. Will throw if
  * there was no collision!
  */
-	d2d::collision::response    response_complex();
+	d2d::collision::aabb_response   response_complex();
 
 	private:
 
 	bool                            collision_found{false},
 	                                with_early_exit{false};
 	int                             collision_flags{0};
-	d2d::collision::checker::phases collision_phase;
+	d2d::collision::aabb_checker::phases collision_phase;
 	d2d::collision::spatiable&      subject;
-	d2d::collision::checker         checker;
+	d2d::collision::aabb_checker    checker;
 	std::vector<spatiable const*>   results;
 };
 

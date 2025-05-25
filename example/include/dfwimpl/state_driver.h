@@ -50,6 +50,9 @@ class state_driver:
 	ptr_controller                  c_menu;
 	ptr_controller                  c_pause;
 	ptr_controller                  c_controls;
+#ifdef IS_DEBUG_BUILD
+	ptr_controller                  c_test;
+#endif
 	//[new-controller-property-mark]
 };
 

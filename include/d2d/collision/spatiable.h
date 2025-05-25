@@ -15,7 +15,8 @@ enum class box_edge {
 std::ostream& operator<<(std::ostream&, const box_edge&);
 
 /**
- *a spatiable is something that exists in a cartesian space.
+*a spatiable is something that exists in a cartesian space that as an
+* aabb bounding box.
 */
 struct spatiable {
 
@@ -44,6 +45,16 @@ struct spatiable {
 	* Must return a reference to the previous position bounding box.
 	*/
 	virtual const box&      get_previous_box() const=0;
+
+	/**
+    *Must make the previous box be a copy of the current box.
+    */
+	virtual void            commit_box()=0;
+
+	/**
+    *Must make the current previous box be a copy of the current box.
+    */
+	virtual void            rollback_box()=0;
 
 	/**
 	* Must return a reference to the boinding box origin point.
@@ -93,6 +104,10 @@ struct spatiable {
 	* Returns the x component plus the box width.
 	*/
 	double                  get_right() const {return get_x()+get_w();}
+	/**
+    * Returns true if boxes are different.
+    */
+	bool                    has_moved() const {return get_origin() != get_previous_box().origin;}
 
 	/**
 	* Replaces the bounding box with the given one.

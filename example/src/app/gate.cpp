@@ -27,7 +27,7 @@ void gate::tic(
 
 			double y=ent.get_y()+(_delta * 16.);
 			ent.set_y(y);
-			ent.sync_boxes();
+			ent.commit_box();
 			if(y >= destination_y) {
 
 				open();
@@ -48,7 +48,7 @@ void gate::activate() {
 void gate::open() {
 
 	ent.set_y(destination_y);
-	ent.sync_boxes();
+	ent.commit_box();
 	state=states::open;
 }
 

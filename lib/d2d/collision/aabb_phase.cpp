@@ -1,31 +1,31 @@
-#include "d2d/collision/phase.h"
+#include "d2d/collision/aabb_phase.h"
 #include "d2d/collision/exception.h"
 
 using namespace d2d::collision;
 
-phase::phase(
+aabb_phase::aabb_phase(
 	d2d::collision::spatiable& _subject,
-	d2d::collision::checker::phases _phase
+	d2d::collision::aabb_checker::phases _phase
 ):
 	collision_phase{_phase},
 	subject{_subject}
 { }
 
-phase& phase::reset_modifiers() {
+aabb_phase& aabb_phase::reset_modifiers() {
 
 	collision_flags=0;
 	with_early_exit=false;
 	return *this;
 }
 
-phase& phase::flags(
+aabb_phase& aabb_phase::flags(
 	int _val
 ) {
 	collision_flags=_val;
 	return *this;
 }
 
-phase& phase::early_exit(
+aabb_phase& aabb_phase::early_exit(
 	bool _val
 ) {
 
@@ -34,7 +34,7 @@ phase& phase::early_exit(
 }
 
 
-bool phase::detect_one(
+bool aabb_phase::detect_one(
 	const d2d::collision::spatiable& _node, 
 	int _flags
 ) {
@@ -49,38 +49,38 @@ bool phase::detect_one(
 	return false;
 }
 
-void phase::response_generic() {
+void aabb_phase::response_generic() {
 
 	if(!collision_found) {
 
 		return;
 	}
 
-	auto collision_solver=d2d::collision::solver{};
+	auto collision_solver=d2d::collision::aabb_solver{};
 
 	switch(collision_phase) {
-		case d2d::collision::checker::phases::horizontal:
+		case d2d::collision::aabb_checker::phases::horizontal:
 			collision_solver.horizontal(subject, results);
 			return;
-		case d2d::collision::checker::phases::vertical:
+		case d2d::collision::aabb_checker::phases::vertical:
 			collision_solver.vertical(subject, results);
 			return;
 	}
 }
 
-d2d::collision::response phase::response_complex() {
+d2d::collision::aabb_response aabb_phase::response_complex() {
 
 	if(!collision_found) {
 
 		throw exception("cannot get complex response where no collisions exist");
 	}
 
-	auto collision_solver=d2d::collision::solver{};
+	auto collision_solver=d2d::collision::aabb_solver{};
 
 	switch(collision_phase) {
-		case d2d::collision::checker::phases::horizontal:
+		case d2d::collision::aabb_checker::phases::horizontal:
 			return collision_solver.horizontal_complex(subject, results);
-		case d2d::collision::checker::phases::vertical:
+		case d2d::collision::aabb_checker::phases::vertical:
 			return collision_solver.vertical_complex(subject, results);
 	}
 

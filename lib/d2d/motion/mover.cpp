@@ -13,6 +13,16 @@ void mover::apply(
 	box.origin.y+=_vector.y * _delta;
 }
 
+void mover::apply_and_commit(
+	d2d::collision::spatiable& _subject,
+	const d2d::motion::motion_vector& _vector,
+	ldtools::tdelta _delta
+) {
+
+	apply(_subject, _vector, _delta);
+	_subject.commit_box();
+}
+
 void mover::apply_x(
 	d2d::collision::spatiable& _subject,
 	double _force,
