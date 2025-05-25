@@ -33,64 +33,53 @@ class ray_aabb_phase {
 	ray_aabb_phase&     reset();
 	ray_aabb_phase&     flags(int);
 	ray_aabb_phase&     early_exit(bool);
-	bool                detect_one(const d2d::collision::spatiable&, int=0);
-	bool                detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
+	ray_aabb_phase&     detect_one(const d2d::collision::spatiable&, int=0);
+	ray_aabb_phase&     detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
 
 	template<typename T>
-	bool                detect_all(
+	ray_aabb_phase&     detect_all(
 		T& _nodes
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
-			if(detect_one(d2d::tools::to_ref(node), collision_flags)) {
+			detect_one(d2d::tools::to_ref(node), collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 	template<typename T, typename D>
-	bool                detect_all(
+	ray_aabb_phase&     detect_all(
 		T& _nodes,
 		const D& _dereferencer
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
 			const auto& spatiable=_dereferencer(node);
-			if(detect_one(d2d::tools::to_ref(spatiable), collision_flags)) {
+			detect_one(d2d::tools::to_ref(spatiable), collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 	template<typename T, typename P>
-	bool                detect_if(
+	ray_aabb_phase&       detect_if(
 		T& _nodes,
 		const P& _skipper
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
 			const auto& ref=d2d::tools::to_ref(node);
@@ -99,19 +88,15 @@ class ray_aabb_phase {
 				continue;
 			}
 
-			if(detect_one(ref, collision_flags)) {
+			detect_one(ref, collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 /**

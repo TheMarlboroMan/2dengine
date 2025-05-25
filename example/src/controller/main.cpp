@@ -1006,10 +1006,10 @@ void main::tic_ground(
 		auto player_ray=rb.get_previous(_player.ent, player.velocity)*_delta;
 		d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
-		cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
-		cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-		//TODO: Why are the gates not working now????
-		cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+		cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
+			.detect_all(current_tiles)
+			.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
+			.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 //		cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 		if(cph.has_collision()) {
@@ -1184,13 +1184,12 @@ void main::tic_air(
 	auto player_ray=rb.get_previous(_player.ent, player.velocity)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
-	d2d::collision::ray_aabb_finder rayfinder;
-	
-	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check).detect_all(current_tiles);
+	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
+		.detect_all(current_tiles)
 	//TODO: Ok, these only applied on the vertical phase... Did we break something?
-	cph.detect_all(current_map.platform_blocks); 
-	cph.detect_if(current_map.breaking_platforms, breaking_platforms_fn{});
-	cph.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
+		.detect_all(current_map.platform_blocks)
+		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
+		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{});
 //	cph.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 	if(cph.has_collision()) {

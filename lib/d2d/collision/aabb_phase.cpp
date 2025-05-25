@@ -34,7 +34,7 @@ aabb_phase& aabb_phase::early_exit(
 }
 
 
-bool aabb_phase::detect_one(
+aabb_phase& aabb_phase::detect_one(
 	const d2d::collision::spatiable& _node, 
 	int _flags
 ) {
@@ -43,10 +43,9 @@ bool aabb_phase::detect_one(
 
 		collision_found=true;
 		results.push_back(&_node);
-		return true;
 	}
 
-	return false;
+	return *this;
 }
 
 void aabb_phase::response_generic() {

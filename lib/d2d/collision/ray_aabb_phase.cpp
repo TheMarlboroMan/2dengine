@@ -43,7 +43,7 @@ ray_aabb_phase& ray_aabb_phase::early_exit(
 	return *this;
 }
 
-bool ray_aabb_phase::detect_one(
+ray_aabb_phase& ray_aabb_phase::detect_one(
 	const d2d::collision::spatiable& _node, 
 	int _flags
 ) {
@@ -51,7 +51,7 @@ bool ray_aabb_phase::detect_one(
 	auto info=finder.find(ray, subject, _node);
 	if(!info) {
 
-		return false;
+		return *this;
 	}
 
 	bool must_check_side=!(_flags & flag_skip_passable_side_check);
@@ -65,7 +65,7 @@ bool ray_aabb_phase::detect_one(
 
 			if(_node.is_passable_edge(edge)) {
 
-				return false;
+				return *this;
 			}
 		}
 
@@ -77,7 +77,7 @@ bool ray_aabb_phase::detect_one(
 
 			if(_node.is_passable_edge(edge)) {
 
-				return false;
+				return *this;
 			}
         }
 	}
@@ -85,7 +85,7 @@ bool ray_aabb_phase::detect_one(
 	collision_found=true;
 	results.push_back(info);
 
-	return true;
+	return *this;
 }
 
 int ray_aabb_phase::response_generic() {

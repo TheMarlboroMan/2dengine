@@ -52,8 +52,8 @@ class aabb_phase{
  * this spatiable is the "closest" collision that will be picked up at
  * response time. Does not reset the given flags.
  */
-	bool                detect_one(const d2d::collision::spatiable&, int=0);
-	bool                detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
+	aabb_phase&              detect_one(const d2d::collision::spatiable&, int=0);
+	aabb_phase&              detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
 
 /**
  * runs through all given nodes checking collisions and adding their results.
@@ -61,26 +61,21 @@ class aabb_phase{
  * for an early exit if need be. Works on containers of pointers or not.
  */
 	template<typename T>
-	bool                detect_all(
+	aabb_phase&              detect_all(
 		T& _nodes
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
-			if(detect_one(d2d::tools::to_ref(node), collision_flags)) {
+			detect_one(d2d::tools::to_ref(node), collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 /**
@@ -90,28 +85,23 @@ class aabb_phase{
  * specified are tricky for this.
  */
 	template<typename T, typename D>
-	bool                detect_all(
+	aabb_phase&           detect_all(
 		T& _nodes,
 		const D& _dereferencer
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
 			const auto& spatiable=_dereferencer(node);
-			if(detect_one(d2d::tools::to_ref(spatiable), collision_flags)) {
+			detect_one(d2d::tools::to_ref(spatiable), collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 /**
@@ -121,12 +111,11 @@ class aabb_phase{
  * for an early exit if need be. Works on containers of pointers or not.
  */
 	template<typename T, typename P>
-	bool                detect_if(
+	aabb_phase&          detect_if(
 		T& _nodes,
 		const P& _skipper
 	) {
 
-		bool had_collision=false;
 		for(const auto& node : _nodes) {
 
 			const auto& ref=d2d::tools::to_ref(node);
@@ -135,19 +124,15 @@ class aabb_phase{
 				continue;
 			}
 
-			if(detect_one(ref, collision_flags)) {
+			detect_one(ref, collision_flags);
+			if(collision_found && with_early_exit) {
 
-				had_collision=true;
-				if(with_early_exit) {
-
-					break;
-				}
+				break;
 			}
 		}
 
-		collision_found|=had_collision;
 		reset_modifiers();
-		return had_collision;
+		return *this;
 	}
 
 /**

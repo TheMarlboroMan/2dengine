@@ -17,13 +17,15 @@
     aabb collision suite (faster, simpler, almost requires separation of axis).
         aabb_checker (produces booleans and vectors of pointers to spatiables)
         aabb_solver (feeds from the result of aabb_checker)
-        aabb_phase
+        aabb_phase (reusable collision solution)
     definitions
     exception
     ray vs aabb collision suite:
         ray_aabb_checker (produces booleans and vectors of pointers to spatiables)
         ray_aabb_finder (produces vectors of collisions).
         ray_aabb_solver (solves the collisions againts a single object)
+        ray_aabb_phase (reusable one-shot collision solution)
+    ray_builder
     shaper (interface)
         shaper_default
     spatiable (interface)

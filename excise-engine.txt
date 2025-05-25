@@ -9,8 +9,6 @@ project no longer work :/
 
 		what's wrong with the torch animation??
 
-		segmentation fault when loading with --map
-
 		what happens if we start below forest_16, go down and try to jump up?
 
 		0_test_map_002 
