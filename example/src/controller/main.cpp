@@ -590,6 +590,7 @@ std::cout<<"CORRECTIONS IN TIC "<<corrections.size()<<std::endl;
 	switch(player.state) {
 
 		case app::player::states::ground:
+		case app::player::states::crouch:
 			tic_ground(_delta, player, _pli);
 		break;
 
@@ -599,10 +600,6 @@ std::cout<<"CORRECTIONS IN TIC "<<corrections.size()<<std::endl;
 
 		case app::player::states::air:
 			tic_air(_delta, player, _pli);
-		break;
-
-		case app::player::states::crouch:
-			tic_crouch(_delta, player, _pli);
 		break;
 
 		case app::player::states::defeat:
@@ -1006,8 +1003,10 @@ void main::tic_ground(
 	if(-1==_pli.y) {
 
 		_player.crouch();
-		tic_crouch(_delta, _player, _pli);
-		return;
+	}
+	else if(app::player::states::crouch==_player.state) {
+
+		_player.stand_up();
 	}
 
 	//horizontal phase...
@@ -1221,41 +1220,6 @@ void main::tic_air(
 			touch_ceiling(_player);
 		}
 	}
-}
-
-void main::tic_crouch(
-	ldtools::tdelta _delta,
-	app::player& _player,
-	app::player_input _pli
-) {
-
-	if(-1!=_pli.y) {
-
-		_player.stand_up();
-		tic_ground(_delta, _player, _pli);
-		return;
-	}
-
-	//Has a moving platform pushed us out??
-	if(is_on_air(_player)) {
-
-		start_falling(_player);
-		tic_air(_delta, _player,_pli);
-		return;
-	}
-
-	if(0==current_map.moving_blocks.size()) {
-
-		return;
-	}
-
-	if(0==ctracker.get_corrections().size()) {
-
-		return;
-	}
-
-	d2d::motion::motion_vector mv{0., 0.};
-	ground_motion_and_collision(_player, mv, _delta, false);
 }
 
 void main::tic_defeat(
