@@ -18,5 +18,7 @@ using fixed_point=ldt::point_2d<int>;
 using box=ldt::box<double, int>;
 using motion_vector=ldt::vector_2d<double>;
 using ray=ldt::segment_2d<double>;
+enum class box_edge { top, right, bottom ,left };
+enum aabb_edges {top=1, bottom=2, right=4, left=8};
 
 }}

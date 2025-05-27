@@ -27,11 +27,11 @@ int ray_aabb_solver::solve(
 		int current_edge=0;
 		if(info.normal.x) {
 
-			current_edge=info.normal.x < 0 ? tedges::left : tedges::right;
+			current_edge=info.normal.x < 0 ? aabb_edges::left : aabb_edges::right;
 		}
 		else if(info.normal.y) {
 
-			current_edge=info.normal.y < 0 ? tedges::bottom : tedges::top;
+			current_edge=info.normal.y < 0 ? aabb_edges::bottom : aabb_edges::top;
 		}
 
 		switch(current_edge) {

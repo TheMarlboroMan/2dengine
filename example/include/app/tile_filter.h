@@ -26,14 +26,15 @@ struct filter_tiles_ignore_one_way_above {
 			return false;
 		}
 
-		if(_tile.type != app::tile_half_bottom_passable
-			&& _tile.type != app::tile_half_top_passable
+		if(_tile.type == app::tile_half_bottom_passable
+			|| _tile.type == app::tile_half_top_passable
 		) {
 
-			return true;
+std::cout<<"FILTERING ONE WAY ABOVE: "<<_box<<" VS TILE "<<_tile.get_box()<<" ("<<_tile.get_y()<<")"<<std::endl;
+			return _tile.get_y() <= _box.origin.y;
 		}
 
-		return _tile.get_y() < _box.origin.y;
+		return true;
 	};
 };
 
@@ -101,23 +102,6 @@ struct filter_tiles_check_on_air {
 
 		auto f=filter_tiles_ignore_one_way_above{};
 		return f(_box, _tile);
-	}
-};
-
-/**
- * tiles that must be ignored when checking if we are on the air.
- * TODO: I think we can remove this..
- */
-struct filter_tiles_ignore_while_on_air {
-
-	bool operator()(
-		const d2d::collision::box&,
-		const d2d::collision::tile& _tile
-	) const {
-
-		return _tile.type!=app::tile_monster_block 
-			&& _tile.type!=app::tile_camera_stop
-			&& _tile.type!=app::tile_harm; //harm tiles are ignored for collision purposes but checked at the end of the tic.
 	}
 };
 

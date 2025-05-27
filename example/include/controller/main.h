@@ -64,7 +64,9 @@ class main:
 	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_crouch(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
-	void                        ground_motion_and_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta, bool);
+	d2d::motion::motion_vector  ground_motion(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
+	int                         player_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
+	bool                        is_in_legal_position(d2d::collision::spatiable&);
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
@@ -128,6 +130,7 @@ class main:
 	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;
+	int                         crush_edges{0};
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 

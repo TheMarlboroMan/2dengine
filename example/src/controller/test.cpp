@@ -200,12 +200,12 @@ std::cout<<player.get_box()<<std::endl;
 		d2d::collision::ray_aabb_solver solver;
 		int edges=solver.solve(player, collision_responses);
 
-		if(edges & d2d::collision::ray_aabb_solver::bottom) {
+		if(edges & d2d::collision::bottom) {
 
 			player_vector.y=0.;
 		}
 
-		if(edges & d2d::collision::ray_aabb_solver::top) {
+		if(edges & d2d::collision::top) {
 
 			player_vector.y=0;
 		}

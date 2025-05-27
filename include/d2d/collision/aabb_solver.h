@@ -19,7 +19,6 @@ struct aabb_response_exception
 struct aabb_response {
 
 	//read this as the subject collided with the N side of the obstacle.
-	enum tedges             {top=1, bottom=2, right=4, left=8};
 	int                     edges{0};
 	double                  magnitude{0.0};
 	const collision::spatiable * obstacle{nullptr};

@@ -9,25 +9,25 @@ using namespace d2d::collision;
 
 void aabb_response::solve(spatiable& _subject) {
 
-	if(edges & top) {
+	if(edges & aabb_edges::top) {
 
 		collision::snap_to_top_of(_subject, *obstacle);
 		return;
 	}
 
-	if(edges & bottom) {
+	if(edges & aabb_edges::bottom) {
 
 		collision::snap_to_bottom_of(_subject, *obstacle);
 		return;
 	}
 
-	if(edges & left) {
+	if(edges & aabb_edges::left) {
 
 		collision::snap_to_left_of(_subject, *obstacle);
 		return;
 	}
 
-	if(edges & right) {
+	if(edges & aabb_edges::right) {
 
 		collision::snap_to_right_of(_subject, *obstacle);
 		return;
@@ -107,13 +107,13 @@ aabb_response aabb_solver::horizontal_complex(
 		int current_edge=0;
 
 		if(collision::is_left_of(subject_box, obstacle_box)) {
-			current_edge=aabb_response::left;
+			current_edge=left;
 		}
 		else if(collision::is_right_of(subject_box, obstacle_box)) {
-			current_edge=aabb_response::right;
+			current_edge=right;
 		}
 		else if(collision::collides_with(subject_box, obstacle_box)) {
-			current_edge=aabb_response::right | aabb_response::left;
+			current_edge=right | left;
 		}
 		else {
 			std::stringstream ss;
@@ -130,7 +130,7 @@ aabb_response aabb_solver::horizontal_complex(
 		res.edges|=current_edge;
 
 		//use current position to calculate penetration.
-		double magnitude=current_edge==aabb_response::left
+		double magnitude=current_edge==aabb_edges::left
 			? _subject.get_right() - obstacle->get_x()
 			: obstacle->get_right() - _subject.get_x();
 
@@ -168,19 +168,19 @@ aabb_response aabb_solver::vertical_complex(
 			collision::is_below(subject_box, obstacle_box)
 		) {
 
-			current_edge=aabb_response::bottom;
+			current_edge=aabb_edges::bottom;
 		}
 		else if(
 			collision::is_above(subject_box, obstacle_box)
 		) {
 
-			current_edge=aabb_response::top;
+			current_edge=aabb_edges::top;
 		}
 		else if(
 			collision::collides_with(subject_box, obstacle_box)
 		) {
 
-			current_edge=aabb_response::top | aabb_response::bottom;
+			current_edge=aabb_edges::top | aabb_edges::bottom;
 		}
 		else {
 			std::stringstream ss;
@@ -198,7 +198,7 @@ aabb_response aabb_solver::vertical_complex(
 		res.edges|=current_edge;
 
 		//use current position to calculate penetration.
-		double magnitude=current_edge==aabb_response::bottom
+		double magnitude=current_edge==aabb_edges::bottom
 			? _subject.get_top() - obstacle->get_y()
 			: obstacle->get_top() - _subject.get_y();
 

@@ -4,10 +4,20 @@
 
 using namespace d2d::collision;
 
-collision_tracker& collision_tracker::reset() {
+collision_tracker& collision_tracker::restart() {
 
 	watched.clear();
 	targets.clear();
+	return *this;
+}
+
+collision_tracker& collision_tracker::reset() {
+
+	corrections.clear();
+	for(auto& item : watched) {
+
+		item.attached.clear();
+	}
 	return *this;
 }
 
@@ -23,7 +33,11 @@ collision_tracker& collision_tracker::tic() {
 			continue;
 		}
 
-		const auto vector=entity.body->get_motion_vector();
+		//TODO:: by now the vector changed!! We actually want the vector from two points :/.
+		//TODO: Explain what is going on here!!
+		auto vector=entity.previous_vector;
+		entity.previous_vector=entity.body->get_motion_vector();
+//		const auto vector=entity.body->get_motion_vector();
 		if(entity.attached.size() 
 			&& !(vector.x==0. && vector.y==0.)
 		) {
@@ -31,7 +45,6 @@ collision_tracker& collision_tracker::tic() {
 			for(auto& attached : entity.attached) {
 
 				//TODO: Not enjoying the edge part...
-std::cout<<"ADDED ATTACHMENT CORRECTION"<<std::endl;
 				corrections.push_back({entity.body, attached, vector, box_edge::left});
 			}
 		}
@@ -45,14 +58,11 @@ std::cout<<"ADDED ATTACHMENT CORRECTION"<<std::endl;
 				continue;
 			}
 
-std::cout<<"TARGET ATTACHMENTS: "<<entity.attached.size()<<std::endl;
-
 			//If attached, just ignore it!... 
 			if(std::any_of(
 				std::begin(entity.attached),
 				std::end(entity.attached),
 				[&target](const spatiable * _att) -> bool {
-std::cout<<"ONE AND THE SAME"<<std::endl;
 					return target==_att;
 				}
 			)) {
@@ -71,26 +81,18 @@ std::cout<<"ONE AND THE SAME"<<std::endl;
 			if(is_left_of(*target, previous)) {
 
 				corrections.push_back({entity.body, target, v, box_edge::left});
-std::cout<<"ADD TARGET CORRECTION"<<std::endl;
 			}
 			else if(is_right_of(*target, previous)) {
 
 				corrections.push_back({entity.body, target, v, box_edge::right});
-std::cout<<"ADD TARGET CORRECTION"<<std::endl;
 			}
 			else if(is_above(*target, previous)) {
 
 				corrections.push_back({entity.body, target, v, box_edge::top});
-std::cout<<"ADD TARGET CORRECTION"<<std::endl;
 			}
 			else if(is_below(*target, previous)) {
 
 				corrections.push_back({entity.body, target, v, box_edge::bottom});
-std::cout<<"ADD TARGET CORRECTION"<<std::endl;
-			}
-			else {
-
-std::cout<<"NO TARGET CORRECTION??"<<std::endl;
 			}
 		}
 	}
@@ -122,7 +124,7 @@ collision_tracker& collision_tracker::watch(
 		throw std::runtime_error("cannot watch an element that is already into the target list");
 	}
 
-	watched.push_back({&_spatiable, {}});
+	watched.push_back({&_spatiable, {}, _spatiable.get_motion_vector()});
 	return *this;
 }
 
@@ -183,7 +185,6 @@ collision_tracker& collision_tracker::attach(
 	}
 
 	attached_list.push_back(&_attached);
-std::cout<<"ATTACHED!"<<std::endl;
 	return *this;
 }
 
@@ -279,31 +280,82 @@ collision_tracker& collision_tracker::untarget(
 	return *this;
 }
 
-void collision_tracker::push_correct(
+collision_tracker& collision_tracker::correct_snaps() {
+
+	for(const auto& c : corrections) {
+
+		correct_snap(c);
+	}
+
+	return *this;
+}
+
+int collision_tracker::correct_snaps(
+	const spatiable& _target
+) {
+
+	int edges=0;
+	for(const auto& c : corrections) {
+
+		if(c.target==&_target) {
+
+			edges|=correct_snap(c);
+		}
+
+	}
+
+	return edges;
+}
+
+int collision_tracker::correct_snap(
 	const collision_tracker_correction& _node
 ) {
 
 	//Not a snap??
 	if(!_node.is_snap()) {
 
-std::cout<<"NO SNAP, MEH"<<std::endl;
-		return;
+		return 0;
 	}
 
-std::cout<<"WILL SNAP"<<std::endl;
 	switch(_node.edge) {
 
 		case box_edge::left:
 			snap_to_left_of(*_node.target, *_node.watched); 
-			return;
+			return aabb_edges::left;
 		case box_edge::right:
 			snap_to_right_of(*_node.target, *_node.watched); 
-			return;
+			return aabb_edges::right;
 		case box_edge::top:
 			snap_to_top_of(*_node.target, *_node.watched); 
-			return;
+			return aabb_edges::top;
 		case box_edge::bottom:
 			snap_to_bottom_of(*_node.target, *_node.watched); 
-			return;
+			return aabb_edges::bottom;
 	}
+
+	return 0;
+}
+
+d2d::motion::motion_vector collision_tracker::attached_vector_for(
+	const spatiable& _attached
+) const {
+
+	d2d::motion::motion_vector result{};
+
+	for(const auto& c : corrections) {
+
+		if(c.is_snap()) {
+
+			continue;
+		}
+
+		if(&_attached!=c.target) {
+
+			continue;
+		}
+
+		result+=c.vector;
+	}
+
+	return result;
 }

@@ -10,7 +10,6 @@ leaping_monster::leaping_monster(
 	int _force
 ):
 	ent{ {_pt}, 0, 0},
-	velocity{0., 0.},
 	type{_type},
 	spawn_y{ (int)_pt.y},
 	leap_force{_force},
@@ -39,21 +38,21 @@ void leaping_monster::tic(
 
 		if(timeout.is_finished()) {
 
-			velocity.y=leap_force;
+			ent.set_motion_vector_y(leap_force);
 			on_air=true;
 		}
 
 		return;
 	}
 
-	_mover.apply(ent, velocity, _delta);
+	_mover.apply(ent, _delta);
 
 	//Is the entity under the original position?
 	if(ent.get_y() <= spawn_y) {
 
 		timeout.restart();
 		ent.set_y(spawn_y);
-		velocity.y=0.;
+		ent.set_motion_vector_y(0.);
 		on_air=false;
 	}
 }

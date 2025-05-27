@@ -147,6 +147,11 @@ class aabb_phase{
  */
 	d2d::collision::aabb_response   response_complex();
 
+/**
+ * returns pointers to the spatiables we collided with.
+ */
+	const std::vector<spatiable const*>& get_results() const {return results;}
+
 	private:
 
 	bool                            collision_found{false},

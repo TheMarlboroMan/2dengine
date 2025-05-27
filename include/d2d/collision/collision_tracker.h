@@ -1,6 +1,7 @@
 #pragma once
 
 #include "spatiable.h"
+#include "../motion/definitions.h"
 #include <vector>
 
 #ifdef IS_DEBUG_BUILD
@@ -42,6 +43,11 @@ class collision_tracker {
 /**
  * clears all state of the instance (watched and targets)
  */
+	collision_tracker&              restart();
+
+/**
+ * Keeps watched and targets, but clears results and attachments!
+ */
 	collision_tracker&              reset();
 
 /**
@@ -52,9 +58,29 @@ class collision_tracker {
 	collision_tracker&              tic();
 
 /**
- * TODO:
+ * Corrects all snaps from the last tic.
  */
-	void                            push_correct(const collision_tracker_correction&); 
+	collision_tracker&              correct_snaps();
+
+/**
+ * Corrects all snaps from the last tic pertaining to the given spatiable, 
+ * that it, those that have the spatiable as the target in the correction
+ * list. Returns an integer that is a flag of edge as defined in "definitions.h".
+ * meaning that the target collided with the N sides of a watched node.
+ */
+	int                            correct_snaps(const spatiable&);
+
+/**
+ * Manually corrects a snap. Returns the edges as "the target collided with
+ * that side of a watched node".
+ */
+	int                            correct_snap(const collision_tracker_correction&); 
+
+/**
+ * After a tic, attempts to grab a correction vector for the given spatiable
+ * if it was attached to something.
+ */
+	d2d::motion::motion_vector      attached_vector_for(const spatiable&) const;
 
 /**
  * Returns the results of the previous tic.
@@ -110,6 +136,7 @@ class collision_tracker {
 
 		const spatiable*            body;
 		std::vector<spatiable *>    attached;
+		d2d::motion::motion_vector  previous_vector;
 	};
 
 	std::vector<node>               watched; //all moving nodes.

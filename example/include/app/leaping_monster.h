@@ -30,7 +30,6 @@ class leaping_monster {
 	                        leaping_monster(d2d::collision::point, types, int, int);
 
 	entity                  ent;
-	d2d::motion::motion_vector velocity;
 	types                   type;
 
 	void                    tic(ldtools::tdelta _delta, d2d::motion::mover);

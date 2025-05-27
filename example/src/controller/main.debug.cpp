@@ -308,6 +308,11 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
+	for(const auto& node : current_map.moving_blocks) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	//TODO: Missing 
 
 	dd.draw(_screen, player.ent);

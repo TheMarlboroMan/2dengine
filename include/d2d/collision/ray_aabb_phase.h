@@ -28,6 +28,7 @@ class ray_aabb_phase {
 						);
 
 	std::size_t         size() const {return results.size();}
+	const std::vector<ray_aabb_info>& get_results() const {return results;}
 	bool                has_collision() const {return collision_found;}
 	ray_aabb_phase&     reset_modifiers();
 	ray_aabb_phase&     reset();
@@ -101,7 +102,7 @@ class ray_aabb_phase {
 
 /**
  * invokes a generic response that will adjust position according to the 
- * aabb_solver algorithms.
+ * aabb_solver algorithms. 
  */
 	int                             response_generic();
 

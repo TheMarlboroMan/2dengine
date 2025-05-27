@@ -44,6 +44,8 @@ class player {
 	//When this timeout is done, ladders can be grabbed again. It resets each time a ladder is grabbed.
 	bool                                        is_ladder_timeout_done() const;
 
+//	d2d::collision::box                         get_standing_box() const;
+
 	enum class states {
 		ground,
 		air,

@@ -22,6 +22,11 @@ moving_block::moving_block(
 	}
 }
 
+void moving_block::reset() {
+
+	//TODO: Set this in its original state!
+}
+
 void moving_block::tic(
 	ldtools::tdelta _delta
 ) {

@@ -43,6 +43,6 @@ std::ostream& app::operator<<(
 	const entity& _entity
 ) {
 
-	_stream<<_entity.get_box()<<" (prev "<<_entity.get_previous_box()<<")"<<std::endl;
+	_stream<<_entity.get_box()<<" (prev "<<_entity.get_previous_box()<<")";
 	return _stream;
 }

@@ -80,4 +80,10 @@ void           center_vertically(spatiable&, const spatiable&);
 void           center_vertically(spatiable&, const box&);
 void           center_vertically(box&, const box&);
 
+/**
+ * returns true if the edge (as in the edge enum) has two opposing values
+ * at the same time.
+ */
+bool           is_compromised_edge(int);
+
 }}

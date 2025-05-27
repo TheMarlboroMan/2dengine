@@ -12,6 +12,7 @@ class moving_block {
 
 	                                        moving_block(int, int, int, int, int);
 	void                                    tic(ldtools::tdelta);
+	void                                    reset();
 
 	entity                                  ent;
 

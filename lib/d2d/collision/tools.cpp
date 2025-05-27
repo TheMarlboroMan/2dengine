@@ -427,3 +427,12 @@ bool d2d::collision::is_partially_right_of(
 		&& _a.origin.x < b_right;
 }
 
+bool d2d::collision::is_compromised_edge(
+	int _edges
+) {
+
+	return ((_edges & top) && (_edges & bottom))
+		|| ((_edges & left) && (_edges & right));
+}
+
+

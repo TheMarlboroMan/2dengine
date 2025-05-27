@@ -13,6 +13,7 @@
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/video/tools.h>
 #include <d2d/motion/mover.h>
+#include <d2d/collision/aabb_phase.h>
 #include <d2d/collision/ray_aabb_phase.h>
 #include <d2d/collision/ray_aabb_solver.h>
 #include <d2d/collision/ray_builder.h>
@@ -218,7 +219,7 @@ void main::load_map(
 
 	d2d::storage::map_loader loader(map_path);
 
-	ctracker.reset();
+	ctracker.restart();
 	current_map.clear();
 	clear_transient_state();
 
@@ -503,8 +504,7 @@ void main::take_player_to_entry(
 
 void main::restart_level() {
 
-	//TODO: What about moving blocks and the whole collision tracker thing???
-	
+	ctracker.reset();
 	clear_transient_state();
 	current_map.projectiles.clear();
 
@@ -532,6 +532,11 @@ void main::restart_level() {
 
 		trigger.reset();
 	}
+
+	for(auto& block : current_map.moving_blocks) {
+
+		block.reset();
+	}
 	
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -554,35 +559,41 @@ void main::tic(
 		//to track a "is attached" boolean, we're gonna run these checks
 		//anyway so it no attachment is there, we can detach.
 
+
+		//TODO: maybe we could have some automatics xD like an attacher
+		//that does this fucking check for us xD
+		//TODO: Plus, maybe this is not good at all?
 		ctracker.detach_from_all(player.ent);
 		auto player_box_copy=player.ent.get_box();
-		--player_box_copy.origin.y;
+		player_box_copy.origin.y-=0.2;
+
 		for(const auto& plat : current_map.moving_blocks) {
 
-			if(collides_with(plat.ent, player_box_copy)) {
+			if(collides_with(plat.ent, player_box_copy) && !collides_with(plat.ent, player.ent)) {
 
-std::cout<<"WILL ATTACH TO "<<plat.ent<<std::endl;
+				std::cout<<"WILL ATTACH "<<player.ent.get_box()<<" to "<<plat.ent.get_box()<<std::endl;
 				ctracker.attach(plat.ent, player.ent);
+				snap_to_top_of(player.ent, plat.ent);
+				std::cout<<"ATTACHED "<<player.ent.get_box()<<" to "<<plat.ent.get_box()<<std::endl;
 			}
 		}
 	}
 
 	tic_world(_delta);
 
+	crush_edges=0;
 	if(current_map.moving_blocks.size()) {
 
-		ctracker.tic();
+		//Tic and correct any pushes...
+		crush_edges=ctracker.tic().correct_snaps(player.ent);
+		if(crush_edges) {
 
-		//Correct any pushes...
-		const auto& corrections=ctracker.get_corrections();
-
-std::cout<<"CORRECTIONS IN TIC "<<corrections.size()<<std::endl;
-		for(const auto& c : corrections) {
-
-			ctracker.push_correct(c);
+			//Should only commit if the player was snapped in the previous tic!
+			//TODO: I wonder what kind of fresh hell am I getting into now...
+			//or the opposite :/.
+			player.ent.commit_box();
+			std::cout<<"CRUSH EDGES AFTER SNAPS "<<crush_edges<<std::endl;
 		}
-
-		//TODO: Now, is the player in an IMPOSSIBLE POSITION??? 
 	}
 
 	player.tic(_delta);
@@ -637,6 +648,31 @@ std::cout<<"CORRECTIONS IN TIC "<<corrections.size()<<std::endl;
 }
 
 void main::post_tic() {
+
+/**
+TODO: Options... 
+	- keep a flag of colliding edges per tic... Problem, wheh
+	the player was just snapped the vector was not modified IN ANY WAY so there
+	are no ray collisions detected in the regular phase.
+	- The hack: we were pushed and now we are in an illegal position according
+	to tiles: does not work... Because riding a platform up does not count
+	as pushed and we are STILL IN AN ILLEGAL POSITION.
+	- Another interesting thing... just asking about an illegal position 
+	has a TERRIBLE BUG IN WHICH SOMETIMES WE COLLIDE WITH THE BOX...
+
+	TODO: I vote to fix the bug xD...
+
+*/
+
+//Are we crushesd?
+	//
+	if(!is_in_legal_position(player.ent)) {
+
+		std::cout<<"CRUSHED"<<std::endl;
+		std::abort();
+//		defeat(player);
+		return;
+	}
 
 	//Are we touching a lethal tile?
 	if(is_into_harm(player)) {
@@ -834,8 +870,7 @@ void main::tic_world(
 
 		if(monster.is_on_air()) {
 
-			//TODO: ooops... Use the entity velocity for this
-			simulation.gravity.apply_to(monster.velocity, _delta);
+			simulation.gravity.apply_to(monster.ent, _delta);
 		}
 
 		monster.tic(_delta, mover);
@@ -1000,31 +1035,46 @@ void main::tic_ground(
 		return;
 	}
 
+	bool is_crouched=app::player::states::crouch==_player.state;
 	if(-1==_pli.y) {
 
 		_player.crouch();
 	}
-	else if(app::player::states::crouch==_player.state) {
+	else if(is_crouched) {
 
 		_player.stand_up();
+		if(!is_in_legal_position(player.ent)) {
+
+			_player.crouch();
+		}
 	}
 
 	//horizontal phase...
-	if(!_pli.x)  {
+	if(!_pli.x || is_crouched)  {
 
 		//Player velocity is 100% tied to manual control and goes 0-100.
 		_player.ent.set_motion_vector_x(0.);
 	}
 
-	_player.facing=_pli.x > 0
-		? app::faces::right
-		: app::faces::left;
+	if(_pli.x) {
 
+		_player.facing=_pli.x > 0
+			? app::faces::right
+			: app::faces::left;
+	}
 
 	//motion...
 	d2d::motion::motion_vector mv{0., 0.};
-	mv.x=simulation.walk_max_velocity*(double)_pli.x;
-	ground_motion_and_collision(_player, mv, _delta, true);
+	if(!is_crouched) {
+
+		mv.x=simulation.walk_max_velocity*(double)_pli.x;
+	}
+
+	player.ent.set_motion_vector(mv);
+	auto tic_vector=ground_motion(_player, mv, _delta);
+	player_collision(_player, tic_vector, _delta);
+
+	//What are we doing here??
 
 	if(_pli.jump) {
 
@@ -1140,7 +1190,6 @@ void main::tic_air(
 		_player.jump(simulation.jump_force);
 	}
 
-	d2d::motion::mover mover{};
 
 	//Some controls apply here: Air control is limited, but one can attempt to do it.
 	if(_pli.x) {
@@ -1166,56 +1215,25 @@ void main::tic_air(
 	}
 
 	simulation.gravity.apply_to(_player.ent, _delta);
+	d2d::motion::mover mover{};
 	mover.apply(_player.ent, _delta);
 
-	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	int sides=player_collision(_player, _player.ent.get_motion_vector(), _delta);
+	if(0!=sides) {
 
-	struct {
-		bool operator() (
-			const d2d::collision::box& _box,
-			const d2d::collision::tile& _tile
-		) {
-
-			app::filter_tiles_ignore_one_way_above f{};
-			app::filter_remove_harm_tiles f2{};
-			return f(_box, _tile) && f2(_box, _tile);
-		}
-	} composite_filter;
-
-	//Collision...
-	auto current_tiles=adapter.find(
-		_player.ent, 
-		current_map.tile_finder, 
-		composite_filter
-	);
-
-	d2d::collision::ray_builder rb;
-	auto player_ray=rb.get_previous(_player.ent)*_delta;
-	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
-
-	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
-		.detect_all(current_tiles)
-	//TODO: Ok, these only applied on the vertical phase... Did we break something?
-		.detect_all(current_map.platform_blocks)
-		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
-		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
-		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
-
-	if(cph.has_collision()) {
-
-		int sides=cph.response_generic();
+std::cout<<"AIR SIDES: "<<sides<<std::endl;
 
 		using d2d::collision::ray_aabb_solver;
-		if((sides & ray_aabb_solver::right) || (sides & ray_aabb_solver::left)) {
+		if((sides & d2d::collision::right) || (sides & d2d::collision::left)) {
 
 			collide_with_wall(_player);
 		}
 
-		if(sides & ray_aabb_solver::top) {
+		if(sides & d2d::collision::top) {
 
 			land_on_ground(_player);
 		}
-		else if(sides & ray_aabb_solver::bottom) {
+		else if(sides & d2d::collision::bottom) {
 
 			touch_ceiling(_player);
 		}
@@ -1616,6 +1634,12 @@ bool main::is_into_harm(
 	const app::player& _player
 ) const {
 
+	//Failsafe for falling out of the world scenarios.
+	if(_player.ent.get_y() < -300.) {
+
+		return true;
+	}
+
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto harm_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_harm_only{});
 
@@ -1827,37 +1851,30 @@ void main::clear_transient_state() {
 	trap_sound.channel_index=-1;
 }
 
-void main::ground_motion_and_collision(
+d2d::motion::motion_vector main::ground_motion(
 	app::player& _player,
 	d2d::motion::motion_vector _mv,
-	ldtools::tdelta _delta,
-	bool _set_mv_as_motion
+	ldtools::tdelta _delta
 ) {
 
+	//Ground motion with moving vectors must take into account
 	//we may need to add some vectors...
 	if(0!=current_map.moving_blocks.size()) {
 
-		for(const auto& correction : ctracker.get_corrections()) {
-
-			if(correction.is_snap()) {
-
-				continue;
-			}
-
-			_mv+=correction.vector;
-		}
+		std::cout<<"ATTACHED VECTOR IS NOW "<<ctracker.attached_vector_for(_player.ent)<<std::endl;
+		_mv+=ctracker.attached_vector_for(_player.ent);
 	}
 
 	d2d::motion::mover mover{};
-	if(_set_mv_as_motion) {
+	mover.apply(_player.ent, _mv, _delta);
+	return _mv;
+}
 
-		_player.ent.set_motion_vector(_mv);
-		mover.apply(_player.ent, _delta); //instant acceleration..
-	}
-	else {
-
-		mover.apply(_player.ent, _mv, _delta);
-	}
+int main::player_collision(
+	app::player& _player,
+	d2d::motion::motion_vector _mv,
+	ldtools::tdelta _delta
+) {
 
 	//We can easily make composite filters by chaining calls.
 	struct {
@@ -1866,6 +1883,9 @@ void main::ground_motion_and_collision(
 			const d2d::collision::tile& _tile
 		) {
 
+			//TODO... Oh, is this NOT working??? The one way above thing... not
+			//working, no, map_005 or map_001 I can jump against shit I should
+			//not be able to!
 			app::filter_tiles_ignore_one_way_above f{};
 			app::filter_remove_harm_tiles f2{};
 			return f(_box, _tile) && f2(_box, _tile);
@@ -1886,15 +1906,70 @@ void main::ground_motion_and_collision(
 
 	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
+		//TODO: Something about this is not working... Look above!!
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
+		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+//		.detect_all(current_map.platform_blocks); //TODO: We could pass a detect if with its function too in case this is not what we want!
+
+
+	if(cph.has_collision()) {
+
+		std::cout<<"HAS COLLISION FOR "<<player.ent.get_box()<<" VEC "<<_mv<<std::endl;
+		for(const auto& info : cph.get_results()) {
+
+			std::cout<<"    "<<info.obstacle->get_box()<<std::endl;
+		}
+	}
+
+	//This actually performs a reponse and returns the sides.
+	return cph.has_collision()
+		? cph.response_generic()
+		: 0;
+}
+
+bool main::is_in_legal_position(
+	d2d::collision::spatiable& _spatiable
+) {
+	struct {
+		bool operator() (
+			const d2d::collision::box& _box,
+			const d2d::collision::tile& _tile
+		) {
+			app::filter_tiles_ignore_one_way f{};
+			app::filter_remove_harm_tiles f2{};
+			return f(_box, _tile) && f2(_box, _tile);
+		}
+	} composite_filter;
+
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	auto current_tiles=adapter.find(
+		_spatiable,
+		current_map.tile_finder, 
+		composite_filter
+	);
+
+	//TODO: Ok, listen... we need to adapt this so it can work
+	//with a box too... Right? or at least provide something that looks like it!
+	//TODO: I like the latter better... A static collision thing.
+	d2d::collision::aabb_phase cph(_spatiable, d2d::collision::aabb_checker::phases::horizontal);
+
+	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
+		.detect_all(current_tiles)
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 
 	if(cph.has_collision()) {
 
-		cph.response_generic();
+		std::cout<<"ILLEGAL PLAYER: "<<player.ent.get_box()<<std::endl;
+		for(auto& s : cph.get_results()) {
+
+			std::cout<<" >> "<<s->get_box()<<std::endl;
+		}
 	}
+
+	return !cph.has_collision();
 }
+
 
 #ifdef IS_DEBUG_BUILD
 

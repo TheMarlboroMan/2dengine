@@ -161,3 +161,12 @@ bool player::is_ladder_timeout_done() const {
 
 	return timeouts.is_finished(timeout_ladder);
 }
+
+/*
+d2d::collision::box player::get_standing_box() const {
+
+	auto box=ent.get_box();
+	box.h=player_h;
+	return box;
+}
+*/
