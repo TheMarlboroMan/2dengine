@@ -12,9 +12,12 @@ namespace app {
  */
 
 /**
- * tile filter to ignore the one way tiles above the player.
+ * tile filter to ignore the one way tiles above the player... These should not
+ * be considered
  */
 struct filter_tiles_ignore_one_way_above {
+
+	const d2d::collision::box previous_box;
 
 	bool operator()(
 		const d2d::collision::box& _box,
@@ -30,8 +33,12 @@ struct filter_tiles_ignore_one_way_above {
 			|| _tile.type == app::tile_half_top_passable
 		) {
 
-std::cout<<"FILTERING ONE WAY ABOVE: "<<_box<<" VS TILE "<<_tile.get_box()<<" ("<<_tile.get_y()<<")"<<std::endl;
-			return _tile.get_y() <= _box.origin.y;
+			auto result=_tile.get_top() <= previous_box.origin.y;
+	if(result) {
+
+		std::cout<<"FILTERING ONE WAY ABOVE: "<<_box<<" VS TILE "<<_tile.get_box()<<" ("<<_tile.get_top()<<")"<<std::endl;
+	}
+			return result;
 		}
 
 		return true;
@@ -82,6 +89,8 @@ struct filter_tiles_harm_only {
  */
 struct filter_tiles_check_on_air {
 
+	const d2d::collision::box previous_box;
+
 	bool operator()(
 		const d2d::collision::box& _box,
 		const d2d::collision::tile& _tile
@@ -100,7 +109,8 @@ struct filter_tiles_check_on_air {
 			return false;
 		}
 
-		auto f=filter_tiles_ignore_one_way_above{};
+		//TODO: What???
+		auto f=filter_tiles_ignore_one_way_above{previous_box};
 		return f(_box, _tile);
 	}
 };

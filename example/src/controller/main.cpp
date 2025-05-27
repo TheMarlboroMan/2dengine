@@ -581,18 +581,15 @@ void main::tic(
 
 	tic_world(_delta);
 
-	crush_edges=0;
 	if(current_map.moving_blocks.size()) {
 
 		//Tic and correct any pushes...
-		crush_edges=ctracker.tic().correct_snaps(player.ent);
-		if(crush_edges) {
+		if(ctracker.tic().correct_snaps(player.ent)) {
 
 			//Should only commit if the player was snapped in the previous tic!
-			//TODO: I wonder what kind of fresh hell am I getting into now...
-			//or the opposite :/.
+			//This allows our previous position not to be in collision with
+			//the box that pushed us.
 			player.ent.commit_box();
-			std::cout<<"CRUSH EDGES AFTER SNAPS "<<crush_edges<<std::endl;
 		}
 	}
 
@@ -649,28 +646,10 @@ void main::tic(
 
 void main::post_tic() {
 
-/**
-TODO: Options... 
-	- keep a flag of colliding edges per tic... Problem, wheh
-	the player was just snapped the vector was not modified IN ANY WAY so there
-	are no ray collisions detected in the regular phase.
-	- The hack: we were pushed and now we are in an illegal position according
-	to tiles: does not work... Because riding a platform up does not count
-	as pushed and we are STILL IN AN ILLEGAL POSITION.
-	- Another interesting thing... just asking about an illegal position 
-	has a TERRIBLE BUG IN WHICH SOMETIMES WE COLLIDE WITH THE BOX...
-
-	TODO: I vote to fix the bug xD...
-
-*/
-
-//Are we crushesd?
-	//
+	//Are we crushesd?
 	if(!is_in_legal_position(player.ent)) {
 
-		std::cout<<"CRUSHED"<<std::endl;
-		std::abort();
-//		defeat(player);
+		defeat(player);
 		return;
 	}
 
@@ -1526,7 +1505,7 @@ bool main::is_on_air(
 	auto contacting_tiles=adapter.find(
 		player_box_copy, 
 		current_map.tile_finder, 
-		app::filter_tiles_check_on_air{}
+		app::filter_tiles_check_on_air{_player.ent.get_previous_box()}
 	);
 
 	//fine collision phase now..
@@ -1861,7 +1840,6 @@ d2d::motion::motion_vector main::ground_motion(
 	//we may need to add some vectors...
 	if(0!=current_map.moving_blocks.size()) {
 
-		std::cout<<"ATTACHED VECTOR IS NOW "<<ctracker.attached_vector_for(_player.ent)<<std::endl;
 		_mv+=ctracker.attached_vector_for(_player.ent);
 	}
 
@@ -1878,19 +1856,17 @@ int main::player_collision(
 
 	//We can easily make composite filters by chaining calls.
 	struct {
+		const d2d::collision::box previous_box;
 		bool operator() (
 			const d2d::collision::box& _box,
 			const d2d::collision::tile& _tile
 		) {
 
-			//TODO... Oh, is this NOT working??? The one way above thing... not
-			//working, no, map_005 or map_001 I can jump against shit I should
-			//not be able to!
-			app::filter_tiles_ignore_one_way_above f{};
+			app::filter_tiles_ignore_one_way_above f{previous_box};
 			app::filter_remove_harm_tiles f2{};
 			return f(_box, _tile) && f2(_box, _tile);
 		}
-	} composite_filter;
+	} composite_filter{_player.ent.get_previous_box()};
 
 	//Collision...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
@@ -1906,7 +1882,6 @@ int main::player_collision(
 
 	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
-		//TODO: Something about this is not working... Look above!!
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});

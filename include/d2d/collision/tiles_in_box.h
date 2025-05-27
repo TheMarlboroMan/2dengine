@@ -46,9 +46,9 @@ class tiles_in_box {
 
 /**
  * Template based versions of the previous that also take a callable
- * argument that expects both const references to the spatiable and to 
+ * argument that expects both const references to the spatiable's box and to 
  * the tile. For a tile to be included in the results it must be in
- * contact with the spatiable (as in the previous version and also
+ * contact with the spatiable (as in the previous version) and also
  * pass this callable test by returning true.
  */
 	template<typename C>
