@@ -13,6 +13,11 @@ class mover {
 	/**
 	* Applies movement vector, does not confirm previous box
 	*/
+
+	void        apply(d2d::collision::spatiable&, ldtools::tdelta);
+	void        apply_x(d2d::collision::spatiable&, ldtools::tdelta);
+	void        apply_y(d2d::collision::spatiable&, ldtools::tdelta);
+
 	void        apply(d2d::collision::spatiable&, const d2d::motion::motion_vector&, ldtools::tdelta);
 	void        apply_x(d2d::collision::spatiable&, double, ldtools::tdelta);
 	void        apply_y(d2d::collision::spatiable&, double, ldtools::tdelta);
@@ -21,5 +26,6 @@ class mover {
 	*may depend on the previous box to yield reasonable results.
     */
 	void        apply_and_commit(d2d::collision::spatiable&, const d2d::motion::motion_vector&, ldtools::tdelta);
+	void        apply_and_commit(d2d::collision::spatiable&, ldtools::tdelta);
 };
 }}

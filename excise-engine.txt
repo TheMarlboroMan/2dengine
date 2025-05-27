@@ -1,5 +1,10 @@
 next steps:
 
+	fix walk through moving block
+	fix automatic animation in moving block
+	fix facing issue mounted on moving block???
+	fix NO CRUSHING!
+
 	excise collision stuff from libdansdl2???? This will make the template
 project no longer work :/
 
@@ -32,7 +37,6 @@ project no longer work :/
 ============================0
 
 	engine:
-		Or moving blocks, which were originally there too.
 		Does it make sense to always have the "previous block" methods? 
 			I guess it does not really hurt, as it is more of an interface
 			thing.

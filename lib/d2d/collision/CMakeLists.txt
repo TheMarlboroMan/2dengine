@@ -16,6 +16,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_solver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_aabb_phase.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_builder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/collision_tracker.cpp
 	PARENT_SCOPE
 )
 

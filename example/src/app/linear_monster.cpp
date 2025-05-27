@@ -13,7 +13,6 @@ linear_monster::linear_monster(
 	boundaries _bounds
 ):
 	ent{ {_pt}, 0, 0},
-	velocity{0., 0.},
 	type{_type},
 	facing{_facing_right ? app::faces::right : app::faces::left},
 	starting_pos{_pt},
@@ -48,7 +47,7 @@ void linear_monster::tic(
 	d2d::motion::mover _mover
 ) {
 
-	_mover.apply(ent, velocity, _delta);
+	_mover.apply(ent, _delta);
 
 	double pos=is_horizontal_movement() 
 		? ent.get_x()
@@ -71,7 +70,8 @@ void linear_monster::reverse() {
 		? app::faces::left
 		: app::faces::right;
 
-	velocity*=-1.;
+	auto vector=ent.get_motion_vector();
+	ent.set_motion_vector(vector*-1);
 }
 
 std::ostream& app::operator<<(
@@ -111,21 +111,24 @@ void linear_monster::reset_velocity() {
 
 		case types::scorpion:
 
-			velocity.x=facing==app::faces::right 
+			ent.set_motion_vector_x(facing==app::faces::right 
 				? scorpion_velocity
-				: -scorpion_velocity;
+				: -scorpion_velocity
+			);
 		break;
 		case types::snake:
 
-			velocity.x=facing==app::faces::right 
+			ent.set_motion_vector_x(facing==app::faces::right 
 				? snake_velocity
-				: -snake_velocity;
+				: -snake_velocity
+			);
 		break;
 		case types::bat:
 
-			velocity.x=facing==app::faces::right 
+			ent.set_motion_vector_x(facing==app::faces::right 
 				? bat_velocity
-				: -bat_velocity;
+				: -bat_velocity
+			);
 		break;
 	}
 }

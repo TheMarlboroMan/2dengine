@@ -14,10 +14,12 @@ class ray_builder {
  * builds the ray for the spatiable and vector.
  */
 	ray     get(const spatiable&, const d2d::motion::motion_vector&) const;
+	ray     get(const spatiable&) const;
 /**
  * builds the ray for the previous position of the spatiable.
  */
 	ray     get_previous(const spatiable&, const d2d::motion::motion_vector&) const;
+	ray     get_previous(const spatiable&) const;
 };
 
 }}

@@ -22,7 +22,6 @@ class player {
 
 	                                            player();
 	entity                                      ent;
-	d2d::motion::motion_vector                  velocity{0.0, 0.0};
 	faces                                       facing{faces::right};
 	bool                                        jump_shortened{false};
 	const app::ladder*                          current_ladder{nullptr};

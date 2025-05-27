@@ -33,6 +33,8 @@ class entity:
 	virtual int                         get_w() const {return collision_box.w;}
 	virtual int                         get_h() const {return collision_box.h;}
 	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
+	virtual d2d::motion::motion_vector      get_motion_vector() const {return vector;}
+	virtual void                            set_motion_vector(d2d::motion::motion_vector _v) {vector=_v;}
 	//virtual color                       get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	//virtual color                       get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
 //End implementation of spatiable
@@ -41,6 +43,7 @@ class entity:
 
 	d2d::collision::box                 collision_box,
 										previous_box;
+	d2d::motion::motion_vector          vector;
 };
 
 std::ostream& operator<<(std::ostream&, const entity&);

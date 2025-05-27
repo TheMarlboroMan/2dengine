@@ -12,10 +12,11 @@ projectile::projectile(
 	ldtools::tdelta _desintegration_ms
 ):
 	ent{_box},
-	velocity{_velocity},
 	type{_type},
 	timeout{_desintegration_ms / 1000.f, 0.0f, true}
-{ }
+{
+	ent.set_motion_vector(_velocity);
+}
 
 void projectile::tic(
 	ldtools::tdelta _delta,
@@ -35,7 +36,7 @@ void projectile::tic(
 
 	if(is_moving()) {
 
-		_mover.apply(ent, velocity, _delta);
+		_mover.apply(ent, ent.get_motion_vector(), _delta);
 
 		switch(type) {
 
@@ -44,16 +45,20 @@ void projectile::tic(
 			case types::falling: {
 
 				d2d::motion::accelerator ac{{0.0, 600.0}};
+				auto velocity=ent.get_motion_vector();
 				ac.accelerate_y(velocity, 0.05*velocity.y);
+				ent.set_motion_vector(velocity);
 			}
 			break;
 			//Flames rising...
 			case types::vertical:{
 
+				auto velocity=ent.get_motion_vector();
 				auto factor=std::max(0.4, (velocity.y * 0.02));
 
 				d2d::motion::accelerator ac{{0.0, 0.0}};
 				ac.decelerate_y(velocity, factor);
+				ent.set_motion_vector(velocity);
 				if(velocity.y <= 0.1) {
 
 					desintegrate();

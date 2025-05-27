@@ -547,7 +547,8 @@ void game_draw::draw_projectile_linear(
 	//Al sprites are facing right by default.
 	int flags=modifiers::use_sprite_box;
 
-	flags |= _projectile.velocity.x < 0
+
+	flags |= _projectile.ent.get_motion_vector().x < 0
 		? modifiers::flip_horizontal
 		: modifiers::match_right;
 
@@ -760,7 +761,8 @@ void game_draw::draw_player(
 
 		case app::player::states::ground:
 
-			animation_index=_player.velocity.x!=0.
+			//TODO: Lol what a trap I am getting into... xD
+			animation_index=_player.ent.get_motion_vector().x!=0.
 				? app::anim_walk
 				: app::anim_idle;
 			is_animation=true;

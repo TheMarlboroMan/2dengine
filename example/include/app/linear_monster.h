@@ -40,7 +40,6 @@ class linear_monster {
 	                        linear_monster(d2d::collision::point, types, bool, boundaries);
 
 	entity                  ent;
-	d2d::motion::motion_vector velocity;
 	types                   type;
 	faces                   facing;
 

@@ -50,6 +50,8 @@ class motion_axis_limiter
 	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return true;}
 	virtual color                           get_debug_outline_color() const {return color{0, 0, 0, 255};}
 	virtual color                           get_debug_fill_color() const {return color{128,128,128, 64};}
+	virtual d2d::motion::motion_vector      get_motion_vector() const {return {0, 0};}
+	virtual void                            set_motion_vector(d2d::motion::motion_vector) {}
 	virtual void                            commit_box() {};
 	virtual void                            rollback_box() {};
 

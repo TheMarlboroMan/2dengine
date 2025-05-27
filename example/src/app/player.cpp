@@ -35,14 +35,14 @@ void player::tic(
 
 void player::crouch() {
 
-	velocity.x=0.;
+	ent.set_motion_vector_x(0.);
 	state=states::crouch;
 	ent.get_box().h=player_h_crouch;
 }
 
 void player::stand_up() {
 
-	velocity.x=0.;
+	ent.set_motion_vector_x(0.);
 	state=states::ground;
 	ent.get_box().h=player_h;
 }
@@ -51,7 +51,7 @@ void player::jump(
 	double _force
 ) {
 
-	velocity.y=_force;
+	ent.set_motion_vector_y(_force);
 	state=states::air;
 	jump_shortened=false;
 }
@@ -78,14 +78,14 @@ void player::launch(
 
 	if(0.0 != _vec.y) {
 
-		velocity.y=_vec.y;
+		ent.set_motion_vector_y(_vec.y);
 		state=states::air;
 		jump_shortened=true; //The player cannot influence this.
 	}
 
 	if(0.0 != _vec.x) {
 
-		velocity.x=_vec.x;
+		ent.set_motion_vector_x(_vec.x);
 		state=states::air;
 	}
 }
@@ -96,7 +96,7 @@ void player::defeat(
 
 	timeouts.restart(timeout_defeat);
 	state=player::states::defeat;
-	velocity.y=_velocity;
+	ent.set_motion_vector_y(_velocity);
 }
 
 void player::walk_out_of_ladder(
@@ -118,7 +118,7 @@ void player::jump_out_of_ladder(
 	double _jump_force
 ) {
 
-	velocity.x=_velocity;
+	ent.set_motion_vector_x(_velocity);
 
 	facing=_velocity > 0 
 		? app::faces::right
@@ -131,7 +131,7 @@ void player::jump_out_of_ladder(
 
 void player::drop_out_of_ladder() {
 
-	velocity.x=0.;
+	ent.set_motion_vector_x(0.);
 	current_ladder=nullptr;
 	state=player::states::air;
 	timeouts.restart(player::timeout_ladder);
@@ -142,7 +142,9 @@ void player::start_falling() {
 
 	state=player::states::air;
 	timeouts.restart(player::timeout_last_jump_chance);
-	velocity.x/=2.; 
+
+	auto velocity=ent.get_motion_vector();
+	ent.set_motion_vector_x(velocity.x/2.);
 }
 
 bool player::has_jump_last_chance() const {

@@ -1,4 +1,5 @@
 #include <d2d/motion/gravity.h>
+#include <d2d/collision/spatiable.h>
 #include <iostream>
 
 using namespace d2d::motion;
@@ -27,4 +28,21 @@ void gravity::apply_to(
 
 		_target.y=max_velocity; //maximum velocity!
 	}
+}
+
+
+void gravity::apply_to(
+	d2d::collision::spatiable& _spatiable,
+	ldtools::tdelta _delta
+) {
+
+	auto target=_spatiable.get_motion_vector();
+	target+=force*_delta;
+
+	if(target.y < max_velocity) {
+
+		target.y=max_velocity; //maximum velocity!
+	}
+
+	_spatiable.set_motion_vector(target);
 }

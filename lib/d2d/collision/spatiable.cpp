@@ -38,6 +38,14 @@ void spatiable::set_origin(
 	b.origin=_pt;
 }
 
+void spatiable::move_by(
+	point _pt
+) {
+
+	auto& b=get_box();
+	b.origin+=_pt;
+}
+
 void spatiable::set_x(
 	double _val
 ) {

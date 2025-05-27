@@ -1,8 +1,10 @@
 #pragma once
 
 #include "definitions.h"
+#include "../motion/definitions.h"
 #include <ldv/color.h>
 #include <ostream>
+
 
 namespace d2d { namespace collision {
 
@@ -16,7 +18,10 @@ std::ostream& operator<<(std::ostream&, const box_edge&);
 
 /**
 *a spatiable is something that exists in a cartesian space that as an
-* aabb bounding box.
+* aabb bounding box. It also has "motion" capabilities because, why collisions
+* if there is no motion? In any case, because not all spatiables will be
+* able to move, there's only a virtual copy getter for the vector and virtual 
+* setter that can be defined as having no effect.
 */
 struct spatiable {
 
@@ -96,6 +101,28 @@ struct spatiable {
 	virtual bool            is_passable_edge(box_edge) const=0;
 
 	/**
+    * Must return a copy of the motion vector
+    */
+	virtual d2d::motion::motion_vector get_motion_vector() const=0;
+
+	double                  get_motion_vector_x() const {return get_motion_vector().x;}
+	double                  get_motion_vector_y() const {return get_motion_vector().y;}
+
+	virtual void            set_motion_vector(d2d::motion::motion_vector)=0;
+
+	void                    set_motion_vector_x(double _val) {
+
+		auto vec=get_motion_vector();
+		set_motion_vector({_val, vec.y});
+	}
+
+	void                    set_motion_vector_y(double _val) {
+
+		auto vec=get_motion_vector();
+		set_motion_vector({vec.x, _val});
+	}
+
+	/**
 	* Returns the y component plus the box height.
 	*/
 	double                  get_top() const {return get_y()+get_h();}
@@ -120,6 +147,11 @@ struct spatiable {
 	void                    set_origin(point);
 
 	/**
+	* Displaces the box origin by the given point.
+	*/
+	void                    move_by(point);
+
+	/**
 	* Replaces the box origin x component with the given value.
 	*/
 	void                    set_x(double);
@@ -138,6 +170,8 @@ struct spatiable {
 	* Sets the bounding box height.
 	*/
 	void                    set_h(int);
+
+	
 };
 
 }}

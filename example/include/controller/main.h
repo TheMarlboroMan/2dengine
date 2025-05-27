@@ -20,6 +20,7 @@
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
+#include <d2d/collision/collision_tracker.h>
 #include <d2d/video/debug_display.h>
 #include <d2d/components/timeouts.h>
 #include <lm/logger.h>
@@ -63,6 +64,7 @@ class main:
 	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_crouch(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
+	void                        ground_motion_and_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta, bool);
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
@@ -82,7 +84,7 @@ class main:
 	bool                        can_activate_button(const app::player&, app::button *&);
 	bool                        has_key(const app::player&, const app::button&) const;
 
-	//act on player methods...
+	//act on player methods..u
 	void                        start_falling(app::player&);
 	void                        land_on_ground(app::player&);
 	void                        collide_with_wall(app::player&);
@@ -140,6 +142,7 @@ class main:
 	};
 
 	d2d::components::timeouts   game_timeouts;
+	d2d::collision::collision_tracker ctracker;
 
 	struct {
 		int previous_id{0}, //previous automap area id

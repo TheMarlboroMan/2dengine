@@ -45,6 +45,8 @@ class breaking_platform:
 	virtual d2d::collision::color           get_debug_fill_color() const {return ldv::rgba8(128, 0, 64, 255);}
 	virtual void                            commit_box() {};
 	virtual void                            rollback_box() {};
+	virtual d2d::motion::motion_vector  get_motion_vector() const {return {0, 0};}
+	virtual void                        set_motion_vector(d2d::motion::motion_vector) {}
 
 
 //End implementation of spatiable

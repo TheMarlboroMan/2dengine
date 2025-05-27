@@ -45,6 +45,8 @@ struct tile:
 	virtual bool            is_passable_edge(box_edge _edge) const {return cimpl->is_passable_edge(*this, _edge);}
 	virtual color           get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	virtual color           get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
+	virtual d2d::motion::motion_vector  get_motion_vector() const {return {0, 0};}
+	virtual void                        set_motion_vector(d2d::motion::motion_vector) {}
 	//These two do nothing.
 	void                    commit_box() {};
 	void                    rollback_box() {};

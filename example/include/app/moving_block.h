@@ -18,7 +18,6 @@ class moving_block {
 
 	private:
 
-	d2d::motion::motion_vector              velocity{0.0, 0.0};
 	int type;
 };
 

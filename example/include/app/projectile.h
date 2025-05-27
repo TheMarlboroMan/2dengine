@@ -27,7 +27,6 @@ class projectile {
 	);
 
 	entity                  ent;
-	d2d::motion::motion_vector velocity;
 
 	bool                    is_moving() const {return state==states::moving;}
 	bool                    is_desintegrating() const {return state==states::desintegrating;}
