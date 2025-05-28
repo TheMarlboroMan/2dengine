@@ -4,6 +4,40 @@
 
 using namespace d2d::collision;
 
+bool collision_tracker::is_attached(
+	const spatiable& _target
+) const {
+
+	return nullptr!=get_host(_target);
+}
+
+const spatiable * collision_tracker::get_host(
+	const spatiable& _target
+) const {
+
+	//The algorithms here can be much better but...
+	for(const auto& watch : watched) {
+
+		if(!watch.attached.size()) {
+
+			continue;
+		}
+
+		auto it=std::find_if(
+			std::begin(watch.attached),
+			std::end(watch.attached),
+			[&_target](const spatiable * _t) -> bool {return _t==&_target;}
+		);
+
+		if(it!=std::end(watch.attached)) {
+
+			return watch.body;
+		}
+	}
+
+	return nullptr;
+}
+
 collision_tracker& collision_tracker::restart() {
 
 	watched.clear();

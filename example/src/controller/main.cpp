@@ -1933,44 +1933,37 @@ void main::mount_player_in_blocks(
 		return;
 	}
 
-	//TODO: Make this shit a part of the library! an attacher!
-	//This takes place AFTER the player tic... if a block is under the player,
-	//we can mount it.
-
 	auto player_box_copy=_player.ent.get_box();
-	player_box_copy.origin.y-=1.0; //TODO: This value... can be tweaked.
+	player_box_copy.origin.y-=1.0; //This value can be tweaked.
 
-	//TODO: This is a test. We should make the library being able to reply
-	//to most of this shit.
-	if(player_mounted) {
+	bool player_attached=ctracker.is_attached(_player.ent);
 
-		//Prevents from mounting any other.
-		if(collides_with(player_box_copy, *mount)) {
+	//Is the player still attached???
+	if(player_attached) {
+
+		auto  host=ctracker.get_host(_player.ent);
+		//If we are still over the attached block, everything is fine.
+		if(d2d::collision::collides_with(player_box_copy, *host)) {
 
 			return;
 		}
 
 		ctracker.detach_from_all(_player.ent);
-		player_mounted=false;
-		mount=nullptr;
 	}
 
-
+	//TODO: Make this shit a part of the library! an attacher!
+	//This takes place AFTER the player tic... if a block is under the player,
+	//we can mount it.
 	for(const auto& plat : current_map.moving_blocks) {
 
-		if(collides_with(plat.ent, player_box_copy)) {
+		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
 
 			if(is_in_legal_position(player_box_copy, false)) {
 
 				ctracker.attach(plat.ent, _player.ent);
-				//TODO: Alternatively, we could attempt to apply a vector that makes us attach to it.
+				//Alternatively, we could attempt to apply a vector that makes us attach to it.
 				snap_to_top_of(_player.ent, plat.ent);
-
-				//TODO: This would go... somewhere else??
 				land_on_ground(_player);
-
-				player_mounted=true;
-				mount=&plat.ent;
 				break;
 			}
 		}

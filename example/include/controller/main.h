@@ -135,9 +135,6 @@ class main:
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 
-	bool                        player_mounted{false};
-	const d2d::collision::spatiable *                 mount{nullptr};
-
 	struct {
 		int                     active_count{0},
 		                        channel_index{-1};

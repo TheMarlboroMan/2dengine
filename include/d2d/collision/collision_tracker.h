@@ -41,6 +41,16 @@ class collision_tracker {
 	std::size_t                     target_size() const {return targets.size();}
 
 /**
+ * returns true if the node is attached to any of the watched blocks.
+ */
+	bool                            is_attached(const spatiable&) const;
+
+/**
+ * returns the watched that the argument is attached to... Or null if none.
+ */
+	const spatiable *               get_host(const spatiable&) const;
+
+/**
  * clears all state of the instance (watched and targets)
  */
 	collision_tracker&              restart();
