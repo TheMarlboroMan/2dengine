@@ -66,7 +66,8 @@ class main:
 	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
 	d2d::motion::motion_vector  ground_motion(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
 	int                         player_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
-	bool                        is_in_legal_position(d2d::collision::spatiable&);
+	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool);
+	bool                        is_in_legal_position(const d2d::collision::box&, bool);
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
@@ -102,9 +103,10 @@ class main:
 	void                        save_game(const std::string&, int);
 	void                        reset_game(int, const std::string&);
 	void                        game_over();
-	void                        clear_transient_state();
+	void                        mount_player_in_blocks(app::player&);
 
 	//world methods.
+	void                        clear_transient_state();
 	void                        generate_projectile(const app::projectile_generator&);
 	void                        activate_tag(int, bool);
 	void                        post_tic();
@@ -130,9 +132,11 @@ class main:
 	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;
-	int                         crush_edges{0};
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
+
+	bool                        player_mounted{false};
+	const d2d::collision::spatiable *                 mount{nullptr};
 
 	struct {
 		int                     active_count{0},

@@ -20,7 +20,7 @@ struct filter_tiles_ignore_one_way_above {
 	const d2d::collision::box previous_box;
 
 	bool operator()(
-		const d2d::collision::box& _box,
+		const d2d::collision::box&,
 		const d2d::collision::tile& _tile
 	) const {
 
@@ -33,12 +33,7 @@ struct filter_tiles_ignore_one_way_above {
 			|| _tile.type == app::tile_half_top_passable
 		) {
 
-			auto result=_tile.get_top() <= previous_box.origin.y;
-	if(result) {
-
-		std::cout<<"FILTERING ONE WAY ABOVE: "<<_box<<" VS TILE "<<_tile.get_box()<<" ("<<_tile.get_top()<<")"<<std::endl;
-	}
-			return result;
+			return _tile.get_top() <= previous_box.origin.y;
 		}
 
 		return true;

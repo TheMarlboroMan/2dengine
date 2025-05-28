@@ -31,7 +31,8 @@ class aabb_checker {
  * Before you go and delete this, notice that we cannot use a vector of 
  * derived classes (like... block) as a vector of spatiable, they are 
  * just different classes... Yes, you can convert them to spatiable but,
- * what if you really wanted blocks instead of spatiables?
+ * what if you really wanted blocks instead of spatiables? A version with
+ * a vector of pointers is also provided.
  */
 	template<typename T, typename O>
 	std::vector<O const *>          get_collisions(
@@ -52,9 +53,6 @@ class aabb_checker {
 		return result;
 	}
 
-/**
-*Same as above but takes a vector of pointers.
-*/
 	template<typename T, typename O>
 	std::vector<O const *>          get_collisions(
 		const T& _target, 
@@ -76,7 +74,8 @@ class aabb_checker {
 
 /**
  * generic collision method that will return true if a collision is detected
- * and discard any other information.
+ * and discard any other information. A version with a vector of pointers is
+ * also provided. Same reasoning as get_collisions.
  */
 	template<typename T, typename O>
 	bool                            has_collision(
@@ -95,9 +94,6 @@ class aabb_checker {
 		return false;
 	}
 
-/**
- * same as above but takes a vector of pointers.
- */
 	template<typename T, typename O>
 	bool                            has_collision(
 		const T& _target, 
@@ -117,9 +113,10 @@ class aabb_checker {
 
 /**
 *returns true if there is a collision, takes phases and flags into account.
-*assumes the subject and obstacle are both spatiables so the previous
-*position can be taken into account when it matters. For collisions against
-*boxes we can just use the free floating function "collides_with".
+*If the obstacle is spatiable it will also attempt to check if the edge 
+*is passable. If we just want to check if boxes are colliding we might want
+*to use free floating function "collides_with" because this method
+*will attempt to use the previous box of the subject.
 */
 	bool                            check(
 		const d2d::collision::spatiable&, 
@@ -127,6 +124,7 @@ class aabb_checker {
 		phases,
 		int=0
 	) const;
+
 };
 
 }}

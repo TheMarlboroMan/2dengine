@@ -13,7 +13,7 @@
 #include <d2d/video/camera_map_limit.h>
 #include <d2d/video/tools.h>
 #include <d2d/motion/mover.h>
-#include <d2d/collision/aabb_phase.h>
+#include <d2d/collision/aabb_static_checker.h>
 #include <d2d/collision/ray_aabb_phase.h>
 #include <d2d/collision/ray_aabb_solver.h>
 #include <d2d/collision/ray_builder.h>
@@ -552,33 +552,6 @@ void main::tic(
 	//Tic and move the world first, because the player state-aware tic methods
 	//will also solve collisions and we need a "level" playing field!
 	
-	if(current_map.moving_blocks.size()) {
-
-		//TODO: This is prototype shit. We can at least track if we need it 
-		//unless detaching the player at every single step! An easy way is
-		//to track a "is attached" boolean, we're gonna run these checks
-		//anyway so it no attachment is there, we can detach.
-
-
-		//TODO: maybe we could have some automatics xD like an attacher
-		//that does this fucking check for us xD
-		//TODO: Plus, maybe this is not good at all?
-		ctracker.detach_from_all(player.ent);
-		auto player_box_copy=player.ent.get_box();
-		player_box_copy.origin.y-=0.2;
-
-		for(const auto& plat : current_map.moving_blocks) {
-
-			if(collides_with(plat.ent, player_box_copy) && !collides_with(plat.ent, player.ent)) {
-
-				std::cout<<"WILL ATTACH "<<player.ent.get_box()<<" to "<<plat.ent.get_box()<<std::endl;
-				ctracker.attach(plat.ent, player.ent);
-				snap_to_top_of(player.ent, plat.ent);
-				std::cout<<"ATTACHED "<<player.ent.get_box()<<" to "<<plat.ent.get_box()<<std::endl;
-			}
-		}
-	}
-
 	tic_world(_delta);
 
 	if(current_map.moving_blocks.size()) {
@@ -615,8 +588,14 @@ void main::tic(
 		break;
 	}
 
+
 	const auto player_moved=player.ent.has_moved();
 	const auto player_defeated=player.is_defeated();
+
+	if(!player_defeated) {
+
+		mount_player_in_blocks(player);
+	}
 
 	//Commit al movement boxes now...
 	player.ent.commit_box();
@@ -647,8 +626,9 @@ void main::tic(
 void main::post_tic() {
 
 	//Are we crushesd?
-	if(!is_in_legal_position(player.ent)) {
+	if(!is_in_legal_position(player.ent, false)) {
 
+		lm::log(logger).info()<<"illegal position, assumed crushing\n";
 		defeat(player);
 		return;
 	}
@@ -1022,7 +1002,9 @@ void main::tic_ground(
 	else if(is_crouched) {
 
 		_player.stand_up();
-		if(!is_in_legal_position(player.ent)) {
+		//The only case in which this can happen is when a moving platform
+		//is above us. The rest of blocking stuff is static.
+		if(!is_in_legal_position(player.ent, true)) {
 
 			_player.crouch();
 		}
@@ -1199,8 +1181,6 @@ void main::tic_air(
 
 	int sides=player_collision(_player, _player.ent.get_motion_vector(), _delta);
 	if(0!=sides) {
-
-std::cout<<"AIR SIDES: "<<sides<<std::endl;
 
 		using d2d::collision::ray_aabb_solver;
 		if((sides & d2d::collision::right) || (sides & d2d::collision::left)) {
@@ -1887,16 +1867,6 @@ int main::player_collision(
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
 //		.detect_all(current_map.platform_blocks); //TODO: We could pass a detect if with its function too in case this is not what we want!
 
-
-	if(cph.has_collision()) {
-
-		std::cout<<"HAS COLLISION FOR "<<player.ent.get_box()<<" VEC "<<_mv<<std::endl;
-		for(const auto& info : cph.get_results()) {
-
-			std::cout<<"    "<<info.obstacle->get_box()<<std::endl;
-		}
-	}
-
 	//This actually performs a reponse and returns the sides.
 	return cph.has_collision()
 		? cph.response_generic()
@@ -1904,8 +1874,18 @@ int main::player_collision(
 }
 
 bool main::is_in_legal_position(
-	d2d::collision::spatiable& _spatiable
+	const d2d::collision::spatiable& _spatiable,
+	bool _with_moving
 ) {
+
+	return is_in_legal_position(_spatiable.get_box(), _with_moving);
+}
+
+bool main::is_in_legal_position(
+	const d2d::collision::box& _position,
+	bool _with_moving
+) {
+
 	struct {
 		bool operator() (
 			const d2d::collision::box& _box,
@@ -1919,32 +1899,83 @@ bool main::is_in_legal_position(
 
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto current_tiles=adapter.find(
-		_spatiable,
+		_position,
 		current_map.tile_finder, 
 		composite_filter
 	);
 
-	//TODO: Ok, listen... we need to adapt this so it can work
-	//with a box too... Right? or at least provide something that looks like it!
-	//TODO: I like the latter better... A static collision thing.
-	d2d::collision::aabb_phase cph(_spatiable, d2d::collision::aabb_checker::phases::horizontal);
+	d2d::collision::aabb_static_checker sc(_position);
+	sc.detect_all(current_tiles);
 
-	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
-		.detect_all(current_tiles)
-		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+	if(_with_moving) {
 
-	if(cph.has_collision()) {
+		sc.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+	}
 
-		std::cout<<"ILLEGAL PLAYER: "<<player.ent.get_box()<<std::endl;
-		for(auto& s : cph.get_results()) {
+	if(sc.has_collision()) {
 
-			std::cout<<" >> "<<s->get_box()<<std::endl;
+		lm::log(logger).debug()<<"illegal player position "<<player.ent.get_box()<<"\n";
+		for(auto& s : sc.get_results()) {
+
+			lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
 		}
 	}
 
-	return !cph.has_collision();
+	return !sc.has_collision();
 }
 
+void main::mount_player_in_blocks(
+	app::player& _player
+) {
+
+	if(!current_map.moving_blocks.size()) {
+
+		return;
+	}
+
+	//TODO: Make this shit a part of the library! an attacher!
+	//This takes place AFTER the player tic... if a block is under the player,
+	//we can mount it.
+
+	auto player_box_copy=_player.ent.get_box();
+	player_box_copy.origin.y-=1.0; //TODO: This value... can be tweaked.
+
+	//TODO: This is a test. We should make the library being able to reply
+	//to most of this shit.
+	if(player_mounted) {
+
+		//Prevents from mounting any other.
+		if(collides_with(player_box_copy, *mount)) {
+
+			return;
+		}
+
+		ctracker.detach_from_all(_player.ent);
+		player_mounted=false;
+		mount=nullptr;
+	}
+
+
+	for(const auto& plat : current_map.moving_blocks) {
+
+		if(collides_with(plat.ent, player_box_copy)) {
+
+			if(is_in_legal_position(player_box_copy, false)) {
+
+				ctracker.attach(plat.ent, _player.ent);
+				//TODO: Alternatively, we could attempt to apply a vector that makes us attach to it.
+				snap_to_top_of(_player.ent, plat.ent);
+
+				//TODO: This would go... somewhere else??
+				land_on_ground(_player);
+
+				player_mounted=true;
+				mount=&plat.ent;
+				break;
+			}
+		}
+	}
+}
 
 #ifdef IS_DEBUG_BUILD
 

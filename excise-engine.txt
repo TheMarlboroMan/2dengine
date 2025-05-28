@@ -1,10 +1,5 @@
 next steps:
 
-	fix walk through moving block
-	fix automatic animation in moving block
-	fix facing issue mounted on moving block???
-	fix NO CRUSHING!
-
 	excise collision stuff from libdansdl2???? This will make the template
 project no longer work :/
 

@@ -25,7 +25,7 @@ class aabb_phase{
 	bool                has_collision() const {return collision_found;}
 
 /**
- * restores original collision status to that the object can be 
+ * restores original collision status so that the object can be 
  * reused
  */
 	aabb_phase&              reset();
@@ -135,10 +135,6 @@ class aabb_phase{
 		return *this;
 	}
 
-/**
- * invokes a generic response that will adjust position. guaranteed to do
- * nothing if there was no collision. 
- */
 	void                        response_generic();
 
 /**

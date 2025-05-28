@@ -14,10 +14,11 @@
 
 ### collision
 
-    aabb collision suite (faster, simpler, almost requires separation of axis).
+    aabb collision suite (faster, simpler, requires separation of axis and SPATIABLES)
         aabb_checker (produces booleans and vectors of pointers to spatiables)
         aabb_solver (feeds from the result of aabb_checker)
         aabb_phase (reusable collision solution)
+        aabb_static_checker (allows checking of static positions against boxes or spatiables, does not need axis separation).
     definitions
     exception
     ray vs aabb collision suite:
