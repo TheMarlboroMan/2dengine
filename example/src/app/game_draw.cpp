@@ -729,7 +729,11 @@ void game_draw::draw_moving_block(
 	const app::moving_block& _block
 ) {
 
-	//This is a repeating sprite...
+	//TODO: Choose block according to style!!!
+
+	//TODO: This is a repeating sprite...
+	//I guess we could have a "fill" method???
+	//Or maybe we can just... hack it here xD
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_block.ent.get_box()),

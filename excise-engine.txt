@@ -1,10 +1,8 @@
 next steps:
 
-	excise collision stuff from libdansdl2???? This will make the template
-project no longer work :/
-
 	make the first example game
 
+		moving blocks can be composed of many tiles! fix it in game_draw!
 		aspect of moving blocks.
 
 		what's wrong with the torch animation??

@@ -2017,6 +2017,7 @@ void main::write_moving_block(
 	//Set the block target to it moves towards the waypoint. Set also the NEXT
 	//waypoint for once we arrive.
 	const auto& waypoint=current_map.moving_block_nodes.at(_target_id);
+	lm::log(logger).info()<<"moving block is set towards "<<waypoint.point<<"\n";
 	_block.set_target(waypoint.point, waypoint.velocity, waypoint.wait_ms, waypoint.nextid);
 }
 

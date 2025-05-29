@@ -626,8 +626,8 @@ endobject
 beginobject
 	id 56
 	name movement_node
-	w 4
-	h 4
+	w 8
+	h 8
 	color 237 212 0 255
 	beginproperty
 		name nodeid
