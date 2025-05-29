@@ -16,7 +16,7 @@ console::result main::execute_cmd(
 		return {0, "ok"};
 	}
 
-	if(_cmd=="tic") {
+	if(_cmd=="tic" || _cmd=="t") {
 
 		tic(0.01f, app::player_input{});
 		return {0, "ok"};
@@ -207,6 +207,8 @@ void main::setup_console(
 		}
 	);
 
+	console_display->set_background_color(ldv::rgba8(0, 0, 0, 128));
+
 	console.reset(new console::console(*this));
 	console->connect_output(console_display->get_output());
 
@@ -216,6 +218,7 @@ void main::setup_console(
 	console->map_command("help", {});
 	console->map_command("helpcmd", {{console::types::string}});
 	console->map_command("tic", {});
+	console->map_command("t", {});
 	console->map_command("tell", {});
 	console->map_command("debugdraw", {});
 	console->map_command("gamedraw", {});

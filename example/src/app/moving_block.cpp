@@ -26,7 +26,7 @@ moving_block::moving_block(
 
 void moving_block::reset() {
 
-	state=states::receiving;
+	state=states::arrived; //this will make it seek the first node again.
 	target={0., 0.};
 	active=initial_active;
 	ent.set_origin(initial_position);
@@ -74,6 +74,7 @@ void moving_block::tic(
 			}
 			return;
 		case states::in_route:
+
 			_mover.apply(ent, _delta);
 			if(is_on_or_beyond_target()) {
 

@@ -986,7 +986,9 @@ void main::tic_ground(
 
 	//Other thing that may happen: are we falling? Just try with a ghost box
 	//a bit below the entity and do the tile check.
-	if(is_on_air(_player)) {
+	//You know what? maybe we were in a block that started moving downwards
+	//and the effect has not applied yet.. So we take that into account.
+	if(is_on_air(_player) && !ctracker.is_attached(_player.ent)) {
 
 		start_falling(_player);
 		tic_air(_delta, _player,_pli);
@@ -1825,7 +1827,7 @@ d2d::motion::motion_vector main::ground_motion(
 
 	//Ground motion with moving vectors must take into account
 	//we may need to add some vectors...
-	if(0!=current_map.moving_blocks.size()) {
+	if(current_map.moving_blocks.size()) {
 
 		_mv+=ctracker.attached_vector_for(_player.ent);
 	}
@@ -1941,7 +1943,7 @@ void main::mount_player_in_blocks(
 	}
 
 	auto player_box_copy=_player.ent.get_box();
-	player_box_copy.origin.y-=1.0; //This value can be tweaked.
+	player_box_copy.origin.y-=6.0; //This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
 
 	bool player_attached=ctracker.is_attached(_player.ent);
 
@@ -1955,6 +1957,7 @@ void main::mount_player_in_blocks(
 			return;
 		}
 
+		lm::log(logger).debug()<<"detached from moving platform player:"<<_player.ent.get_box()<<" check_box:"<<player_box_copy<<" host:"<<host->get_box()<<std::endl;
 		ctracker.detach_from_all(_player.ent);
 	}
 
@@ -1971,6 +1974,7 @@ void main::mount_player_in_blocks(
 				//Alternatively, we could attempt to apply a vector that makes us attach to it.
 				snap_to_top_of(_player.ent, plat.ent);
 				land_on_ground(_player);
+				lm::log(logger).debug()<<"attached to moving platform!"<<std::endl;
 				break;
 			}
 		}

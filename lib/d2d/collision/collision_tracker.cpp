@@ -67,7 +67,6 @@ collision_tracker& collision_tracker::tic() {
 			continue;
 		}
 
-		//TODO:: by now the vector changed!! We actually want the vector from two points :/.
 		//TODO: Explain what is going on here!!
 		auto vector=entity.previous_vector;
 		entity.previous_vector=entity.body->get_motion_vector();
