@@ -17,12 +17,14 @@
 #include "timed_trap.h"
 #include "push_trigger.h"
 #include "moving_block.h"
+#include "moving_block_node.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
 #include <ldv/color.h>
 #include <vector>
+#include <map>
 #include <ostream>
 
 namespace app { 
@@ -55,7 +57,7 @@ class map {
 	std::vector<d2d::video::scenery_tile>   middle_tiles;
 	std::vector<d2d::video::scenery_tile>   foreground_tiles;
 	std::vector<moving_block>               moving_blocks;
-
+	std::map<int, moving_block_node>        moving_block_nodes;
 	std::vector<app::projectile>            projectiles;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
@@ -92,5 +94,16 @@ void                                    print_node(const std::string _nodename, 
 		_stream<<node<<","<<std::endl;
 	}
 }
+
+template<typename T, typename U>
+void                                    print_node(const std::string _nodename, const std::map<T, U>& _nodes, std::ostream& _stream) {
+
+	_stream<<"\n\t"<<_nodename<<":["<<std::endl;
+
+	for(const auto& node : _nodes ) {
+		_stream<<node.second<<","<<std::endl;
+	}
+}
+
 
 }

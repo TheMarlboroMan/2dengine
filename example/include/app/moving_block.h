@@ -1,6 +1,9 @@
 #pragma once
 
 #include "entity.h"
+#include <d2d/motion/definitions.h>
+#include <d2d/motion/mover.h>
+#include <d2d/components/timeouts.h>
 #include <ldtools/time_definitions.h>
 #include <iostream>
 
@@ -10,16 +13,43 @@ class moving_block {
 
 	public:
 
-	                                        moving_block(int, int, int, int, int);
-	void                                    tic(ldtools::tdelta);
+	                                        moving_block(const d2d::collision::box& , int, int, int, bool);
+
+	int                                     get_next_id() const {return next_id;}
+	int                                     get_tag() const {return tag;}
+	bool                                    has_arrived() const {return states::arrived==state;}
+
+	void                                    tic(ldtools::tdelta, const d2d::motion::mover&);
 	void                                    reset();
+	void                                    set_target(const d2d::collision::point&, int, int, int);
+	void                                    invalidate();
+	void                                    activate();
 
 	entity                                  ent;
 
 
+
 	private:
 
-	int type;
+	bool                                    is_on_or_beyond_target() const;
+
+	enum class states {
+		receiving,
+		waiting,
+		in_route,
+		arrived,
+		invalid
+	}                                       state;
+
+	int                                     tag,
+	                                        first_nodeid,
+	                                        next_id,
+	                                        type;
+	bool                                    active,
+	                                        initial_active;
+	d2d::collision::point                   target,
+	                                        initial_position;
+	d2d::components::timeout                timeout;
 };
 
 std::ostream& operator<<(std::ostream&, const moving_block&);

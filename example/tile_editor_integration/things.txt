@@ -567,6 +567,106 @@ beginobject
 endobject
 
 beginobject
+	id 55
+	name moving_box
+	w 16
+	h 16
+	color 132 132 132 255
+	beginproperty
+		name width
+		type int
+		default 16
+		comment entry width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment entry height.
+		linkedto h
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment activation tag
+		linkedto nothing
+	endproperty
+	beginproperty
+		name active
+		type int
+		default 0
+		comment 0=disabled 1=active
+		linkedto nothing
+	endproperty
+	beginproperty
+		name nodeid
+		type int
+		default 0
+		comment first node whhere properties are retrieved
+		linkedto nothing
+	endproperty
+	beginproperty
+		name type
+		type int
+		default 0
+		comment visual presentation
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
+	id 56
+	name movement_node
+	w 4
+	h 4
+	color 237 212 0 255
+	beginproperty
+		name nodeid
+		type int
+		default 0
+		comment identifier for this node
+		linkedto nothing
+	endproperty
+	beginproperty
+		name nextid
+		type int
+		default 0
+		comment next node where properties are retrieved
+		linkedto nothing
+	endproperty
+	beginproperty
+		name velocity
+		type int
+		default 0
+		comment vector velocity for next node
+		linkedto nothing
+	endproperty
+	beginproperty
+		name wait_ms
+		type int
+		default 0
+		comment ms to wait before departing for the next node
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

@@ -245,12 +245,7 @@ void main::load_map(
 	loader.load_thing_layer("things", tl);
 
 	//Setup moving stuff...
-	DEV_add_moving_block();
-	ctracker.target(player.ent);
-	for(const auto& block : current_map.moving_blocks) {
-
-		ctracker.watch(block.ent);
-	}
+	setup_moving_blocks();
 
 	//The loader takes references to the map data.
 	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id};
@@ -337,17 +332,6 @@ void main::load_map(
 	}
 
 	//std::cout<<current_map<<std::endl;
-}
-
-void main::DEV_add_moving_block() {
-
-	current_map.moving_blocks.push_back(
-		app::moving_block(13*app::tile_w, 0*app::tile_h, app::tile_w, app::tile_w, 1)
-	);
-
-	current_map.moving_blocks.push_back(
-		app::moving_block(6*app::tile_w, 4*app::tile_h, app::tile_w, app::tile_w, 2)
-	);
 }
 
 void main::exit_to(
@@ -899,7 +883,22 @@ void main::tic_world(
 
 	for(auto& bl : current_map.moving_blocks) {
 
-		bl.tic(_delta);
+		bl.tic(_delta, mover);
+
+		if(!bl.has_arrived()) {
+
+			continue;
+		}
+
+		int next_id=bl.get_next_id();
+		if(!next_id) {
+
+			//Terminus station.
+			bl.invalidate();
+			continue;
+		}
+
+		write_moving_block(bl, next_id);
 	}
 }
 
@@ -1702,6 +1701,14 @@ void main::activate_tag(
 			generator.toggle();
 		}
 	}
+
+	for(auto& block : current_map.moving_blocks) {
+
+		if(block.get_tag()==_tag) {
+
+			block.activate();
+		}
+	}
 }
 
 /**
@@ -1968,6 +1975,45 @@ void main::mount_player_in_blocks(
 			}
 		}
 	}
+}
+
+void main::setup_moving_blocks() {
+
+	if(!current_map.moving_blocks.size()) {
+
+		return;
+	}
+
+	//Setup the trackers...
+	ctracker.target(player.ent);
+	for(auto& block : current_map.moving_blocks) {
+
+		ctracker.watch(block.ent);
+		write_moving_block(block, block.get_next_id());
+	}
+}
+
+/**
+ * given a block and an id, write the information for the block's next 
+ * outing. The block will move towards the _target_id waypoint!!
+ */
+void main::write_moving_block(
+	app::moving_block& _block,
+	int _target_id
+) {
+
+	//Retrieve the node by ids id...
+	if(!current_map.moving_block_nodes.count(_target_id)) {
+
+		lm::log(logger).warning()<<"missing block waypoint"<<_target_id<<"\n";
+		_block.invalidate();
+		return;
+	}
+
+	//Set the block target to it moves towards the waypoint. Set also the NEXT
+	//waypoint for once we arrive.
+	const auto& waypoint=current_map.moving_block_nodes.at(_target_id);
+	_block.set_target(waypoint.point, waypoint.velocity, waypoint.wait_ms, waypoint.nextid);
 }
 
 #ifdef IS_DEBUG_BUILD

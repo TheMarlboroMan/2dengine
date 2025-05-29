@@ -111,7 +111,8 @@ class main:
 	void                        activate_tag(int, bool);
 	void                        post_tic();
 	void                        setup_area_banner(const std::string&);
-	void                        DEV_add_moving_block();
+	void                        setup_moving_blocks();
+	void                        write_moving_block(app::moving_block&, int);
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;

@@ -5,7 +5,7 @@ project no longer work :/
 
 	make the first example game
 
-		enter tower_004 and exit game, segfault.
+		aspect of moving blocks.
 
 		what's wrong with the torch animation??
 

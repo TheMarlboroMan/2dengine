@@ -4,6 +4,7 @@
 #include "d2d/collision/tile_finder_matrix.h"
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 using namespace app;
 
@@ -34,6 +35,8 @@ void thing_loader::setup() {
 	curmap.leaping_monsters.clear();
 	curmap.breaking_platforms.clear();
 	curmap.timed_traps.clear();
+	curmap.moving_blocks.clear();
+	curmap.moving_block_nodes.clear();
 }
 
 void thing_loader::load(
@@ -64,8 +67,11 @@ void thing_loader::load(
 			case 52: return add_leaping_monster(pos, _attributes);
 			case 53: return add_timed_trap(pos, _attributes);
 			case 54: return add_push_trigger(pos, _attributes);
+			case 55: return add_moving_block(pos, _attributes);
+			case 56: return add_moving_block_node(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
+			//and clear it up in the map object while you're at it!
 		}
 	}
 	catch(std::exception& e) {
@@ -506,6 +512,48 @@ void thing_loader::add_touch_trigger(
 
 	curmap.touch_triggers.push_back(
 		{ {_pos, width, height}, id, tag, used, keep_used}
+	);
+}
+
+void thing_loader::add_moving_block(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int tag=_attributes.at("tag").get_int();
+	int node_id=_attributes.at("nodeid").get_int();
+	int type=_attributes.at("type").get_int();
+	int width=_attributes.at("width").get_int();
+	int height=_attributes.at("height").get_int();
+	bool active=(bool)_attributes.at("active").get_int();
+
+	curmap.moving_blocks.push_back(
+		{ {_pos, width, height}, tag, node_id, type, active}
+	);
+}
+
+void thing_loader::add_moving_block_node(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("nodeid").get_int();
+	int nextid=_attributes.at("nextid").get_int();
+	int velocity=_attributes.at("velocity").get_int();
+	int wait_ms=_attributes.at("wait_ms").get_int();
+
+	if(curmap.moving_block_nodes.count(id)) {
+
+		std::ostringstream ss;
+		ss<<"repeated id "<<id<<" for moving block nodes!";
+		throw std::runtime_error(ss.str());
+	}
+
+	curmap.moving_block_nodes.insert(
+		std::make_pair(
+			id,
+			app::moving_block_node{_pos, id, nextid, velocity, wait_ms}
+		)
 	);
 }
 
