@@ -19,6 +19,7 @@
 #include <ldv/resource_manager.h>
 #include <d2d/video/tools.h>
 #include <d2d/video/sprite_draw.h>
+#include <d2d/video/sprite_fill_draw.h>
 
 #include <tools/json.h>
 #include <tools/file_utils.h>
@@ -32,6 +33,7 @@ game_draw::game_draw(
 	ldv::camera& _camera,
 	d2d::video::scenery_tile_draw&  _scenery_tile_draw,
 	d2d::video::sprite_draw&        _sprite_draw,
+	d2d::video::sprite_fill_draw&        _sprite_fill_draw,
 	d2d::video::animation_sprite_finder& _animation_sprite_finder,
 	ldtools::ttf_manager& _ttf_manager,
 	const ldv::resource_manager& _video_resource_manager,
@@ -40,6 +42,7 @@ game_draw::game_draw(
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
+	sprite_fill_draw(_sprite_fill_draw),
 	animation_sprite_finder(_animation_sprite_finder)
 {
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
@@ -101,6 +104,9 @@ game_draw::game_draw(
 	sprite_draw.set_camera(camera);
 	sprite_draw.set_with_camera(true);
 
+	sprite_fill_draw.set_camera(camera);
+	sprite_fill_draw.set_with_camera(true);
+
 	scenery_tile_draw.set_camera(camera);
 	scenery_tile_draw.set_with_camera(true);
 }
@@ -149,6 +155,9 @@ game_draw::~game_draw() {
 
 	sprite_draw.unset_camera();
 	sprite_draw.set_with_camera(false);
+
+	sprite_fill_draw.unset_camera();
+	sprite_fill_draw.set_with_camera(false);
 
 	scenery_tile_draw.unset_camera();
 	scenery_tile_draw.set_with_camera(false);
@@ -729,16 +738,25 @@ void game_draw::draw_moving_block(
 	const app::moving_block& _block
 ) {
 
-	//TODO: Choose block according to style!!!
+	switch(_block.get_type()) {
 
-	//TODO: This is a repeating sprite...
-	//I guess we could have a "fill" method???
-	//Or maybe we can just... hack it here xD
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_block.ent.get_box()),
-		1
-	);
+		case 0:
+			sprite_fill_draw.fill(
+				_screen, 
+				d2d::video::to_screen(_block.ent.get_box()),
+				1
+			);
+			return;
+		case 1:
+			sprite_draw.draw(
+				_screen, 
+				d2d::video::to_screen(_block.ent.get_box()),
+				16,
+				{4, 0}
+			);
+			return;
+	}
+
 }
 
 void game_draw::draw_player(

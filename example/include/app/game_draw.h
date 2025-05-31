@@ -3,6 +3,7 @@
 #include "app/env.h"
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
+#include <d2d/video/sprite_fill_draw.h>
 #include <d2d/video/animation_sprite_finder.h>
 #include <ldtools/ttf_manager.h>
 #include <ldtools/view_composer.h>
@@ -42,6 +43,7 @@ class game_draw {
 		ldv::camera&,
 		d2d::video::scenery_tile_draw&, 
 		d2d::video::sprite_draw&,
+		d2d::video::sprite_fill_draw&,
 		d2d::video::animation_sprite_finder&,
 		ldtools::ttf_manager&,
 		const ldv::resource_manager&,
@@ -61,6 +63,7 @@ class game_draw {
 	ldv::camera&                camera;
 	d2d::video::scenery_tile_draw&  scenery_tile_draw;
 	d2d::video::sprite_draw&        sprite_draw;
+	d2d::video::sprite_fill_draw&   sprite_fill_draw;
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
 
 	ldtools::view_composer      area_name_view;

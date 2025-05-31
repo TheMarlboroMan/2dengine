@@ -62,6 +62,7 @@ main::main(
 		camera, 
 		_sp.get_game_scenery_tile_draw(),
 		_sp.get_game_sprite_draw(),
+		_sp.get_game_sprite_fill_draw(),
 		_sp.get_game_animation_sprite_finder(),
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager(),
@@ -1943,7 +1944,7 @@ void main::mount_player_in_blocks(
 	}
 
 	auto player_box_copy=_player.ent.get_box();
-	player_box_copy.origin.y-=6.0; //This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
+	player_box_copy.origin.y-=2.0; //This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
 
 	bool player_attached=ctracker.is_attached(_player.ent);
 
@@ -1963,7 +1964,12 @@ void main::mount_player_in_blocks(
 
 	//TODO: Make this shit a part of the library! an attacher!
 	//This takes place AFTER the player tic... if a block is under the player,
-	//we can mount it.
+	//we can mount it. But not if we are upwards bound so that we do not snap
+	//to the floor when we have still upwards momentum.
+	if(_player.ent.get_motion_vector_y() > 0.) {
+
+		return;
+	}
 	for(const auto& plat : current_map.moving_blocks) {
 
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {

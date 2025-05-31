@@ -9,6 +9,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/spritesheet_manager.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/animation_manager.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/scenery_tile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sprite_fill_draw.cpp
 	PARENT_SCOPE
 )
 

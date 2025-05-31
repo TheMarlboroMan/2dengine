@@ -17,6 +17,7 @@ class moving_block {
 
 	int                                     get_next_id() const {return next_id;}
 	int                                     get_tag() const {return tag;}
+	int                                     get_type() const {return type;}
 	bool                                    has_arrived() const {return states::arrived==state;}
 
 	void                                    tic(ldtools::tdelta, const d2d::motion::mover&);

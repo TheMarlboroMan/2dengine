@@ -38,6 +38,7 @@ namespace d2d{
 		class spritesheet_manager;
 		class animation_manager;
 		class sprite_draw;
+		class sprite_fill_draw;
 		class animation_sprite_finder;
 		class scenery_tile_draw;
 	}
@@ -83,6 +84,7 @@ class service_provider {
 	d2d::audio::music_player& get_music_player();
 	d2d::audio::sound_player& get_sound_player();
 	d2d::video::sprite_draw& get_game_sprite_draw();
+	d2d::video::sprite_fill_draw& get_game_sprite_fill_draw();
 	d2d::video::animation_sprite_finder& get_game_animation_sprite_finder();
 	d2d::video::scenery_tile_draw& get_game_scenery_tile_draw();
 	tools::i8n&             get_localization();
@@ -111,6 +113,7 @@ class service_provider {
 	std::unique_ptr<d2d::video::animation_manager> animation_manager{nullptr};
 	std::unique_ptr<tpersistence> persistence{nullptr};
 	std::unique_ptr<d2d::video::sprite_draw> game_sprite_draw{nullptr};
+	std::unique_ptr<d2d::video::sprite_fill_draw> game_sprite_fill_draw{nullptr};
 	std::unique_ptr<d2d::video::animation_sprite_finder> game_animation_sprite_finder{nullptr};
 	std::unique_ptr<d2d::video::scenery_tile_draw> game_scenery_tile_draw{nullptr};
 	std::unique_ptr<tools::i8n> localization{nullptr};

@@ -611,7 +611,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment visual presentation
+		comment 0=block (filled) 1=platform (fixed size!)
 		linkedto nothing
 	endproperty
 	beginproperty
