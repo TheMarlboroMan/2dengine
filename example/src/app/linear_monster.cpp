@@ -125,7 +125,7 @@ void linear_monster::reset_velocity() {
 		break;
 		case types::bat:
 
-			ent.set_motion_vector_x(facing==app::faces::right 
+			ent.set_motion_vector_y(facing==app::faces::right 
 				? bat_velocity
 				: -bat_velocity
 			);
