@@ -1970,6 +1970,7 @@ void main::mount_player_in_blocks(
 
 		return;
 	}
+
 	for(const auto& plat : current_map.moving_blocks) {
 
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {

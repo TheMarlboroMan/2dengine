@@ -20,7 +20,6 @@
         aabb_phase (reusable collision solution)
         aabb_static_checker (allows checking of static positions against boxes or spatiables, does not need axis separation).
     definitions
-    exception
     ray vs aabb collision suite:
         ray_aabb_checker (produces booleans and vectors of pointers to spatiables)
         ray_aabb_finder (produces vectors of collisions).
@@ -42,7 +41,6 @@
 
 ### components
 
-    exception
     persistence
     timeouts
 
@@ -57,7 +55,6 @@
 
     attribute
     definitions 
-    exception
     map_loader
     property_processor (interface)
     thing_processor (interface)
@@ -72,11 +69,12 @@
     animation_manager
     animation_sprite_finder
     camera_map_limit
-    debug_display
-    exception
     scenery_tile
-    scenery_tile_draw
-    sprite_draw
+    drawing suite:
+        debug_display
+        scenery_tile_draw
+        sprite_draw
+        sprite_fill_draw
     spritesheet_manager
     tools
 

@@ -27,10 +27,7 @@ next steps:
 ============================0
 
 	engine:
-		Does it make sense to always have the "previous block" methods? 
-			I guess it does not really hurt, as it is more of an interface
-			thing.
-		I guess slopes
+		I guess slopes -> but this shit will wait xD!
 		tile graphics
 			maybe import the whole composer thingy.
 		the tile drawer cannot do stuff like scale or more sophisticated
