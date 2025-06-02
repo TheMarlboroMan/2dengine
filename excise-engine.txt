@@ -2,11 +2,24 @@ next steps:
 
 	make the first example game
 
+		there seems to still be a way to "fake crouch"
+			seems related to ladders, I can get it in the caves of the
+			rightmost fortress part.
+
+		one way platforms not working as intended!! (e.g. big cave in red
+			vault!)
+
+		picked up one magic key, all appeared in the inventory xD
+
+		add fake input so we can read from file (and save to it!)
+
 		what's wrong with the torch animation??
 
-		what happens if we start below forest_16, go down and try to jump up?
+		make death pits aesthetically the same (do not see player bounce!)
 
-		0_test_map_002 
+		make ladder platforms the same (ladder goes UNDER platform view)
+
+		make automap zone name golden when zone is clear xD
 
 		show data on savegame loading!
 			for this we need to store the items picked up... Does this go

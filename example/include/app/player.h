@@ -38,6 +38,7 @@ class player {
 	void                                        jump_out_of_ladder(double, double);
 	void                                        drop_out_of_ladder();
 
+	bool                                        is_crouched() const;
 	bool                                        is_defeated() const;
 	bool                                        is_defeat_timeout_done() const;
 	bool                                        has_jump_last_chance() const;

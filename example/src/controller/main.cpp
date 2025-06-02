@@ -1000,6 +1000,7 @@ void main::tic_ground(
 	if(-1==_pli.y) {
 
 		_player.crouch();
+		is_crouched=true;
 	}
 	else if(is_crouched) {
 
@@ -1038,8 +1039,7 @@ void main::tic_ground(
 	player_collision(_player, tic_vector, _delta);
 
 	//What are we doing here??
-
-	if(_pli.jump) {
+	if(_pli.jump && !_player.is_crouched()) {
 
 		_player.jump(simulation.jump_force);
 		play_sound(app::snd_jump);
@@ -1078,12 +1078,17 @@ void main::tic_ladder(
 	//Jump out or jump down...
 	if(_pli.jump && (_pli.x || -1==_pli.y)) {
 
-		//There can be no ladder exit if there are collisions with tiles.
-		//TODO: SHIT SHIT SHIT, the tiles ARE NOT A VECTOR OF SPATIABLES
-		//but a completely different type :/... And I don't want this :(.
 
-		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
-		if(!cc.has_collision(_player.ent, tiles_to_check)) {
+/**
+ * We would not allow to jump out of ladder if in a platform tile... no longer.
+		const auto tiles_to_check=adapter.find(
+			_player.ent, 
+			current_map.tile_finder
+
+		);
+*/
+//		if(!cc.has_collision(_player.ent, tiles_to_check)) {
+		if(true) {
 
 			if(-1==_pli.y) {
 

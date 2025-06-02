@@ -61,6 +61,12 @@ bool player::is_defeated() const {
 	return state==states::defeat;
 }
 
+bool player::is_crouched() const {
+
+	return state==states::crouch;
+}
+
+
 void player::reset() {
 
 	facing=faces::right;
