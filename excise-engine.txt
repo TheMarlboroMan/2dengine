@@ -2,15 +2,6 @@ next steps:
 
 	make the first example game
 
-		there seems to still be a way to "fake crouch"
-			seems related to ladders, I can get it in the caves of the
-			rightmost fortress part.
-
-		one way platforms not working as intended!! (e.g. big cave in red
-			vault!)
-
-		picked up one magic key, all appeared in the inventory xD
-
 		add fake input so we can read from file (and save to it!)
 
 		what's wrong with the torch animation??

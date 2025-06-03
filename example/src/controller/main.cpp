@@ -1277,6 +1277,7 @@ void main::grab_ladder(
 	const app::ladder& _ladder
 ) {
 
+	_player.stand_up();
 	_player.state=app::player::states::ladder;
 	_player.ent.set_motion_vector_x(0.0);
 	_player.current_ladder=&_ladder;
@@ -1879,8 +1880,10 @@ int main::player_collision(
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
-		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
-//		.detect_all(current_map.platform_blocks); //TODO: We could pass a detect if with its function too in case this is not what we want!
+		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
+
+		//TODO: Aham, is this cool??
+		.detect_all(current_map.platform_blocks); 
 
 	//This actually performs a reponse and returns the sides.
 	return cph.has_collision()

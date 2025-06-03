@@ -72,8 +72,8 @@ ray_aabb_phase& ray_aabb_phase::detect_one(
 		if(info.normal.y != 0.) {
 
 			auto edge=info.normal.y < 0.
-				? box_edge::top
-				: box_edge::bottom;
+				? box_edge::bottom
+				: box_edge::top;
 
 			if(_node.is_passable_edge(edge)) {
 
