@@ -1038,11 +1038,11 @@ void main::tic_ground(
 	auto tic_vector=ground_motion(_player, mv, _delta);
 	player_collision(_player, tic_vector, _delta);
 
-	//What are we doing here??
+	//Jumping... a buffered jump is as good as a jump per se so...
+	_pli.jump=_pli.jump || _player.has_jump_buffered();
 	if(_pli.jump && !_player.is_crouched()) {
 
-		_player.jump(simulation.jump_force);
-		play_sound(app::snd_jump);
+		player_jump(_player);
 	}
 
 	//TODO: Sound when landing too???
@@ -1149,13 +1149,20 @@ void main::tic_air(
 		return;
 	}
 
-	//Last chance to jump after we begin falling...
-	if(_pli.jump 
-		&& _player.has_jump_last_chance()
-		&& _player.ent.get_motion_vector_y() < 0.
-	) {
+	if(_pli.jump) {
 
-		_player.jump(simulation.jump_force);
+		//Last chance to jump after we begin falling...
+		if(_player.has_jump_last_chance()
+			&& _player.ent.get_motion_vector_y() < 0.
+		) {
+
+			player_jump(_player);
+		}
+		//Else, attempt to buffer a jump.
+		else {
+
+			_player.buffer_jump();
+		}
 	}
 
 
@@ -2034,6 +2041,14 @@ void main::write_moving_block(
 	const auto& waypoint=current_map.moving_block_nodes.at(_target_id);
 	lm::log(logger).info()<<"moving block is set towards "<<waypoint.point<<"\n";
 	_block.set_target(waypoint.point, waypoint.velocity, waypoint.wait_ms, waypoint.nextid);
+}
+
+void main::player_jump(
+	app::player& _player
+) {
+
+	_player.jump(simulation.jump_force);
+	play_sound(app::snd_jump);
 }
 
 #ifdef IS_DEBUG_BUILD

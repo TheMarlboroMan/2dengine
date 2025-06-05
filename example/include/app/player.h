@@ -17,7 +17,8 @@ class player {
 	enum timeout_indexes {
 		timeout_ladder=0,
 		timeout_last_jump_chance=1,
-		timeout_defeat=2
+		timeout_defeat=2,
+		timeout_jump_buffer=3
 	};
 
 	                                            player();
@@ -37,6 +38,8 @@ class player {
 	void                                        walk_out_of_ladder(int);
 	void                                        jump_out_of_ladder(double, double);
 	void                                        drop_out_of_ladder();
+	//Only in air state, starts a timer to add another jump input.
+	void                                        buffer_jump();
 
 	bool                                        is_crouched() const;
 	bool                                        is_defeated() const;
@@ -44,6 +47,7 @@ class player {
 	bool                                        has_jump_last_chance() const;
 	//When this timeout is done, ladders can be grabbed again. It resets each time a ladder is grabbed.
 	bool                                        is_ladder_timeout_done() const;
+	bool                                        has_jump_buffered() const;
 
 //	d2d::collision::box                         get_standing_box() const;
 

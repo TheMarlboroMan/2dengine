@@ -104,6 +104,7 @@ class main:
 	void                        reset_game(int, const std::string&);
 	void                        game_over();
 	void                        mount_player_in_blocks(app::player&);
+	void                        player_jump(app::player&);
 
 	//world methods.
 	void                        clear_transient_state();

@@ -9,8 +9,9 @@ player::player():
 {
 
 	timeouts.add(timeout_ladder, 0.3);
-	timeouts.add(timeout_last_jump_chance, 0.05);
+	timeouts.add(timeout_last_jump_chance, 0.1);
 	timeouts.add(timeout_defeat, 2.);
+	timeouts.add(timeout_jump_buffer, 0.1, 0.1);
 }
 
 void player::tic(
@@ -23,6 +24,7 @@ void player::tic(
 	std::stringstream ss;
 	ss<<"ladder "<<timeouts.at(timeout_ladder)
 		<<" jump "<<timeouts.at(timeout_last_jump_chance)
+		<<" buffer "<<timeouts.at(timeout_jump_buffer)
 		<<" defeat "<<timeouts.at(timeout_defeat)
 		<<"\n";
 	app::debug::log().debug()<<ss.str();
@@ -56,6 +58,11 @@ void player::jump(
 	jump_shortened=false;
 }
 
+void player::buffer_jump() {
+
+	timeouts.restart(player::timeout_jump_buffer);
+}
+
 bool player::is_defeated() const {
 
 	return state==states::defeat;
@@ -65,7 +72,6 @@ bool player::is_crouched() const {
 
 	return state==states::crouch;
 }
-
 
 void player::reset() {
 
@@ -156,6 +162,11 @@ void player::start_falling() {
 bool player::has_jump_last_chance() const {
 
 	return timeouts.is_running(timeout_last_jump_chance);
+}
+
+bool player::has_jump_buffered() const {
+
+	return !timeouts.is_finished(timeout_jump_buffer);
 }
 
 bool player::is_defeat_timeout_done() const {
