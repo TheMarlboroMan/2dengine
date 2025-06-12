@@ -717,6 +717,49 @@ beginobject
 endobject
 
 beginobject
+	id 58
+	name toggle_block
+	w 16
+	h 16
+	color 70 43 84 255
+	beginproperty
+		name width
+		type int
+		default 1
+		comment width in tiles
+		linkedto nothing
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 1
+		comment height in tiles
+		linkedto nothing
+	endproperty
+	beginproperty
+		name active
+		type int
+		default 1
+		comment 0=initially inactive 1=initially active
+		linkedto nothing
+	endproperty
+	beginproperty
+		name type
+		type int
+		default 0
+		comment display type, 0=block
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

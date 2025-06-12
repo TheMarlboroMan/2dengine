@@ -6,8 +6,6 @@ next steps:
 		- sound when door and no discoveries
 
 		- easy stuff
-
-			- platforms that trigger on jump
 			- timed platforms, ragequit inducing.
 				- if one appears at your position go you to its bottom.
 

@@ -183,6 +183,15 @@ class main:
 		}
 	};
 
+	//TODO: Might as well mode this stuff out of here...
+	struct toggle_blocks_fn{
+
+		bool operator()(const app::toggle_block& _block) const {
+
+			return _block.is_active();
+		}
+	};
+
 	template<typename T>
 	struct spatiable_dereferencer{
 

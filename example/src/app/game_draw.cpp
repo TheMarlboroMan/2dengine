@@ -14,6 +14,7 @@
 #include "app/breaking_platform.h"
 #include "app/platform_block.h"
 #include "app/facing_block.h"
+#include "app/toggle_block.h"
 #include "app/exit.h"
 
 #include <ldv/color.h>
@@ -238,6 +239,11 @@ void game_draw::draw(
 	for(const auto& subject : _map.facing_blocks) {
 
 		draw_facing_block(_screen, subject);
+	}
+
+	for(const auto& subject : _map.toggle_blocks) {
+
+		draw_toggle_block(_screen, subject);
 	}
 
 	draw_player(_screen, _player);
@@ -794,6 +800,28 @@ void game_draw::draw_facing_block(
 	}
 }
 
+void game_draw::draw_toggle_block(
+	ldv::screen& _screen,
+	const app::toggle_block& _block
+) {
+
+	if(!_block.is_active()) {
+
+		return;
+	}
+
+	switch(_block.get_type()) {
+
+		case 0:
+			sprite_fill_draw.fill(
+				_screen, 
+				d2d::video::to_screen(_block.ent.get_box()),
+				1
+			);
+			return;
+	}
+}
+
 void game_draw::draw_player(
 	ldv::screen& _screen,
 	const app::player& _player
@@ -901,16 +929,33 @@ void game_draw::draw_exit(
 		ldv::box_representation::type::fill
 	};
 
+
+	//And a white box around that one.
+	text_pos.grow(2);
+	ldv::box_representation border{
+		text_pos,
+		ldv::rgba_color(255,255,255,255),
+		ldv::box_representation::type::fill
+	};
+
 	//Align everything and draw.
 
 	auto exit_box=d2d::video::to_screen_rect(_exit.ent);
 	//
-	box.align(
+	border.align(
 		exit_box, 
 		{
 			ldv::representation_alignment::h::center,
 			ldv::representation_alignment::v::outer_top,
-			0, 2
+			0, 1
+		}
+	);
+
+	box.align(
+		border,
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::center
 		}
 	);
 
@@ -922,6 +967,7 @@ void game_draw::draw_exit(
 		}
 	);
 
+	border.draw(_screen, camera);
 	box.draw(_screen, camera);
 	text.draw(_screen, camera);
 }

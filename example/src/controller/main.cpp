@@ -546,6 +546,11 @@ void main::restart_level() {
 
 		block.reset();
 	}
+
+	for(auto& block : current_map.toggle_blocks) {
+
+		block.reset();
+	}
 	
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -1539,6 +1544,8 @@ bool main::is_on_air(
 		return false;
 	}
 
+	//TODO: This got ugly quick!
+
 	for(const auto& plat : current_map.moving_blocks) {
 
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
@@ -1561,6 +1568,19 @@ bool main::is_on_air(
 	}
 
 	for(const auto& plat : current_map.facing_blocks) {
+
+		if(!plat.is_active()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
+
+			return false;
+		}
+	}
+
+	for(const auto& plat : current_map.toggle_blocks) {
 
 		if(!plat.is_active()) {
 
@@ -1925,6 +1945,7 @@ int main::player_collision(
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
 		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
+		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
 
@@ -2088,6 +2109,11 @@ void main::player_jump(
 
 	_player.jump(simulation.jump_force);
 	play_sound(app::snd_jump);
+
+	for(auto& block : current_map.toggle_blocks) {
+
+		block.toggle();
+	}
 }
 
 void main::sync_facing_blocks() {

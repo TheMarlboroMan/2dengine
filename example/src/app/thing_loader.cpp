@@ -38,6 +38,7 @@ void thing_loader::setup() {
 	curmap.moving_blocks.clear();
 	curmap.moving_block_nodes.clear();
 	curmap.facing_blocks.clear();
+	curmap.toggle_blocks.clear();
 }
 
 void thing_loader::load(
@@ -71,6 +72,7 @@ void thing_loader::load(
 			case 55: return add_moving_block(pos, _attributes);
 			case 56: return add_moving_block_node(pos, _attributes);
 			case 57: return add_facing_block(pos, _attributes);
+			case 58: return add_toggle_block(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -575,5 +577,20 @@ void thing_loader::add_facing_block(
 
 	curmap.facing_blocks.push_back(
 		{ {_pos, width, height}, face, type}
+	);
+}
+
+void thing_loader::add_toggle_block(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int type=_attributes.at("type").get_int();
+	int width=_attributes.at("width").get_int()*app::tile_w;
+	int height=_attributes.at("height").get_int()*app::tile_h;
+	bool active=_attributes.at("active").get_int()==1;
+
+	curmap.toggle_blocks.push_back(
+		{ {_pos, width, height}, active, type}
 	);
 }

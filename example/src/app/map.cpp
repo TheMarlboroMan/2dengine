@@ -39,6 +39,7 @@ std::ostream& app::operator<<(
 	print_node("moving_blocks", _map.moving_blocks, _stream);
 	print_node("moving_block_nodes", _map.moving_block_nodes, _stream);
 	print_node("facing_blocks", _map.facing_blocks, _stream);
+	print_node("toggle_blocks", _map.toggle_blocks, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -69,6 +70,7 @@ void map::clear() {
 	moving_blocks.clear();
 	moving_block_nodes.clear();
 	facing_blocks.clear();
+	toggle_blocks.clear();
 
 	projectiles.clear();
 }

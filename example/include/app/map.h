@@ -19,6 +19,7 @@
 #include "moving_block.h"
 #include "moving_block_node.h"
 #include "facing_block.h"
+#include "toggle_block.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -60,6 +61,7 @@ class map {
 	std::vector<moving_block>               moving_blocks;
 	std::map<int, moving_block_node>        moving_block_nodes;
 	std::vector<facing_block>               facing_blocks;
+	std::vector<toggle_block>               toggle_blocks;
 	std::vector<app::projectile>            projectiles;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};

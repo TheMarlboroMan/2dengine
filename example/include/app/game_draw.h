@@ -33,7 +33,9 @@ class breaking_platform;
 class platform_block;
 class moving_block;
 class facing_block;
+class toggle_block;
 class exit;
+class moving_block;
 
 /**
  * business class to draw the main game state.
@@ -92,5 +94,6 @@ class game_draw {
 	void                        draw_moving_block(ldv::screen&, const app::moving_block&);
 	void                        draw_facing_block(ldv::screen&, const app::facing_block&);
 	void                        draw_exit(ldv::screen&, const app::exit&, int);
+	void                        draw_toggle_block(ldv::screen&, const app::toggle_block&);
 };
 }
