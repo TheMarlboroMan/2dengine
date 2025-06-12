@@ -197,6 +197,21 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
+			"id":"rooms_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[18, 18, 12, 12],
+			"location":[16, 48, 12, 12]
+		},
+		{
+			"id":"rooms_value",
+			"type":"ttf",
+			"location":[32, 48],
+			"text":" x 99",
+			"font":"pause_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
 			"id":"lives_icon",
 			"type":"bitmap",
 			"texture":"main",
@@ -224,21 +239,21 @@
 			"type":"bitmap",
 			"texture":"main",
 			"clip":[80, 3, 16, 10],
-			"location":[16, 48, 16, 10]
+			"location":[144, 48, 16, 10]
 		},
 		{
 			"id":"blue_key_icon",
 			"type":"bitmap",
 			"texture":"main",
 			"clip":[64, 3, 16, 10],
-			"location":[36, 48, 16, 10]
+			"location":[164, 48, 16, 10]
 		},
 		{
 			"id":"green_key_icon",
 			"type":"bitmap",
 			"texture":"main",
 			"clip":[48, 19, 16, 10],
-			"location":[56, 48, 16, 10]
+			"location":[184, 48, 16, 10]
 		}
 	],
 	"lives_banner":[

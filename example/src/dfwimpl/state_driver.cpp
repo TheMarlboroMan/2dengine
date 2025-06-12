@@ -17,6 +17,8 @@
 #include "controller/controls.h"
 #ifdef IS_DEBUG_BUILD
 	#include "controller/test.h"
+	#include <dfw/input_recorder_file_8bit.h>
+	#include <dfw/input_generator_file_8bit.h>
 #endif
 //[new-controller-header-mark]
 //
@@ -64,7 +66,7 @@ void state_driver::init(
 
 	lm::log(log).info()<<"state driver fully constructed"<<std::endl;
 
-	start_app(kernel.get_arg_manager());
+	start_app(kernel.get_arg_manager(), kernel.get_input());
 }
 
 void state_driver::prepare_video(dfw::kernel& kernel) {
@@ -282,7 +284,8 @@ void state_driver::virtualize_input(dfw::input& input) {
 }
 
 void state_driver::start_app(
-	const tools::arg_manager& _argman
+	const tools::arg_manager& _argman,
+	dfw::input& _in
 ) {
 
 #ifdef IS_DEBUG_BUILD
@@ -323,6 +326,39 @@ void state_driver::start_app(
 
 		auto& mainc=static_cast<controller::main&>(*c_main);
 		mainc.start(_argman.get_following("--map"), entry_id);
+	}
+
+	if(_argman.exists("--record")) {
+
+		dfw::input_recorder_file_8bit * ir=new dfw::input_recorder_file_8bit{_in, input_converter};
+		ir->open_file("recorded-play");
+		ir->set_active(true);
+		ir->set_inputs({
+			app::input::escape,
+			app::input::left,
+			app::input::right,
+			app::input::up,
+			app::input::down,
+			app::input::jump,
+			app::input::pause
+		});
+
+		input_recorder.reset(ir);
+//TODO: Should be checked in dfw::input to see if any inputs are being watched.
+		_in.set_recorder(input_recorder.get());
+
+		lm::log(log).info()<<"inputs will be recorded to recorded-play"<<std::endl;
+	}
+	else if(_argman.exists("--replay")) {
+
+		dfw::input_generator_file_8bit * ig=new dfw::input_generator_file_8bit{input_converter};
+		ig->set_active(true);
+		ig->open_file("recorded-play"); 
+
+		input_generator.reset(ig);
+		_in.set_generator(input_generator.get());
+
+		lm::log(log).info()<<"inputs will be replayed from recorded-play"<<std::endl;
 	}
 
 #endif

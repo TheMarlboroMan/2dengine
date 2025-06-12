@@ -26,6 +26,7 @@ pause::pause(
 	automap_interface{automap},
 	map_representation{{0,0}},
 	//TODO: Maybe 3 colors: current, complete and incomplete???
+	//
 	wall_complete{ldv::rgba8(255, 255, 255, 255)},
 	wall_incomplete{ldv::rgba8(157, 157, 157, 255)},
 	regular_fill{ldv::rgba8(164, 100, 34, 255)},
@@ -68,6 +69,10 @@ void pause::awake(
 	ss.str("");
 	ss<<" x "<<inventory.yellow_keys;
 	view.set_text("keys_value", ss.str());
+
+	ss.str("");
+	ss<<" x "<<persistence.size(app::pergr_automap);
+	view.set_text("rooms_value", ss.str());
 
 	if(game_session.is_with_lives()) {
 
@@ -182,11 +187,11 @@ void pause::draw(
 void pause::ready_map() {
 
 	const auto& area=automap_interface.get();
-	view.set_text("area_name", localization.get(area.localization_key));
 
 	//Get all cells for the current area and filter them with the
 	//persistence layer. If we can see it then it has been discovered.
 	//and should be drawn.
+
 	std::vector<const app::map_cell*> cells;
 	for(const auto& cell : area.cells) {
 
@@ -202,13 +207,19 @@ void pause::ready_map() {
 
 			cells.push_back(&cell);
 		}
+
 #endif
 	}
 
 	map_representation.clear();
+
+	bool area_complete=cells.size() == area.cells.size();
 	for(const auto& cell : cells) {
 
-		ready_room(*cell);
+		if(!ready_room(*cell)) {
+
+			area_complete=false;
+		}
 	}
 
 	//only distant parts of the map (from 0.0) may be available, so in 
@@ -237,6 +248,12 @@ void pause::ready_map() {
 
 #endif
 
+	auto area_color=area_complete
+		? ldv::rgba8(247, 226, 107, 255)
+		: ldv::rgba8(255, 255, 255, 255);
+
+	view.set_text("area_name", localization.get(area.localization_key));
+	view.set_text_color("area_name", area_color);
 	auto area_name=view.get_by_id("area_name");
 	area_name->align(
 		*center_box,
@@ -247,7 +264,7 @@ void pause::ready_map() {
 	);
 }
 
-void pause::ready_room(
+bool pause::ready_room(
 	const app::map_cell& _cell
 ) {
 
@@ -257,6 +274,9 @@ void pause::ready_room(
 	    y=_cell.y*hu;
 	unsigned w=_cell.w*wu,
 		h=_cell.h*hu;
+
+	bool room_complete=persistence.has(app::pergr_automap, _cell.id)
+		&& persistence.get(app::pergr_automap, _cell.id)==app::am_complete;
 
 	auto wall_color=!persistence.has(app::pergr_automap, _cell.id)
 			? wall_incomplete
@@ -347,6 +367,8 @@ void pause::ready_room(
 			}
 		}
 	}
+
+	return room_complete;
 }
 
 void pause::evaluate_timeout(

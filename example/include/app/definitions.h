@@ -152,8 +152,8 @@ enum tile_types {
 };
 
 enum class faces {
-	left,
-	right
+	left, //assume 0
+	right //assume 1
 };
 
 }

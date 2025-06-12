@@ -13,6 +13,7 @@
 #include "app/projectile.h"
 #include "app/breaking_platform.h"
 #include "app/platform_block.h"
+#include "app/facing_block.h"
 
 #include <ldv/color.h>
 #include <ldv/box_representation.h>
@@ -211,24 +212,29 @@ void game_draw::draw(
 		draw_linear_monster(_screen, monster);
 	}
 
-	for(const auto& monster : _map.leaping_monsters) {
+	for(const auto& subject : _map.leaping_monsters) {
 
-		draw_leaping_monster(_screen, monster);
+		draw_leaping_monster(_screen, subject);
 	}
 
-	for(const auto& trap : _map.timed_traps) {
+	for(const auto& subject : _map.timed_traps) {
 
-		draw_timed_trap(_screen, trap);
+		draw_timed_trap(_screen, subject);
 	}
 
-	for(const auto& projectile : _map.projectiles) {
+	for(const auto& subject : _map.projectiles) {
 
-		draw_projectile(_screen, projectile);
+		draw_projectile(_screen, subject);
 	}
 
-	for(const auto& platform : _map.moving_blocks) {
+	for(const auto& subject : _map.moving_blocks) {
 
-		draw_moving_block(_screen, platform);
+		draw_moving_block(_screen, subject);
+	}
+
+	for(const auto& subject : _map.facing_blocks) {
+
+		draw_facing_block(_screen, subject);
 	}
 
 	draw_player(_screen, _player);
@@ -756,7 +762,28 @@ void game_draw::draw_moving_block(
 			);
 			return;
 	}
+}
 
+void game_draw::draw_facing_block(
+	ldv::screen& _screen,
+	const app::facing_block& _block
+) {
+
+	if(!_block.is_active()) {
+
+		return;
+	}
+
+	switch(_block.get_type()) {
+
+		case 0:
+			sprite_fill_draw.fill(
+				_screen, 
+				d2d::video::to_screen(_block.ent.get_box()),
+				1
+			);
+			return;
+	}
 }
 
 void game_draw::draw_player(

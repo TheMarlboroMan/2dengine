@@ -37,6 +37,7 @@ void thing_loader::setup() {
 	curmap.timed_traps.clear();
 	curmap.moving_blocks.clear();
 	curmap.moving_block_nodes.clear();
+	curmap.facing_blocks.clear();
 }
 
 void thing_loader::load(
@@ -69,6 +70,7 @@ void thing_loader::load(
 			case 54: return add_push_trigger(pos, _attributes);
 			case 55: return add_moving_block(pos, _attributes);
 			case 56: return add_moving_block_node(pos, _attributes);
+			case 57: return add_facing_block(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -102,6 +104,7 @@ void thing_loader::add_exit(
 	int w=_attributes.at("width").get_int();
 	int h=_attributes.at("height").get_int();
 	int next_id=_attributes.at("next_entry_id").get_int();
+	int min_rooms=_attributes.at("min_rooms").get_int();
 	bool touch=_attributes.at("type").get_int()==1;
 	std::string filename=_attributes.at("map_filename").get_string();
 
@@ -109,6 +112,7 @@ void thing_loader::add_exit(
 		{ {_pos.x, _pos.y}, w, h},
 		filename,
 		next_id,
+		min_rooms,
 		touch
 	});
 }
@@ -557,3 +561,19 @@ void thing_loader::add_moving_block_node(
 	);
 }
 
+void thing_loader::add_facing_block(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int type=_attributes.at("type").get_int();
+	int width=_attributes.at("width").get_int()*app::tile_w;
+	int height=_attributes.at("height").get_int()*app::tile_h;
+	faces face=_attributes.at("facing").get_int()==1
+		? faces::right
+		: faces::left;
+
+	curmap.facing_blocks.push_back(
+		{ {_pos, width, height}, face, type}
+	);
+}

@@ -34,7 +34,7 @@ class pause:
 	private:
 
 	void                        ready_map();
-	void                        ready_room(const app::map_cell&);
+	bool                        ready_room(const app::map_cell&);
 	void                        evaluate_timeout(ldtools::tdelta);
 
 	const appenv::env&          env;

@@ -114,6 +114,9 @@ class main:
 	void                        setup_area_banner(const std::string&);
 	void                        setup_moving_blocks();
 	void                        write_moving_block(app::moving_block&, int);
+	void                        sync_facing_blocks();
+	bool                        is_map_complete(const std::string="") const;
+	void                        mark_map_as_complete();
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;
@@ -168,6 +171,15 @@ class main:
 		bool operator()(const app::breaking_platform& _block) const {
 
 			return _block.is_solid();
+		}
+	};
+
+	//TODO: Might as well mode this stuff out of here...
+	struct facing_blocks_fn{
+
+		bool operator()(const app::facing_block& _block) const {
+
+			return _block.is_active();
 		}
 	};
 

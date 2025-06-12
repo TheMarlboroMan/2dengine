@@ -38,6 +38,7 @@ class thing_loader
 	void                add_push_trigger(d2d::collision::point, const attrmap&);
 	void                add_moving_block(d2d::collision::point, const attrmap&);
 	void                add_moving_block_node(d2d::collision::point, const attrmap&);
+	void                add_facing_block(d2d::collision::point, const attrmap&);
 
 	double              find_lower_x_bound(d2d::collision::tile_coords) const;
 	double              find_upper_x_bound(d2d::collision::tile_coords) const;

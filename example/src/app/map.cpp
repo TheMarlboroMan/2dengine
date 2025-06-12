@@ -38,6 +38,7 @@ std::ostream& app::operator<<(
 	print_node("push_triggers", _map.push_triggers, _stream);
 	print_node("moving_blocks", _map.moving_blocks, _stream);
 	print_node("moving_block_nodes", _map.moving_block_nodes, _stream);
+	print_node("facing_blocks", _map.facing_blocks, _stream);
 	_stream<<"]";
 
 	return _stream;
@@ -67,6 +68,7 @@ void map::clear() {
 	push_triggers.clear();
 	moving_blocks.clear();
 	moving_block_nodes.clear();
+	facing_blocks.clear();
 
 	projectiles.clear();
 }

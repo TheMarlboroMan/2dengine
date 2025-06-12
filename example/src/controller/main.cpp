@@ -303,6 +303,8 @@ void main::load_map(
 		activate_tag(trigger.tag, true);
 	}
 
+	sync_facing_blocks();
+
 	//After loading the map, tell the camera where the limits are. We use
 	//removing harm tiles/solid but no camera, to allow for these to exist outside
 	//the camera boundaries.
@@ -326,12 +328,17 @@ void main::load_map(
 		persistence.add(
 			app::pergr_automap, 
 			automap_id, 
-			current_map.collectibles.size() ? app::am_discovered : app::am_complete
+			app::am_discovered
 		);
 
 		lm::log(logger).debug()<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
-	}
 
+		if(is_map_complete()) {
+
+			mark_map_as_complete();
+		}
+	}
+	
 	//std::cout<<current_map<<std::endl;
 }
 
@@ -339,6 +346,23 @@ void main::exit_to(
 	app::player& _player,
 	app::exit _exit
 ) {
+
+	if(0!=_exit.min_rooms) {
+
+		auto visited=persistence.size(app::pergr_automap);
+		if(visited < _exit.min_rooms) {
+
+			lm::log(logger).debug()<<"cannot enter, "<<visited<<"/"<<_exit.min_rooms<<" rooms visited"<<std::endl;
+			return;
+		}
+	}
+
+	//first off, is the current map complete?
+	if(is_map_complete(_exit.map_filename)) {
+
+		mark_map_as_complete();
+	}
+
 /**
  * there is a reason why arguments are copied: the exit belongs to the map
  * which will get unloaded soon and would cause the original reference or
@@ -553,6 +577,8 @@ void main::tic(
 
 	player.tic(_delta);
 
+	const auto prev_face=player.facing;
+
 	switch(player.state) {
 
 		case app::player::states::ground:
@@ -573,6 +599,10 @@ void main::tic(
 		break;
 	}
 
+	if(player.facing!=prev_face) {
+
+		sync_facing_blocks();
+	}
 
 	const auto player_moved=player.ent.has_moved();
 	const auto player_defeated=player.is_defeated();
@@ -582,7 +612,7 @@ void main::tic(
 		mount_player_in_blocks(player);
 	}
 
-	//Commit al movement boxes now...
+	//Commit all movement boxes now...
 	player.ent.commit_box();
 	for(auto& block : current_map.moving_blocks) {
 
@@ -718,17 +748,12 @@ void main::post_tic() {
 		pick_up_collectible(player, *it);
 		it=current_map.collectibles.erase(it);
 		it++;
-	}
 
-	//Must we update the automap state because this room is now complete???
-	//TODO: I don't like this here, but the collectibles are deleted here...
-	if(!current_map.collectibles.size()) {
+		//Must we update the automap state because this room is now complete???
+		if(is_map_complete()) {
 
-		persistence.set(
-			app::pergr_automap,
-			game_session.current_map_id,
-			app::am_complete
-		);
+			mark_map_as_complete();
+		}
 	}
 
 	//Are we breaking any breakable platforms?
@@ -1535,6 +1560,19 @@ bool main::is_on_air(
 		}
 	}
 
+	for(const auto& plat : current_map.facing_blocks) {
+
+		if(!plat.is_active()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
+
+			return false;
+		}
+	}
+
 	return true;
 }
 
@@ -1886,6 +1924,7 @@ int main::player_collision(
 	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
+		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
 
@@ -2051,8 +2090,69 @@ void main::player_jump(
 	play_sound(app::snd_jump);
 }
 
+void main::sync_facing_blocks() {
+
+	for(auto& block : current_map.facing_blocks) {
+
+		block.sync(player.facing);
+	}
+}
+
+/**
+ * we can pass around an optional string representing a map
+ * we are entering, so we can check doors against this map
+ * filename and skip them.
+ */
+bool main::is_map_complete(
+	const std::string _next_map
+) const {
+
+	if(current_map.collectibles.size()) {
+
+		lm::log(logger).debug()<<"there collectibles remaining in the map"<<std::endl;
+		return false;
+	}
+
+	const auto& automap_srv=sp.get_automap();
+	app::automap_game automap{automap_srv};
+	for(const auto& exit : current_map.exits) {
+
+		if(0==exit.min_rooms) {
+
+			continue;
+		}
+
+		if(_next_map==exit.map_filename) {
+
+			continue;
+		}
+
+		int automap_id=automap.map_id_from_map(exit.map_filename);
+		if(!persistence.has(app::pergr_automap, automap_id)) { 
+
+			lm::log(logger).debug()<<"there are undiscovered exits in the map"<<std::endl;
+			return false;
+		}
+	}
+
+	lm::log(logger).debug()<<"map is complete"<<std::endl;
+
+	return true;
+}
+
+void main::mark_map_as_complete() {
+
+	persistence.set(
+		app::pergr_automap,
+		game_session.current_map_id,
+		app::am_complete
+	);
+}
+
 #ifdef IS_DEBUG_BUILD
 
 #include "main.debug.cpp"
 
 #endif
+
+
