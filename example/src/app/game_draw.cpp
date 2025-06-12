@@ -14,6 +14,7 @@
 #include "app/breaking_platform.h"
 #include "app/platform_block.h"
 #include "app/facing_block.h"
+#include "app/exit.h"
 
 #include <ldv/color.h>
 #include <ldv/box_representation.h>
@@ -44,7 +45,8 @@ game_draw::game_draw(
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
 	sprite_fill_draw(_sprite_fill_draw),
-	animation_sprite_finder(_animation_sprite_finder)
+	animation_sprite_finder(_animation_sprite_finder),
+	exit_number_font{_ttf_manager.get("exit_number_font", 8)}
 {
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
@@ -167,7 +169,8 @@ game_draw::~game_draw() {
 void game_draw::draw(
 	ldv::screen& _screen,
 	const app::map& _map,
-	const app::player& _player
+	const app::player& _player,
+	int _discovered_rooms
 ) {
 
 	_screen.clear(_map.background_color);
@@ -239,6 +242,11 @@ void game_draw::draw(
 
 	draw_player(_screen, _player);
 	scenery_tile_draw.draw_animation(_screen, _map.foreground_tiles);
+
+	for(const auto& subject : _map.exits) {
+
+		draw_exit(_screen, subject, _discovered_rooms);
+	}
 
 	for(const auto& secret_cover : _map.secret_covers) {
 
@@ -861,3 +869,60 @@ void game_draw::draw_player(
 		mod
 	);
 }
+
+void game_draw::draw_exit(
+	ldv::screen& _screen,
+	const app::exit& _exit,
+	int _discovered_rooms
+) {
+
+	if(!_exit.min_rooms) {
+
+		return;
+	}
+
+	auto color=_discovered_rooms < _exit.min_rooms
+		? ldv::rgba8(190, 38, 51, 255)
+		: ldv::rgba8(163, 206, 39, 255);
+
+	ldv::ttf_representation text{
+		exit_number_font, 
+		color,
+		std::to_string(_exit.min_rooms)
+	};
+
+	//Add a little black box around it...
+	auto text_pos=text.get_text_position();
+	text_pos.grow(4);
+
+	ldv::box_representation box{
+		text_pos,
+		ldv::rgba_color(0,0,0,255),
+		ldv::box_representation::type::fill
+	};
+
+	//Align everything and draw.
+
+	auto exit_box=d2d::video::to_screen_rect(_exit.ent);
+	//
+	box.align(
+		exit_box, 
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::outer_top,
+			0, 2
+		}
+	);
+
+	text.align(
+		box,
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::center
+		}
+	);
+
+	box.draw(_screen, camera);
+	text.draw(_screen, camera);
+}
+

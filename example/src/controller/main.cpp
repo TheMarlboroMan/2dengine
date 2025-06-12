@@ -349,7 +349,7 @@ void main::exit_to(
 
 	if(0!=_exit.min_rooms) {
 
-		auto visited=persistence.size(app::pergr_automap);
+		int visited=persistence.size(app::pergr_automap);
 		if(visited < _exit.min_rooms) {
 
 			lm::log(logger).debug()<<"cannot enter, "<<visited<<"/"<<_exit.min_rooms<<" rooms visited"<<std::endl;
@@ -1290,7 +1290,7 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	gd.draw(_screen, current_map, player);
+	gd.draw(_screen, current_map, player, persistence.size(app::pergr_automap));
 
 	if(game_timeouts.is_running(timeout_area_banner)) {
 

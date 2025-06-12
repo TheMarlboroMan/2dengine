@@ -2,8 +2,8 @@ next steps:
 
 	make the first example game
 
-		- Notify player when a door cannot be entered
-			- how???
+		- sound when switch and no key
+		- sound when door and no discoveries
 
 		- easy stuff
 

@@ -10,6 +10,7 @@
 #include <ldv/screen.h>
 #include <ldv/camera.h>
 #include <ldv/ttf_representation.h>
+#include <ldv/ttf_font.h>
 #include <ldv/box_representation.h>
 #include <ldv/bitmap_representation.h>
 #include <ldv/resource_manager.h>
@@ -32,6 +33,7 @@ class breaking_platform;
 class platform_block;
 class moving_block;
 class facing_block;
+class exit;
 
 /**
  * business class to draw the main game state.
@@ -52,7 +54,7 @@ class game_draw {
 	);
 	                            ~game_draw();
 
-	void                        draw(ldv::screen&, const app::map&, const app::player&);
+	void                        draw(ldv::screen&, const app::map&, const app::player&, int discovered_rooms);
 	void                        draw_area_name_banner(ldv::screen&);
 	void                        draw_lives_banner(ldv::screen&);
 
@@ -69,6 +71,7 @@ class game_draw {
 
 	ldtools::view_composer      area_name_view;
 	ldtools::view_composer      lives_banner_view;
+	ldv::ttf_font               exit_number_font;
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
@@ -88,5 +91,6 @@ class game_draw {
 	void                        draw_platform(ldv::screen&, const app::platform_block&);
 	void                        draw_moving_block(ldv::screen&, const app::moving_block&);
 	void                        draw_facing_block(ldv::screen&, const app::facing_block&);
+	void                        draw_exit(ldv::screen&, const app::exit&, int);
 };
 }
