@@ -1,11 +1,13 @@
 #include "d2d/collision/aabb_phase.h"
 #include "d2d/collision/exception.h"
+#include "d2d/collision/tools.h"
+#include "d2d/collision/aabb_checker.h"
 
 using namespace d2d::collision;
 
 aabb_phase::aabb_phase(
 	d2d::collision::spatiable& _subject,
-	d2d::collision::aabb_checker::phases _phase
+	d2d::collision::aabb_phase::phases _phase
 ):
 	collision_phase{_phase},
 	subject{_subject}
@@ -39,7 +41,7 @@ aabb_phase& aabb_phase::detect_one(
 	int _flags
 ) {
 
-	if(checker.check(subject, _node, collision_phase, _flags)) {
+	if(check(subject, _node, collision_phase, _flags)) {
 
 		collision_found=true;
 		results.push_back(&_node);
@@ -58,10 +60,10 @@ void aabb_phase::response_generic() {
 	auto collision_solver=d2d::collision::aabb_solver{};
 
 	switch(collision_phase) {
-		case d2d::collision::aabb_checker::phases::horizontal:
+		case d2d::collision::aabb_phase::phases::horizontal:
 			collision_solver.horizontal(subject, results);
 			return;
-		case d2d::collision::aabb_checker::phases::vertical:
+		case d2d::collision::aabb_phase::phases::vertical:
 			collision_solver.vertical(subject, results);
 			return;
 	}
@@ -77,11 +79,53 @@ d2d::collision::aabb_response aabb_phase::response_complex() {
 	auto collision_solver=d2d::collision::aabb_solver{};
 
 	switch(collision_phase) {
-		case d2d::collision::aabb_checker::phases::horizontal:
+		case d2d::collision::aabb_phase::phases::horizontal:
 			return collision_solver.horizontal_complex(subject, results);
-		case d2d::collision::aabb_checker::phases::vertical:
+		case d2d::collision::aabb_phase::phases::vertical:
 			return collision_solver.vertical_complex(subject, results);
 	}
 
 	throw exception("shut up compiler");
+}
+
+bool aabb_phase::check(
+	const d2d::collision::spatiable& _subject,
+	const d2d::collision::spatiable& _obstacle,
+	phases _phase,
+	int _flags
+) const {
+
+	if(!d2d::collision::collides_with(_obstacle, _subject)) {
+
+		return false;
+	}
+
+	if(_flags & aabb_checker::flag_skip_passable_side_check) {
+
+		return true;
+	}
+
+	switch(_phase) {
+
+		case phases::horizontal: {
+
+			auto edge=d2d::collision::is_right_of(_obstacle, _subject.get_previous_box())
+				? box_edge::left
+				: box_edge::right;
+
+			return !_obstacle.is_passable_edge(edge);
+		}
+		break;
+		case phases::vertical: {
+
+			auto edge=d2d::collision::is_below(_obstacle, _subject.get_previous_box())
+				? box_edge::top
+				: box_edge::bottom;
+
+			return !_obstacle.is_passable_edge(edge);
+		}
+		break;
+	}
+
+	return false; //never gonna happen.
 }

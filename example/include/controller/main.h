@@ -117,6 +117,7 @@ class main:
 	void                        sync_facing_blocks();
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
+	int                         get_discovered_map_count() const;
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;
@@ -164,42 +165,6 @@ class main:
 		bool has_changed_area() const {return previous_id != current_id;}
 	}                           area_change_info;
 
-	/** filter for collisions with breaking platforms. */
-	//TODO: Might as well mode this stuff out of here...
-	struct breaking_platforms_fn{
-
-		bool operator()(const app::breaking_platform& _block) const {
-
-			return _block.is_solid();
-		}
-	};
-
-	//TODO: Might as well mode this stuff out of here...
-	struct facing_blocks_fn{
-
-		bool operator()(const app::facing_block& _block) const {
-
-			return _block.is_active();
-		}
-	};
-
-	//TODO: Might as well mode this stuff out of here...
-	struct toggle_blocks_fn{
-
-		bool operator()(const app::toggle_block& _block) const {
-
-			return _block.is_active();
-		}
-	};
-
-	template<typename T>
-	struct spatiable_dereferencer{
-
-		const d2d::collision::spatiable& operator()(const T& _node) const {return _node.ent;}
-	};
-
-	//TODO: Can we have a typename for the gate ones???
-
 #ifdef IS_DEBUG_BUILD
 
 	void                        reload_values();
@@ -217,6 +182,40 @@ class main:
 	void                        console_display_onenter(const std::string&);
 
 #endif
+
+	//We will also need some nice predicates and dereferencers...
+	struct breaking_platforms_fn{
+
+		bool operator()(const app::breaking_platform& _block) const {
+
+			return _block.is_solid();
+		}
+	};
+
+	//TODO: can this be a "template"???
+	struct facing_blocks_fn{
+
+		bool operator()(const app::facing_block& _block) const {
+
+			return _block.is_active();
+		}
+	};
+
+	struct toggle_blocks_fn{
+
+		bool operator()(const app::toggle_block& _block) const {
+
+			return _block.is_active();
+		}
+	};
+
+	template<typename T>
+	struct spatiable_dereferencer{
+
+		const d2d::collision::spatiable& operator()(const T& _node) const {return _node.ent;}
+	};
+
+
 };
 
 }

@@ -331,7 +331,7 @@ void main::load_map(
 			app::am_discovered
 		);
 
-		lm::log(logger).debug()<<"total discovered: "<<persistence.size(app::pergr_automap)<<std::endl;
+		lm::log(logger).debug()<<"total discovered: "<<get_discovered_map_count()<<std::endl;
 
 		if(is_map_complete()) {
 
@@ -349,7 +349,7 @@ void main::exit_to(
 
 	if(0!=_exit.min_rooms) {
 
-		int visited=persistence.size(app::pergr_automap);
+		int visited=get_discovered_map_count();
 		if(visited < _exit.min_rooms) {
 
 			lm::log(logger).debug()<<"cannot enter, "<<visited<<"/"<<_exit.min_rooms<<" rooms visited"<<std::endl;
@@ -392,8 +392,8 @@ void main::take_player_to_entry(
 
 	auto find_ladders=[this, &map_entry]() {
 
-		d2d::collision::aabb_checker cc;
-		const auto ladders=cc.get_collisions(map_entry.ent, current_map.ladders);
+		d2d::collision::aabb_checker cc(map_entry.ent);
+		const auto ladders=cc.get_collisions(current_map.ladders);
 		lm::log(logger).info()<<"found "<<ladders.size()<<" ladders in the last entry point\n";
 		return ladders;
 	};
@@ -1102,50 +1102,40 @@ void main::tic_ladder(
 		return;
 	}
 	
-	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-	d2d::collision::aabb_checker cc;
 
 	//Jump out or jump down...
 	if(_pli.jump && (_pli.x || -1==_pli.y)) {
 
+		if(-1==_pli.y) {
 
-/**
- * We would not allow to jump out of ladder if in a platform tile... no longer.
-		const auto tiles_to_check=adapter.find(
-			_player.ent, 
-			current_map.tile_finder
+			_player.drop_out_of_ladder();
+		}
+		else {
 
-		);
-*/
-//		if(!cc.has_collision(_player.ent, tiles_to_check)) {
-		if(true) {
-
-			if(-1==_pli.y) {
-
-				_player.drop_out_of_ladder();
-			}
-			else {
-
-				//_x_force is -1 or 1.
-				double velocity=(double)_pli.x*simulation.walk_max_velocity;
-				player.jump_out_of_ladder(velocity, simulation.jump_force);
-				play_sound(app::snd_jump);
-			}
+			//_x_force is -1 or 1.
+			double velocity=(double)_pli.x*simulation.walk_max_velocity;
+			player.jump_out_of_ladder(velocity, simulation.jump_force);
+			play_sound(app::snd_jump);
 		}
 	}
 
 	//Attempt to walk out.
 	if(_pli.x) {
 
-		//TODO: These nested ifs are ugly...
 		//There can be no exit if we are stuck in tiles.
+		d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 		const auto tiles_to_check=adapter.find(_player.ent, current_map.tile_finder);
-		if(!cc.has_collision(_player.ent, tiles_to_check)) {
+
+		d2d::collision::aabb_static_checker cc(_player.ent);
+		if(!cc.detect_all(tiles_to_check).has_collision()) {
 
 			auto player_box_copy=_player.ent.get_box();
 			player_box_copy.origin.y-=4;
+
 			auto landing_candidates=adapter.find(player_box_copy, current_map.tile_finder);
-			const auto& landing_tiles=cc.get_collisions(player_box_copy, landing_candidates);
+
+			d2d::collision::aabb_checker c(player_box_copy);
+			const auto& landing_tiles=c.get_collisions(landing_candidates);
 			if(landing_tiles.size()) {
 
 				walk_out_of_ladder(_player, *landing_tiles[0], _pli.x);
@@ -1295,7 +1285,7 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	gd.draw(_screen, current_map, player, persistence.size(app::pergr_automap));
+	gd.draw(_screen, current_map, player, get_discovered_map_count());
 
 	if(game_timeouts.is_running(timeout_area_banner)) {
 
@@ -1533,64 +1523,19 @@ bool main::is_on_air(
 		app::filter_tiles_check_on_air{_player.ent.get_previous_box()}
 	);
 
-	//fine collision phase now..
-	d2d::collision::aabb_checker cc;
+	//fine collision phase now, with early exits.
+	d2d::collision::aabb_static_checker cc(player_box_copy, true);
 
-	if(
-		 cc.has_collision(player_box_copy, contacting_tiles) 
-		|| cc.has_collision(player_box_copy, current_map.platform_blocks)
+	if(cc.detect_all(contacting_tiles)
+		.detect_all(current_map.platform_blocks)
+		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
+		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
+		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
+		.has_collision()
 	) {
 
 		return false;
-	}
-
-	//TODO: This got ugly quick!
-
-	for(const auto& plat : current_map.moving_blocks) {
-
-		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
-
-			return false;
-		}
-	}
-
-	for(const auto& plat : current_map.breaking_platforms) {
-
-		if(!plat.is_solid()) {
-
-			continue;
-		}
-
-		if(d2d::collision::collides_with(plat, player_box_copy)) {
-
-			return false;
-		}
-	}
-
-	for(const auto& plat : current_map.facing_blocks) {
-
-		if(!plat.is_active()) {
-
-			continue;
-		}
-
-		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
-
-			return false;
-		}
-	}
-
-	for(const auto& plat : current_map.toggle_blocks) {
-
-		if(!plat.is_active()) {
-
-			continue;
-		}
-
-		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
-
-			return false;
-		}
 	}
 
 	return true;
@@ -1624,8 +1569,8 @@ bool main::can_grab_ladder(
 		return false;
 	}
 
-	d2d::collision::aabb_checker cc;
-	const auto ladders=cc.get_collisions(_player.ent, current_map.ladders);
+	d2d::collision::aabb_checker cc(_player.ent);
+	const auto ladders=cc.get_collisions(current_map.ladders);
 	if(0==ladders.size()) {
 
 		return false;
@@ -1675,8 +1620,8 @@ bool main::is_into_harm(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto harm_tiles=adapter.find(_player.ent, current_map.tile_finder, app::filter_tiles_harm_only{});
 
-	d2d::collision::aabb_checker cc;
-	return cc.has_collision(_player.ent, harm_tiles);
+	d2d::collision::aabb_static_checker cc(_player.ent);
+	return cc.detect_all(harm_tiles).has_collision();
 }
 
 bool main::has_key(
@@ -1819,7 +1764,6 @@ void main::save_game(
 		inventory.blue_keys,
 		inventory.red_keys,
 		inventory.green_keys
-		//TODO: What about the total collectibles?
 	};
 
 	app::savegame_io sio{};
@@ -1856,7 +1800,9 @@ void main::reset_game(
 	const std::string& _savegame_file
 ) {
 
-	//TODO: Why should this go here in this controller?
+	//TODO: Why should this go here in this controller? 
+	//I don't know, I don't remember... where is this called from? Who 
+	//owns these things?
 	persistence.reset();
 	player.reset();
 	inventory.reset();
@@ -1941,15 +1887,13 @@ int main::player_collision(
 	auto player_ray=rb.get_previous(_player.ent, _mv)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
-	cph.flags(d2d::collision::aabb_checker::flag_skip_passable_side_check)
+	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
 		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
-
-		//TODO: Aham, is this cool??
 		.detect_all(current_map.platform_blocks); 
 
 	//This actually performs a reponse and returns the sides.
@@ -2175,9 +2119,14 @@ void main::mark_map_as_complete() {
 	);
 }
 
+int main::get_discovered_map_count() const {
+
+	return persistence.size(app::pergr_automap);
+}
+
 #ifdef IS_DEBUG_BUILD
 
-#include "main.debug.cpp"
+	#include "main.debug.cpp"
 
 #endif
 

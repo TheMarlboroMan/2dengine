@@ -14,14 +14,17 @@
 
 ### collision
 
-    aabb collision suite (faster, simpler, requires separation of axis and SPATIABLES)
-        aabb_checker (produces booleans and vectors of pointers to spatiables)
+    aabb collision suite (faster, simpler, requires SPATIABLES)
+        aabb_static_checker (allows checking of static positions against boxes 
+            or spatiables, does not need axis separation, does NOT preserve 
+            type when returning collisions).
+        aabb_checker (checks a spatiable against vectors of N, returning those
+            which collide and preserving their type)
         aabb_solver (feeds from the result of aabb_checker)
-        aabb_phase (reusable collision solution)
-        aabb_static_checker (allows checking of static positions against boxes or spatiables, does not need axis separation).
+        aabb_phase (reusable collision solution, separates Y and X axis)
     definitions
     ray vs aabb collision suite:
-        ray_aabb_checker (produces booleans and vectors of pointers to spatiables)
+        ray_aabb_checker (can preserve the type of lists being checked!)
         ray_aabb_finder (produces vectors of collisions).
         ray_aabb_solver (solves the collisions againts a single object)
         ray_aabb_phase (reusable one-shot collision solution)

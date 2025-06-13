@@ -7,7 +7,8 @@
 namespace d2d {namespace collision {
 
 /**
-*Collision checker for phase-separated aabb collision modes.
+*Collision checker whose main purpose is to maintain the types of the 
+*obstacles we collide with!
 */
 class aabb_checker {
 
@@ -18,10 +19,16 @@ class aabb_checker {
 		flag_skip_passable_side_check=1 //the box must be considered non-passable on all sides.
 	};
 
-	enum class phases{
-		horizontal,
-		vertical
-	};
+	                        aabb_checker(const d2d::collision::spatiable&);
+	                        aabb_checker(const d2d::collision::box&);
+
+/**
+ * resets the subject
+ */
+
+	aabb_checker&           set_subject(const d2d::collision::spatiable&);
+	aabb_checker&           set_subject(const d2d::collision::box&);
+
 
 /**
  * generic get_collisions version that will return a vector of pointers to 
@@ -34,9 +41,8 @@ class aabb_checker {
  * what if you really wanted blocks instead of spatiables? A version with
  * a vector of pointers is also provided.
  */
-	template<typename T, typename O>
+	template<typename O>
 	std::vector<O const *>          get_collisions(
-		const T& _target, 
 		const std::vector<O>& _nodes
 	) const {
 
@@ -44,7 +50,7 @@ class aabb_checker {
 
 		for(const auto& node : _nodes) {
 
-			if(d2d::collision::collides_with(_target, node)) {
+			if(d2d::collision::collides_with(subject, node)) {
 
 				result.push_back(&node);
 			}
@@ -53,9 +59,8 @@ class aabb_checker {
 		return result;
 	}
 
-	template<typename T, typename O>
+	template<typename O>
 	std::vector<O const *>          get_collisions(
-		const T& _target, 
 		const std::vector<O*>& _nodes
 	) const {
 
@@ -63,7 +68,7 @@ class aabb_checker {
 
 		for(const auto& node : _nodes) {
 
-			if(d2d::collision::collides_with(_target, *node)) {
+			if(d2d::collision::collides_with(subject, *node)) {
 
 				result.push_back(node);
 			}
@@ -72,59 +77,9 @@ class aabb_checker {
 		return result;
 	}
 
-/**
- * generic collision method that will return true if a collision is detected
- * and discard any other information. A version with a vector of pointers is
- * also provided. Same reasoning as get_collisions.
- */
-	template<typename T, typename O>
-	bool                            has_collision(
-		const T& _target, 
-		const std::vector<O>& _nodes
-	) const {
+	private:
 
-		for(const auto& node : _nodes) {
-
-			if(d2d::collision::collides_with(_target, node)) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	template<typename T, typename O>
-	bool                            has_collision(
-		const T& _target, 
-		const std::vector<const O*>& _nodes
-	) const {
-
-		for(const auto& node : _nodes) {
-
-			if(d2d::collision::collides_with(_target, *node)) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-/**
-*returns true if there is a collision, takes phases and flags into account.
-*If the obstacle is spatiable it will also attempt to check if the edge 
-*is passable. If we just want to check if boxes are colliding we might want
-*to use free floating function "collides_with" because this method
-*will attempt to use the previous box of the subject.
-*/
-	bool                            check(
-		const d2d::collision::spatiable&, 
-		const d2d::collision::spatiable&, 
-		phases,
-		int=0
-	) const;
-
+	d2d::collision::box       subject;
 };
 
 }}

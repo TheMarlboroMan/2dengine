@@ -1,7 +1,6 @@
 #pragma once
 
 #include <d2d/collision/spatiable.h>
-#include <d2d/collision/aabb_checker.h>
 #include <d2d/collision/aabb_solver.h>
 #include <d2d/tools/to_ref.h>
 
@@ -20,7 +19,13 @@ class aabb_phase{
 
 	public:
 
-	                    aabb_phase(d2d::collision::spatiable&, d2d::collision::aabb_checker::phases);
+	enum class phases{
+		horizontal,
+		vertical
+	};
+
+
+	                    aabb_phase(d2d::collision::spatiable&, phases);
 
 	bool                has_collision() const {return collision_found;}
 
@@ -150,12 +155,25 @@ class aabb_phase{
 
 	private:
 
+/**
+*returns true if there is a collision, takes phases and flags into account.
+*If the obstacle is spatiable it will also attempt to check if the edge 
+*is passable. If we just want to check if boxes are colliding we might want
+*to use free floating function "collides_with" because this method
+*will attempt to use the previous box of the subject.
+*/
+	bool                            check(
+		const d2d::collision::spatiable&, 
+		const d2d::collision::spatiable&, 
+		phases,
+		int=0
+	) const;
+
 	bool                            collision_found{false},
 	                                with_early_exit{false};
 	int                             collision_flags{0};
-	d2d::collision::aabb_checker::phases collision_phase;
+	phases                          collision_phase;
 	d2d::collision::spatiable&      subject;
-	d2d::collision::aabb_checker    checker;
 	std::vector<spatiable const*>   results;
 };
 

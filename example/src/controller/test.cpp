@@ -159,8 +159,8 @@ void test::real_loop(
 	//Check if player is on air by doing a quick check against a modified box...
 	auto modified_box=player.get_box();
 	modified_box.origin.y-=1.0;
-	d2d::collision::aabb_checker on_air_checker;
-	player_on_air=!on_air_checker.has_collision(modified_box, obstacles);
+	d2d::collision::aabb_checker on_air_checker(modified_box);
+	player_on_air=!on_air_checker.get_collisions(obstacles).size();
 
 	if(tries_to_jump && !player_on_air) {
 

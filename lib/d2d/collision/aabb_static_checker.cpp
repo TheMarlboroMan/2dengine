@@ -4,14 +4,18 @@
 using namespace d2d::collision;
 
 aabb_static_checker::aabb_static_checker(
-	const d2d::collision::spatiable& _subject
+	const d2d::collision::spatiable& _subject,
+	bool _with_early_exit
 ):
+	with_early_exit{_with_early_exit},
 	subject{_subject.get_box()}
 { }
 
 aabb_static_checker::aabb_static_checker(
-	const d2d::collision::box& _box
+	const d2d::collision::box& _box,
+	bool _with_early_exit
 ):
+	with_early_exit{_with_early_exit},
 	subject{_box}
 { }
 
@@ -21,13 +25,7 @@ aabb_static_checker& aabb_static_checker::reset() {
 	return *this;
 }
 
-aabb_static_checker& aabb_static_checker::reset_modifiers() {
-
-	with_early_exit=false;
-	return *this;
-}
-
-aabb_static_checker& aabb_static_checker::early_exit(
+aabb_static_checker& aabb_static_checker::set_early_exit(
 	bool _val
 ) {
 
@@ -46,5 +44,21 @@ aabb_static_checker& aabb_static_checker::detect_one(
 		results.push_back(&_node);
 	}
 
+	return *this;
+}
+
+aabb_static_checker& aabb_static_checker::set_subject(
+	const d2d::collision::spatiable& _subject
+) {
+
+	subject=_subject.get_box();
+	return *this;
+}
+
+aabb_static_checker& aabb_static_checker::set_subject(
+	const d2d::collision::box& _subject
+) {
+
+	subject=_subject;
 	return *this;
 }

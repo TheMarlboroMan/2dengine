@@ -1,6 +1,5 @@
 set(SOURCE
 	${SOURCE}
-	${CMAKE_CURRENT_SOURCE_DIR}/aabb_checker.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/aabb_solver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/aabb_phase.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/spatiable.cpp
@@ -18,6 +17,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/ray_builder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/collision_tracker.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/aabb_static_checker.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/aabb_checker.cpp
 	PARENT_SCOPE
 )
 
