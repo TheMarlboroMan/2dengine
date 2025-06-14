@@ -17,6 +17,7 @@ class facing_block {
 
 	int                     get_type() const {return type;}
 	bool                    is_active() const {return active;}
+	bool                    is_facing_right() const {return faces::right==face;}
 
 /**
  * activates or deactivates the block

@@ -572,7 +572,6 @@ void game_draw::draw_projectile_linear(
 
 	using modifiers=d2d::video::sprite_draw::modifiers;
 
-	//TODO: This is repeated, should be a method.
 	//Al sprites are facing right by default.
 	int flags=modifiers::use_sprite_box;
 
@@ -788,16 +787,37 @@ void game_draw::draw_facing_block(
 		return;
 	}
 
+	auto box=d2d::video::to_screen(_block.ent.get_box());
 	switch(_block.get_type()) {
 
 		case 0:
-			sprite_fill_draw.fill(
-				_screen, 
-				d2d::video::to_screen(_block.ent.get_box()),
-				1
-			);
-			return;
+			sprite_fill_draw.fill(_screen, box, 1);
+		break;
+
 	}
+
+	int flags=0;
+	if(!_block.is_facing_right()) {
+
+		using modifiers=d2d::video::sprite_draw::modifiers;
+		flags=modifiers::flip_horizontal;
+	}
+
+	d2d::video::sprite_draw::modifiers mod{flags};
+
+	//There is an arrow centered on the block...
+	auto arrow_pos=d2d::video::to_screen(
+		{_block.ent.get_box().origin, app::tile_w, app::tile_h}
+	);
+
+	arrow_pos.center(box);
+
+	sprite_draw.draw(
+		_screen,
+		arrow_pos,
+		app::spr_block_arrow,
+		mod
+	);
 }
 
 void game_draw::draw_toggle_block(

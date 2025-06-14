@@ -2,7 +2,12 @@ void main::console_display_onenter(
 	const std::string& _command
 ) {
 
-	console->send(_command);
+	if(_command!="." || last_command=="") {
+
+		last_command=_command;
+	}
+
+	console->send(last_command);
 }
 
 console::result main::execute_cmd(
@@ -10,7 +15,8 @@ console::result main::execute_cmd(
 	const std::vector<console::argument>& _args
 ) {
 
-	if(_cmd=="exit") {
+
+	if(_cmd=="exit" || _cmd=="quit" || _cmd=="q") {
 
 		console_enabled=false;
 		return {0, "ok"};
@@ -19,6 +25,12 @@ console::result main::execute_cmd(
 	if(_cmd=="tic" || _cmd=="t") {
 
 		tic(0.01f, app::player_input{});
+		return {0, "ok"};
+	}
+
+	if(_cmd=="reload" || _cmd=="r") {
+
+		reload_map_debug();
 		return {0, "ok"};
 	}
 
@@ -215,6 +227,8 @@ void main::setup_console(
 	//TODO: it would be nice to have some helper in the console library to 
 	//read these from a file, or something.
 	console->map_command("exit", {});
+	console->map_command("quit", {});
+	console->map_command("q", {});
 	console->map_command("help", {});
 	console->map_command("helpcmd", {{console::types::string}});
 	console->map_command("tic", {});
@@ -228,6 +242,8 @@ void main::setup_console(
 	console->map_command("moveby", {{console::types::integer}, {console::types::integer}});
 	console->map_command("skill", {{console::types::integer}});
 	console->map_command("getskill", {});
+	console->map_command("reload", {});
+	console->map_command("r", {});
 	console->map_command("listentries", {});
 	console->map_command("gotoentry", {{console::types::integer}});
 	console->map_command("give", {{console::types::integer}});
@@ -361,6 +377,7 @@ void main::loop_debug(
 	if(_input.is_input_down(app::input::tic)) {
 
 		console_enabled=true;
+		console_display->get_output()<<"dot to repeat last command\n";
 		return;
 	}
 
@@ -487,4 +504,12 @@ void main::reload_values() {
 			std::cout<<"bad name: "<<name<<std::endl;
 		}
 	}
+}
+
+/**
+ * reloads the map, does not change the position of the character.
+ */
+void main::reload_map_debug() {
+
+	load_map(current_map_name);
 }

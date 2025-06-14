@@ -168,6 +168,7 @@ class main:
 #ifdef IS_DEBUG_BUILD
 
 	void                        reload_values();
+	void                        reload_map_debug();
 	void                        loop_debug(dfw::input&, const dfw::loop_iteration_data&);
 	void                        setup_console(app::service_provider&);
 	void                        draw_debug(ldv::screen&);
@@ -180,6 +181,8 @@ class main:
 	std::unique_ptr<appconsole::console> console_display{nullptr};
 	bool                        console_enabled{false};
 	void                        console_display_onenter(const std::string&);
+	std::string                 last_command,
+	                            current_map_name;
 
 #endif
 

@@ -24,6 +24,7 @@ enum sound {
 	snd_fire=8,
 	snd_launch_player=9,
 	snd_block_break=10,
+	snd_forbidden=11
 };
 
 /**
@@ -94,9 +95,7 @@ enum animations{
 	anim_breaking_platform_return=201
 };
 
-enum sprites {
-	spr_water_surface=500,
-	spr_waterfall=504,
+enum sprites { spr_water_surface=500, spr_waterfall=504,
 	spr_lava_surface=508,
 	spr_wall_torch=215,
 
@@ -129,7 +128,8 @@ enum sprites {
 	spr_breaking_block=362,
 	spr_platform_branch=155,
 	spr_fire_trap_plaque=188,
-	spr_platform_rock=189
+	spr_platform_rock=189,
+	spr_block_arrow=512
 };
 
 enum tile_types {

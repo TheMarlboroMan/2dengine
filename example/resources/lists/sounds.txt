@@ -8,3 +8,4 @@
 8	resources/sounds/fire.ogg
 9	resources/sounds/launch_player.ogg
 10	resources/sounds/block_break.ogg
+11	resources/sounds/forbidden.ogg
