@@ -22,6 +22,11 @@ console::result main::execute_cmd(
 		return {0, "ok"};
 	}
 
+	if(_cmd=="mapname") {
+
+		return {0, current_map_name};
+	}
+
 	if(_cmd=="tic" || _cmd=="t") {
 
 		tic(0.01f, app::player_input{});
@@ -31,6 +36,7 @@ console::result main::execute_cmd(
 	if(_cmd=="reload" || _cmd=="r") {
 
 		reload_map_debug();
+		console_enabled=false;
 		return {0, "ok"};
 	}
 
@@ -248,6 +254,7 @@ void main::setup_console(
 	console->map_command("gotoentry", {{console::types::integer}});
 	console->map_command("give", {{console::types::integer}});
 	console->map_command("map", {{console::types::string}, {console::types::integer, true, 1}});
+	console->map_command("mapname", {});
 }
 
 void main::draw_debug(

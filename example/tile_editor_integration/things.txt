@@ -661,7 +661,7 @@ beginobject
 		name wait_ms
 		type int
 		default 0
-		comment ms to wait before departing for the next node
+		comment ms to wait in the next node before departing
 		linkedto nothing
 	endproperty
 	beginproperty
