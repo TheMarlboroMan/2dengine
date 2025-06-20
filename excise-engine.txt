@@ -2,6 +2,9 @@ next steps:
 
 	make the first example game
 
+		- tower_019_ one can walk against the wall and keep walking on the
+		first breaking platform.
+		
 		- graphic for jump platform!
 
 		- sometimes, when dropping out of a ladder you fall FULL SPEED. 
