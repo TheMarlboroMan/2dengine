@@ -95,7 +95,9 @@ enum animations{
 	anim_breaking_platform_return=201
 };
 
-enum sprites { spr_water_surface=500, spr_waterfall=504,
+enum sprites { 
+	spr_water_surface=500, 
+	spr_waterfall=504,
 	spr_lava_surface=508,
 	spr_wall_torch=215,
 
@@ -110,6 +112,7 @@ enum sprites { spr_water_surface=500, spr_waterfall=504,
 	spr_diamond=307,
 
 	//Special world elements
+	spr_spike=169,
 	spr_ladder_yellow=350,
 	spr_gate=351,
 	spr_chain=368,
@@ -129,7 +132,7 @@ enum sprites { spr_water_surface=500, spr_waterfall=504,
 	spr_platform_branch=155,
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
-	spr_block_arrow=512
+	spr_block_arrow=512,
 };
 
 enum tile_types {
@@ -147,8 +150,11 @@ enum tile_types {
 	tile_harm=12,
 	tile_monster_block=13,
 	tile_full_no_camera=14, //fully solid block, does not restrict the camera
-	tile_camera_stop=15 //non solid block, camera affecting.
-
+	tile_camera_stop=15, //non solid block, camera affecting.
+	tile_harm_half_bottom=16,
+	tile_harm_half_top=17,
+	tile_harm_half_left=18,
+	tile_harm_half_right=19
 };
 
 enum class faces {

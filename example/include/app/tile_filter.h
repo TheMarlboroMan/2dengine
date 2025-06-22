@@ -75,7 +75,11 @@ struct filter_tiles_harm_only {
 		const d2d::collision::tile& _tile
 	) const {
 
-		return _tile.type == app::tile_harm;
+		return _tile.type == app::tile_harm
+			|| _tile.type == app::tile_harm_half_bottom
+			|| _tile.type == app::tile_harm_half_top
+			|| _tile.type == app::tile_harm_half_left
+			|| _tile.type == app::tile_harm_half_right;
 	};
 };
 
@@ -94,12 +98,12 @@ struct filter_tiles_check_on_air {
 		if(
 			_tile.type==app::tile_monster_block
 			|| _tile.type==app::tile_camera_stop
+			|| _tile.type == app::tile_harm
+			|| _tile.type == app::tile_harm_half_bottom
+			|| _tile.type == app::tile_harm_half_top
+			|| _tile.type == app::tile_harm_half_left
+			|| _tile.type == app::tile_harm_half_right
 		) {
-
-			return false;
-		}
-
-		if(_tile.type == app::tile_harm) {
 
 			return false;
 		}
@@ -137,7 +141,11 @@ struct filter_remove_harm_tiles {
 		const d2d::collision::tile& _tile
 	) const {
 
-		return _tile.type!=app::tile_harm;
+		return _tile.type!=app::tile_harm
+			&& _tile.type!=app::tile_harm_half_bottom
+			&& _tile.type!=app::tile_harm_half_top
+			&& _tile.type!=app::tile_harm_half_left
+			&& _tile.type!=app::tile_harm_half_right;
 	}
 };
 }

@@ -24,13 +24,17 @@ struct tile_impl:
 				return d2d::collision::shaper_default::tiles::tile_full;
 			case tile_half_bottom:
 			case tile_half_bottom_passable:
+			case tile_harm_half_bottom:
 				return d2d::collision::shaper_default::tiles::tile_half_bottom;
 			case tile_half_top:
 			case tile_half_top_passable:
+			case tile_harm_half_top:
 				return d2d::collision::shaper_default::tiles::tile_half_top;
 			case tile_half_left:
+			case tile_harm_half_left:
 				return d2d::collision::shaper_default::tiles::tile_half_left;
 			case tile_half_right:
+			case tile_harm_half_right:
 				return d2d::collision::shaper_default::tiles::tile_half_right;
 			case tile_quarter_bottom_left:
 				return d2d::collision::shaper_default::tiles::tile_quarter_bottom_left;
@@ -56,6 +60,10 @@ struct tile_impl:
 		switch(_tile.type) {
 			case tile_full:
 			case tile_harm:
+			case tile_harm_half_bottom:
+			case tile_harm_half_top:
+			case tile_harm_half_left:
+			case tile_harm_half_right:
 			case tile_monster_block:
 			case tile_half_bottom:
 			case tile_half_top:

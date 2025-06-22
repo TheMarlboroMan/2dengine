@@ -1054,6 +1054,7 @@ void main::tic_ground(
 		//is above us. The rest of blocking stuff is static.
 		if(!is_in_legal_position(player.ent, true)) {
 
+			//TODO: Does not work when a platform is pushing us up!!
 			_player.crouch();
 		}
 	}
@@ -1322,6 +1323,7 @@ void main::grab_ladder(
 	_player.stand_up();
 	_player.state=app::player::states::ladder;
 	_player.ent.set_motion_vector_x(0.0);
+	_player.ent.set_motion_vector_y(0.0);
 	_player.current_ladder=&_ladder;
 
 	//Constrict the position already.

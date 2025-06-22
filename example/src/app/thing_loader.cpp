@@ -264,12 +264,30 @@ void thing_loader::add_timed_trap(
 	int pre_ms=_attributes.at("pre_ms").get_int();
 	int active_ms=_attributes.at("active_ms").get_int();
 	int post_ms=_attributes.at("post_ms").get_int();
+	int int_type=_attributes.at("type").get_int();
 
-	//Spawn it aligned to the center of the grid.
-	_pos.x+=(app::tile_w / 2)- (app::timed_trap::fire_w / 2);
+	app::timed_trap::types type=app::timed_trap::types::fire;
+	switch(int_type) {
+		case 2: 
+			type=app::timed_trap::types::spikes;
+		break;
+	}
+
+	switch(type) {
+
+		case app::timed_trap::types::fire:
+			//Spawn it aligned to the center of the grid.
+			_pos.x+=(app::tile_w / 2)- (app::timed_trap::fire_w / 2);
+		break;
+		case app::timed_trap::types::spikes:
+			//noop.
+		break;
+	}
+	
+
 
 	curmap.timed_traps.push_back(
-		{ {_pos.x, _pos.y}, app::timed_trap::types::fire, active, keep_active, tag, pre_ms, active_ms, post_ms}
+		{ {_pos.x, _pos.y}, type, active, keep_active, tag, pre_ms, active_ms, post_ms}
 	);
 }
 

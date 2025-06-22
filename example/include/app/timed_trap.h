@@ -17,11 +17,13 @@ class timed_trap {
 	public:
 
 	enum class types {
-		fire
+		fire,
+		spikes
 	};
 
 	//Public, so the thing loader can align it to a grid.
 	static const int    fire_w{6};
+	static const int    spikes_w{16};
 
 /**
  * integer args are tag, pre-count, duration and post-count
@@ -58,6 +60,7 @@ class timed_trap {
 	d2d::components::timeout    timeout;
 
 	static const int    fire_h{14};
+	static const int    spikes_h{8};
 };
 
 std::ostream& operator<<(std::ostream&, const timed_trap&);

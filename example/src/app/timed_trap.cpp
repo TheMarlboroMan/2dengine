@@ -26,9 +26,12 @@ timed_trap::timed_trap(
 	switch(type) {
 
 		case types::fire:
-
 			ent.set_w(fire_w);
 			ent.set_h(fire_h);
+		break;
+		case types::spikes:
+			ent.set_w(spikes_w);
+			ent.set_h(spikes_h);
 		break;
 	}
 }
@@ -65,12 +68,12 @@ int timed_trap::tic(
 		case states::pre:
 			state=states::harm;
 			timeout.target(harm_s).restart();
-			return 1; //Will start sound!
+			return type==types::fire ? 1 : 0; //Will start sound if fire!
 
 		case states::harm:
 			state=states::post;
 			timeout.target(post_s).restart();
-			return -1; //will stop sound...
+			return type==types::fire ? -1 : 0; //will stop sound if fire!
 		
 		case states::post:
 			state=states::pre;
