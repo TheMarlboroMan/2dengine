@@ -1041,6 +1041,16 @@ void main::tic_ground(
 		return;
 	}
 
+	//From this point on, there may be ground movement: all early returns
+	//have been done. First, does any block move the player?
+	d2d::motion::motion_vector passive_mv{0., 0.};
+	if(current_map.moving_blocks.size()) {
+
+		passive_mv+=ctracker.attached_vector_for(_player.ent);
+		ground_motion(_player, passive_mv, _delta);
+	}
+
+	//Crouching stuff...
 	bool is_crouched=app::player::states::crouch==_player.state;
 	if(-1==_pli.y) {
 
@@ -1055,6 +1065,10 @@ void main::tic_ground(
 		if(!is_in_legal_position(player.ent, true)) {
 
 			//TODO: Does not work when a platform is pushing us up!!
+			//OK, ground_motion did not happen yet, and that's when the
+			//movement something we're riding on happens... Still, we can 
+			//refactor this a bit doing TWO ground_motion calls and 
+			//removing the 
 			_player.crouch();
 		}
 	}
@@ -1081,8 +1095,8 @@ void main::tic_ground(
 	}
 
 	player.ent.set_motion_vector(mv);
-	auto tic_vector=ground_motion(_player, mv, _delta);
-	player_collision(_player, tic_vector, _delta);
+	ground_motion(_player, mv, _delta);
+	player_collision(_player, passive_mv+mv, _delta);
 
 	//Jumping... a buffered jump is as good as a jump per se so...
 	_pli.jump=_pli.jump || _player.has_jump_buffered();
@@ -1861,13 +1875,6 @@ d2d::motion::motion_vector main::ground_motion(
 	ldtools::tdelta _delta
 ) {
 
-	//Ground motion with moving vectors must take into account
-	//we may need to add some vectors...
-	if(current_map.moving_blocks.size()) {
-
-		_mv+=ctracker.attached_vector_for(_player.ent);
-	}
-
 	d2d::motion::mover mover{};
 	mover.apply(_player.ent, _mv, _delta);
 	return _mv;
@@ -1961,7 +1968,7 @@ bool main::is_in_legal_position(
 
 	if(sc.has_collision()) {
 
-		lm::log(logger).debug()<<"illegal player position "<<player.ent.get_box()<<"\n";
+		lm::log(logger).debug()<<"illegal player position "<<player.ent.get_box()<<" against... \n";
 		for(auto& s : sc.get_results()) {
 
 			lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";

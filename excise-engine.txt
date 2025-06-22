@@ -2,8 +2,6 @@ next steps:
 
 	make the first example game
 
-		- cant get up in a moving platform when it moves upwards...
-
 		- tower_019_ one can walk against the wall and keep walking on the
 		first breaking platform.
 		
