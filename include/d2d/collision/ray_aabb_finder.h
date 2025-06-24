@@ -25,9 +25,10 @@ struct ray_aabb_info {
 	ldt::vector_2d<double> normal;
 	const spatiable * obstacle{nullptr};
 	operator bool() const {return has_intersection;}
+	//May not be enough in all cases!
 	bool operator < (const ray_aabb_info& _other) const {
 
-		return intersection_time < _other.intersection_time;
+		return intersection_time != _other.intersection_time;
 	}
 };
 

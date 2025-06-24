@@ -22,6 +22,7 @@ aabb_static_checker::aabb_static_checker(
 aabb_static_checker& aabb_static_checker::reset() {
 
 	results.clear();
+	collision_found=false;
 	return *this;
 }
 

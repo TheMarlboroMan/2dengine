@@ -27,7 +27,7 @@
         ray_aabb_checker (can preserve the type of lists being checked!)
         ray_aabb_finder (produces vectors of collisions).
         ray_aabb_solver (solves the collisions againts a single object)
-        ray_aabb_phase (reusable one-shot collision solution)
+        ray_aabb_phase (reusable one-shot collision solution) TODO: not really, more like a broad sweep xD
     ray_builder
     shaper (interface)
         shaper_default

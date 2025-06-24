@@ -23,6 +23,8 @@ namespace d2d { namespace collision {
  *	};
  * 
  * And can be instantiated as spatiable_dereferencer<guffin>
+ * When done, we can use a ray_aabb_solver with the results from get_results
+ * to correct them.
  */
 class ray_aabb_phase {
 
@@ -41,6 +43,7 @@ class ray_aabb_phase {
 
 	std::size_t         size() const {return results.size();}
 	const std::vector<ray_aabb_info>& get_results() const {return results;}
+	std::vector<ray_aabb_info>& get_results() {return results;}
 	bool                has_collision() const {return collision_found;}
 	ray_aabb_phase&     reset_modifiers();
 	ray_aabb_phase&     reset();
@@ -138,12 +141,6 @@ class ray_aabb_phase {
 		reset_modifiers();
 		return *this;
 	}
-
-/**
- * invokes a generic response that will adjust position according to the 
- * aabb_solver algorithms. 
- */
-	int                             response_generic();
 
 	private:
 

@@ -65,6 +65,6 @@ std::ostream& app::operator<<(
 	const breaking_platform& _block
 ) {
 
-	_stream<<"breaking_platform["<<_block.get_box()<<"]";
+	_stream<<"breaking_platform["<<_block.get_box()<<" solid: "<<_block.is_solid()<<"]";
 	return _stream;
 }

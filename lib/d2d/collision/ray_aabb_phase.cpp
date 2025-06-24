@@ -1,5 +1,4 @@
 #include "d2d/collision/ray_aabb_phase.h"
-#include "d2d/collision/ray_aabb_solver.h"
 
 #ifdef IS_DEBUG_BUILD
 	#include <iostream>
@@ -86,15 +85,4 @@ ray_aabb_phase& ray_aabb_phase::detect_one(
 	results.push_back(info);
 
 	return *this;
-}
-
-int ray_aabb_phase::response_generic() {
-
-	if(!collision_found) {
-
-		return 0;
-	}
-
-	ray_aabb_solver solver{};
-	return solver.solve(subject, results);
 }

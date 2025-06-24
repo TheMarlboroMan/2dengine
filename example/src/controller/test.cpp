@@ -198,7 +198,7 @@ std::cout<<player.get_box()<<std::endl;
 		}
 
 		d2d::collision::ray_aabb_solver solver;
-		int edges=solver.solve(player, collision_responses);
+		int edges=solver.solve(player, collision_responses).edges;
 
 		if(edges & d2d::collision::bottom) {
 

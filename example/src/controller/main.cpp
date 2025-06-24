@@ -1047,7 +1047,7 @@ void main::tic_ground(
 	if(current_map.moving_blocks.size()) {
 
 		passive_mv+=ctracker.attached_vector_for(_player.ent);
-		ground_motion(_player, passive_mv, _delta);
+		player_motion(_player, passive_mv, _delta);
 	}
 
 	//Crouching stuff...
@@ -1064,16 +1064,11 @@ void main::tic_ground(
 		//is above us. The rest of blocking stuff is static.
 		if(!is_in_legal_position(player.ent, true)) {
 
-			//TODO: Does not work when a platform is pushing us up!!
-			//OK, ground_motion did not happen yet, and that's when the
-			//movement something we're riding on happens... Still, we can 
-			//refactor this a bit doing TWO ground_motion calls and 
-			//removing the 
 			_player.crouch();
 		}
 	}
 
-	//horizontal phase...
+	//Active horizontal phase...
 	if(!_pli.x || is_crouched)  {
 
 		//Player velocity is 100% tied to manual control and goes 0-100.
@@ -1095,7 +1090,7 @@ void main::tic_ground(
 	}
 
 	player.ent.set_motion_vector(mv);
-	ground_motion(_player, mv, _delta);
+	player_motion(_player, mv, _delta);
 	player_collision(_player, passive_mv+mv, _delta);
 
 	//Jumping... a buffered jump is as good as a jump per se so...
@@ -1180,6 +1175,17 @@ void main::tic_air(
 	app::player_input _pli
 ) {
 
+	//TODO: Repeated shit... this and the next block are mostly the same in
+	//tic_ground.
+	//Attempt to grab a ladder with up or down.
+	const app::ladder * ladderptr{nullptr};
+	if(_pli.y && can_grab_ladder(_player, ladderptr)) {
+
+		grab_ladder(_player, *ladderptr);
+		tic_ladder(_delta, _player,_pli);
+		return;
+	}
+
 	if(_pli.activate) {
 
 		//Attempt to activate a switch!
@@ -1188,15 +1194,6 @@ void main::tic_air(
 
 			activate_button(_player, *btnptr);
 		}
-	}
-
-	//Attempt to grab a ladder with up or down.
-	const app::ladder * ladderptr{nullptr};
-	if(_pli.y && can_grab_ladder(_player, ladderptr)) {
-
-		grab_ladder(_player, *ladderptr);
-		tic_ladder(_delta, _player,_pli);
-		return;
 	}
 
 	if(_pli.jump) {
@@ -1240,8 +1237,7 @@ void main::tic_air(
 	}
 
 	simulation.gravity.apply_to(_player.ent, _delta);
-	d2d::motion::mover mover{};
-	mover.apply(_player.ent, _delta);
+	player_motion(_player, _player.ent.get_motion_vector(), _delta);
 
 	int sides=player_collision(_player, _player.ent.get_motion_vector(), _delta);
 	if(0!=sides) {
@@ -1869,7 +1865,7 @@ void main::clear_transient_state() {
 	trap_sound.channel_index=-1;
 }
 
-d2d::motion::motion_vector main::ground_motion(
+void main::player_motion(
 	app::player& _player,
 	d2d::motion::motion_vector _mv,
 	ldtools::tdelta _delta
@@ -1877,7 +1873,6 @@ d2d::motion::motion_vector main::ground_motion(
 
 	d2d::motion::mover mover{};
 	mover.apply(_player.ent, _mv, _delta);
-	return _mv;
 }
 
 int main::player_collision(
@@ -1921,10 +1916,40 @@ int main::player_collision(
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
 		.detect_all(current_map.platform_blocks); 
 
-	//This actually performs a reponse and returns the sides.
-	return cph.has_collision()
-		? cph.response_generic()
-		: 0;
+	if(!cph.has_collision()) {
+
+		return 0;
+	}
+
+	d2d::collision::ray_aabb_solver solver{};
+	auto collision_info=cph.get_results();
+
+	//Now, this is something the engine cannot solve for us: the collision
+	//info must be sorted but the default algorithm of "sort_and_solve" is not
+	//enough. We must prioritise the X axis over the Y one to avoid glitches
+	//that happen when a player has a perfect corner collision with a block at
+	//its side and one directly underneath the side block: if the player moves
+	//at the side and gravity pulls down we end up with two collisions at
+	//the same "distance" that we cannot correctly solve.
+
+	using d2d::collision::ray_aabb_info;
+
+	std::sort(
+		std::begin(collision_info),
+		std::end(collision_info),
+		//remember, returns true if _one goes before the second!
+		[](const ray_aabb_info& _one, const ray_aabb_info& _other) {
+
+			//Prioritise X collisions when intersection time is the same.
+			return _one.intersection_time != _other.intersection_time
+				? _one.intersection_time < _other.intersection_time
+				: abs(_one.normal.x) > abs(_other.normal.x);
+		}
+	);
+
+
+	auto result=solver.solve(_player.ent, collision_info);
+	return result.edges;
 }
 
 bool main::is_in_legal_position(

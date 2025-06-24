@@ -64,7 +64,7 @@ class main:
 	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_crouch(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
-	d2d::motion::motion_vector  ground_motion(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
+	void                        player_motion(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
 	int                         player_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
 	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool);
 	bool                        is_in_legal_position(const d2d::collision::box&, bool);
