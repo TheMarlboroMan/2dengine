@@ -583,7 +583,7 @@ void main::tic(
 	
 	tic_world(_delta);
 
-	if(current_map.moving_blocks.size()) {
+	if(current_map.moving_blocks.size() && !player.is_defeated()) {
 
 		//Tic and correct any pushes...
 		if(ctracker.tic().correct_snaps(player.ent)) {
@@ -661,7 +661,8 @@ void main::tic(
 void main::post_tic() {
 
 	//Are we crushesd?
-	if(!is_in_legal_position(player.ent, false)) {
+	//if(!is_in_legal_position(player.ent, false)) {
+	if(!is_in_legal_position(player.ent, true)) {
 
 		lm::log(logger).info()<<"illegal position, assumed crushing\n";
 		defeat(player);
