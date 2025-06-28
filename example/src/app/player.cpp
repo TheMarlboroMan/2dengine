@@ -136,7 +136,8 @@ void player::jump_out_of_ladder(
 		? app::faces::right
 		: app::faces::left;
 	current_ladder=nullptr;
-	timeouts.restart(app::player::timeout_ladder);
+	timeouts.target(app::player::timeout_ladder, 0.3)
+		.restart();
 
 	jump(_jump_force);
 }
@@ -146,7 +147,9 @@ void player::drop_out_of_ladder() {
 	ent.set_motion_vector_x(0.);
 	current_ladder=nullptr;
 	state=player::states::air;
-	timeouts.restart(player::timeout_ladder);
+
+	timeouts.target(app::player::timeout_ladder, 0.5)
+		.restart();
 	//there is no last chance jump here.
 }
 

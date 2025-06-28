@@ -2,6 +2,7 @@
 [[main_menu-start]]{{start/load}}
 [[main_menu-continue]]{{continue}}
 [[main_menu-controls]]{{controls}}
+[[main_menu-options]]{{options}}
 [[main_menu-quit]]{{quit}}
 [[main_menu-skill_easy]]{{easy}}
 [[main_menu-skill_normal]]{{normal}}
@@ -18,6 +19,12 @@
 [[controls-right]]{{right}}
 [[controls-jump]]{{jump}}
 [[controls-pause]]{{pause / map}}
+[[options-display]]{{display}}
+[[options-display_fullscreen]]{{fullscreen}}
+[[options-display_windowed]]{{windowed}}
+[[options-sound]]{{sound volume}}
+[[options-music]]{{music volume}}
+[[options-back]]{{back}}
 [[automap-start]]{{Mines}}
 [[automap-forest]]{{Forest}}
 [[automap-red_vault]]{{Red key vault}}

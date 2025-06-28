@@ -2,6 +2,16 @@ next steps:
 
 	make the first example game
 
+player is on exit to fortress_001 with entry id 3
+(2025-06-27 19:35:27) [info] will attempt to load map /home/daniel/devel/2dengine/build/../example/resources/maps/fortress_001.json
+		Then die to the snake and the game crashes
+		... I should check ALL levels :(.
+
+- remove the test controller, I guess
+		- remove the test controller, I guess..
+
+		- adjust volume from 0 to 100.
+
 		- easy stuff
 			- timed platforms, ragequit inducing.
 				- if one appears at your position go you to its bottom.
@@ -17,16 +27,14 @@ next steps:
 		show data on savegame loading!
 			add this shit in the "values" file, later in the executable.
 
-	for the final build: remove values file, put that stuff in the executable
+	for the final build: remove values file, put that stuff in the
+		executable...   or somewhere else, for modding purposes
 
 	add lives
 		and gain a life each N bonuses
 		and game over screen
 			- does the game over screen FUCK UP your save file??? Oh yeah, 
 			it should xD
-
-	try to jump into a ladder that goes a map up. Does it fuck up? It 
-		does if there is a solid in the next room!! Use NON solids.
 
 ============================0
 

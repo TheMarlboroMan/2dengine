@@ -51,12 +51,15 @@ class menu:
 	void                        enter_slot_select();
 	void                        enter_skill_select();
 	void                        enter_controls();
+	void                        enter_options();
 	void                        exit_confirm_delete();
-
 	//Ready views..
 	void                        ready_main();
 	void                        ready_slot_select();
 	void                        ready_skill_select();
+	void                        set_visible_main(bool);
+	void                        set_visible_slot_select(bool);
+	void                        set_visible_skill_select(bool);
 	//Specific actions.
 	void                        attempt_to_continue();
 	void                        choose_slot();
@@ -83,6 +86,7 @@ class menu:
 		main_option_choose_slot,
 		main_option_continue,
 		main_option_controls,
+		main_option_options,
 		main_option_exit
 	};
 	int                         main_option=main_option_choose_slot;

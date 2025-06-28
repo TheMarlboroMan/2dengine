@@ -171,6 +171,14 @@ timeout& timeouts::reset(
 	return data.at(_id).reset();
 }
 
+timeout& timeouts::target(
+	int _id,
+	ldtools::tdelta _value
+) {
+
+	return data.at(_id).target(_value);
+}
+
 timeout& timeouts::restart(
 	int _id
 ) {

@@ -15,6 +15,7 @@
 #include "controller/menu.h"
 #include "controller/pause.h"
 #include "controller/controls.h"
+#include "controller/options.h"
 #ifdef IS_DEBUG_BUILD
 	#include "controller/test.h"
 	#include <dfw/input_recorder_file_8bit.h>
@@ -191,6 +192,12 @@ void state_driver::register_controllers(
 		c_controls,
 		controller::state_controls,
 		new controller::controls(*service_provider)
+	);
+
+	reg(
+		c_options,
+		controller::state_options,
+		new controller::options(*service_provider)
 	);
 
 #ifdef IS_DEBUG_BUILD

@@ -116,6 +116,11 @@ class timeouts {
 	timeout&       reset(int);
 
 /**
+ * changes the target for the given timeout and returns that timeout.
+ */
+	timeout&       target(int, ldtools::tdelta);
+
+/**
  * resets all timeouts.
  */
 	timeouts&       reset();

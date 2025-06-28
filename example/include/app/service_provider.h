@@ -10,7 +10,12 @@ namespace appenv {
 
 namespace ldv {
 	class resource_manager;
+	class screen;
 }
+
+namespace lda {
+	class audio_controller;
+};
 
 namespace lm {
 	class logger;
@@ -75,6 +80,8 @@ class service_provider {
 	const app::tile_impl&   get_tile_impl();
 	ldtools::ttf_manager&   get_ttf_manager();
 	dfw::audio&             get_audio() {return dfwaudio;}
+	ldv::screen&            get_screen() {return screen;}
+	lda::audio_controller&  get_audio_controller() {return dfwaudio();}
 
 	d2d::video::spritesheet_manager& get_spritesheet_manager();
 	d2d::video::animation_manager& get_animation_manager();
@@ -102,6 +109,7 @@ class service_provider {
 	ldv::resource_manager&	video_resource_manager;
 	lda::resource_manager&	audio_resource_manager;
 	dfw::audio&             dfwaudio;
+	ldv::screen&            screen;
 
 	std::unique_ptr<d2d::collision::shaper>	shaper{nullptr};
 	std::unique_ptr<app::tile_impl>	tile_impl{nullptr};

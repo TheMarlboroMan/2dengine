@@ -60,6 +60,7 @@ menu::menu(
 	view.set_text("menu_start", i8n.get("main_menu-start"));
 	view.set_text("menu_continue", i8n.get("main_menu-continue"));
 	view.set_text("menu_controls", i8n.get("main_menu-controls"));
+	view.set_text("menu_options", i8n.get("main_menu-options"));
 	view.set_text("menu_quit", i8n.get("main_menu-quit"));
 	view.set_text("menu_skill_easy", i8n.get("main_menu-skill_easy"));
 	view.set_text("menu_skill_normal", i8n.get("main_menu-skill_normal"));
@@ -103,6 +104,7 @@ void menu::loop(
 		return;
 	}
 
+	//TODO: This is now repeated.
 	//There are two sets of input checks here: one is basic keyboard for
 	//navigation and the other is game-based. We try the generic first and
 	//if no input is detected we try the game part.
@@ -264,6 +266,11 @@ void menu::select() {
 					enter_controls();
 					return;
 
+				case main_option_options:
+
+					enter_options();
+					return;
+
 				case main_option_exit:
 					set_leave(true);
 					return;
@@ -324,6 +331,11 @@ void menu::enter_controls() {
 	push_state(state_controls);
 }
 
+void menu::enter_options() {
+
+	push_state(state_options);
+}
+
 void menu::enter_slot_select() {
 
 	curlevel=levels::slot;
@@ -338,29 +350,9 @@ void menu::enter_skill_select() {
 
 void menu::ready_main() {
 
-	for(const auto str : {
-		"menu_start", 
-		"menu_continue", 
-		"menu_controls", 
-		"menu_quit"
-	}) {
-
-		view.set_visible(str, true);
-	}
-
-	for(const auto str : {
-		"menu_skill_easy", 
-		"menu_skill_normal",
-		"menu_skill_hard", 
-		"menu_savegame_slot_1", 
-		"menu_savegame_slot_2", 
-		"menu_savegame_slot_3",
-		"menu_savegame_description",
-		"menu_savegame_delete_hint"
-	}) {
-
-		view.set_visible(str, false);
-	}
+	set_visible_main(true);
+	set_visible_skill_select(false);
+	set_visible_slot_select(false);
 
 	refresh();
 }
@@ -368,49 +360,34 @@ void menu::ready_main() {
 
 void menu::ready_slot_select() {
 
-	for(const auto str : {
-		"menu_start", 
-		"menu_savegame_slot_1", 
-		"menu_savegame_slot_2", 
-		"menu_savegame_slot_3",
-		"menu_savegame_description",
-		"menu_savegame_delete_hint"
-	}) {
-
-		view.set_visible(str, true);
-	}
-
-	for(const auto str : {
-		"menu_continue",
-		"menu_controls",
-		"menu_quit",
-		"menu_skill_easy", 
-		"menu_skill_normal",
-		"menu_skill_hard"
-	}) {
-
-		view.set_visible(str, false);
-	}
+	set_visible_slot_select(true);
+	set_visible_main(false);
+	view.set_visible("menu_start", true); //TODO: actually,. we could have another text...
 
 	refresh();
 }
 
-void menu::ready_skill_select() {
+void menu::set_visible_main(
+	bool _val
+) {
 
 	for(const auto str : {
-		"menu_start", 
-		"menu_skill_easy", 
-		"menu_skill_normal",
-		"menu_skill_hard"
-	}) {
-
-		view.set_visible(str, true);
-	}
-
-	for(const auto str : {
+		"menu_start",
 		"menu_continue",
 		"menu_controls",
+		"menu_options",
 		"menu_quit",
+	}) {
+
+		view.set_visible(str, _val);
+	}
+}
+
+void menu::set_visible_slot_select(
+	bool _val
+) {
+
+	for(const auto str : {
 		"menu_savegame_slot_1", 
 		"menu_savegame_slot_2", 
 		"menu_savegame_slot_3",
@@ -418,8 +395,30 @@ void menu::ready_skill_select() {
 		"menu_savegame_delete_hint"
 	}) {
 
-		view.set_visible(str, false);
+		view.set_visible(str, _val);
 	}
+}
+
+void menu::set_visible_skill_select(
+	bool _val
+) {
+
+	for(const auto str : {
+		"menu_skill_easy", 
+		"menu_skill_normal",
+		"menu_skill_hard"
+	}) {
+
+		view.set_visible(str, _val);
+	}
+}
+
+void menu::ready_skill_select() {
+
+
+	set_visible_skill_select(true);
+	set_visible_main(false);
+	set_visible_slot_select(false);
 
 	refresh();
 }
@@ -461,16 +460,19 @@ void menu::refresh() {
 	};
 
 	for(auto str : {
-		"menu_start",
-		"menu_continue",
-		"menu_controls",
-		"menu_quit",
 		"menu_skill_easy",
 		"menu_skill_normal",
 		"menu_skill_hard",
-		"menu_savegame_slot_1",
-		"menu_savegame_slot_2",
-		"menu_savegame_slot_3"
+		"menu_start",
+		"menu_continue",
+		"menu_controls",
+		"menu_options",
+		"menu_quit",
+		"menu_savegame_slot_1", 
+		"menu_savegame_slot_2", 
+		"menu_savegame_slot_3",
+		"menu_savegame_description",
+		"menu_savegame_delete_hint"
 	}) {
 
 		toggle(str, false);
@@ -495,6 +497,11 @@ void menu::refresh() {
 				case main_option_controls:
 
 					toggle("menu_controls", true);
+					return;
+
+				case main_option_options:
+
+					toggle("menu_options", true);
 					return;
 
 				case main_option_exit:

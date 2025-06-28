@@ -29,9 +29,17 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"menu_quit",
+			"id":"menu_options",
 			"type":"ttf",
 			"location":[32, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_quit",
+			"type":"ttf",
+			"location":[32, 160],
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]
@@ -136,6 +144,68 @@
 			"id":"press_escape_to_cancel",
 			"type":"ttf",
 			"location":[64, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		}
+	],
+	"options":[
+		{
+			"type":"screen",
+			"rgba":[0,0,0,0]
+		},
+		{
+			"id":"display_title",
+			"type":"ttf",
+			"location":[32, 32],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"sound_title",
+			"type":"ttf",
+			"location":[32, 64],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"music_title",
+			"type":"ttf",
+			"location":[32, 96],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"back_title",
+			"type":"ttf",
+			"location":[32, 128],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"display_value",
+			"type":"ttf",
+			"location":[144, 32],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"sound_value",
+			"type":"ttf",
+			"location":[144, 64],
+			"text":"...",
+			"font":"main_menu_font",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"music_value",
+			"type":"ttf",
+			"location":[144, 96],
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]

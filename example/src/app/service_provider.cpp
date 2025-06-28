@@ -20,7 +20,10 @@
 
 #include <ldtools/ttf_manager.h>
 
+#include <lda/audio_controller.h>
+
 #include <ldv/resource_manager.h>
+#include <ldv/screen.h>
 
 #include <appenv/env.h>
 
@@ -40,7 +43,8 @@ service_provider::service_provider(
 	logger{_logger},
 	video_resource_manager{_kernel.get_video_resource_manager()},
 	audio_resource_manager{_kernel.get_audio_resource_manager()},
-	dfwaudio{_kernel.get_audio()}
+	dfwaudio{_kernel.get_audio()},
+	screen{_kernel.get_screen()}
 {
 
 }
