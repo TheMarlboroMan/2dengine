@@ -17,7 +17,8 @@ options::options(
 	config{sp.get_config()},
 	i8n{sp.get_localization()},
 	audio_c{sp.get_audio_controller()},
-	screen{sp.get_screen()}
+	screen{sp.get_screen()},
+	enter_timeout{0.5, 0., false}
 {
 	//Prepare the view...
 	view.map_font(
@@ -52,22 +53,26 @@ void options::awake(
 ) {
 
 	index=0;
+	consecutive_press_tics=0;
 	refresh_index();
 	update_values();
+	enter_timeout.restart();
 }
 
 void options::slumber(
 	dfw::input& 
 ) {
 
-	//TODO; log some shit, will you???
+	lm::log(logger).info()<<"will save new values to config file"<<std::endl;
 	config.save();
 }
 
 void options::loop(
 	dfw::input& _input,
-	const dfw::loop_iteration_data& /*_lid*/
+	const dfw::loop_iteration_data& _lid
 ) {
+
+	enter_timeout.tic(_lid.delta);
 
 	if(_input().is_exit_signal()) {
 		set_leave(true);
@@ -98,13 +103,13 @@ void options::loop(
 	}
 	else if(
 		_input().is_key_down(SDL_SCANCODE_SPACE)
-		|| _input().is_key_down(SDL_SCANCODE_RETURN)
-		|| _input().is_key_down(SDL_SCANCODE_RIGHT)
+		|| _input().is_key_pressed(SDL_SCANCODE_RETURN)
+		|| _input().is_key_pressed(SDL_SCANCODE_RIGHT)
 	) {
 
 		choice=menu_input::select_more;
 	}
-	else if(_input().is_key_down(SDL_SCANCODE_LEFT)) {
+	else if(_input().is_key_pressed(SDL_SCANCODE_LEFT)) {
 
 		choice=menu_input::select_less;
 	}
@@ -121,17 +126,19 @@ void options::loop(
 			choice=menu_input::up;
 		}
 		else if(
-			_input.is_input_down(app::input::jump)
-			|| _input.is_input_down(app::input::right)
+			_input.is_input_pressed(app::input::jump)
+			|| _input.is_input_pressed(app::input::right)
 		) {
 
 			choice=menu_input::select_more;
 		}
-		else if(_input.is_input_down(app::input::left)) {
+		else if(_input.is_input_pressed(app::input::left)) {
 
 			choice=menu_input::select_less;
 		}
 	}
+
+	//Do not accept a "select" input in the first seconds of the controller.
 
 	switch(choice) {
 
@@ -151,15 +158,37 @@ void options::loop(
 
 		case menu_input::select_more:
 
+			if(!enter_timeout.is_finished()) {
+
+				return;
+			}
+
+			//TODO: This would end up overflowing.
+			consecutive_press_tics >= 0
+				? ++consecutive_press_tics
+				: consecutive_press_tics=1;
+
 			select_option(1);
 			return;
 
 		case menu_input::select_less:
 
+			if(!enter_timeout.is_finished()) {
+
+				return;
+			}
+
+			//TODO: This would end up underflowing.
+			consecutive_press_tics <= 0
+				? --consecutive_press_tics
+				: consecutive_press_tics=-1;
+
 			select_option(-1);
 			return;
 
 		case menu_input::none:
+
+			consecutive_press_tics=0;
 			return;
 	}
 }
@@ -239,6 +268,13 @@ void options::select_sound(
 ) {
 
 	int current=config.get_audio_volume();
+	
+	//Cancel movement when pressing before N tics.
+	if(abs(consecutive_press_tics) > 1 && abs(consecutive_press_tics) < 30) {
+
+		return;
+	}
+
 	current+=_direction;
 	if(current < 0) {
 
@@ -257,8 +293,15 @@ void options::select_sound(
 void options::select_music(
 	int _direction
 ) {
-	
+
 	int current=config.get_music_volume();
+
+	//Cancel movement when pressing before N tics.
+	if(abs(consecutive_press_tics) > 1 && abs(consecutive_press_tics) < 30) {
+
+		return;
+	}
+
 	current+=_direction;
 	if(current < 0) {
 
@@ -283,13 +326,32 @@ void options::update_values() {
 			: i8n.get("options-display_windowed")
 	);
 
+	int audio_vol=volume_to_gui(config.get_audio_volume());
 	view.set_text(
 		"sound_value", 
-		std::to_string(config.get_audio_volume())
+		std::to_string(audio_vol)
 	);
 
+	int music_vol=volume_to_gui(config.get_music_volume());
 	view.set_text(
 		"music_value", 
-		std::to_string(config.get_music_volume())
+		std::to_string(music_vol)
 	);
 }
+
+int options::volume_to_gui(
+	int _volume
+) const {
+
+	//Convert a lib volume (0-127 to a 0-100 range).
+	return (_volume * 100)  / 127;
+}
+
+int options::gui_to_volume(
+	int _value
+) const {
+
+	//Convert a 0-100 range to lib (0 - 127).
+	return (_value * 127) / 100;
+}
+

@@ -7,10 +7,9 @@ player is on exit to fortress_001 with entry id 3
 		Then die to the snake and the game crashes
 		... I should check ALL levels :(.
 
-- remove the test controller, I guess
-		- remove the test controller, I guess..
+		- remove the test controller, I guess
 
-		- adjust volume from 0 to 100.
+		- Press in menu to make the volumes move faster???
 
 		- easy stuff
 			- timed platforms, ragequit inducing.
@@ -21,6 +20,10 @@ player is on exit to fortress_001 with entry id 3
 		what's wrong with the torch animation??
 
 		make death pits aesthetically the same (do not see player bounce!)
+
+		solve player bounce... maybe when defeated pull the player to the forefront??
+
+		redesign corners so the player does not clip the walls around.
 
 		make ladder platforms the same (ladder goes UNDER platform view)
 

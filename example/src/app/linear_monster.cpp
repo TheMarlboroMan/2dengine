@@ -70,6 +70,9 @@ void linear_monster::reverse() {
 		? app::faces::left
 		: app::faces::right;
 
+
+	//TODO: Reset position so it does not clip into the bounds!!
+
 	auto vector=ent.get_motion_vector();
 	ent.set_motion_vector(vector*-1);
 }

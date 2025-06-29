@@ -1,5 +1,6 @@
 #pragma once
 
+#include <d2d/components/timeouts.h>
 #include <app/service_provider.h>
 #include <dfw/controller_interface.h>
 #include "dfwimpl/config.h"
@@ -41,6 +42,8 @@ class options:
 	void                        select_display();
 	void                        select_sound(int);
 	void                        select_music(int);
+	int                         volume_to_gui(int) const;
+	int                         gui_to_volume(int) const;
 
 	app::service_provider&      sp;
 	lm::logger&                 logger;
@@ -48,6 +51,7 @@ class options:
 	const tools::i8n&           i8n;
 	lda::audio_controller&      audio_c;
 	ldv::screen&                screen;
+	d2d::components::timeout    enter_timeout;
 	ldtools::view_composer      view;
 	std::size_t                 index{0};
 };
