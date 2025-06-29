@@ -87,7 +87,7 @@ console::result main::execute_cmd(
 		std::stringstream ss;
 		ss<<player.ent;
 		return{0, ss.str()};
-	}	
+	}
 
 	if(_cmd=="goto") {
 
@@ -137,6 +137,13 @@ console::result main::execute_cmd(
 		std::stringstream ss;
 		ss<<"keys given";
 		return {0, ss.str()};
+	}
+
+	if(_cmd=="defeat") {
+
+		defeat(player);
+		console_enabled=false;
+		return {0, "player defeated"};
 	}
 
 	if(_cmd=="debugdraw") {
@@ -240,6 +247,7 @@ void main::setup_console(
 	console->map_command("tic", {});
 	console->map_command("t", {});
 	console->map_command("tell", {});
+	console->map_command("defeat", {});
 	console->map_command("debugdraw", {});
 	console->map_command("gamedraw", {});
 	console->map_command("setinmortal", {{console::types::integer}});

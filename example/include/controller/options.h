@@ -54,6 +54,7 @@ class options:
 	d2d::components::timeout    enter_timeout;
 	ldtools::view_composer      view;
 	std::size_t                 index{0};
+	int                         consecutive_press_tics{0};
 };
 
 }

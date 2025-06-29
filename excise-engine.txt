@@ -2,14 +2,10 @@ next steps:
 
 	make the first example game
 
-player is on exit to fortress_001 with entry id 3
-(2025-06-27 19:35:27) [info] will attempt to load map /home/daniel/devel/2dengine/build/../example/resources/maps/fortress_001.json
-		Then die to the snake and the game crashes
-		... I should check ALL levels :(.
+		... Check all levels that begin with a ladder!. Use the "defeat"
+		command.
 
 		- remove the test controller, I guess
-
-		- Press in menu to make the volumes move faster???
 
 		- easy stuff
 			- timed platforms, ragequit inducing.
@@ -21,9 +17,11 @@ player is on exit to fortress_001 with entry id 3
 
 		make death pits aesthetically the same (do not see player bounce!)
 
-		solve player bounce... maybe when defeated pull the player to the forefront??
+		solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
 
 		redesign corners so the player does not clip the walls around.
+
+		make difficulty levels meaningful!
 
 		make ladder platforms the same (ladder goes UNDER platform view)
 
