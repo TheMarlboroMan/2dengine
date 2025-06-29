@@ -133,6 +133,10 @@ enum sprites {
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
 	spr_block_arrow=512,
+
+	spr_boss_cente=420,
+	spr_boss_side=421,
+	spr_boss_skull=422
 };
 
 enum tile_types {
