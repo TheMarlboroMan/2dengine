@@ -114,7 +114,7 @@ void savegame_io::save(
 ) {
 
 	//the whole persistence string must be in a single line, so...
-	auto persistence_str=tools::str_replace(_data.persistence_string, "\n", "\n");
+	auto persistence_str=tools::str_replace(_data.persistence_string, "\n", "\\n");
 
 	_stream<<"map_filename "<<_data.map_filename<<"\n"
 		<<"persistence "<<persistence_str<<"\n"

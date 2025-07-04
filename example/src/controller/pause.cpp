@@ -151,7 +151,10 @@ void pause::loop(
 
 #ifdef IS_DEBUG_BUILD
 
-	if(_input.is_input_down(app::input::jump)) {
+	//if(_input.is_input_down(app::input::jump)) {
+	if(false) {
+
+		
 
 		lm::log(logger).debug()<<"toggling 'display_all_maps'\n";
 		display_all_maps=!display_all_maps;
