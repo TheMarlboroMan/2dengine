@@ -211,6 +211,11 @@ void game_draw::draw(
 		draw_collectible(_screen, collectible);
 	}
 
+	if(_map.boss) {
+
+		draw_boss(_screen, *(_map.boss));
+	}
+
 	for(const auto& monster : _map.linear_monsters) {
 
 		draw_linear_monster(_screen, monster);
@@ -1010,3 +1015,42 @@ void game_draw::draw_exit(
 	text.draw(_screen, camera);
 }
 
+void game_draw::draw_boss(
+	ldv::screen& _screen,
+	const app::boss& _boss
+) {
+
+	auto origin=d2d::video::to_screen(_boss.ent.get_origin());
+
+	//The boss must be drawn by pieces.
+	//Center...
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_center
+	);
+
+	//Left side
+	origin.x-=app::tile_w;
+	origin.y+=8;
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_side
+	);
+
+	//Right side,
+	origin.x+=2*app::tile_w;
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_side,
+		{d2d::video::sprite_draw::modifiers::flip_horizontal}
+	);
+	//
+	//spr_boss_center=420,
+	//spr_boss_side=421,
+	//spr_boss_skull=422
+	//
+	//TODO: Slightly animate the rotated parts.
+}

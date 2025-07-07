@@ -695,6 +695,15 @@ void main::post_tic() {
 		}
 	}
 
+	if(current_map.boss) {
+
+		if(d2d::collision::collides_with(player.ent, current_map.boss->ent)) {
+
+			defeat(player);
+			return;
+		}
+	}
+
 	//Or a projectile?
 	for(auto& projectile : current_map.projectiles) {
 

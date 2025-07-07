@@ -40,6 +40,12 @@ std::ostream& app::operator<<(
 	print_node("moving_block_nodes", _map.moving_block_nodes, _stream);
 	print_node("facing_blocks", _map.facing_blocks, _stream);
 	print_node("toggle_blocks", _map.toggle_blocks, _stream);
+
+	if(_map.boss) {
+
+		_stream<<*(_map.boss.get())<<std::endl;
+	}
+
 	_stream<<"]";
 
 	return _stream;
@@ -71,8 +77,8 @@ void map::clear() {
 	moving_block_nodes.clear();
 	facing_blocks.clear();
 	toggle_blocks.clear();
-
 	projectiles.clear();
+	this->boss.reset(nullptr);
 }
 
 void map::sync_tile_finder() {

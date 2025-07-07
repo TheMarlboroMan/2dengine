@@ -760,6 +760,14 @@ beginobject
 endobject
 
 beginobject
+	id 59
+	name boss
+	w 16
+	h 16
+	color 0 0 0 255
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

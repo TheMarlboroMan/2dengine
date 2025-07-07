@@ -134,7 +134,7 @@ enum sprites {
 	spr_platform_rock=189,
 	spr_block_arrow=512,
 
-	spr_boss_cente=420,
+	spr_boss_center=420,
 	spr_boss_side=421,
 	spr_boss_skull=422
 };

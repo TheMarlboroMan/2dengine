@@ -20,6 +20,7 @@
 #include "moving_block_node.h"
 #include "facing_block.h"
 #include "toggle_block.h"
+#include "boss.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -28,8 +29,9 @@
 #include <vector>
 #include <map>
 #include <ostream>
+#include <memory>
 
-namespace app { 
+namespace app {
 
 class map {
 
@@ -63,6 +65,7 @@ class map {
 	std::vector<facing_block>               facing_blocks;
 	std::vector<toggle_block>               toggle_blocks;
 	std::vector<app::projectile>            projectiles;
+	std::unique_ptr<app::boss>              boss{nullptr};
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};

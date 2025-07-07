@@ -39,6 +39,7 @@ void thing_loader::setup() {
 	curmap.moving_block_nodes.clear();
 	curmap.facing_blocks.clear();
 	curmap.toggle_blocks.clear();
+	curmap.boss.reset(nullptr);
 }
 
 void thing_loader::load(
@@ -73,6 +74,7 @@ void thing_loader::load(
 			case 56: return add_moving_block_node(pos, _attributes);
 			case 57: return add_facing_block(pos, _attributes);
 			case 58: return add_toggle_block(pos, _attributes);
+			case 59: return add_boss(pos);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -610,5 +612,14 @@ void thing_loader::add_toggle_block(
 
 	curmap.toggle_blocks.push_back(
 		{ {_pos, width, height}, active, type}
+	);
+}
+
+void thing_loader::add_boss(
+	d2d::collision::point _pos
+) {
+
+	curmap.boss.reset(
+		new boss(_pos, difficulty_setting)
 	);
 }
