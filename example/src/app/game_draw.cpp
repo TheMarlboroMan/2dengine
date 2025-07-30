@@ -1022,7 +1022,12 @@ void game_draw::draw_boss(
 
 	auto origin=d2d::video::to_screen(_boss.ent.get_origin());
 
-	//The boss must be drawn by pieces.
+	//The sprite is much larger than the realhitbox, we must move it 
+	//a bit so that the hitbox aligns with the top of the sprite. Substract
+	//because this is already screen coordinates.
+	origin.y-=19;
+
+	//The boss must be drawn by pieces....
 	//Center...
 	sprite_draw.draw(
 		_screen,
@@ -1047,6 +1052,16 @@ void game_draw::draw_boss(
 		spr_boss_side,
 		{d2d::video::sprite_draw::modifiers::flip_horizontal}
 	);
+
+	ldv::box_representation box{
+		d2d::video::to_screen_rect(_boss.ent),
+		ldv::rgba_color(255,0,0,128),
+		ldv::box_representation::type::fill
+	};
+
+	box.set_blend(ldv::representation::blends::alpha);
+	box.set_alpha(128);
+	box.draw(_screen, camera);
 	//
 	//spr_boss_center=420,
 	//spr_boss_side=421,

@@ -836,6 +836,11 @@ void main::tic_world(
 ) {
 
 	d2d::motion::mover mover{};
+	if(current_map.boss) {
+
+		current_map.boss->tic(_delta);
+	}
+
 	for(auto& trap : current_map.timed_traps) {
 
 		//We accumulate a count of active traps here. This can also 
