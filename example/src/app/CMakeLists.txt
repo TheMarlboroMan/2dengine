@@ -37,6 +37,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/facing_block.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/toggle_block.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/boss.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull_spawn.cpp
 	PARENT_SCOPE
 )
 

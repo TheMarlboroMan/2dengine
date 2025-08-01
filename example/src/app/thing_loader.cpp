@@ -40,6 +40,7 @@ void thing_loader::setup() {
 	curmap.facing_blocks.clear();
 	curmap.toggle_blocks.clear();
 	curmap.boss.reset(nullptr);
+	curmap.skull_spawns.clear();
 }
 
 void thing_loader::load(
@@ -75,6 +76,7 @@ void thing_loader::load(
 			case 57: return add_facing_block(pos, _attributes);
 			case 58: return add_toggle_block(pos, _attributes);
 			case 59: return add_boss(pos);
+			case 60: return add_boss_skull_spawn(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -621,5 +623,16 @@ void thing_loader::add_boss(
 
 	curmap.boss.reset(
 		new boss(_pos, difficulty_setting)
+	);
+}
+
+void thing_loader::add_boss_skull_spawn(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("id").get_int();
+	curmap.skull_spawns.push_back(
+		{ _pos, id}
 	);
 }

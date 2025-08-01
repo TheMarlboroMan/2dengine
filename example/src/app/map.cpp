@@ -78,6 +78,8 @@ void map::clear() {
 	facing_blocks.clear();
 	toggle_blocks.clear();
 	projectiles.clear();
+	skulls.clear();
+	skull_spawns.clear();
 	this->boss.reset(nullptr);
 }
 

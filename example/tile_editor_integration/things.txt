@@ -768,6 +768,21 @@ beginobject
 endobject
 
 beginobject
+	id 60
+	name boss skull spawn
+	w 16
+	h 16
+	color 128 128 128 255
+	beginproperty
+		name id
+		type int
+		default 0
+		comment identifier for this spawn point
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

@@ -353,7 +353,12 @@ void main::load_map(
 		}
 	}
 	
-	//std::cout<<current_map<<std::endl;
+	//More stuff... if there's a boss, inject this controller so we can interact
+	//with the world.
+	if(current_map.boss) {
+
+		current_map.boss->set_boss_map_interface(*this);
+	}
 }
 
 void main::exit_to(
@@ -656,6 +661,42 @@ void main::tic(
 
 		post_tic();
 	}
+
+	clean_expired_entities();
+}
+
+void main::clean_expired_entities() {
+
+	//This is more cycle intensive than just reacting to whatever thing
+	//happens in the game, but I just want to have this here.
+
+	//erase-remove idiom, get rid of projectiles we no longer want.
+	current_map.projectiles.erase(
+		std::remove_if(
+			current_map.projectiles.begin(),
+			current_map.projectiles.end(),
+			[](app::projectile& _proj) {return _proj.is_done();}
+		),
+		current_map.projectiles.end()
+	);
+
+	current_map.collectibles.erase(
+		std::remove_if(
+			current_map.collectibles.begin(),
+			current_map.collectibles.end(),
+			[](app::collectible& _node) {return _node.is_to_be_removed();}
+		),
+		current_map.collectibles.end()
+	);
+
+	current_map.skulls.erase(
+		std::remove_if(
+			current_map.skulls.begin(),
+			current_map.skulls.end(),
+			[](app::boss_skull& _node) {return _node.is_to_be_destroyed();}
+		),
+		current_map.skulls.end()
+	);
 }
 
 void main::post_tic() {
@@ -718,6 +759,20 @@ void main::post_tic() {
 			defeat(player);
 			return;
 		}
+
+		for(auto& skull : current_map.skulls) {
+
+			if(d2d::collision::collides_with(skull.ent, projectile.ent)) {
+
+				projectile.desintegrate();
+				skull.desintegrate();
+				
+				//and the boss must know about this...
+				//Assume there is a boss, because the boss spanws the skulls.
+				current_map.boss->notify_skull_destroyed(current_map.skulls.size()-1);
+				return;
+			}
+		}
 	}
 
 	//Or a trap?
@@ -764,22 +819,20 @@ void main::post_tic() {
 	}
 
 	//any collectibles at hand??
-	auto it=std::find_if(
-		std::begin(current_map.collectibles),
-		std::end(current_map.collectibles),
-		[this](const app::collectible& _collectible) -> bool {
+	bool check_map_complete=false;
+	for(auto& _collectible : current_map.collectibles) {
 
-			return d2d::collision::collides_with(player.ent, _collectible.ent);
+		if(d2d::collision::collides_with(player.ent, _collectible.ent)) {
+
+			pick_up_collectible(player, _collectible);
+			check_map_complete=true;
 		}
-	);
+	}
 
-	if(it!=std::end(current_map.collectibles)) {
+	//Must we update the automap state because this room is now complete???
+	if(check_map_complete) {
 
-		pick_up_collectible(player, *it);
-		it=current_map.collectibles.erase(it);
-		it++;
-
-		//Must we update the automap state because this room is now complete???
+		check_map_complete=false;
 		if(is_map_complete()) {
 
 			mark_map_as_complete();
@@ -909,21 +962,14 @@ void main::tic_world(
 		}
 	}
 
-	//erase-remove idiom, get rid of projectiles we no longer want.
-	current_map.projectiles.erase(
-		std::remove_if(
-			current_map.projectiles.begin(),
-			current_map.projectiles.end(),
-			[](app::projectile& _proj) {return _proj.is_done();}
-		),
-		current_map.projectiles.end()
-	);
-
 	for(auto& pg : current_map.projectile_generators) {
 
 		if(pg.tic(_delta)) {
 
-			generate_projectile(pg);
+			generate_projectile(
+				pg.get_projectile_data(),
+				pg.get_type()
+			);
 		}
 	}
 
@@ -964,10 +1010,9 @@ void main::tic_world(
 }
 
 void main::generate_projectile(
-	const app::projectile_generator& _pg
+	const app::projectile_generator::projectile_data& _spawn_data,
+	app::projectile_generator::types _projectile_type
 ) {
-
-	const auto spawn_data=_pg.get_projectile_data();
 
 	auto transform_type=[](app::projectile_generator::types _type) -> app::projectile::types {
 
@@ -988,23 +1033,23 @@ void main::generate_projectile(
 		return app::projectile::types::horizontal;
 	};
 
-	auto velocity=spawn_data.velocity;
+	auto velocity=_spawn_data.velocity;
 
-	if(app::projectile_generator::types::directed==_pg.get_type()) {
+	if(app::projectile_generator::types::directed==_projectile_type) {
 
 		velocity=ldt::vector_from_points(
-			ldt::get_center(spawn_data.box),
+			ldt::get_center(_spawn_data.box),
 			ldt::get_center(player.ent.get_box())
 		);
 		velocity.normalize();
-		velocity*=fabs(spawn_data.velocity.x);
+		velocity*=fabs(_spawn_data.velocity.x);
 	}
 
 	app::projectile proj{
-		spawn_data.box,
+		_spawn_data.box,
 		velocity,
-		transform_type(_pg.get_type()),
-		spawn_data.desintegration_time
+		transform_type(_projectile_type),
+		_spawn_data.desintegration_time
 	};
 
 	current_map.projectiles.push_back(proj);
@@ -1366,10 +1411,12 @@ void main::walk_out_of_ladder(
 
 void main::pick_up_collectible(
 	app::player& /*_player,*/,
-	const app::collectible& _collectible
+	app::collectible& _collectible
 ) {
 
 	//Does not actually make the collectible dissapear :P.
+	_collectible.mark_to_remove();
+
 	//std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 
@@ -2187,6 +2234,46 @@ void main::mark_map_as_complete() {
 int main::get_discovered_map_count() const {
 
 	return persistence.size(app::pergr_automap);
+}
+
+void main::boss_create_targeted_projectile(
+	d2d::collision::point _origin
+) {
+
+	//TODO: Maybe the projectile generation itself should be delegated to 
+	//a third class.
+	//Ok, this is absolutely nuts but all projectile logic is in this class,
+	//so...
+	app::projectile_generator g(
+		_origin, 
+		app::projectile_generator::types::directed,
+		100,
+		0, 0, 0, 0, 0, 
+		false, 
+		false
+	);
+
+	generate_projectile(
+		g.get_projectile_data(),
+		g.get_type()
+	);
+}
+
+void main::boss_spawn_skull(
+	int _id
+) {
+
+	for(const auto& spawn : current_map.skull_spawns) {
+
+		if(_id==spawn.id) {
+
+			lm::log(logger).debug()<<"spawning skull at point "<<_id<<std::endl;
+			current_map.skulls.push_back(spawn.point);
+			return;
+		}
+	}
+
+	lm::log(logger).warning()<<"spawn skull point not found:"<<_id<<std::endl;
 }
 
 #ifdef IS_DEBUG_BUILD

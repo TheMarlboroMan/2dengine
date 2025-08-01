@@ -216,6 +216,11 @@ void game_draw::draw(
 		draw_boss(_screen, *(_map.boss));
 	}
 
+	for(const auto& node : _map.skulls) {
+
+		draw_boss_skull(_screen, node);
+	}
+
 	for(const auto& monster : _map.linear_monsters) {
 
 		draw_linear_monster(_screen, monster);
@@ -1068,4 +1073,18 @@ void game_draw::draw_boss(
 	//spr_boss_skull=422
 	//
 	//TODO: Slightly animate the rotated parts.
+}
+
+void game_draw::draw_boss_skull(
+	ldv::screen& _screen,
+	const app::boss_skull& _skull
+) {
+
+	auto origin=d2d::video::to_screen(_skull.ent.get_origin());
+
+	sprite_draw.draw(
+		_screen,
+		origin,
+		app::spr_boss_skull
+	);
 }

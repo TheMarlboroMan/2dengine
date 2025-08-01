@@ -37,6 +37,7 @@ class toggle_block;
 class exit;
 class moving_block;
 class boss;
+class boss_skull;
 
 /**
  * business class to draw the main game state.
@@ -97,5 +98,6 @@ class game_draw {
 	void                        draw_exit(ldv::screen&, const app::exit&, int);
 	void                        draw_toggle_block(ldv::screen&, const app::toggle_block&);
 	void                        draw_boss(ldv::screen&, const app::boss&);
+	void                        draw_boss_skull(ldv::screen&, const app::boss_skull&);
 };
 }

@@ -17,6 +17,7 @@
 #include "app/inventory.h"
 #include "app/game_session.h"
 #include "app/game_draw.h"
+#include "app/boss_map_interface.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -32,7 +33,8 @@
 namespace controller {
 
 class main:
-	public dfw::controller_interface
+	public dfw::controller_interface,
+	public app::boss_map_interface
 #ifdef IS_DEBUG_BUILD
 	,public console::console_environment
 #endif 
@@ -59,6 +61,7 @@ class main:
 
 	void                        tic(ldtools::tdelta, app::player_input);
 	void                        tic_world(ldtools::tdelta);
+	void                        clean_expired_entities();
 	void                        tic_ground(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_ladder(ldtools::tdelta, app::player&, app::player_input);
 	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
@@ -95,7 +98,7 @@ class main:
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
-	void                        pick_up_collectible(app::player&, const app::collectible&);
+	void                        pick_up_collectible(app::player&, app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::player&, app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
@@ -108,7 +111,7 @@ class main:
 
 	//world methods.
 	void                        clear_transient_state();
-	void                        generate_projectile(const app::projectile_generator&);
+	void                        generate_projectile(const app::projectile_generator::projectile_data&, app::projectile_generator::types);
 	void                        activate_tag(int, bool);
 	void                        post_tic();
 	void                        setup_area_banner(const std::string&);
@@ -218,7 +221,10 @@ class main:
 		const d2d::collision::spatiable& operator()(const T& _node) const {return _node.ent;}
 	};
 
-
+	//Begin implementation of boss_map_interface.
+	virtual void boss_create_targeted_projectile(d2d::collision::point);
+	virtual void boss_spawn_skull(int);
+	//End implementation of boss_map_interface
 };
 
 }

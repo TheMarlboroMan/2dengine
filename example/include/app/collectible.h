@@ -28,8 +28,12 @@ class collectible {
 	int                             id; //The identifier is automatic.
 	int                             type;
 	app::entity                     ent;
+	void                            mark_to_remove() {to_be_removed=true;}
+	bool                            is_to_be_removed() const {return to_be_removed;}
 
 	private:
+
+	bool                            to_be_removed{false};
 
 	static const int                gold_ingot_w{16};
 	static const int                gold_ingot_h{9};

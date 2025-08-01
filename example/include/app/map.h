@@ -21,6 +21,8 @@
 #include "facing_block.h"
 #include "toggle_block.h"
 #include "boss.h"
+#include "boss_skull.h"
+#include "boss_skull_spawn.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -66,6 +68,8 @@ class map {
 	std::vector<toggle_block>               toggle_blocks;
 	std::vector<app::projectile>            projectiles;
 	std::unique_ptr<app::boss>              boss{nullptr};
+	std::vector<app::boss_skull>            skulls;
+	std::vector<app::boss_skull_spawn>      skull_spawns;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};
