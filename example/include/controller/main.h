@@ -109,9 +109,11 @@ class main:
 	void                        mount_player_in_blocks(app::player&);
 	void                        player_jump(app::player&);
 
+	//////
 	//world methods.
 	void                        clear_transient_state();
-	void                        generate_projectile(const app::projectile_generator::projectile_data&, app::projectile_generator::types);
+	//Entrypoint for basic projectile generation from generators.
+	void                        generate_projectile(const app::projectile_generator&);
 	void                        activate_tag(int, bool);
 	void                        post_tic();
 	void                        setup_area_banner(const std::string&);
@@ -222,7 +224,7 @@ class main:
 	};
 
 	//Begin implementation of boss_map_interface.
-	virtual void boss_create_targeted_projectile(d2d::collision::point);
+	virtual void boss_create_targeted_projectile(d2d::collision::point, int=0);
 	virtual void boss_spawn_skull(int);
 	//End implementation of boss_map_interface
 };

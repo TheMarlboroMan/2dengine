@@ -154,30 +154,3 @@ std::ostream& app::operator<<(
 
 	return _stream;
 }
-
-projectile_generator::projectile_data projectile_generator::get_projectile_data() const {
-
-	auto build=[this]() -> projectile_data {
-
-		switch(type) {
-			default:
-			case types::horizontal:
-				return {{velocity, 0.0}, {spawn_point, projectile_horizontal_w, projectile_horizontal_h}, projectile_horizontal_desintegration_ms };
-
-			case types::vertical: //vertical flame column.
-				return {{0.0, velocity}, {spawn_point, projectile_vertical_w, projectile_vertical_h}, projectile_vertical_desintegration_ms};
-
-			case types::directed: //velocity will be used as an absolute value to measure speed.
-				return {{velocity, 0.0}, {spawn_point, projectile_round_w, projectile_round_h}, projectile_round_desintegration_ms};
-
-			case types::falling: 
-				return {{0.0, -fabs(velocity)}, {spawn_point, projectile_falling_w, projectile_falling_h}, projectile_falling_desintegration_ms};
-		}
-	};
-
-	auto result=build();
-	result.box.origin.x-=result.box.w/2;
-	result.box.origin.y-=result.box.h/2;
-
-	return result;
-}

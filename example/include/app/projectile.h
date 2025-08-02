@@ -8,6 +8,9 @@
 
 namespace app {
 
+/**
+ *A projectile.
+ */
 class projectile {
 
 	public:

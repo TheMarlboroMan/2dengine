@@ -632,6 +632,10 @@ void thing_loader::add_boss_skull_spawn(
 ) {
 
 	int id=_attributes.at("id").get_int();
+
+	//Center the thing...
+	_pos.x+=(app::tile_w-app::boss_skull::w) / 2;
+
 	curmap.skull_spawns.push_back(
 		{ _pos, id}
 	);

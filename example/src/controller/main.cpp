@@ -6,6 +6,7 @@
 #include "app/tile_filter.h"
 #include "app/savegame.h"
 #include "app/automap_game.h" //to obtain area names...
+#include "app/projectile_creator.h"
 
 #include "dfwimpl/config.h"
 
@@ -966,10 +967,7 @@ void main::tic_world(
 
 		if(pg.tic(_delta)) {
 
-			generate_projectile(
-				pg.get_projectile_data(),
-				pg.get_type()
-			);
+			generate_projectile(pg);
 		}
 	}
 
@@ -1010,50 +1008,51 @@ void main::tic_world(
 }
 
 void main::generate_projectile(
-	const app::projectile_generator::projectile_data& _spawn_data,
-	app::projectile_generator::types _projectile_type
+	const app::projectile_generator& _generator
 ) {
 
-	auto transform_type=[](app::projectile_generator::types _type) -> app::projectile::types {
-
-		switch(_type) {
-
-			//This is a bit absurd... Both should share the same shizzz.
-
-			case app::projectile_generator::types::horizontal:
-				return app::projectile::types::horizontal;
-			case app::projectile_generator::types::vertical:
-				return app::projectile::types::vertical;
-			case app::projectile_generator::types::falling:
-				return app::projectile::types::falling;
-			case app::projectile_generator::types::directed:
-				return app::projectile::types::directed;
-		}
-
-		return app::projectile::types::horizontal;
-	};
-
-	auto velocity=_spawn_data.velocity;
-
-	if(app::projectile_generator::types::directed==_projectile_type) {
-
-		velocity=ldt::vector_from_points(
-			ldt::get_center(_spawn_data.box),
-			ldt::get_center(player.ent.get_box())
-		);
-		velocity.normalize();
-		velocity*=fabs(_spawn_data.velocity.x);
-	}
-
-	app::projectile proj{
-		_spawn_data.box,
-		velocity,
-		transform_type(_projectile_type),
-		_spawn_data.desintegration_time
-	};
-
-	current_map.projectiles.push_back(proj);
+	app::projectile_creator pc;
 	play_sound(app::snd_projectile);
+
+	switch(_generator.get_type()) {
+
+		case app::projectile_generator::types::horizontal:
+			current_map.projectiles.push_back(
+				pc.create_horizontal(
+					_generator.get_spawn_point(),
+					_generator.get_velocity()
+				)
+			);
+			return;
+		case app::projectile_generator::types::vertical:
+			current_map.projectiles.push_back(
+				pc.create_vertical(
+					_generator.get_spawn_point(),
+					_generator.get_velocity()
+				)
+			);
+
+			return;
+		case app::projectile_generator::types::falling:
+			current_map.projectiles.push_back(
+				pc.create_falling(
+					_generator.get_spawn_point(),
+					_generator.get_velocity()
+				)
+			);
+			return;
+		case app::projectile_generator::types::directed:
+			current_map.projectiles.push_back(
+				pc.create_directed(
+					_generator.get_spawn_point(),
+					_generator.get_velocity(),
+					ldt::get_center(player.ent.get_box()),
+					0
+				)
+			);
+
+			return;
+	}
 }
 
 void main::tic_ground(
@@ -2236,26 +2235,21 @@ int main::get_discovered_map_count() const {
 	return persistence.size(app::pergr_automap);
 }
 
+
 void main::boss_create_targeted_projectile(
-	d2d::collision::point _origin
+	d2d::collision::point _origin,
+	int angle
 ) {
 
-	//TODO: Maybe the projectile generation itself should be delegated to 
-	//a third class.
-	//Ok, this is absolutely nuts but all projectile logic is in this class,
-	//so...
-	app::projectile_generator g(
-		_origin, 
-		app::projectile_generator::types::directed,
-		100,
-		0, 0, 0, 0, 0, 
-		false, 
-		false
-	);
+	app::projectile_creator pc;
 
-	generate_projectile(
-		g.get_projectile_data(),
-		g.get_type()
+	current_map.projectiles.push_back(
+		pc.create_directed(
+			_origin,
+			100.0, //TODO,
+			ldt::get_center(player.ent.get_box()),
+			angle
+		)
 	);
 }
 

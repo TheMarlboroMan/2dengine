@@ -32,13 +32,20 @@ class boss {
 	}               skill;
 
 	enum class stages {
-		setup,
-		pause,
-		appear,
-		setup_stage_1,
-		stage_1
-	}               stage{stages::setup},
-					after_pause_stage{stages::setup};
+		pause, //actually any pause between phases...
+		appear, //comes down from above, after a pause enters stage 1.
+		setup_stage_1, //summon skulls and...
+		stage_1, //moves left to right shooting directly.
+		stage_2, //stays still, fires a few more complex volleys, pauses and moves to the next,
+		stage_3, //moves to the center of the screen
+		setup_stage_4, //summon skulls and..
+		stage_4, //...moves left to right shooting directly
+		stage_5, //stays still, I don't know what it does now XD!
+		//TODO: Third skull phase is last on easy
+		//TODO: Fourth skull phase is last on medium
+		//TODO: Fifth skull phase is last on hard
+	}               stage{stages::appear},
+					after_pause_stage{stages::appear};
 
 	void            stage_setup();
 	void            stage_appear(ldtools::tdelta);

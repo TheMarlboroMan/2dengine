@@ -10,7 +10,7 @@ namespace app {
 
 /**
  * does not actually generate the projectile, but the data that will be used
- * to create it.
+ * to create it. It is part of the game world.
  */
 class projectile_generator {
 
@@ -34,6 +34,7 @@ class projectile_generator {
 		d2d::motion::motion_vector  velocity;
 		d2d::collision::box         box; 
 		ldtools::tdelta             desintegration_time;
+		types                       type;
 	};
 
 							projectile_generator(
@@ -52,6 +53,10 @@ class projectile_generator {
 	int                     get_tag() const {return tag;}
 
 	types                   get_type() const {return type;}
+
+	int                     get_velocity() const {return velocity;}
+
+	d2d::collision::point   get_spawn_point() const {return spawn_point;}
 /**
 *Returns true if must generate a projectile.
 */
@@ -60,11 +65,6 @@ class projectile_generator {
 	void                    toggle();
 
 	void                    reset();
-
-/**
- * must return the information about the projectile it will generate
- */
-	projectile_data         get_projectile_data() const;
 
 	private:
 
@@ -104,24 +104,6 @@ class projectile_generator {
 	const int               volley_total;
 	int                     volley_count{0};
 	d2d::components::timeouts   timeouts;
-
-	//TODO; Why should these be in the executable when we can have a table
-	//for these kind of things? They would not be const, I guess...
-	static const int        projectile_horizontal_w{7};
-	static const int        projectile_horizontal_h{7};
-	static const int        projectile_horizontal_desintegration_ms{300};
-
-	static const int        projectile_vertical_w{10};
-	static const int        projectile_vertical_h{10};
-	static const int        projectile_vertical_desintegration_ms{530};
-
-	static const int        projectile_round_w{6};
-	static const int        projectile_round_h{6};
-	static const int        projectile_round_desintegration_ms{300};
-
-	static const int        projectile_falling_w{6};
-	static const int        projectile_falling_h{6};
-	static const int        projectile_falling_desintegration_ms{300};
 
 	friend std::ostream& operator<<(std::ostream&, const projectile_generator&);
 };

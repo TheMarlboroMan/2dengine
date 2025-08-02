@@ -20,10 +20,11 @@ class boss_skull {
 	void            desintegrate();
 	bool            is_to_be_destroyed() const {return to_be_destroyed;}
 
+	//Public, because we need to read it from the outside in the thing loader.
+	static const int w{11};
 	private:
 
 	bool            to_be_destroyed{false};
-	static const int w{11};
 	static const int h{14};
 
 };

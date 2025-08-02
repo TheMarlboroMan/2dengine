@@ -22,6 +22,14 @@ boss::boss(
 	//The pause state timer starts... paused.
 	timeouts.add(timeout_pause, 0., 0., true);
 	timeouts.add(timeout_fire, 0., 0., true);
+
+	//Save the target y for the first phase...
+	appear_y_target=ent.get_y();
+
+	//Set the boss outside the screen.
+	ent.set_y(app::logic_screen_h+(2*app::tile_h));
+
+	stage=stages::appear;
 }
 
 void boss::set_boss_map_interface(
@@ -42,11 +50,7 @@ void boss::tic(
 		case stages::pause:
 			return stage_pause(_delta);
 
-		case stages::setup:
-			stage_setup();
-			[[fallthrough]];
 		case stages::appear:
-
 			return stage_appear(_delta);
 
 		case stages::setup_stage_1:
@@ -81,12 +85,6 @@ void boss::stage_pause(
 
 void boss::stage_setup() {
 
-	appear_y_target=ent.get_y();
-
-	//Set the boss outside the screen.
-	ent.set_y(app::logic_screen_h+(2*app::tile_h));
-
-	stage=stages::appear;
 }
 
 void boss::stage_appear(
@@ -142,6 +140,7 @@ void boss::stage_one(
 	if(timeouts.is_finished(timeout_fire)) {
 
 		//TODO: Shoot alternatively from each hand!!!
+		//TODO: This could have different speeds to xD!
 		bmi->boss_create_targeted_projectile(ent.get_origin());
 		timeouts.restart(timeout_fire);
 	}
@@ -151,8 +150,12 @@ void boss::notify_skull_destroyed(
 	int _skulls_left
 ) {
 
-	//TODO: 
-	std::cout<<"SKULL HIT, LEFT: "<<_skulls_left<<std::endl;
+	if(0!=_skulls_left) {
+
+		return;
+	}
+
+	//TODO: Depending on the skill the boss might be defeated or not.
 
 }
 
