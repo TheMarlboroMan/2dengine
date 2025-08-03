@@ -572,6 +572,12 @@ void main::restart_level() {
 
 		block.reset();
 	}
+
+	if(current_map.boss) {
+
+		current_map.boss->reset();
+		current_map.skulls.clear();
+	}
 	
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -2238,7 +2244,8 @@ int main::get_discovered_map_count() const {
 
 void main::boss_create_targeted_projectile(
 	d2d::collision::point _origin,
-	int angle
+	double _velocity,
+	int _extra_angle
 ) {
 
 	app::projectile_creator pc;
@@ -2246,9 +2253,9 @@ void main::boss_create_targeted_projectile(
 	current_map.projectiles.push_back(
 		pc.create_directed(
 			_origin,
-			100.0, //TODO,
+			_velocity,
 			ldt::get_center(player.ent.get_box()),
-			angle
+			_extra_angle
 		)
 	);
 }

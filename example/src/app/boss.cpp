@@ -23,11 +23,24 @@ boss::boss(
 	timeouts.add(timeout_pause, 0., 0., true);
 	timeouts.add(timeout_fire, 0., 0., true);
 
+	appear_x_start=ent.get_x();
+	
 	//Save the target y for the first phase...
 	appear_y_target=ent.get_y();
+	reset();
+}
 
-	//Set the boss outside the screen.
+void boss::reset() {
+
+	//Set the boss outside the screen, at its x starting point.
+	ent.set_x(appear_x_start);
 	ent.set_y(app::logic_screen_h+(2*app::tile_h));
+
+	volley_count=0;
+	volley_total=0;
+
+	timeouts.reset(timeout_pause).pause();
+	timeouts.reset(timeout_fire).pause();
 
 	stage=stages::appear;
 }
@@ -58,6 +71,11 @@ void boss::tic(
 			[[fallthrough]];
 		case stages::stage_1:
 			return stage_one(_delta);
+		case stages::setup_stage_2:
+			setup_stage_two();
+			[[fallthrough]];
+		case stages::stage_2:
+			return stage_two(_delta);
 	}
 }
 
@@ -81,10 +99,6 @@ void boss::stage_pause(
 
 		stage=after_pause_stage;
 	}
-}
-
-void boss::stage_setup() {
-
 }
 
 void boss::stage_appear(
@@ -140,9 +154,39 @@ void boss::stage_one(
 	if(timeouts.is_finished(timeout_fire)) {
 
 		//TODO: Shoot alternatively from each hand!!!
-		//TODO: This could have different speeds to xD!
-		bmi->boss_create_targeted_projectile(ent.get_origin());
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 100.);
 		timeouts.restart(timeout_fire);
+	}
+}
+
+void boss::setup_stage_two() {
+
+	stage=stages::stage_2;
+
+	volley_count=0;
+	volley_total=5;
+	timeouts.target(timeout_fire, phase_two_fire_delay)
+		.restart();
+}
+
+void boss::stage_two(
+	ldtools::tdelta _delta
+) {
+
+	//Shoot triple volleys against the player...
+	if(timeouts.is_finished(timeout_fire)) {
+
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., 0);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., 20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., -20);
+		timeouts.restart(timeout_fire);
+
+		++volley_count;
+		if(volley_count >= volley_total) {
+
+			stage=stages::stage_3;
+			return;
+		}
 	}
 }
 
@@ -153,6 +197,11 @@ void boss::notify_skull_destroyed(
 	if(0!=_skulls_left) {
 
 		return;
+	}
+
+	if(stage==stages::stage_1) {
+
+		stage=stages::stage_2;
 	}
 
 	//TODO: Depending on the skill the boss might be defeated or not.

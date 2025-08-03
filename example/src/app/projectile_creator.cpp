@@ -56,13 +56,13 @@ projectile projectile_creator::create_directed(
 	int _extra_angle
 ) const {
 
-	//TODO: Take this shit to the library!
-	auto rad=std::atan2(_target.y-_origin.y, _target.x-_origin.x);
-	auto deg=ldt::rad_to_deg(rad);
-	deg+=_extra_angle;
+	auto angle_rad=ldt::angle_between_rad(_origin, _target);
+	if(0!=_extra_angle) {
 
-	//TODO; This converts BACK to rad again... a bit stupid.
-	d2d::motion::motion_vector vec{ldt::vector_from_angle(deg)};
+		angle_rad+=ldt::deg_to_rad((double)_extra_angle);
+	}
+
+	d2d::motion::motion_vector vec{ldt::vector_from_angle_rad(angle_rad)};
 	vec.normalize();
 	vec*=fabs(_velocity);
 
