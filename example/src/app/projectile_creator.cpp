@@ -49,7 +49,7 @@ projectile projectile_creator::create_falling(
 	};
 }
 
-projectile projectile_creator::create_directed(
+projectile projectile_creator::create_targeted(
 	point _origin, 
 	double _velocity, 
 	point _target,
@@ -63,6 +63,26 @@ projectile projectile_creator::create_directed(
 	}
 
 	d2d::motion::motion_vector vec{ldt::vector_from_angle_rad(angle_rad)};
+	vec.normalize();
+	vec*=fabs(_velocity);
+
+	auto box=create_box(_origin, projectile_round_w, projectile_round_h);
+
+	return {
+		box,
+		vec,
+		projectile::types::directed,
+		projectile_round_desintegration_ms
+	};
+}
+
+projectile projectile_creator::create_directed(
+	point _origin, 
+	double _velocity,
+	int _angle
+) const {
+
+	d2d::motion::motion_vector vec{ldt::vector_from_angle((double)_angle)};
 	vec.normalize();
 	vec*=fabs(_velocity);
 

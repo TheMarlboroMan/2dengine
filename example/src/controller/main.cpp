@@ -1049,7 +1049,7 @@ void main::generate_projectile(
 			return;
 		case app::projectile_generator::types::directed:
 			current_map.projectiles.push_back(
-				pc.create_directed(
+				pc.create_targeted(
 					_generator.get_spawn_point(),
 					_generator.get_velocity(),
 					ldt::get_center(player.ent.get_box()),
@@ -2251,11 +2251,28 @@ void main::boss_create_targeted_projectile(
 	app::projectile_creator pc;
 
 	current_map.projectiles.push_back(
-		pc.create_directed(
+		pc.create_targeted(
 			_origin,
 			_velocity,
 			ldt::get_center(player.ent.get_box()),
 			_extra_angle
+		)
+	);
+}
+
+void main::boss_create_directed_projectile(
+	d2d::collision::point _origin,
+	int _angle,
+	double _velocity
+) {
+
+	app::projectile_creator pc;
+
+	current_map.projectiles.push_back(
+		pc.create_directed(
+			_origin,
+			_velocity,
+			_angle
 		)
 	);
 }

@@ -18,7 +18,8 @@ class projectile_creator {
 	projectile  create_horizontal(point, double) const;
 	projectile  create_vertical(point, double) const;
 	projectile  create_falling(point, double) const;
-	projectile  create_directed(point, double, point, int=0) const;
+	projectile  create_targeted(point, double, point, int=0) const;
+	projectile  create_directed(point, double, int) const;
 
 	//TODO; Why should these be in the executable when we can have a table
 	//for these kind of things? They would not be const, I guess...

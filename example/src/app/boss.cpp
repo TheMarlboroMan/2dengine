@@ -76,6 +76,16 @@ void boss::tic(
 			[[fallthrough]];
 		case stages::stage_2:
 			return stage_two(_delta);
+		case stages::setup_stage_3:
+			setup_stage_three();
+			[[fallthrough]];
+		case stages::stage_3:
+			return stage_three(_delta);
+		case stages::setup_stage_4:
+			setup_stage_four();
+			[[fallthrough]];
+		case stages::stage_4:
+			return stage_four();
 	}
 }
 
@@ -113,7 +123,7 @@ void boss::stage_appear(
 
 		//Ready the entity position and movement...
 		ent.set_y(appear_y_target);
-		ent.set_motion_vector({horizontal_speed, 0.});
+		ent.set_motion_vector({phase_one_horizontal_speed, 0.});
 
 		ready_pause(stages::setup_stage_1, 2.);
 
@@ -126,6 +136,7 @@ void boss::setup_stage_one() {
 	//Spawn the skulls!!
 	bmi->boss_spawn_skull(1);
 	bmi->boss_spawn_skull(2);
+	volley_count=0;
 	stage=stages::stage_1;
 
 	timeouts.target(timeout_fire, phase_one_fire_delay)
@@ -138,23 +149,28 @@ void boss::stage_one(
 
 	//Move left and right... and shoot alternately from each "hand".
 	d2d::motion::mover mv;
-	mv.apply(ent, _delta);
+	mv.apply_and_commit(ent, _delta);
 
 	const auto x=ent.get_x();
 	if(x >= phase_one_x_right_limit) {
 
-		ent.set_motion_vector({-horizontal_speed, 0.});
+		ent.set_motion_vector({-phase_one_horizontal_speed, 0.});
 	}
 
 	if(x <= phase_one_x_left_limit) {
 
-		ent.set_motion_vector({horizontal_speed, 0.});
+		ent.set_motion_vector({phase_one_horizontal_speed, 0.});
 	}
 
 	if(timeouts.is_finished(timeout_fire)) {
 
-		//TODO: Shoot alternatively from each hand!!!
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 100.);
+		//Shoot alternatively from each hand!!!
+		auto origin=ent.get_origin();
+		origin.x+=volley_count++ % 2 
+			? phase_one_left_offset
+			: phase_one_right_offset;
+
+		bmi->boss_create_targeted_projectile(origin, 100.);
 		timeouts.restart(timeout_fire);
 	}
 }
@@ -176,18 +192,90 @@ void boss::stage_two(
 	//Shoot triple volleys against the player...
 	if(timeouts.is_finished(timeout_fire)) {
 
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., 0);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., 20);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 150., -20);
+		//TODO: Maybe the angle closes as we are nearer?
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 0);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -20);
 		timeouts.restart(timeout_fire);
 
-		++volley_count;
-		if(volley_count >= volley_total) {
+		if(++volley_count >= volley_total) {
 
-			stage=stages::stage_3;
+			stage=stages::setup_stage_3;
 			return;
 		}
 	}
+}
+
+void boss::setup_stage_three() {
+
+	//Set the position to the center of the screen.
+	d2d::collision::point target{
+		(double)((app::logic_screen_w / 2) - w),
+		(double)(app::logic_screen_h / 2)
+	};
+
+	d2d::motion::motion_vector vec=ldt::vector_from_points(
+		ent.get_origin(),
+		target
+	);
+
+	distance_moved=0;
+	distance_total=vec.magnitude();
+
+	ent.set_motion_vector(vec.normalize() * phase_three_speed);
+
+	stage=stages::stage_3;
+}
+
+void boss::stage_three(
+	ldtools::tdelta _delta
+) {
+
+	d2d::motion::mover mv;
+	mv.apply_and_commit(ent, _delta);
+	distance_moved+=ent.get_motion_vector().magnitude() * _delta;
+
+	//We are not accounting for any extra distance but this is a good enough
+	//approximation... Once the boss reaches the target destination we 
+	//start a new pause, then its onwards to stage 4.
+	if(distance_moved >= distance_total) {
+
+		ready_pause(stages::setup_stage_4, 2.);
+		return;
+	}
+}
+
+void boss::setup_stage_four() {
+
+	volley_count=0;
+	volley_total=30;
+	timeouts.target(timeout_fire, phase_three_fire_delay)
+		.restart();
+	stage=stages::stage_4;
+}
+
+void boss::stage_four() {
+
+	if(!timeouts.is_finished(timeout_fire)) {
+
+		return;
+	}
+
+	if(++volley_count >= volley_total) {
+
+		//TODO: Done! another pause???
+		return;
+	}
+
+	const auto origin=ldt::get_center(ent.get_box());
+	bmi->boss_create_directed_projectile(origin, volley_angle, 100.);
+	bmi->boss_create_directed_projectile(origin, volley_angle+90, 100.);
+	bmi->boss_create_directed_projectile(origin, volley_angle+180, 100.);
+	bmi->boss_create_directed_projectile(origin, volley_angle+270, 100.);
+
+	volley_angle+=6;
+
+	timeouts.restart(timeout_fire);
 }
 
 void boss::notify_skull_destroyed(
@@ -201,7 +289,11 @@ void boss::notify_skull_destroyed(
 
 	if(stage==stages::stage_1) {
 
-		stage=stages::stage_2;
+		stage=stages::setup_stage_2;
+	}
+	else if(stage==stages::stage_2) {
+
+		stage=stages::setup_stage_3;
 	}
 
 	//TODO: Depending on the skill the boss might be defeated or not.

@@ -16,6 +16,10 @@ class boss_map_interface {
 	//Can have some extra angle.
 	virtual void boss_create_targeted_projectile(d2d::collision::point, double, int=0)=0;
 
+	//Must create a projectile on the given point with the angle expressed by
+	//the second argument (velocity being the third).
+	virtual void boss_create_directed_projectile(d2d::collision::point, int, double)=0;
+
 	//Must spawn a skull in the location with the given id.
 	virtual void boss_spawn_skull(int)=0;
 };
