@@ -42,15 +42,18 @@ void boss::notify_skull_destroyed(
 
 	if(stage==stages::stage_1) {
 
-		stage=stages::setup_stage_2;
+		ready_pause(stages::setup_stage_2, 1.5);
 	}
 	else if(stage==stages::stage_5) {
 
 		stage_five_hit_skull();
 	}
+	else if(stage==stages::stage_9) {
+
+		//TODO: defeated on easy!!
+	}
 
 	//TODO: Depending on the skill the boss might be defeated or not.
-
 }
 
 
@@ -62,6 +65,11 @@ void boss::reset() {
 
 	volley_count=0;
 	volley_total=0;
+	volley_angle=0;
+	uses_left_hand=true;
+	distance_total=0.;
+	distance_moved=0.;
+	skull_count=0;
 
 	timeouts.reset().pause();
 
@@ -127,9 +135,11 @@ void boss::tic(
 			[[fallthrough]];
 		case stages::stage_8:
 			return stage_eight(_delta);
-
-//TODO: Go to the right margin, fire full horizontal volleys to the left xD
-//TODO: Big fire volleys.
+		case stages::setup_stage_9:
+			setup_stage_nine();
+			[[fallthrough]];
+		case stages::stage_9:
+			return stage_nine(_delta);
 	}
 }
 
@@ -142,14 +152,12 @@ void boss::do_side_movement(
 	mv.apply_and_commit(ent, _delta);
 
 	const auto x=ent.get_x();
-	//TODO: Is this badly named?
-	if(x >= phase_one_x_right_limit) {
+	if(x >= x_right_limit) {
 
 		ent.set_motion_vector({-_velocity, 0.});
 	}
 
-	//TODO: Is this badly named?
-	if(x <= phase_one_x_left_limit) {
+	if(x <= x_left_limit) {
 
 		ent.set_motion_vector({_velocity, 0.});
 	}
@@ -209,17 +217,24 @@ void boss::stage_appear(
 	ldtools::tdelta _delta
 ) {
 
+	//TODO: You know, we can do this with do_targeted_movement...
+
 	//Descend until the y_target is reached.
 	d2d::motion::mover mv;
-	mv.apply_y(ent, appear_y_speed, _delta);
+	mv.apply_y(
+		ent, 
+		first_appears 
+			? first_appear_y_speed
+			: subsequent_appear_y_speed,
+		_delta
+	);
 
 	if(ent.get_y() <= appear_y_target) {
 
 		//Ready the entity position... 
+		first_appears=false;
 		ent.set_y(appear_y_target);
 		ready_pause(stages::setup_stage_1, 2.);
-		ready_pause(stages::setup_stage_7, 2.);
-
 		return;
 	}
 }
@@ -250,8 +265,8 @@ void boss::stage_one(
 		//Shoot alternatively from each hand!!!
 		auto origin=ent.get_origin();
 		origin.x+=volley_count++ % 2 
-			? phase_one_left_offset
-			: phase_one_right_offset;
+			? left_hand_offset
+			: right_hand_offset;
 
 		bmi->boss_create_targeted_projectile(origin, 100.);
 		timeouts.restart(timeout_fire);
@@ -278,7 +293,7 @@ void boss::stage_two(
 		//TODO: Maybe the angle closes as we are nearer?
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 0);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 30);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -30);
 		timeouts.restart(timeout_fire);
 
 		if(++volley_count >= volley_total) {
@@ -317,8 +332,8 @@ void boss::stage_three(
 void boss::setup_stage_four() {
 
 	volley_count=0;
-	volley_total=30;
-	timeouts.target(timeout_fire, phase_three_fire_delay)
+	volley_total=60;
+	timeouts.target(timeout_fire, phase_four_fire_delay)
 		.restart();
 	stage=stages::stage_4;
 }
@@ -351,6 +366,7 @@ void boss::setup_stage_five() {
 	skull_count=0;
 	volley_count=0;
 	volley_total=3;
+	uses_left_hand=true;
 
 	timeouts.target(timeout_summon_skull, phase_five_summon_skull_delay)
 		.restart();
@@ -392,30 +408,30 @@ void boss::stage_five(
 	if(timeouts.is_finished(timeout_fire)) {
 
 		auto origin=ent.get_origin();
-		//TODO: Any ideas for this?? 
-		origin.x+=phase_one_left_offset;
+		origin.x+=uses_left_hand
+			? left_hand_offset
+			: right_hand_offset;
 
-		//After a wait, do a volley.
+		//When starting the volley, lock the target and the short delay.
 		if(0==volley_count) {
 
 			timeouts.target(timeout_fire, phase_five_fire_delay)
 				.restart();
 
 			const auto target=bmi->boss_get_target();
-			//TODO: Should this be the center??? No, should be
-			//the hand that fires the shots!
 			volley_angle=ldt::angle_between(origin, target);
 		}
 
 		//TODO: All these 100. should be constants somewhere.
 		bmi->boss_create_directed_projectile(origin, volley_angle, 100.);
 
-		//After a full volley, wait...
+		//Volley done? Change the delay and hand.
 		if(++volley_count >= volley_total) {
 
 			timeouts.target(timeout_fire, phase_five_volley_delay)
 				.restart();
 			volley_count=0;
+			uses_left_hand=!uses_left_hand;
 			return;
 		}
 
@@ -455,10 +471,9 @@ void boss::stage_six(
 	//Shoot volleys against the player, each shot has different velocity!
 	if(timeouts.is_finished(timeout_fire)) {
 
-		//TODO: Maybe the angle closes as we are nearer?
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 140., 0);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 20);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 100., 20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 100., -20);
 		timeouts.restart(timeout_fire);
 
 		if(++volley_count >= volley_total) {
@@ -538,6 +553,40 @@ void boss::stage_eight(
 			return;
 		}
 	}
+}
+
+void boss::setup_stage_nine() {
+
+	skull_count=0;
+	volley_count=0;
+	//TODO:
+	volley_total=0;
+	uses_left_hand=true;
+
+	//TODO:
+	timeouts.target(timeout_summon_skull, phase_five_summon_skull_delay)
+		.restart();
+
+	//TODO:
+	timeouts.target(timeout_fire, phase_five_volley_delay)
+		.restart();
+
+	ent.set_motion_vector({phase_nine_horizontal_speed, 0.});
+
+	stage=stages::stage_9;
+}
+
+void boss::stage_nine(
+	ldtools::tdelta _delta
+) {
+
+	//Again, no firing while moving!!
+	if(0==volley_count) {
+
+		do_side_movement(_delta, phase_nine_horizontal_speed);
+	}
+
+	//How about WIDE shots?
 }
 
 
