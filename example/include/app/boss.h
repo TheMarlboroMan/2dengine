@@ -50,7 +50,9 @@ class boss {
 		setup_stage_6, //like stage 2... stay still and fire...
 		stage_6, //...but with a bit more dangerous patterns!
 		setup_stage_7, //move to the right of the screen...
-		stage_7 //fire a bunch of horizontal volleys!
+		stage_7,
+		setup_stage_8, //fire a bunch of horizontal volleys!
+		stage_8
 		//SKULLS...
 
 		//TODO: Third skull phase is last on easy
@@ -76,6 +78,8 @@ class boss {
 	void            stage_six(ldtools::tdelta);
 	void            setup_stage_seven();
 	void            stage_seven(ldtools::tdelta);
+	void            setup_stage_eight();
+	void            stage_eight(ldtools::tdelta);
 
 	void            do_side_movement(ldtools::tdelta, double);
 	void            ready_targeted_movement(d2d::collision::point, double);

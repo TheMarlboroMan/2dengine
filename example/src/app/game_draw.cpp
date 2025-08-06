@@ -1058,6 +1058,7 @@ void game_draw::draw_boss(
 		{d2d::video::sprite_draw::modifiers::flip_horizontal}
 	);
 
+/**
 	ldv::box_representation box{
 		d2d::video::to_screen_rect(_boss.ent),
 		ldv::rgba_color(255,0,0,128),
@@ -1067,11 +1068,7 @@ void game_draw::draw_boss(
 	box.set_blend(ldv::representation::blends::alpha);
 	box.set_alpha(128);
 	box.draw(_screen, camera);
-	//
-	//spr_boss_center=420,
-	//spr_boss_side=421,
-	//spr_boss_skull=422
-	//
+*/
 	//TODO: Slightly animate the rotated parts.
 }
 

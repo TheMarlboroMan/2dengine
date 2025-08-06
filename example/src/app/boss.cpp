@@ -124,6 +124,11 @@ void boss::tic(
 			[[fallthrough]];
 		case stages::stage_7:
 			return stage_seven(_delta);
+		case stages::setup_stage_8:
+			setup_stage_eight();
+			[[fallthrough]];
+		case stages::stage_8:
+			return stage_eight(_delta);
 
 //TODO: Go to the right margin, fire full horizontal volleys to the left xD
 //TODO: Big fire volleys.
@@ -351,7 +356,7 @@ void boss::setup_stage_five() {
 	timeouts.target(timeout_summon_skull, phase_five_summon_skull_delay)
 		.restart();
 
-	timeouts.target(timeout_fire, phase_five_fire_delay)
+	timeouts.target(timeout_fire, phase_five_volley_delay)
 		.restart();
 
 	ent.set_motion_vector({phase_five_horizontal_speed, 0.});
@@ -363,8 +368,11 @@ void boss::stage_five(
 	ldtools::tdelta _delta
 ) {
 
-	//A bit of faster movement...
-	do_side_movement(_delta, phase_five_horizontal_speed);
+	//A bit of faster movement, but only when not firing!
+	if(0==volley_count) {
+
+		do_side_movement(_delta, phase_five_horizontal_speed);
+	}
 
 	//Skulls are summoned in sequence as they are destroyed.
 	if(timeouts.is_finished(timeout_summon_skull)) {
@@ -385,7 +393,7 @@ void boss::stage_five(
 	if(timeouts.is_finished(timeout_fire)) {
 
 		auto origin=ent.get_origin();
-		//TODO: Any ideas for this??
+		//TODO: Any ideas for this?? 
 		origin.x+=phase_one_left_offset;
 
 		//After a wait, do a volley.
@@ -475,10 +483,25 @@ void boss::setup_stage_seven() {
 }
 
 void boss::stage_seven(
-	ldtools::tdelta
+	ldtools::tdelta _delta
 ) {
 
+	if(do_targeted_movement(_delta)) {
+
+		ready_pause(stages::setup_stage_8, 2.);
+	}
+}
+
+void boss::setup_stage_eight() {
+
 	//TODO:
+}
+
+void boss::stage_eight(
+	ldtools::tdelta 
+) {
+	//TODO: Summon a courtain of projectiles, left to right, only one
+	//gap should remain!
 }
 
 
