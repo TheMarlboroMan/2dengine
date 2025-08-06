@@ -22,5 +22,8 @@ class boss_map_interface {
 
 	//Must spawn a skull in the location with the given id.
 	virtual void boss_spawn_skull(int)=0;
+
+	//Must return the center of the player.
+	virtual d2d::collision::point boss_get_target() const=0;
 };
 }

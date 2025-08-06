@@ -767,7 +767,13 @@ void main::post_tic() {
 			return;
 		}
 
+
 		for(auto& skull : current_map.skulls) {
+
+			if(player.is_defeated()) {
+
+				break;
+			}
 
 			if(d2d::collision::collides_with(skull.ent, projectile.ent)) {
 
@@ -2292,6 +2298,11 @@ void main::boss_spawn_skull(
 	}
 
 	lm::log(logger).warning()<<"spawn skull point not found:"<<_id<<std::endl;
+}
+
+d2d::collision::point main::boss_get_target() const {
+
+	return ldt::get_center(player.ent.get_box());
 }
 
 #ifdef IS_DEBUG_BUILD

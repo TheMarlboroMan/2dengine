@@ -227,6 +227,7 @@ class main:
 	virtual void boss_create_targeted_projectile(d2d::collision::point, double, int=0);
 	virtual void boss_create_directed_projectile(d2d::collision::point, int, double);
 	virtual void boss_spawn_skull(int);
+	virtual d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };
 
