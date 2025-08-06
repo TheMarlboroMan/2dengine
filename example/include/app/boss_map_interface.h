@@ -20,6 +20,10 @@ class boss_map_interface {
 	//the second argument (velocity being the third).
 	virtual void boss_create_directed_projectile(d2d::collision::point, int, double)=0;
 
+	//Must create a linear projectile starting from the given point, with the
+	//given velocity.
+	virtual void boss_create_linear_projectile(d2d::collision::point, double)=0;
+
 	//Must spawn a skull in the location with the given id.
 	virtual void boss_spawn_skull(int)=0;
 

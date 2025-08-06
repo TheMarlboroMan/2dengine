@@ -85,10 +85,8 @@ void boss::tic(
 
 		case stages::pause:
 			return stage_pause(_delta);
-
 		case stages::appear:
 			return stage_appear(_delta);
-
 		case stages::setup_stage_1:
 			setup_stage_one();
 			[[fallthrough]];
@@ -220,6 +218,7 @@ void boss::stage_appear(
 		//Ready the entity position... 
 		ent.set_y(appear_y_target);
 		ready_pause(stages::setup_stage_1, 2.);
+		ready_pause(stages::setup_stage_7, 2.);
 
 		return;
 	}
@@ -270,7 +269,7 @@ void boss::setup_stage_two() {
 }
 
 void boss::stage_two(
-	ldtools::tdelta _delta
+	ldtools::tdelta
 ) {
 
 	//Shoot triple volleys against the player...
@@ -278,7 +277,7 @@ void boss::stage_two(
 
 		//TODO: Maybe the angle closes as we are nearer?
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 0);
-		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 20);
+		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 30);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -20);
 		timeouts.restart(timeout_fire);
 
@@ -475,7 +474,7 @@ void boss::setup_stage_seven() {
 	//Set the position to the right center
 	d2d::collision::point target{
 		(double)((app::logic_screen_w) - (2*w)),
-		(double)(app::logic_screen_h / 2)
+		(double)(2*h)
 	};
 
 	ready_targeted_movement(target, phase_seven_speed);
@@ -494,14 +493,51 @@ void boss::stage_seven(
 
 void boss::setup_stage_eight() {
 
-	//TODO:
+	volley_count=0;
+	volley_total=5;
+
+	timeouts.target(timeout_fire, phase_eight_fire_delay)
+		.restart();
+
+	stage=stages::stage_8;
 }
 
 void boss::stage_eight(
 	ldtools::tdelta 
 ) {
-	//TODO: Summon a courtain of projectiles, left to right, only one
-	//gap should remain!
+
+	//Shot a "wall" of projectiles with a gap.
+	if(timeouts.is_finished(timeout_fire)) {
+
+		int gap=0;
+		switch(volley_count) {
+
+			case 0: gap=4; break;
+			case 1: gap=9; break;
+			case 2: gap=12; break;
+			case 3: gap=9; break;
+			case 4: gap=2; break;
+		}
+
+		for(int i=2; i<15; i++) {
+		
+			if(gap==i) {
+
+				continue;
+			}
+
+			double x=ent.get_origin().x; double y=(i*tile_h)-(tile_h/2);
+			d2d::collision::point origin{x, y};
+			bmi->boss_create_linear_projectile(origin, -75.);
+		}
+
+		timeouts.restart(timeout_fire);
+		if(++volley_count >= volley_total) {
+
+			stage=stages::setup_stage_9;
+			return;
+		}
+	}
 }
 
 

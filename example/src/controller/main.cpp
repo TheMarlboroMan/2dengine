@@ -2283,6 +2283,21 @@ void main::boss_create_directed_projectile(
 	);
 }
 
+void main::boss_create_linear_projectile(
+	d2d::collision::point _origin,
+	double _velocity
+) {
+
+	app::projectile_creator pc;
+
+	current_map.projectiles.push_back(
+		pc.create_horizontal(
+			_origin,
+			_velocity
+		)
+	);
+}
+
 void main::boss_spawn_skull(
 	int _id
 ) {

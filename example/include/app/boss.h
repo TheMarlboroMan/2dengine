@@ -52,8 +52,10 @@ class boss {
 		setup_stage_7, //move to the right of the screen...
 		stage_7,
 		setup_stage_8, //fire a bunch of horizontal volleys!
-		stage_8
+		stage_8,
 		//SKULLS...
+		setup_stage_9,
+		stage_9
 
 		//TODO: Third skull phase is last on easy
 		//TODO: Fourth skull phase is last on medium
@@ -126,6 +128,7 @@ class boss {
 	static constexpr double phase_five_summon_skull_delay{4.};
 	static constexpr double phase_six_fire_delay{1.};
 	static constexpr double phase_seven_speed{25.};
+	static constexpr double phase_eight_fire_delay{4.};
 };
 
 std::ostream& operator<<(std::ostream&, const boss&);
