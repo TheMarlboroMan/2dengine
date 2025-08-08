@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "definitions.h"
 #include "boss_map_interface.h"
 #include <d2d/components/timeouts.h>
 #include <ldtools/time_definitions.h>
@@ -21,8 +22,10 @@ class boss {
 	//Notifies the boss of a skull destroyed and tells about the remaining ones.
 	void            notify_skull_destroyed(int);
 	void            reset();
+	void            setup_facing(double);
 
 	entity          ent;
+	faces           facing{faces::right};
 
 	private:
 
@@ -34,6 +37,7 @@ class boss {
 
 	enum class stages {
 		pause, //actually any pause between phases...
+		setup_appear,
 		appear, //comes down from above, after a pause enters stage 1.
 		//SKULLS...
 		setup_stage_1, //summon skulls and...
@@ -60,10 +64,11 @@ class boss {
 		//TODO: Third skull phase is last on easy
 		//TODO: Fourth skull phase is last on medium
 		//TODO: Fifth skull phase is last on hard
-	}               stage{stages::appear},
-					after_pause_stage{stages::appear};
+	}               stage{stages::setup_appear},
+					after_pause_stage{stages::setup_appear};
 
 	void            stage_pause(ldtools::tdelta);
+	void            setup_stage_appear();
 	void            stage_appear(ldtools::tdelta);
 	void            setup_stage_one();
 	void            stage_one(ldtools::tdelta);
@@ -112,8 +117,8 @@ class boss {
 	};
 	static const int w{16};
 	static const int h{24};
-	static const int first_appear_y_speed{-14};
-	static const int subsequent_appear_y_speed{-44};
+	static const int first_appear_y_speed{14};
+	static const int subsequent_appear_y_speed{44};
 	static const int x_left_limit{42};
 	static const int x_right_limit{250};
 	static const int left_hand_offset{-12};
@@ -131,6 +136,9 @@ class boss {
 	static constexpr double phase_seven_speed{25.};
 	static constexpr double phase_eight_fire_delay{4.};
 	static constexpr double phase_nine_horizontal_speed{76.};
+	static constexpr double phase_nine_volley_delay{1.5};
+	static constexpr double phase_nine_fire_delay{.15};
+	static constexpr double phase_nine_summon_skull_delay{4.};
 };
 
 std::ostream& operator<<(std::ostream&, const boss&);

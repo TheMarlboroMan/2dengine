@@ -1032,12 +1032,21 @@ void game_draw::draw_boss(
 	//because this is already screen coordinates.
 	origin.y-=19;
 
+	int flags=0;
+	if(_boss.facing==app::faces::left) {
+
+		flags |= d2d::video::sprite_draw::modifiers::flip_horizontal;
+	}
+
+	d2d::video::sprite_draw::modifiers mod{flags};
+
 	//The boss must be drawn by pieces....
 	//Center...
 	sprite_draw.draw(
 		_screen,
 		origin,
-		spr_boss_center
+		spr_boss_center,
+		mod
 	);
 
 	//Left side

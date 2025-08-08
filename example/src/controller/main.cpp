@@ -904,6 +904,9 @@ void main::tic_world(
 	d2d::motion::mover mover{};
 	if(current_map.boss) {
 
+		current_map.boss->setup_facing(
+			ldt::get_center(player.ent.get_box()).x
+		);
 		current_map.boss->tic(_delta);
 	}
 

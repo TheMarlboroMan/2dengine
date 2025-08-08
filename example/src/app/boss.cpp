@@ -31,6 +31,18 @@ boss::boss(
 	reset();
 }
 
+void boss::setup_facing(
+	double _target_x
+) {
+
+	const auto center=ldt::get_center(ent.get_box()).x;
+
+	facing=_target_x <= center
+		? faces::left
+		: faces::right;
+}
+
+
 void boss::notify_skull_destroyed(
 	int _skulls_left
 ) {
@@ -43,25 +55,26 @@ void boss::notify_skull_destroyed(
 	if(stage==stages::stage_1) {
 
 		ready_pause(stages::setup_stage_2, 1.5);
+		//TODO: Sky might flash?
 	}
 	else if(stage==stages::stage_5) {
 
 		stage_five_hit_skull();
+		//TODO: Sky might flash?
 	}
 	else if(stage==stages::stage_9) {
 
 		//TODO: defeated on easy!!
+		//TODO: Sky might flash?
 	}
-
-	//TODO: Depending on the skill the boss might be defeated or not.
 }
-
 
 void boss::reset() {
 
 	//Set the boss outside the screen, at its x starting point.
 	ent.set_x(appear_x_start);
 	ent.set_y(app::logic_screen_h+(2*app::tile_h));
+	ent.commit_box();
 
 	volley_count=0;
 	volley_total=0;
@@ -73,7 +86,7 @@ void boss::reset() {
 
 	timeouts.reset().pause();
 
-	stage=stages::appear;
+	stage=stages::setup_appear;
 }
 
 void boss::set_boss_map_interface(
@@ -93,6 +106,9 @@ void boss::tic(
 
 		case stages::pause:
 			return stage_pause(_delta);
+		case stages::setup_appear:
+			setup_stage_appear();
+			[[fallthrough]];
 		case stages::appear:
 			return stage_appear(_delta);
 		case stages::setup_stage_1:
@@ -213,23 +229,26 @@ void boss::stage_pause(
 	}
 }
 
+void boss::setup_stage_appear() {
+
+	double velocity=first_appears 
+			? first_appear_y_speed
+			: subsequent_appear_y_speed;
+
+	d2d::collision::point target(
+		appear_x_start,
+		appear_y_target
+	);
+
+	ready_targeted_movement(target, velocity);
+	stage=stages::appear;
+}
+
 void boss::stage_appear(
 	ldtools::tdelta _delta
 ) {
 
-	//TODO: You know, we can do this with do_targeted_movement...
-
-	//Descend until the y_target is reached.
-	d2d::motion::mover mv;
-	mv.apply_y(
-		ent, 
-		first_appears 
-			? first_appear_y_speed
-			: subsequent_appear_y_speed,
-		_delta
-	);
-
-	if(ent.get_y() <= appear_y_target) {
+	if(do_targeted_movement(_delta)) {
 
 		//Ready the entity position... 
 		first_appears=false;
@@ -549,7 +568,7 @@ void boss::stage_eight(
 		timeouts.restart(timeout_fire);
 		if(++volley_count >= volley_total) {
 
-			stage=stages::setup_stage_9;
+			ready_pause(stages::setup_stage_9, 6.);
 			return;
 		}
 	}
@@ -563,12 +582,10 @@ void boss::setup_stage_nine() {
 	volley_total=0;
 	uses_left_hand=true;
 
-	//TODO:
-	timeouts.target(timeout_summon_skull, phase_five_summon_skull_delay)
+	timeouts.target(timeout_summon_skull, phase_nine_summon_skull_delay)
 		.restart();
 
-	//TODO:
-	timeouts.target(timeout_fire, phase_five_volley_delay)
+	timeouts.target(timeout_fire, phase_nine_volley_delay)
 		.restart();
 
 	ent.set_motion_vector({phase_nine_horizontal_speed, 0.});
