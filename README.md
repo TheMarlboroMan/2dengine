@@ -44,6 +44,7 @@
 
 ### components
 
+    particle (particle managers and particles, mostly particle pools, the rest must be implemented!).
     persistence
     timeouts
 
@@ -91,6 +92,10 @@
 ### how to load tiles
 
     the map format
+
+### particles
+
+    TODO:
 
 ## resources
 

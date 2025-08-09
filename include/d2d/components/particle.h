@@ -4,15 +4,14 @@
 #include <ldtools/time_definitions.h>
 #include <ldv/screen.h>
 #include <ldv/camera.h>
-#include <map>
 #include <vector>
 
 namespace d2d { namespace components {
 
 /**
  * the particle itself. Position and vector are expected in cartesian 
- * coordinates, but that's neither here nor there since the particle modules
- * will actually take care of drawing.
+ * coordinates, but that's neither here nor there since the manager will
+ * not take care of drawing... nor will the modules.
  */
 struct particle {
 
@@ -25,6 +24,8 @@ struct particle {
 
 /**
  * extension endpoints to applications can create and manage their particles.
+ * Each one can setup and tic particles in a different way, say, to 
+ * simulate smoke, sparks...
  */
 class particle_module_interface {
 
@@ -37,12 +38,21 @@ class particle_module_interface {
 	//should have already.
 	virtual void    tic(particle&, ldtools::tdelta)=0;
 
+};
+
+/**
+ * Interface for a class that takes care of drawing particles. Each render
+ * is expected to take care of a single type of particle. 
+ */
+class particle_render_interface {
+
+	public:
+
 	//Must draw the given particle.
 	virtual void    draw(particle&, ldv::screen&)=0;
 
 	//Must draw the given particle.
 	virtual void    draw(particle&, ldv::screen&, const ldv::camera&)=0;
-
 };
 
 /**
@@ -56,36 +66,39 @@ class particle_manager {
 	//!Builds the particle manager with space for N particles.
 	                particle_manager(std::size_t);
 	//!Adds a particle of the type N at the given point. The module registered
-	//!at N is the one that will decide its velocity and lifetime! Returns
-	//!false if the container is full and nothing could be added!
+	//!at N is the one that will decide its velocity, position and lifetime! 
+	//Returns false if the container is full and nothing could be added!. Makes 
+	//no attempt at checking if a module was registered or not.
 	bool            add(int, d2d::collision::point);
 	//!Returns the size of the container.
 	std::size_t     size() const {return last_free_index;}
-	//!Will tic every particle.
+	//!Will tic every particle using its module.
 	void            tic(ldtools::tdelta);
-	//!Draws all particles to the screen.
+	//!Draws all particles.
 	void            draw(ldv::screen&);
 	//!Draws all particles to the screen with the given camera.
 	void            draw(ldv::screen&, const ldv::camera&);
-	//!Resets the manager. The container is not actually touched at all.
+	//!Resets the particles. The container is not actually touched at all.
 	void            cleanup();
-	//!Registers the module unter the given id. The module MUST outlive
-	//!the manager!
-	void            register_module(int, particle_module_interface&);
+	//!Resets the manager completely: particles and modules.
+	void            reset();
+	//!Registers the module. The module MUST outlive the manager!. Returns
+	//the id that was used to register it.
+	std::size_t     register_module(particle_module_interface&);
+	//!Same as register module, but with renderers. Makes sense to register
+	//!them in the same order as modules!
+	std::size_t     register_renderer(particle_render_interface&);
 
-#ifdef IS_DEBUG_BUILD
-	particle&       get(std::size_t _index) {
-
-		return particles.at(_index);
-	}
-#endif
+	//!Direct particle access...
+	particle&       get(std::size_t _index) {return particles.at(_index);}
 
 	private:
 
 	std::size_t                         last_free_index{0};
 	std::vector<particle>               particles;
 	//The manager DOES NOT OWN the modules.
-	std::map<int, particle_module_interface*>    modules;
+	std::vector<particle_module_interface*>    modules;
+	std::vector<particle_render_interface*>    renderers;
 };
 
 }}
