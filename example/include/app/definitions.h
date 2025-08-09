@@ -89,10 +89,12 @@ enum animations{
 	anim_timed_trap_fire=159,
 	anim_projectile_falling=203,
 	anim_projectile_falling_end=204,
+	anim_boss_floating_flame=205,
 
 	//other stuff
 	anim_breaking_platform=200,
 	anim_breaking_platform_return=201
+
 };
 
 enum sprites { 

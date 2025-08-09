@@ -19,7 +19,8 @@ next steps:
 
 		solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
 
-		redesign corners so the player does not clip the walls around.
+		redesign corners so the player does not clip the walls around. Boring,
+			but needed.
 
 		make difficulty levels meaningful!
 

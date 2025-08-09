@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d2d/collision/spatiable.h>
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <ldtools/time_definitions.h>
 #include <iostream>
 

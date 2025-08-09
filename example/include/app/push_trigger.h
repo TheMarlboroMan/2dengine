@@ -1,7 +1,7 @@
 #pragma once
 
 #include "entity.h"
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <d2d/motion/definitions.h>
 #include <d2d/collision/definitions.h>
 #include <ldtools/time_definitions.h>

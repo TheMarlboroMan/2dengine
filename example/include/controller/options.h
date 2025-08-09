@@ -1,6 +1,6 @@
 #pragma once
 
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <app/service_provider.h>
 #include <dfw/controller_interface.h>
 #include "dfwimpl/config.h"

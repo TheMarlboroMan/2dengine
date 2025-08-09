@@ -1,6 +1,7 @@
 set(SOURCE
 	${SOURCE}
-	${CMAKE_CURRENT_SOURCE_DIR}/timeouts.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/timeout.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle.cpp
 	PARENT_SCOPE
 )
 

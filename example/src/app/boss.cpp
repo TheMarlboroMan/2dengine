@@ -31,6 +31,16 @@ boss::boss(
 	reset();
 }
 
+int boss::get_volley_count() const {
+
+	switch(skill) {
+
+		case skills::easy: return 3;
+		case skills::normal: return 4;
+		case skills::hard: return 5;
+	}
+}
+
 void boss::setup_facing(
 	double _target_x
 ) {
@@ -41,7 +51,6 @@ void boss::setup_facing(
 		? faces::left
 		: faces::right;
 }
-
 
 void boss::notify_skull_destroyed(
 	int _skulls_left
@@ -261,8 +270,8 @@ void boss::stage_appear(
 void boss::setup_stage_one() {
 
 	//Spawn the skulls!!
-	bmi->boss_spawn_skull(1);
-	bmi->boss_spawn_skull(2);
+	bmi->boss_spawn_skull(1, 2.);
+	bmi->boss_spawn_skull(2, 2.);
 	volley_count=0;
 	ent.set_motion_vector({phase_one_horizontal_speed, 0.});
 
@@ -295,7 +304,7 @@ void boss::stage_one(
 void boss::setup_stage_two() {
 
 	volley_count=0;
-	volley_total=5;
+	volley_total=get_volley_count();
 	timeouts.target(timeout_fire, phase_two_fire_delay)
 		.restart();
 
@@ -351,7 +360,7 @@ void boss::stage_three(
 void boss::setup_stage_four() {
 
 	volley_count=0;
-	volley_total=60;
+	volley_total=10*get_volley_count();
 	timeouts.target(timeout_fire, phase_four_fire_delay)
 		.restart();
 	stage=stages::stage_4;
@@ -384,7 +393,7 @@ void boss::setup_stage_five() {
 
 	skull_count=0;
 	volley_count=0;
-	volley_total=3;
+	volley_total=get_volley_count();
 	uses_left_hand=true;
 
 	timeouts.target(timeout_summon_skull, phase_five_summon_skull_delay)
@@ -419,7 +428,7 @@ void boss::stage_five(
 				case 3: spawn_id=8; break;
 			}
 
-			bmi->boss_spawn_skull(spawn_id);
+			bmi->boss_spawn_skull(spawn_id, 2.);
 			timeouts.reset(timeout_summon_skull);
 	}
 
@@ -476,7 +485,7 @@ void boss::stage_five_hit_skull() {
 void boss::setup_stage_six() {
 
 	volley_count=0;
-	volley_total=5;
+	volley_total=get_volley_count();
 	timeouts.target(timeout_fire, phase_six_fire_delay)
 		.restart();
 
@@ -505,10 +514,10 @@ void boss::stage_six(
 
 void boss::setup_stage_seven() {
 
-	//Set the position to the right center
+	//Set the position to the right, at the bottom...
 	d2d::collision::point target{
 		(double)((app::logic_screen_w) - (2*w)),
-		(double)(2*h)
+		(double)(h)
 	};
 
 	ready_targeted_movement(target, phase_seven_speed);
@@ -602,6 +611,10 @@ void boss::stage_nine(
 
 		do_side_movement(_delta, phase_nine_horizontal_speed);
 	}
+
+	//TODO: I thought, since the boss is on the low part maybe the player
+	//has to move on the upper side while the boss shots upwards... But of
+	//course, what about the skulls??
 
 	//How about WIDE shots?
 }

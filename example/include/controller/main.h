@@ -23,7 +23,7 @@
 #include <d2d/collision/shaper.h>
 #include <d2d/collision/collision_tracker.h>
 #include <d2d/video/debug_display.h>
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <lm/logger.h>
 #include <d2d/audio/music_player.h>
 #include <d2d/audio/sound_player.h>
@@ -227,7 +227,7 @@ class main:
 	virtual void boss_create_targeted_projectile(d2d::collision::point, double, int=0);
 	virtual void boss_create_directed_projectile(d2d::collision::point, int, double);
 	virtual void boss_create_linear_projectile(d2d::collision::point, double);
-	virtual void boss_spawn_skull(int);
+	virtual void boss_spawn_skull(int, double);
 	virtual d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };

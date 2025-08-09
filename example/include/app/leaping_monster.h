@@ -4,7 +4,7 @@
 #include "definitions.h"
 #include <d2d/motion/definitions.h>
 #include <d2d/motion/mover.h>
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <iostream>
 #include <ldtools/time_definitions.h>
 

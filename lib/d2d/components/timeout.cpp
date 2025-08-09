@@ -1,4 +1,4 @@
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 
 using namespace d2d::components;
 

@@ -34,6 +34,7 @@ class sprite_draw {
 
 		int     flags{0};
 		int     rotation_degrees{0};
+		int     alpha{255};
 	};
 
 	                                sprite_draw(const ldtools::sprite_table&, const ldv::texture&, ldv::camera* =nullptr, bool=false);

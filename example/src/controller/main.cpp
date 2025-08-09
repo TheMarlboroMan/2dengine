@@ -908,6 +908,11 @@ void main::tic_world(
 			ldt::get_center(player.ent.get_box()).x
 		);
 		current_map.boss->tic(_delta);
+
+		for(auto& skull : current_map.skulls) {
+
+			skull.tic(_delta);
+		}
 	}
 
 	for(auto& trap : current_map.timed_traps) {
@@ -2302,7 +2307,8 @@ void main::boss_create_linear_projectile(
 }
 
 void main::boss_spawn_skull(
-	int _id
+	int _id,
+	double _timer
 ) {
 
 	for(const auto& spawn : current_map.skull_spawns) {
@@ -2310,7 +2316,7 @@ void main::boss_spawn_skull(
 		if(_id==spawn.id) {
 
 			lm::log(logger).debug()<<"spawning skull at point "<<_id<<std::endl;
-			current_map.skulls.push_back(spawn.point);
+			current_map.skulls.push_back({spawn.point, _timer});
 			return;
 		}
 	}

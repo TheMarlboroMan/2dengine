@@ -1042,6 +1042,8 @@ void game_draw::draw_boss(
 
 	//The boss must be drawn by pieces....
 	//Center...
+	//TODO: Slightly animate the rotated parts... For this, we need a "timer"...
+	//But this class, it does not tic, does it?
 	sprite_draw.draw(
 		_screen,
 		origin,
@@ -1078,7 +1080,6 @@ void game_draw::draw_boss(
 	box.set_alpha(128);
 	box.draw(_screen, camera);
 */
-	//TODO: Slightly animate the rotated parts.
 }
 
 void game_draw::draw_boss_skull(
@@ -1088,9 +1089,16 @@ void game_draw::draw_boss_skull(
 
 	auto origin=d2d::video::to_screen(_skull.ent.get_origin());
 
+
+	d2d::video::sprite_draw::modifiers mod;
+	mod.alpha=_skull.can_be_hit()
+		? 255
+		: 128;
+
 	sprite_draw.draw(
 		_screen,
 		origin,
-		app::spr_boss_skull
+		app::spr_boss_skull,
+		mod
 	);
 }

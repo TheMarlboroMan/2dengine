@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "definitions.h"
 #include "boss_map_interface.h"
-#include <d2d/components/timeouts.h>
+#include <d2d/components/timeout.h>
 #include <ldtools/time_definitions.h>
 #include <iostream>
 
@@ -93,6 +93,8 @@ class boss {
 	void            do_side_movement(ldtools::tdelta, double);
 	void            ready_targeted_movement(d2d::collision::point, double);
 	bool            do_targeted_movement(ldtools::tdelta);
+	//Depending on the skill level there will be more or less projectiles.
+	int             get_volley_count() const;
 
 	//Resumes pause, sets up lengths and next stage.
 	void            ready_pause(stages, ldtools::tdelta);

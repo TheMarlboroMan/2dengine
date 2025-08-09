@@ -3,9 +3,11 @@
 using namespace app;
 
 boss_skull::boss_skull(
-	d2d::collision::point _origin
+	d2d::collision::point _origin,
+	double _init_timeout
 ):
-	ent{_origin, w, h}
+	ent{_origin, w, h},
+	timeout{_init_timeout, 0, false}
 {}
 
 void boss_skull::desintegrate() {
@@ -13,6 +15,17 @@ void boss_skull::desintegrate() {
 	to_be_destroyed=true;
 }
 
+void boss_skull::tic(
+	ldtools::tdelta _delta
+) {
+
+	timeout.tic(_delta);
+}
+
+bool boss_skull::can_be_hit() const {
+
+	return timeout.is_finished();
+}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,

@@ -24,8 +24,9 @@ class boss_map_interface {
 	//given velocity.
 	virtual void boss_create_linear_projectile(d2d::collision::point, double)=0;
 
-	//Must spawn a skull in the location with the given id.
-	virtual void boss_spawn_skull(int)=0;
+	//Must spawn a skull in the location with the given id. The skull becomes
+	//ready to be hit when the timer expressed in the second argument expires.
+	virtual void boss_spawn_skull(int, double)=0;
 
 	//Must return the center of the player.
 	virtual d2d::collision::point boss_get_target() const=0;

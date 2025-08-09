@@ -154,6 +154,8 @@ void sprite_draw::draw(
 	bmp.center_rotation_center();
 	bmp.set_rotation(_modifiers.rotation_degrees);
 
+	bmp.set_alpha(_modifiers.alpha);
+
 	nullptr!=camera && with_camera
 		? bmp.draw(_screen, *camera)
 		: bmp.draw(_screen);
