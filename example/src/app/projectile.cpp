@@ -8,12 +8,10 @@ using namespace app;
 projectile::projectile(
 	d2d::collision::box _box, 
 	d2d::motion::motion_vector _velocity,
-	types _type,
-	ldtools::tdelta _desintegration_ms
+	types _type
 ):
 	ent{_box},
-	type{_type},
-	timeout{_desintegration_ms / 1000.f, 0.0f, true}
+	type{_type}
 {
 	ent.set_motion_vector(_velocity);
 }
@@ -22,17 +20,6 @@ void projectile::tic(
 	ldtools::tdelta _delta,
 	d2d::motion::mover _mover
 ) {
-
-	if(is_desintegrating()) {
-
-		timeout.tic(_delta);
-		if(timeout.is_finished()) {
-
-			finish();
-		}
-
-		return;
-	}
 
 	if(is_moving()) {
 
@@ -61,7 +48,8 @@ void projectile::tic(
 				ent.set_motion_vector(velocity);
 				if(velocity.y <= 0.1) {
 
-					desintegrate();
+					//TODO: Must be something else, actually.
+					//desintegrate();
 				}
 			}
 			break;
@@ -75,13 +63,5 @@ void projectile::tic(
 void projectile::finish() {
 
 	state=states::done;
-}
-
-void projectile::desintegrate() {
-
-	//we don't set velocity to zerp because this would make the whole animation 
-	//impossible to orient (velocity is used for that)
-	state=states::desintegrating;
-	timeout.restart();
 }
 

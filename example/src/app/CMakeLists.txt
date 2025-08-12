@@ -40,6 +40,9 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/boss.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull_spawn.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_flame.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_splash.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_horizontal_splash.cpp
 	PARENT_SCOPE
 )
 

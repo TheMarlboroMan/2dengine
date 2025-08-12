@@ -48,6 +48,7 @@ game_draw::game_draw(
 	sprite_fill_draw(_sprite_fill_draw),
 	animation_sprite_finder(_animation_sprite_finder),
 	exit_number_font{_ttf_manager.get("exit_number_font", 8)}
+//	particle_renderer_flame{&sprite_draw}
 {
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
@@ -257,6 +258,9 @@ void game_draw::draw(
 	}
 
 	draw_player(_screen, _player);
+	//TODO: sure... were did we register this shit???
+	_map.particle_manager.draw(_screen, camera);
+
 	scenery_tile_draw.draw_animation(_screen, _map.foreground_tiles);
 
 	for(const auto& subject : _map.exits) {
@@ -598,37 +602,21 @@ void game_draw::draw_projectile_linear(
 	const app::projectile& _projectile
 ) {
 
+	if(!_projectile.is_moving()) {
+
+		return;
+	}
+
 	using modifiers=d2d::video::sprite_draw::modifiers;
 
 	//Al sprites are facing right by default.
 	int flags=modifiers::use_sprite_box;
-
 
 	flags |= _projectile.ent.get_motion_vector().x < 0
 		? modifiers::flip_horizontal
 		: modifiers::match_right;
 
 	modifiers mod{flags};
-
-	if(!_projectile.is_moving()) {
-
-		auto line=animation_sprite_finder.get(
-			app::anim_projectile_end, 
-			_projectile.get_timeout_value()
-		);
-
-		mod.flags |= modifiers::center_vertical;
-
-		mod=animation_sprite_finder.modifiers(line, mod);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_box()),
-			line.frame,
-			mod
-		);
-		return;
-	}
 
 	auto line=animation_sprite_finder.get(app::anim_projectile);
 	mod=animation_sprite_finder.modifiers(line, mod);
@@ -646,31 +634,17 @@ void game_draw::draw_projectile_vertical(
 	const app::projectile& _projectile
 ) {
 
+	if(!_projectile.is_moving()) {
+
+		return;
+	}
+
 	using modifiers=d2d::video::sprite_draw::modifiers;
 	int flags=modifiers::center_horizontal 
 		| modifiers::use_sprite_box
 		| modifiers::center_vertical;
 
 	modifiers mod{flags};
-
-	if(!_projectile.is_moving()) {
-
-		auto line=animation_sprite_finder.get(
-			app::anim_flames, 
-			_projectile.get_timeout_value()
-		);
-
-		mod.flags |= modifiers::match_bottom | modifiers::center_horizontal;
-		mod=animation_sprite_finder.modifiers(line, mod);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
-			line.frame,
-			mod
-		);
-		return;
-	}
 
 	auto line=animation_sprite_finder.get(app::anim_projectile_falling_end);
 	mod=animation_sprite_finder.modifiers(line, mod);
@@ -688,28 +662,17 @@ void game_draw::draw_projectile_directed(
 	const app::projectile& _projectile
 ) {
 
+	if(!_projectile.is_moving()) {
+
+		return;
+	}
+
 	using modifiers=d2d::video::sprite_draw::modifiers;
 	int flags=modifiers::center_horizontal 
 		| modifiers::use_sprite_box
 		| modifiers::center_vertical;
 
 	modifiers mod{flags};
-
-	if(!_projectile.is_moving()) {
-
-		auto line=animation_sprite_finder.get(
-			app::anim_projectile_falling_end,
-			_projectile.get_timeout_value()
-		);
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_origin()),
-			line.frame,
-			animation_sprite_finder.modifiers(line, mod)
-		);
-		return;
-	}
 
 	auto line=animation_sprite_finder.get(app::anim_projectile_round);
 
@@ -726,27 +689,14 @@ void game_draw::draw_projectile_falling(
 	const app::projectile& _projectile
 ) {
 
+	if(!_projectile.is_moving()) {
+
+		return;
+	}
+
 	using modifiers=d2d::video::sprite_draw::modifiers;
 	int flags=modifiers::center_horizontal | modifiers::use_sprite_box;
 	modifiers mod{flags};
-
-	if(!_projectile.is_moving()) {
-
-		auto line=animation_sprite_finder.get(
-			app::anim_projectile_falling_end, 
-			_projectile.get_timeout_value()
-		);
-
-		mod.flags |= modifiers::match_bottom;
-
-		sprite_draw.draw(
-			_screen, 
-			d2d::video::to_screen(_projectile.ent.get_box()),
-			line.frame,
-			animation_sprite_finder.modifiers(line, mod)
-		);
-		return;
-	}
 
 	auto line=animation_sprite_finder.get(app::anim_projectile_falling);
 
@@ -1099,6 +1049,80 @@ void game_draw::draw_boss_skull(
 		_screen,
 		origin,
 		app::spr_boss_skull,
+		mod
+	);
+}
+
+void game_draw::draw(
+	const d2d::components::particle& _particle, 
+	ldv::screen& _screen
+) {
+
+	switch(_particle.type) {
+
+		case app::prt_projectile_splash: return draw_particle_fall_flame_end(_screen, _particle);
+		case app::prt_flame: return draw_particle_flame(_screen, _particle);
+		case app::prt_projectile_horizontal_splash: return draw_particle_horizontal_splash(_screen, _particle);
+	}
+}
+
+//TODO: Repeated AF.
+void game_draw::draw_particle_fall_flame_end(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle
+) {
+
+	int animation_index=app::anim_projectile_falling_end;
+	const auto& line=animation_sprite_finder.get(animation_index); 
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod=animation_sprite_finder.modifiers(line, mod);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
+		mod
+	);
+}
+
+//TODO: Repeated AF.
+void game_draw::draw_particle_flame(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle
+) {
+
+	int animation_index=app::anim_boss_floating_flame;
+	const auto& line=animation_sprite_finder.get(animation_index); 
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod=animation_sprite_finder.modifiers(line, mod);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
+		mod
+	);
+}
+
+//TODO: Repeated AF.
+void game_draw::draw_particle_horizontal_splash(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle
+) {
+
+	//TODO: Should be another!
+	int animation_index=app::anim_boss_floating_flame;
+	const auto& line=animation_sprite_finder.get(animation_index); 
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod=animation_sprite_finder.modifiers(line, mod);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
 		mod
 	);
 }

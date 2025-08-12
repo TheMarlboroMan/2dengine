@@ -79,7 +79,7 @@ enum animations{
 	//monsters and traps
 	anim_scorpion=150,
 	anim_projectile=151,
-	anim_projectile_end=152,
+	anim_projectile_end=152, //TODO: I think this is not used anymore.
 	anim_snake=153,
 	anim_bat=154,
 	anim_piranha=155,
@@ -93,8 +93,7 @@ enum animations{
 
 	//other stuff
 	anim_breaking_platform=200,
-	anim_breaking_platform_return=201
-
+	anim_breaking_platform_return=201,
 };
 
 enum sprites { 
@@ -166,6 +165,12 @@ enum tile_types {
 enum class faces {
 	left, //assume 0
 	right //assume 1
+};
+
+enum particles {
+	prt_flame=0,
+	prt_projectile_splash=1,
+	prt_projectile_horizontal_splash=2
 };
 
 }

@@ -14,8 +14,7 @@ projectile projectile_creator::create_horizontal(
 	return {
 		box,
 		{_velocity, 0.0},
-		projectile::types::horizontal,
-		projectile_horizontal_desintegration_ms
+		projectile::types::horizontal
 	};
 }
 
@@ -29,8 +28,7 @@ projectile projectile_creator::create_vertical(
 	return {
 		box,
 		{0.0, _velocity},
-		projectile::types::vertical,
-		projectile_vertical_desintegration_ms
+		projectile::types::vertical
 	};
 }
 
@@ -44,8 +42,7 @@ projectile projectile_creator::create_falling(
 	return {
 		box,
 		{0.0, -fabs(_velocity)},
-		projectile::types::falling,
-		projectile_falling_desintegration_ms
+		projectile::types::falling
 	};
 }
 
@@ -71,8 +68,7 @@ projectile projectile_creator::create_targeted(
 	return {
 		box,
 		vec,
-		projectile::types::directed,
-		projectile_round_desintegration_ms
+		projectile::types::directed
 	};
 }
 
@@ -91,8 +87,7 @@ projectile projectile_creator::create_directed(
 	return {
 		box,
 		vec,
-		projectile::types::directed,
-		projectile_round_desintegration_ms
+		projectile::types::directed
 	};
 }
 

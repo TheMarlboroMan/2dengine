@@ -88,6 +88,17 @@ main::main(
 		app::logic_screen_h
 	);
 
+	//The renderer for all particles will be the same, so we will register
+	//these in pairs and with the gd as renderer.
+	current_map.particle_manager.register_module(particle_mod_flame);
+	current_map.particle_manager.register_renderer(gd);
+
+	current_map.particle_manager.register_module(particle_mod_projectile_splash);
+	current_map.particle_manager.register_renderer(gd);
+
+	current_map.particle_manager.register_module(particle_mod_projectile_horizontal_splash);
+	current_map.particle_manager.register_renderer(gd);
+
 	game_timeouts.add(timeout_lives_banner, 4.f, 4.f, true);
 	game_timeouts.add(timeout_area_banner, 3.f, 0, true);
 }
@@ -762,7 +773,9 @@ void main::post_tic() {
 
 		if(d2d::collision::collides_with(player.ent, projectile.ent)) {
 
-			projectile.desintegrate();
+			//TODO: Start particles?
+			//projectile.desintegrate();
+			projectile.finish();
 			defeat(player);
 			return;
 		}
@@ -777,7 +790,8 @@ void main::post_tic() {
 
 			if(d2d::collision::collides_with(skull.ent, projectile.ent)) {
 
-				projectile.desintegrate();
+				//TODO: Should start particles??
+				projectile.finish();
 				skull.desintegrate();
 				
 				//and the boss must know about this...
@@ -901,6 +915,8 @@ void main::tic_world(
 	ldtools::tdelta _delta
 ) {
 
+	current_map.particle_manager.tic(_delta);
+
 	d2d::motion::mover mover{};
 	if(current_map.boss) {
 
@@ -962,6 +978,7 @@ void main::tic_world(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	for(auto& projectile : current_map.projectiles) {
 
+		//TODO: if the projectile has expired, should do some shit.
 		projectile.tic(_delta, mover);
 
 		//Outside map boundaries? dissapear at once.
@@ -979,7 +996,8 @@ void main::tic_world(
 			app::filter_tiles_projectile{}
 		)) {
 
-			projectile.desintegrate();
+			projectile.finish();
+			create_projectile_particles(projectile);
 		}
 	}
 
@@ -2327,6 +2345,49 @@ void main::boss_spawn_skull(
 d2d::collision::point main::boss_get_target() const {
 
 	return ldt::get_center(player.ent.get_box());
+}
+
+void main::create_projectile_particles(
+	const app::projectile& _projectile
+) {
+
+	switch(_projectile.get_type()) {
+
+		case app::projectile::types::falling:
+		case app::projectile::types::directed:{
+
+			auto type=app::prt_projectile_splash;
+			auto origin=_projectile.ent.get_origin();
+
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+		}
+		break;
+		case app::projectile::types::horizontal: {
+
+			auto type=app::prt_projectile_horizontal_splash;
+			auto origin=_projectile.ent.get_origin();
+			particle_mod_projectile_horizontal_splash.set_multiplier_x(
+				_projectile.ent.get_motion_vector_x() > 0.
+					? -1
+					: 1
+			);
+
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+		}
+		break;
+		case app::projectile::types::vertical:
+
+			//TODO: A big nothing.
+		break;
+	}
 }
 
 #ifdef IS_DEBUG_BUILD

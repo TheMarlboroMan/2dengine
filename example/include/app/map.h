@@ -27,6 +27,7 @@
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
 #include <d2d/video/scenery_tile.h>
+#include <d2d/components/particle.h>
 #include <ldv/color.h>
 #include <vector>
 #include <map>
@@ -73,6 +74,7 @@ class map {
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};
+	d2d::components::particle_manager       particle_manager;
 
 /**
  * returns true if an entity is within the tile boundaries.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/env.h"
+#include <d2d/components/particle.h>
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
 #include <d2d/video/sprite_fill_draw.h>
@@ -41,8 +42,12 @@ class boss_skull;
 
 /**
  * business class to draw the main game state.
+ * It implements the particle_render_interface because I am lazy and I 
+ * want to use the tools in this class to draw particles with the less
+ * possible hassle.
  */
-class game_draw {
+class game_draw:
+	public d2d::components::particle_render_interface { 
 
 	public:
 
@@ -64,6 +69,13 @@ class game_draw {
 
 	void                        setup_area_name_banner(const std::string&);
 	void                        setup_lives_banner(int);
+
+	//////
+	//implementation of particle_render_interface
+	void draw(const d2d::components::particle&, ldv::screen&);
+	void draw(const d2d::components::particle& _particle, ldv::screen& _screen, const ldv::camera&) {draw(_particle, _screen);}
+	//end of implementation of particle_render_interface
+	/////
 
 	private:
 
@@ -99,5 +111,9 @@ class game_draw {
 	void                        draw_toggle_block(ldv::screen&, const app::toggle_block&);
 	void                        draw_boss(ldv::screen&, const app::boss&);
 	void                        draw_boss_skull(ldv::screen&, const app::boss_skull&);
+	void                        draw_particle_fall_flame_end(ldv::screen&, const d2d::components::particle&);
+	void                        draw_particle_flame(ldv::screen&, const d2d::components::particle&);
+	void                        draw_particle_horizontal_splash(ldv::screen&, const d2d::components::particle&);
+
 };
 }

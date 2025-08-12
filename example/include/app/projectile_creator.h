@@ -25,19 +25,15 @@ class projectile_creator {
 	//for these kind of things? They would not be const, I guess...
 	static const int        projectile_horizontal_w{7};
 	static const int        projectile_horizontal_h{7};
-	static const int        projectile_horizontal_desintegration_ms{300};
 
 	static const int        projectile_vertical_w{10};
 	static const int        projectile_vertical_h{10};
-	static const int        projectile_vertical_desintegration_ms{530};
 
 	static const int        projectile_round_w{6};
 	static const int        projectile_round_h{6};
-	static const int        projectile_round_desintegration_ms{300};
 
 	static const int        projectile_falling_w{6};
 	static const int        projectile_falling_h{6};
-	static const int        projectile_falling_desintegration_ms{300};
 
 	private:
 

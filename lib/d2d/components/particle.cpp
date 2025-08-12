@@ -5,7 +5,13 @@ using namespace d2d::components;
 particle_manager::particle_manager(
 	std::size_t _size
 )
-	:particles{_size, particle{ {0., 0.}, {0., 0.}, 0., 0}}
+	:particles{_size, particle{ 
+		{0., 0.}, 
+		{0., 0.}, 
+		0., 
+		0., 
+		0}
+	}
 {
 
 }
@@ -21,6 +27,7 @@ bool particle_manager::add(
 	}
 
 	particles[last_free_index].type=_type;
+	particles[last_free_index].lifetime=0.;
 	modules[_type]->add(particles[last_free_index], _pos);
 	++last_free_index;
 	return true;
@@ -33,9 +40,9 @@ void particle_manager::tic(
 	for(std::size_t i=0; i < last_free_index;) {
 
 		auto& particle=particles[i];
-		particle.lifetime-=_delta;
+		particle.lifetime+=_delta;
 
-		if(particle.lifetime <= 0.) {
+		if(particle.is_done()) {
 
 			//Is it at the tail?
 			if(i==last_free_index-1) {
@@ -56,11 +63,11 @@ void particle_manager::tic(
 
 void particle_manager::draw(
 	ldv::screen& _screen
-) {
+) const {
 
 	for(std::size_t i=0; i < last_free_index; i++) {
 
-		auto& particle=particles[i];
+		const auto& particle=particles[i];
 		renderers[particle.type]->draw(particle, _screen);
 	}
 }
@@ -68,16 +75,16 @@ void particle_manager::draw(
 void particle_manager::draw(
 	ldv::screen& _screen,
 	const ldv::camera& _camera
-) {
+) const {
 
 	for(std::size_t i=0; i < last_free_index; i++) {
 
-		auto& particle=particles[i];
+		const auto& particle=particles[i];
 		renderers[particle.type]->draw(particle, _screen, _camera);
 	}
 }
 
-void particle_manager::cleanup() {
+void particle_manager::clear() {
 
 	last_free_index=0;
 }
@@ -100,7 +107,7 @@ std::size_t particle_manager::register_renderer(
 
 void particle_manager::reset() {
 
-	cleanup();
+	clear();
 	modules.clear();
 	renderers.clear();
 }

@@ -2,7 +2,10 @@ next steps:
 
 	make the first example game
 
-		- particles for items???? 
+		- particles for vertical shots
+		- particles for rising flames
+		- particles for breaking blocks!
+		- particles for items when picked up???
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.

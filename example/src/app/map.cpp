@@ -8,7 +8,8 @@
 using namespace app;
 
 map::map():
-	tile_finder{app::tile_w, app::tile_h}
+	tile_finder{app::tile_w, app::tile_h},
+	particle_manager{100}
 {}
 
 std::ostream& app::operator<<(
@@ -80,6 +81,7 @@ void map::clear() {
 	projectiles.clear();
 	skulls.clear();
 	skull_spawns.clear();
+	particle_manager.clear();
 	this->boss.reset(nullptr);
 }
 

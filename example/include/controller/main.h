@@ -18,6 +18,9 @@
 #include "app/game_session.h"
 #include "app/game_draw.h"
 #include "app/boss_map_interface.h"
+#include "app/particle_module_flame.h"
+#include "app/particle_module_projectile_splash.h"
+#include "app/particle_module_projectile_horizontal_splash.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -122,6 +125,7 @@ class main:
 	void                        sync_facing_blocks();
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
+	void                        create_projectile_particles(const app::projectile&);
 	int                         get_discovered_map_count() const;
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
@@ -188,6 +192,9 @@ class main:
 	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
 	                            current_map_name;
+	app::particle_module_flame  particle_mod_flame;
+	app::particle_module_projectile_splash  particle_mod_projectile_splash;
+	app::particle_module_projectile_horizontal_splash  particle_mod_projectile_horizontal_splash;
 
 #endif
 
