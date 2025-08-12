@@ -12,20 +12,19 @@ namespace app {
 /**
  *Splash from the horizontal projectile.
  */
-class particle_module_projectile_horizontal_splash
+class particle_module_breaking_platform
 	:public particle_module_interface {
 
 	public:
 
-	        particle_module_projectile_horizontal_splash();
+
+	        particle_module_breaking_platform();
 	void    add(particle&, d2d::collision::point);
 	void    tic(particle&, tdelta);
-	void    set_multiplier_x(double _val) {multiplier_x=_val;}
 
 	private:
 
 	int     rand(int, int);
-	double  multiplier_x{1.};
 	tools::int_generator numgen;
 };
 

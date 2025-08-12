@@ -99,6 +99,9 @@ main::main(
 	current_map.particle_manager.register_module(particle_mod_projectile_horizontal_splash);
 	current_map.particle_manager.register_renderer(gd);
 
+	current_map.particle_manager.register_module(particle_mod_breaking_platform);
+	current_map.particle_manager.register_renderer(gd);
+
 	game_timeouts.add(timeout_lives_banner, 4.f, 4.f, true);
 	game_timeouts.add(timeout_area_banner, 3.f, 0, true);
 }
@@ -885,6 +888,7 @@ void main::post_tic() {
 
 					block.start_breaking();
 					play_sound(app::snd_block_break);
+					create_breaking_block_particles(block);
 				}
 			}
 		}
@@ -2388,6 +2392,18 @@ void main::create_projectile_particles(
 			//TODO: A big nothing.
 		break;
 	}
+}
+
+void main::create_breaking_block_particles(
+	const app::breaking_platform& _plat
+) {
+
+	auto type=app::prt_breaking_platform;
+	auto origin=_plat.get_origin();
+	current_map.particle_manager.add(type, origin);
+	current_map.particle_manager.add(type, origin);
+	current_map.particle_manager.add(type, origin);
+	current_map.particle_manager.add(type, origin);
 }
 
 #ifdef IS_DEBUG_BUILD

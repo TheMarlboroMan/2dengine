@@ -170,7 +170,8 @@ enum class faces {
 enum particles {
 	prt_flame=0,
 	prt_projectile_splash=1,
-	prt_projectile_horizontal_splash=2
+	prt_projectile_horizontal_splash=2,
+	prt_breaking_platform=3
 };
 
 }

@@ -1060,9 +1060,14 @@ void game_draw::draw(
 
 	switch(_particle.type) {
 
-		case app::prt_projectile_splash: return draw_particle_fall_flame_end(_screen, _particle);
-		case app::prt_flame: return draw_particle_flame(_screen, _particle);
-		case app::prt_projectile_horizontal_splash: return draw_particle_horizontal_splash(_screen, _particle);
+		case app::prt_projectile_splash: 
+			return draw_particle_fall_flame_end(_screen, _particle);
+		case app::prt_flame: 
+			return draw_particle_flame(_screen, _particle);
+		case app::prt_projectile_horizontal_splash: 
+			return draw_particle_horizontal_splash(_screen, _particle);
+		case app::prt_breaking_platform: 
+			return draw_particle_breaking_platform(_screen, _particle);
 	}
 }
 
@@ -1113,6 +1118,27 @@ void game_draw::draw_particle_horizontal_splash(
 ) {
 
 	//TODO: Should be another!
+	int animation_index=app::anim_boss_floating_flame;
+	const auto& line=animation_sprite_finder.get(animation_index); 
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod=animation_sprite_finder.modifiers(line, mod);
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
+		mod
+	);
+}
+
+//TODO: Repeated AF.
+void game_draw::draw_particle_breaking_platform(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle
+) {
+
+	//TODO: Should be another, obviously!
 	int animation_index=app::anim_boss_floating_flame;
 	const auto& line=animation_sprite_finder.get(animation_index); 
 

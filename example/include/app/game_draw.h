@@ -114,6 +114,7 @@ class game_draw:
 	void                        draw_particle_fall_flame_end(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_flame(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_horizontal_splash(ldv::screen&, const d2d::components::particle&);
+	void                        draw_particle_breaking_platform(ldv::screen&, const d2d::components::particle&);
 
 };
 }
