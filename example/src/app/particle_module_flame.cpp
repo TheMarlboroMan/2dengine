@@ -4,7 +4,8 @@ using namespace app;
 
 void particle_module_flame::add(
 	particle& _particle,
-	d2d::collision::point _origin
+	d2d::collision::point _origin,
+	particle_index
 ) {
 
 	//The position does change a bit, not randomly mind you, but with each
@@ -36,8 +37,12 @@ void particle_module_flame::add(
 
 void particle_module_flame::tic(
 	particle&,
-	ldtools::tdelta
-) {
+	ldtools::tdelta,
+	particle_index
+) { }
 
-	//Do nothing, the flames are just in place.
-}
+void particle_module_flame::expire(
+	particle&,
+	particle_index
+) {}
+

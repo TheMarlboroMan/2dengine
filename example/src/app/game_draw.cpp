@@ -40,15 +40,17 @@ game_draw::game_draw(
 	d2d::video::animation_sprite_finder& _animation_sprite_finder,
 	ldtools::ttf_manager& _ttf_manager,
 	const ldv::resource_manager& _video_resource_manager,
-	const appenv::env& _env
+	const appenv::env& _env,
+	random& _rand
 ):
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
 	sprite_draw(_sprite_draw),
 	sprite_fill_draw(_sprite_fill_draw),
 	animation_sprite_finder(_animation_sprite_finder),
-	exit_number_font{_ttf_manager.get("exit_number_font", 8)}
-//	particle_renderer_flame{&sprite_draw}
+	rng{_rand},
+	exit_number_font{_ttf_manager.get("exit_number_font", 8)},
+	breaking_platform_particle_table{app::particle_manager_size, 0}
 {
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
@@ -258,7 +260,6 @@ void game_draw::draw(
 	}
 
 	draw_player(_screen, _player);
-	//TODO: sure... were did we register this shit???
 	_map.particle_manager.draw(_screen, camera);
 
 	scenery_tile_draw.draw_animation(_screen, _map.foreground_tiles);
@@ -1055,7 +1056,8 @@ void game_draw::draw_boss_skull(
 
 void game_draw::draw(
 	const d2d::components::particle& _particle, 
-	ldv::screen& _screen
+	ldv::screen& _screen,
+	particle_index _index
 ) {
 
 	switch(_particle.type) {
@@ -1067,8 +1069,31 @@ void game_draw::draw(
 		case app::prt_projectile_horizontal_splash: 
 			return draw_particle_horizontal_splash(_screen, _particle);
 		case app::prt_breaking_platform: 
-			return draw_particle_breaking_platform(_screen, _particle);
+			return draw_particle_breaking_platform(_screen, _particle, _index);
 	}
+}
+
+bool game_draw::must_subscribe(
+	const particle& _particle
+) const {
+
+	return app::prt_breaking_platform==_particle.type;
+}
+
+void game_draw::subscribe(
+	const particle&,
+	particle_index _index
+) {
+
+	breaking_platform_particle_table[_index]=rng.get(0, 3)+spr_particle_breaking_plat_1;
+}
+
+void game_draw::expire(
+	const particle&,
+	particle_index
+) {
+
+	//Actually we must do nothing xD!
 }
 
 //TODO: Repeated AF.
@@ -1135,20 +1160,15 @@ void game_draw::draw_particle_horizontal_splash(
 //TODO: Repeated AF.
 void game_draw::draw_particle_breaking_platform(
 	ldv::screen& _screen,
-	const d2d::components::particle& _particle
+	const d2d::components::particle& _particle,
+	particle_index _index
 ) {
 
-	//TODO: Should be another, obviously!
-	int animation_index=app::anim_boss_floating_flame;
-	const auto& line=animation_sprite_finder.get(animation_index); 
-
-	d2d::video::sprite_draw::modifiers mod{0};
-	mod=animation_sprite_finder.modifiers(line, mod);
+	int index=breaking_platform_particle_table[_index];
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_particle.pos),
-		line.frame,
-		mod
+		index
 	);
 }

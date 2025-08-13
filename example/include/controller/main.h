@@ -140,10 +140,17 @@ class main:
 	d2d::audio::sound_player&   sound_player;
 	app::inventory&             inventory;
 	app::game_session&          game_session;
+	app::random                 rng;
 
 	//visual stuff.
 	ldv::camera                 camera;
-	app::game_draw              gd; //carries some state, so it must be a property
+	app::game_draw              gd; //carries some state, so it must be a property.
+
+	//components...
+	app::particle_module_flame  particle_mod_flame;
+	app::particle_module_projectile_splash  particle_mod_projectile_splash;
+	app::particle_module_projectile_horizontal_splash  particle_mod_projectile_horizontal_splash;
+	app::particle_module_breaking_platform  particle_mod_breaking_platform;
 
 	//game state stuff.
 	app::simulation             simulation;
@@ -194,11 +201,6 @@ class main:
 	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
 	                            current_map_name;
-	app::particle_module_flame  particle_mod_flame;
-	app::particle_module_projectile_splash  particle_mod_projectile_splash;
-	app::particle_module_projectile_horizontal_splash  particle_mod_projectile_horizontal_splash;
-	app::particle_module_breaking_platform  particle_mod_breaking_platform;
-
 #endif
 
 	//We will also need some nice predicates and dereferencers...

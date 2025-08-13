@@ -67,8 +67,12 @@ main::main(
 		_sp.get_game_animation_sprite_finder(),
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager(),
-		env
-	}
+		env,
+		rng
+	},
+	particle_mod_projectile_splash{rng},
+	particle_mod_projectile_horizontal_splash{rng},
+	particle_mod_breaking_platform{rng}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -2116,7 +2120,9 @@ void main::mount_player_in_blocks(
 	}
 
 	auto player_box_copy=_player.ent.get_box();
-	player_box_copy.origin.y-=2.0; //This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
+
+	//This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
+	player_box_copy.origin.y-=2.0; 
 
 	bool player_attached=ctracker.is_attached(_player.ent);
 

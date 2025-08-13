@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/env.h"
+#include "app/random.h"
 #include <d2d/components/particle.h>
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
@@ -18,6 +19,9 @@
 #include <string>
 
 namespace app {
+
+using d2d::components::particle_index;
+using d2d::components::particle;
 
 class map;
 class player;
@@ -59,7 +63,8 @@ class game_draw:
 		d2d::video::animation_sprite_finder&,
 		ldtools::ttf_manager&,
 		const ldv::resource_manager&,
-		const appenv::env&
+		const appenv::env&,
+		random&
 	);
 	                            ~game_draw();
 
@@ -72,8 +77,11 @@ class game_draw:
 
 	//////
 	//implementation of particle_render_interface
-	void draw(const d2d::components::particle&, ldv::screen&);
-	void draw(const d2d::components::particle& _particle, ldv::screen& _screen, const ldv::camera&) {draw(_particle, _screen);}
+	bool must_subscribe(const particle&) const;
+	void subscribe(const particle&, particle_index);
+	void expire(const particle&, particle_index);
+	void draw(const d2d::components::particle&, ldv::screen&, particle_index);
+	void draw(const d2d::components::particle& _particle, ldv::screen& _screen, const ldv::camera&, particle_index _index) {draw(_particle, _screen, _index);}
 	//end of implementation of particle_render_interface
 	/////
 
@@ -84,10 +92,12 @@ class game_draw:
 	d2d::video::sprite_draw&        sprite_draw;
 	d2d::video::sprite_fill_draw&   sprite_fill_draw;
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
+	random&                     rng;
 
 	ldtools::view_composer      area_name_view;
 	ldtools::view_composer      lives_banner_view;
 	ldv::ttf_font               exit_number_font;
+	std::vector<int>            breaking_platform_particle_table;
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
@@ -114,7 +124,7 @@ class game_draw:
 	void                        draw_particle_fall_flame_end(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_flame(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_horizontal_splash(ldv::screen&, const d2d::components::particle&);
-	void                        draw_particle_breaking_platform(ldv::screen&, const d2d::components::particle&);
+	void                        draw_particle_breaking_platform(ldv::screen&, const d2d::components::particle&, particle_index);
 
 };
 }

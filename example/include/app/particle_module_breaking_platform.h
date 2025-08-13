@@ -1,10 +1,11 @@
 #pragma once
 
+#include "random.h"
 #include "d2d/components/particle.h"
-#include <tools/number_generator.h>
 
 using d2d::components::particle;
 using d2d::components::particle_module_interface;
+using d2d::components::particle_index;
 using ldtools::tdelta;
 
 namespace app {
@@ -18,14 +19,14 @@ class particle_module_breaking_platform
 	public:
 
 
-	        particle_module_breaking_platform();
-	void    add(particle&, d2d::collision::point);
-	void    tic(particle&, tdelta);
+	        particle_module_breaking_platform(random&);
+	void    add(particle&, d2d::collision::point, particle_index);
+	void    tic(particle&, tdelta, particle_index);
+	void    expire(particle&, particle_index);
 
 	private:
 
-	int     rand(int, int);
-	tools::int_generator numgen;
+	random& rand;
 };
 
 }

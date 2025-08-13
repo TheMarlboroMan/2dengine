@@ -4,6 +4,7 @@
 
 using d2d::components::particle;
 using d2d::components::particle_module_interface;
+using d2d::components::particle_index;
 using ldtools::tdelta;
 
 namespace app {
@@ -16,8 +17,9 @@ class particle_module_flame
 
 	public:
 
-	void    add(particle&, d2d::collision::point);
-	void    tic(particle&, tdelta);
+	void    add(particle&, d2d::collision::point, particle_index);
+	void    tic(particle&, tdelta, particle_index);
+	void    expire(particle&, particle_index);
 
 	private: 
 

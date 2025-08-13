@@ -2,28 +2,31 @@
 
 using namespace app;
 
-particle_module_projectile_horizontal_splash::particle_module_projectile_horizontal_splash() 
-	:numgen{0, 255}
+particle_module_projectile_horizontal_splash::particle_module_projectile_horizontal_splash(
+	random& _rand
+):rand{_rand}
 {}
 
 
 void particle_module_projectile_horizontal_splash::add(
 	particle& _particle,
-	d2d::collision::point _origin
+	d2d::collision::point _origin,
+	particle_index
 ) {
 
-	double lifetime=rand(30, 70);
+	double lifetime=rand.get(30, 70);
 	_particle.max_lifetime=lifetime/100.;
 
-	double vx=rand(20, 80);
-	double vy=rand(0, 60);
+	double vx=rand.get(20, 80);
+	double vy=rand.get(0, 60);
 	_particle.pos=_origin;
 	_particle.vector={vx*multiplier_x, vy-30.};
 }
 
 void particle_module_projectile_horizontal_splash::tic(
 	particle& _particle,
-	ldtools::tdelta _delta
+	ldtools::tdelta _delta,
+	particle_index
 ) {
 
 	//Slowly brake.
@@ -34,16 +37,8 @@ void particle_module_projectile_horizontal_splash::tic(
 	pos.y+=_particle.vector.y * _delta;
 }
 
-int particle_module_projectile_horizontal_splash::rand(
-	int _min,
-	int _max
-) {
+void particle_module_projectile_horizontal_splash::expire(
+	particle&,
+	particle_index
+) {}
 
-	if(_min==_max) {
-
-		return _max;
-	}
-	int res=numgen() % (_max-_min);
-	return res+_min;
-
-}

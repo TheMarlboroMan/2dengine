@@ -1,11 +1,14 @@
 #pragma once
 
+#include <cstddef> //std::size_t.
+
 namespace app {
 
 static const int tile_w=16;
 static const int tile_h=16;
 static const int logic_screen_w=288;//at 16 units per tile this is 18 tiles per screen.
 static const int logic_screen_h=224; //and these are 14 per screen.
+static const std::size_t particle_manager_size=100;
 
 enum music {
 	music_start=1,
@@ -134,6 +137,10 @@ enum sprites {
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
 	spr_block_arrow=512,
+	spr_particle_breaking_plat_1=514,
+	spr_particle_breaking_plat_2=515,
+	spr_particle_breaking_plat_3=516,
+	spr_particle_breaking_plat_4=517,
 
 	spr_boss_center=420,
 	spr_boss_side=421,

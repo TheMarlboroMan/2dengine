@@ -12,9 +12,7 @@ particle_manager::particle_manager(
 		0., 
 		0}
 	}
-{
-
-}
+{ }
 
 bool particle_manager::add(
 	int _type,
@@ -28,8 +26,14 @@ bool particle_manager::add(
 
 	particles[last_free_index].type=_type;
 	particles[last_free_index].lifetime=0.;
-	modules[_type]->add(particles[last_free_index], _pos);
+
+	modules[_type]->add(particles[last_free_index], _pos, last_free_index);
+	if(renderers[_type]->must_subscribe(particles[last_free_index])) {
+
+		renderers[_type]->subscribe(particles[last_free_index], last_free_index);
+	}
 	++last_free_index;
+
 	return true;
 }
 
@@ -40,9 +44,17 @@ void particle_manager::tic(
 	for(std::size_t i=0; i < last_free_index;) {
 
 		auto& particle=particles[i];
+		auto type=particle.type;
 		particle.lifetime+=_delta;
 
 		if(particle.is_done()) {
+
+			if(renderers[type]->must_subscribe(particle)) {
+
+				renderers[type]->expire(particle, i);
+			}
+
+			modules[type]->expire(particle, i);
 
 			//Is it at the tail?
 			if(i==last_free_index-1) {
@@ -56,7 +68,7 @@ void particle_manager::tic(
 			continue;
 		}
 
-		modules[particle.type]->tic(particle, _delta);
+		modules[type]->tic(particle, _delta, i);
 		++i;
 	}
 }
@@ -68,7 +80,7 @@ void particle_manager::draw(
 	for(std::size_t i=0; i < last_free_index; i++) {
 
 		const auto& particle=particles[i];
-		renderers[particle.type]->draw(particle, _screen);
+		renderers[particle.type]->draw(particle, _screen, i);
 	}
 }
 
@@ -80,7 +92,7 @@ void particle_manager::draw(
 	for(std::size_t i=0; i < last_free_index; i++) {
 
 		const auto& particle=particles[i];
-		renderers[particle.type]->draw(particle, _screen, _camera);
+		renderers[particle.type]->draw(particle, _screen, _camera, i);
 	}
 }
 
@@ -111,5 +123,4 @@ void particle_manager::reset() {
 	modules.clear();
 	renderers.clear();
 }
-
 

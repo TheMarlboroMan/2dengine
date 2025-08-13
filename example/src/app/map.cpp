@@ -9,7 +9,7 @@ using namespace app;
 
 map::map():
 	tile_finder{app::tile_w, app::tile_h},
-	particle_manager{100}
+	particle_manager{app::particle_manager_size}
 {}
 
 std::ostream& app::operator<<(

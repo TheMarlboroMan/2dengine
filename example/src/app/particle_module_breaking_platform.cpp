@@ -3,46 +3,39 @@
 
 using namespace app;
 
-particle_module_breaking_platform::particle_module_breaking_platform() 
-	:numgen{0, 255}
+particle_module_breaking_platform::particle_module_breaking_platform(
+	random& _rand
+): rand{_rand}
 {}
-
 
 void particle_module_breaking_platform::add(
 	particle& _particle,
-	d2d::collision::point _origin
+	d2d::collision::point _origin,
+	particle_index
 ) {
 
-	double lifetime=rand(30, 90);
+	double lifetime=rand.get(30, 90);
 	_particle.max_lifetime=lifetime/100.;
 
-	double vy=rand(10, 40);
-	double x=rand(0, app::tile_w);
+	double vy=rand.get(40, 80);
+	double x=rand.get(0, app::tile_w);
 
-	_particle.pos=_origin+x;
+	_origin.x+=x;
+	_particle.pos=_origin;
 	_particle.vector={0., -vy};
 }
 
 void particle_module_breaking_platform::tic(
 	particle& _particle,
-	ldtools::tdelta _delta
+	ldtools::tdelta _delta,
+	particle_index
 ) {
 
-	auto& pos=_particle.pos;
-	pos.y+=_particle.vector.y * _delta;
+	_particle.pos.y+=_particle.vector.y * _delta;
 }
 
-//TODO: So duplicate xD
-int particle_module_breaking_platform::rand(
-	int _min,
-	int _max
-) {
+void particle_module_breaking_platform::expire(
+	particle&,
+	particle_index
+) {}
 
-	if(_min==_max) {
-
-		return _max;
-	}
-	int res=numgen() % (_max-_min);
-	return res+_min;
-
-}

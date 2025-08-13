@@ -8,6 +8,11 @@
 
 namespace d2d { namespace components {
 
+//This is just an alias for the id of each particle that will be passed along
+//to modules and renderers, just in case they need to maintain a state about
+//particles.
+using particle_index=std::size_t;
+
 /**
  * the particle itself. Position and vector are expected in cartesian 
  * coordinates, but that's neither here nor there since the manager will
@@ -37,12 +42,17 @@ class particle_module_interface {
 	//When writing it should not do it into the type or lifetime, as these
 	//will be manager by the general manager. Does not really create a particle
 	//but actually borrow one from the manager and write into it.
-	virtual void    add(particle&, d2d::collision::point)=0;
+	virtual void    add(particle&, d2d::collision::point, particle_index)=0;
 
 	//Must tic the given particle. Must not tic its lifetime, as the manager
 	//should have already but should, if need be, modify other properties, 
-	//such as its vector or position.
-	virtual void    tic(particle&, ldtools::tdelta)=0;
+	//such as its vector or position. No tic will be called when the 
+	//lifetime of the particle is done.
+	virtual void    tic(particle&, ldtools::tdelta, particle_index)=0;
+
+	//Must do anything it needs to when a particle expires. It will get
+	//called when the lifetime is done.
+	virtual void    expire(particle&, particle_index)=0;
 
 };
 
@@ -54,11 +64,22 @@ class particle_render_interface {
 
 	public:
 
-	//Must draw the given particle.
-	virtual void    draw(const particle&, ldv::screen&)=0;
+	//Must return true if the renderer must register a particle upon the
+	//the particle's creation.
+	virtual bool    must_subscribe(const particle&) const =0;
+
+	//Particles can be optionally registered with the render interfaces to
+	//that extra information about them can be stored.
+	virtual void    subscribe(const particle&, particle_index)=0;
+
+	//Hook to remove a potentially registered particle.
+	virtual void    expire(const particle&, particle_index)=0;
 
 	//Must draw the given particle.
-	virtual void    draw(const particle&, ldv::screen&, const ldv::camera&)=0;
+	virtual void    draw(const particle&, ldv::screen&, particle_index)=0;
+
+	//Must draw the given particle.
+	virtual void    draw(const particle&, ldv::screen&, const ldv::camera&, particle_index)=0;
 };
 
 /**
