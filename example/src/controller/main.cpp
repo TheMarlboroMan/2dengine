@@ -72,7 +72,9 @@ main::main(
 	},
 	particle_mod_projectile_splash{rng},
 	particle_mod_projectile_horizontal_splash{rng},
-	particle_mod_breaking_platform{rng}
+	particle_mod_breaking_platform{rng},
+	particle_mod_bonus{rng},
+	particle_mod_smoke{rng}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -94,6 +96,7 @@ main::main(
 
 	//The renderer for all particles will be the same, so we will register
 	//these in pairs and with the gd as renderer.
+	//TODO: This is UGLY AF. We don't need to own SO much shit here just because
 	current_map.particle_manager.register_module(particle_mod_flame);
 	current_map.particle_manager.register_renderer(gd);
 
@@ -106,8 +109,15 @@ main::main(
 	current_map.particle_manager.register_module(particle_mod_breaking_platform);
 	current_map.particle_manager.register_renderer(gd);
 
-	game_timeouts.add(timeout_lives_banner, 4.f, 4.f, true);
-	game_timeouts.add(timeout_area_banner, 3.f, 0, true);
+	current_map.particle_manager.register_module(particle_mod_bonus);
+	current_map.particle_manager.register_renderer(gd);
+
+	current_map.particle_manager.register_module(particle_mod_smoke);
+	current_map.particle_manager.register_renderer(gd);
+
+	game_timeouts.add(timeout_lives_banner, 4., 4., true);
+	game_timeouts.add(timeout_area_banner, 3., 0, true);
+	game_timeouts.add(timeout_bonus_particles, 0.1, 0, false);
 }
 
 void main::start(
@@ -781,7 +791,6 @@ void main::post_tic() {
 		if(d2d::collision::collides_with(player.ent, projectile.ent)) {
 
 			//TODO: Start particles?
-			//projectile.desintegrate();
 			projectile.finish();
 			defeat(player);
 			return;
@@ -986,7 +995,14 @@ void main::tic_world(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	for(auto& projectile : current_map.projectiles) {
 
-		//TODO: if the projectile has expired, should do some shit.
+		//Rising projectiles expire after they slow down enough...
+		if(app::projectile::types::vertical==projectile.get_type()
+			&& projectile.ent.get_motion_vector_y() <= 0.1) {
+
+			create_projectile_end_particles(projectile);
+			projectile.finish();
+		}
+
 		projectile.tic(_delta, mover);
 
 		//Outside map boundaries? dissapear at once.
@@ -1005,7 +1021,7 @@ void main::tic_world(
 		)) {
 
 			projectile.finish();
-			create_projectile_particles(projectile);
+			create_projectile_end_particles(projectile);
 		}
 	}
 
@@ -1050,6 +1066,19 @@ void main::tic_world(
 		}
 
 		write_moving_block(bl, next_id);
+	}
+
+	//collectibles produce particles each few tics.
+	if(game_timeouts.is_finished(timeout_bonus_particles)) {
+
+		for(const auto& c : current_map.collectibles) {
+
+			auto type=app::prt_bonus;
+			auto origin=ldt::get_center(c.ent.get_box());
+			current_map.particle_manager.add(type, origin);
+		}
+
+		game_timeouts.restart(timeout_bonus_particles);
 	}
 }
 
@@ -2357,7 +2386,7 @@ d2d::collision::point main::boss_get_target() const {
 	return ldt::get_center(player.ent.get_box());
 }
 
-void main::create_projectile_particles(
+void main::create_projectile_end_particles(
 	const app::projectile& _projectile
 ) {
 
@@ -2395,7 +2424,15 @@ void main::create_projectile_particles(
 		break;
 		case app::projectile::types::vertical:
 
-			//TODO: A big nothing.
+			auto type=app::prt_smoke;
+			auto origin=ldt::get_center(_projectile.ent.get_box());
+
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
+			current_map.particle_manager.add(type, origin);
 		break;
 	}
 }

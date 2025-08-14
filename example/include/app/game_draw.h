@@ -97,7 +97,8 @@ class game_draw:
 	ldtools::view_composer      area_name_view;
 	ldtools::view_composer      lives_banner_view;
 	ldv::ttf_font               exit_number_font;
-	std::vector<int>            breaking_platform_particle_table;
+	//A table of N integers to store the "drawing types" of particles.
+	std::vector<int>            particle_persistence_table;
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);
@@ -125,6 +126,8 @@ class game_draw:
 	void                        draw_particle_flame(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_horizontal_splash(ldv::screen&, const d2d::components::particle&);
 	void                        draw_particle_breaking_platform(ldv::screen&, const d2d::components::particle&, particle_index);
+	void                        draw_particle_bonus(ldv::screen&, const d2d::components::particle&, particle_index);
+	void                        draw_particle_smoke(ldv::screen&, const d2d::components::particle&, particle_index);
 
 };
 }

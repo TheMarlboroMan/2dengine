@@ -92,7 +92,11 @@ enum animations{
 	anim_timed_trap_fire=159,
 	anim_projectile_falling=203,
 	anim_projectile_falling_end=204,
-	anim_boss_floating_flame=205,
+	anim_projectile_vertical_flame=205,
+
+	//particles...
+	//TODO: WHere is 206 xD?
+	anim_smoke=207,
 
 	//other stuff
 	anim_breaking_platform=200,
@@ -141,6 +145,14 @@ enum sprites {
 	spr_particle_breaking_plat_2=515,
 	spr_particle_breaking_plat_3=516,
 	spr_particle_breaking_plat_4=517,
+	spr_particle_bonus_1=518,
+	spr_particle_bonus_2=519,
+	spr_particle_bonus_3=520,
+	spr_particle_bonus_4=521,
+	spr_particle_smoke_1=522,
+	spr_particle_smoke_2=523,
+	spr_particle_smoke_3=524,
+	spr_particle_smoke_4=525,
 
 	spr_boss_center=420,
 	spr_boss_side=421,
@@ -178,7 +190,9 @@ enum particles {
 	prt_flame=0,
 	prt_projectile_splash=1,
 	prt_projectile_horizontal_splash=2,
-	prt_breaking_platform=3
+	prt_breaking_platform=3,
+	prt_bonus=4,
+	prt_smoke=5
 };
 
 }

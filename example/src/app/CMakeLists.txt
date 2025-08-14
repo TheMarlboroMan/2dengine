@@ -44,6 +44,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_splash.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_horizontal_splash.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_breaking_platform.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_bonus.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_smoke.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/random.cpp
 	PARENT_SCOPE
 )

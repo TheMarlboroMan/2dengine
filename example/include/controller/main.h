@@ -22,6 +22,8 @@
 #include "app/particle_module_projectile_splash.h"
 #include "app/particle_module_projectile_horizontal_splash.h"
 #include "app/particle_module_breaking_platform.h"
+#include "app/particle_module_bonus.h"
+#include "app/particle_module_smoke.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -126,7 +128,7 @@ class main:
 	void                        sync_facing_blocks();
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
-	void                        create_projectile_particles(const app::projectile&);
+	void                        create_projectile_end_particles(const app::projectile&);
 	void                        create_breaking_block_particles(const app::breaking_platform&);
 	int                         get_discovered_map_count() const;
 
@@ -151,6 +153,8 @@ class main:
 	app::particle_module_projectile_splash  particle_mod_projectile_splash;
 	app::particle_module_projectile_horizontal_splash  particle_mod_projectile_horizontal_splash;
 	app::particle_module_breaking_platform  particle_mod_breaking_platform;
+	app::particle_module_bonus  particle_mod_bonus;
+	app::particle_module_smoke  particle_mod_smoke;
 
 	//game state stuff.
 	app::simulation             simulation;
@@ -166,7 +170,8 @@ class main:
 
 	enum {
 		timeout_lives_banner=1,
-		timeout_area_banner=2
+		timeout_area_banner=2,
+		timeout_bonus_particles=3
 	};
 
 	d2d::components::timeouts   game_timeouts;

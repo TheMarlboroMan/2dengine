@@ -50,7 +50,7 @@ game_draw::game_draw(
 	animation_sprite_finder(_animation_sprite_finder),
 	rng{_rand},
 	exit_number_font{_ttf_manager.get("exit_number_font", 8)},
-	breaking_platform_particle_table{app::particle_manager_size, 0}
+	particle_persistence_table{app::particle_manager_size, 0}
 {
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
@@ -647,7 +647,7 @@ void game_draw::draw_projectile_vertical(
 
 	modifiers mod{flags};
 
-	auto line=animation_sprite_finder.get(app::anim_projectile_falling_end);
+	auto line=animation_sprite_finder.get(app::anim_projectile_vertical_flame);
 	mod=animation_sprite_finder.modifiers(line, mod);
 
 	sprite_draw.draw(
@@ -1065,11 +1065,16 @@ void game_draw::draw(
 		case app::prt_projectile_splash: 
 			return draw_particle_fall_flame_end(_screen, _particle);
 		case app::prt_flame: 
+			//TODO: Is this in use?
 			return draw_particle_flame(_screen, _particle);
 		case app::prt_projectile_horizontal_splash: 
 			return draw_particle_horizontal_splash(_screen, _particle);
 		case app::prt_breaking_platform: 
 			return draw_particle_breaking_platform(_screen, _particle, _index);
+		case app::prt_bonus:
+			return draw_particle_bonus(_screen, _particle, _index);
+		case app::prt_smoke:
+			return draw_particle_smoke(_screen, _particle, _index);
 	}
 }
 
@@ -1077,23 +1082,29 @@ bool game_draw::must_subscribe(
 	const particle& _particle
 ) const {
 
-	return app::prt_breaking_platform==_particle.type;
+	return app::prt_breaking_platform==_particle.type
+		|| app::prt_bonus==_particle.type;
 }
 
 void game_draw::subscribe(
-	const particle&,
+	const particle& _particle,
 	particle_index _index
 ) {
 
-	breaking_platform_particle_table[_index]=rng.get(0, 3)+spr_particle_breaking_plat_1;
+	switch(_particle.type) {
+		case prt_breaking_platform:
+			particle_persistence_table[_index]=rng.get(0, 3)+spr_particle_breaking_plat_1;
+		break;
+		case prt_bonus:
+			particle_persistence_table[_index]=rng.get(0, 3)+spr_particle_bonus_1;
+		break;
+	}
 }
 
 void game_draw::expire(
 	const particle&,
-	particle_index
+	particle_index 
 ) {
-
-	//Actually we must do nothing xD!
 }
 
 //TODO: Repeated AF.
@@ -1107,6 +1118,7 @@ void game_draw::draw_particle_fall_flame_end(
 
 	d2d::video::sprite_draw::modifiers mod{0};
 	mod=animation_sprite_finder.modifiers(line, mod);
+	mod.alpha=128;
 
 	sprite_draw.draw(
 		_screen, 
@@ -1122,7 +1134,7 @@ void game_draw::draw_particle_flame(
 	const d2d::components::particle& _particle
 ) {
 
-	int animation_index=app::anim_boss_floating_flame;
+	int animation_index=app::anim_projectile_vertical_flame;
 	const auto& line=animation_sprite_finder.get(animation_index); 
 
 	d2d::video::sprite_draw::modifiers mod{0};
@@ -1143,7 +1155,7 @@ void game_draw::draw_particle_horizontal_splash(
 ) {
 
 	//TODO: Should be another!
-	int animation_index=app::anim_boss_floating_flame;
+	int animation_index=app::anim_projectile_falling_end;
 	const auto& line=animation_sprite_finder.get(animation_index); 
 
 	d2d::video::sprite_draw::modifiers mod{0};
@@ -1164,11 +1176,46 @@ void game_draw::draw_particle_breaking_platform(
 	particle_index _index
 ) {
 
-	int index=breaking_platform_particle_table[_index];
+	int index=particle_persistence_table[_index];
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_particle.pos),
 		index
+	);
+}
+
+//TODO: Repeated AF.
+void game_draw::draw_particle_bonus(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle,
+	particle_index _index
+) {
+
+	int index=particle_persistence_table[_index];
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		index
+	);
+}
+
+//TODO: Repeated af
+void game_draw::draw_particle_smoke(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle,
+	particle_index
+) {
+
+	const auto& line=animation_sprite_finder.get(app::anim_smoke);
+	d2d::video::sprite_draw::modifiers mod;
+	mod.alpha=128;
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
+		mod
 	);
 }

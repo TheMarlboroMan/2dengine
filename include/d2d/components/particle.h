@@ -13,6 +13,8 @@ namespace d2d { namespace components {
 //particles.
 using particle_index=std::size_t;
 
+class particle_manager;
+
 /**
  * the particle itself. Position and vector are expected in cartesian 
  * coordinates, but that's neither here nor there since the manager will
@@ -24,9 +26,16 @@ struct particle {
 	d2d::collision::motion_vector   vector;
 	ldtools::tdelta                 lifetime,
 	                                max_lifetime;
-	int                             type;
+	int                             type{0};
 
 	bool                            is_done() const {return lifetime >= max_lifetime;}
+
+	private:
+
+	//The particle id will be constant throughout its lifetime and many reuses
+	//and it may not match its index in the container!
+	std::size_t                     id{0};
+	friend class                    particle_manager;
 };
 
 /**

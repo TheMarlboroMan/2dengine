@@ -2,10 +2,6 @@ next steps:
 
 	make the first example game
 
-		- particles for rising flames
-		- particles for items when picked up???
-		- error when exiting... bad shit there.
-
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.
 

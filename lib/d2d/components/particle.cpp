@@ -5,14 +5,14 @@ using namespace d2d::components;
 particle_manager::particle_manager(
 	std::size_t _size
 )
-	:particles{_size, particle{ 
-		{0., 0.}, 
-		{0., 0.}, 
-		0., 
-		0., 
-		0}
+	:particles{_size, particle{}}
+{
+
+	for(std::size_t i=0; i<_size; ++i) {
+
+		particles[i].id=i;
 	}
-{ }
+}
 
 bool particle_manager::add(
 	int _type,
@@ -26,11 +26,12 @@ bool particle_manager::add(
 
 	particles[last_free_index].type=_type;
 	particles[last_free_index].lifetime=0.;
+	auto particle_id=particles[last_free_index].id;
 
-	modules[_type]->add(particles[last_free_index], _pos, last_free_index);
+	modules[_type]->add(particles[last_free_index], _pos, particle_id);
 	if(renderers[_type]->must_subscribe(particles[last_free_index])) {
 
-		renderers[_type]->subscribe(particles[last_free_index], last_free_index);
+		renderers[_type]->subscribe(particles[last_free_index], particle_id);
 	}
 	++last_free_index;
 
@@ -45,30 +46,32 @@ void particle_manager::tic(
 
 		auto& particle=particles[i];
 		auto type=particle.type;
+		auto particle_id=particles[i].id;
 		particle.lifetime+=_delta;
 
 		if(particle.is_done()) {
 
 			if(renderers[type]->must_subscribe(particle)) {
 
-				renderers[type]->expire(particle, i);
+				renderers[type]->expire(particle, particle_id);
 			}
 
-			modules[type]->expire(particle, i);
+			modules[type]->expire(particle, particle_id);
 
-			//Is it at the tail?
+			//Is it at the tail? Free the tail...
 			if(i==last_free_index-1) {
 
 				--last_free_index;
 				continue;
 			}
 
+			//Swap this one for the one at the tail...
 			std::swap(particles[i], particles[last_free_index-1]);
 			--last_free_index;
 			continue;
 		}
 
-		modules[type]->tic(particle, _delta, i);
+		modules[type]->tic(particle, _delta, particle_id);
 		++i;
 	}
 }
@@ -80,7 +83,7 @@ void particle_manager::draw(
 	for(std::size_t i=0; i < last_free_index; i++) {
 
 		const auto& particle=particles[i];
-		renderers[particle.type]->draw(particle, _screen, i);
+		renderers[particle.type]->draw(particle, _screen, particle.id);
 	}
 }
 
@@ -92,7 +95,7 @@ void particle_manager::draw(
 	for(std::size_t i=0; i < last_free_index; i++) {
 
 		const auto& particle=particles[i];
-		renderers[particle.type]->draw(particle, _screen, _camera, i);
+		renderers[particle.type]->draw(particle, _screen, _camera, particle.id);
 	}
 }
 
