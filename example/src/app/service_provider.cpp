@@ -5,6 +5,7 @@
 #include "app/automap_reader.h"
 #include "app/inventory.h"
 #include "app/game_session.h"
+#include "app/random.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -316,4 +317,14 @@ app::game_session& service_provider::get_game_session() {
 	}
 
 	return *session;
+}
+
+app::random& service_provider::get_random() {
+
+	if(nullptr==rng) {
+
+		rng.reset(new random());
+	}
+
+	return *rng;
 }

@@ -128,9 +128,11 @@ class main:
 	void                        sync_facing_blocks();
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
+	int                         get_discovered_map_count() const;
+	//TODO: Move me to another entity...
 	void                        create_projectile_end_particles(const app::projectile&);
 	void                        create_breaking_block_particles(const app::breaking_platform&);
-	int                         get_discovered_map_count() const;
+	void                        create_skull_break_particles(const app::boss_skull&);
 
 	app::service_provider&      sp; //keep a ref, for these moment-to-moment things that don't really require us to store 100 references.
 	const appenv::env&          env;
@@ -142,13 +144,13 @@ class main:
 	d2d::audio::sound_player&   sound_player;
 	app::inventory&             inventory;
 	app::game_session&          game_session;
-	app::random                 rng;
 
 	//visual stuff.
 	ldv::camera                 camera;
 	app::game_draw              gd; //carries some state, so it must be a property.
 
 	//components...
+	//TODO: Move me somewhere else??
 	app::particle_module_flame  particle_mod_flame;
 	app::particle_module_projectile_splash  particle_mod_projectile_splash;
 	app::particle_module_projectile_horizontal_splash  particle_mod_projectile_horizontal_splash;
@@ -241,11 +243,12 @@ class main:
 	};
 
 	//Begin implementation of boss_map_interface.
-	virtual void boss_create_targeted_projectile(d2d::collision::point, double, int=0);
-	virtual void boss_create_directed_projectile(d2d::collision::point, int, double);
-	virtual void boss_create_linear_projectile(d2d::collision::point, double);
-	virtual void boss_spawn_skull(int, double);
-	virtual d2d::collision::point boss_get_target() const;
+	void boss_create_targeted_projectile(d2d::collision::point, double, int=0);
+	void boss_create_directed_projectile(d2d::collision::point, int, double);
+	void boss_create_linear_projectile(d2d::collision::point, double);
+	void boss_spawn_skull(int, double);
+	void boss_spawn_particle(d2d::collision::point, int);
+	d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };
 

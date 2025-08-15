@@ -28,6 +28,9 @@ class boss_map_interface {
 	//ready to be hit when the timer expressed in the second argument expires.
 	virtual void boss_spawn_skull(int, double)=0;
 
+	//Must spawn a particle in the given position.
+	virtual void boss_spawn_particle(d2d::collision::point, int)=0;
+
 	//Must return the center of the player.
 	virtual d2d::collision::point boss_get_target() const=0;
 };

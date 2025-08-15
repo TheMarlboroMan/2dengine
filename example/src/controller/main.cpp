@@ -60,7 +60,7 @@ main::main(
 	game_session{_sp.get_game_session()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	gd{
-		camera, 
+		camera,
 		_sp.get_game_scenery_tile_draw(),
 		_sp.get_game_sprite_draw(),
 		_sp.get_game_sprite_fill_draw(),
@@ -68,13 +68,13 @@ main::main(
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager(),
 		env,
-		rng
+		_sp.get_random()
 	},
-	particle_mod_projectile_splash{rng},
-	particle_mod_projectile_horizontal_splash{rng},
-	particle_mod_breaking_platform{rng},
-	particle_mod_bonus{rng},
-	particle_mod_smoke{rng}
+	particle_mod_projectile_splash{_sp.get_random()},
+	particle_mod_projectile_horizontal_splash{_sp.get_random()},
+	particle_mod_breaking_platform{_sp.get_random()},
+	particle_mod_bonus{_sp.get_random()},
+	particle_mod_smoke{_sp.get_random()}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -369,8 +369,8 @@ void main::load_map(
 
 		lm::log(logger).debug()<<"will add id "<<automap_id<<" to automap..."<<std::endl;
 		persistence.add(
-			app::pergr_automap, 
-			automap_id, 
+			app::pergr_automap,
+			automap_id,
 			app::am_discovered
 		);
 
@@ -381,7 +381,7 @@ void main::load_map(
 			mark_map_as_complete();
 		}
 	}
-	
+
 	//More stuff... if there's a boss, inject this controller so we can interact
 	//with the world.
 	if(current_map.boss) {
@@ -606,7 +606,7 @@ void main::restart_level() {
 		current_map.boss->reset();
 		current_map.skulls.clear();
 	}
-	
+
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
 
@@ -620,7 +620,7 @@ void main::tic(
 
 	//Tic and move the world first, because the player state-aware tic methods
 	//will also solve collisions and we need a "level" playing field!
-	
+
 	tic_world(_delta);
 
 	if(current_map.moving_blocks.size() && !player.is_defeated()) {
@@ -804,12 +804,17 @@ void main::post_tic() {
 				break;
 			}
 
+			if(!skull.can_be_hit()) {
+
+				continue;
+			}
+
 			if(d2d::collision::collides_with(skull.ent, projectile.ent)) {
 
-				//TODO: Should start particles??
+				create_skull_break_particles(skull);
 				projectile.finish();
 				skull.desintegrate();
-				
+
 				//and the boss must know about this...
 				//Assume there is a boss, because the boss spanws the skulls.
 				current_map.boss->notify_skull_destroyed(current_map.skulls.size()-1);
@@ -907,7 +912,7 @@ void main::post_tic() {
 		}
 	}
 
-	//are we about to be launched somewhere? 
+	//are we about to be launched somewhere?
 	for(auto& block : current_map.push_triggers) {
 
 		if(block.is_active() && d2d::collision::collides_with(player.ent, block.ent)) {
@@ -950,13 +955,13 @@ void main::tic_world(
 
 	for(auto& trap : current_map.timed_traps) {
 
-		//We accumulate a count of active traps here. This can also 
+		//We accumulate a count of active traps here. This can also
 		//decrement the counter...
 		trap_sound.active_count+=trap.tic(_delta);
 	}
 
 	//Do we have active traps now? Are we playing the sound? Must we stop?
-	//This is a bit low-level crappy stuff, but should work... We could 
+	//This is a bit low-level crappy stuff, but should work... We could
 	//pass an event handler to the timed_trap but hey...
 	if(0 < trap_sound.active_count) {
 
@@ -1015,8 +1020,8 @@ void main::tic_world(
 		//We won't correct the collisions, so we will check if the projectile
 		//is already moving.
 		if(projectile.is_moving() && adapter.has(
-			projectile.ent, 
-			current_map.tile_finder, 
+			projectile.ent,
+			current_map.tile_finder,
 			app::filter_tiles_projectile{}
 		)) {
 
@@ -1242,10 +1247,10 @@ void main::tic_ladder(
 	app::player& _player,
 	app::player_input _pli
 ) {
-	
+
 	//While in a ladder all collisions with the world are ignored and
 	//the horizontal velocity is unset.
-	
+
 	if(_pli.y) {
 
 		d2d::motion::mover mover{};
@@ -1260,7 +1265,7 @@ void main::tic_ladder(
 
 		return;
 	}
-	
+
 
 	//Jump out or jump down...
 	if(_pli.jump && (_pli.x || -1==_pli.y)) {
@@ -1426,7 +1431,7 @@ void main::draw(
 
 #ifdef IS_DEBUG_BUILD
 
-	debug_draw 
+	debug_draw
 		? draw_debug(_screen)
 		: draw_scene(_screen);
 
@@ -1577,13 +1582,13 @@ void main::activate_button(
 		case app::button::types::yellow_keyhole:
 			inventory.yellow_keys--;
 		break;
-		case app::button::types::blue_keyhole: 
+		case app::button::types::blue_keyhole:
 			inventory.blue_keys--;
 		break;
-		case app::button::types::red_keyhole: 
+		case app::button::types::red_keyhole:
 			inventory.red_keys--;
 		break;
-		case app::button::types::green_keyhole: 
+		case app::button::types::green_keyhole:
 			inventory.green_keys--;
 		break;
 	}
@@ -1629,7 +1634,7 @@ void main::defeat(
 	//Avoid being defeated time and again.
 	if(app::player::states::defeat==_player.state) {
 
-		return; 
+		return;
 	}
 
 	if(game_session.is_with_lives()) {
@@ -1681,8 +1686,8 @@ bool main::is_on_air(
 	//Quicky filter out tiles not in contact...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto contacting_tiles=adapter.find(
-		player_box_copy, 
-		current_map.tile_finder, 
+		player_box_copy,
+		current_map.tile_finder,
 		app::filter_tiles_check_on_air{_player.ent.get_previous_box()}
 	);
 
@@ -1964,8 +1969,8 @@ void main::reset_game(
 	const std::string& _savegame_file
 ) {
 
-	//TODO: Why should this go here in this controller? 
-	//I don't know, I don't remember... where is this called from? Who 
+	//TODO: Why should this go here in this controller?
+	//I don't know, I don't remember... where is this called from? Who
 	//owns these things?
 	persistence.reset();
 	player.reset();
@@ -2034,8 +2039,8 @@ int main::player_collision(
 	//Collision...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto current_tiles=adapter.find(
-		_player.ent, 
-		current_map.tile_finder, 
+		_player.ent,
+		current_map.tile_finder,
 		composite_filter
 	);
 
@@ -2050,7 +2055,7 @@ int main::player_collision(
 		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
-		.detect_all(current_map.platform_blocks); 
+		.detect_all(current_map.platform_blocks);
 
 	if(!cph.has_collision()) {
 
@@ -2115,7 +2120,7 @@ bool main::is_in_legal_position(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto current_tiles=adapter.find(
 		_position,
-		current_map.tile_finder, 
+		current_map.tile_finder,
 		composite_filter
 	);
 
@@ -2151,7 +2156,7 @@ void main::mount_player_in_blocks(
 	auto player_box_copy=_player.ent.get_box();
 
 	//This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
-	player_box_copy.origin.y-=2.0; 
+	player_box_copy.origin.y-=2.0;
 
 	bool player_attached=ctracker.is_attached(_player.ent);
 
@@ -2212,7 +2217,7 @@ void main::setup_moving_blocks() {
 }
 
 /**
- * given a block and an id, write the information for the block's next 
+ * given a block and an id, write the information for the block's next
  * outing. The block will move towards the _target_id waypoint!!
  */
 void main::write_moving_block(
@@ -2286,7 +2291,7 @@ bool main::is_map_complete(
 		}
 
 		int automap_id=automap.map_id_from_map(exit.map_filename);
-		if(!persistence.has(app::pergr_automap, automap_id)) { 
+		if(!persistence.has(app::pergr_automap, automap_id)) {
 
 			lm::log(logger).debug()<<"there are undiscovered exits in the map"<<std::endl;
 			return false;
@@ -2374,7 +2379,9 @@ void main::boss_spawn_skull(
 
 			lm::log(logger).debug()<<"spawning skull at point "<<_id<<std::endl;
 			current_map.skulls.push_back({spawn.point, _timer});
-			return;
+			for(int i=0; i<4; i++) {
+				current_map.particle_manager.add(app::prt_smoke, spawn.point);
+			}
 		}
 	}
 
@@ -2390,50 +2397,34 @@ void main::create_projectile_end_particles(
 	const app::projectile& _projectile
 ) {
 
+	auto origin=ldt::get_center(_projectile.ent.get_box());
+	auto type=app::prt_projectile_splash;
+	int count=0;
+
 	switch(_projectile.get_type()) {
 
 		case app::projectile::types::falling:
-		case app::projectile::types::directed:{
-
-			auto type=app::prt_projectile_splash;
-			auto origin=_projectile.ent.get_origin();
-
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-		}
+		case app::projectile::types::directed:
+			count=4;
+			type=app::prt_projectile_splash;
 		break;
-		case app::projectile::types::horizontal: {
-
-			auto type=app::prt_projectile_horizontal_splash;
-			auto origin=_projectile.ent.get_origin();
+		case app::projectile::types::horizontal:
+			type=app::prt_projectile_horizontal_splash;
+			count=6;
 			particle_mod_projectile_horizontal_splash.set_multiplier_x(
 				_projectile.ent.get_motion_vector_x() > 0.
 					? -1
 					: 1
 			);
-
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-		}
 		break;
 		case app::projectile::types::vertical:
-
-			auto type=app::prt_smoke;
-			auto origin=ldt::get_center(_projectile.ent.get_box());
-
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
-			current_map.particle_manager.add(type, origin);
+			type=app::prt_smoke;
+			count=6;
 		break;
+	}
+
+	for(int i=0; i<count; i++) {
+		current_map.particle_manager.add(type, origin);
 	}
 }
 
@@ -2441,12 +2432,32 @@ void main::create_breaking_block_particles(
 	const app::breaking_platform& _plat
 ) {
 
-	auto type=app::prt_breaking_platform;
 	auto origin=_plat.get_origin();
-	current_map.particle_manager.add(type, origin);
-	current_map.particle_manager.add(type, origin);
-	current_map.particle_manager.add(type, origin);
-	current_map.particle_manager.add(type, origin);
+	for(int i=0; i<4; i++) {
+		current_map.particle_manager.add(app::prt_breaking_platform, origin);
+	}
+}
+
+void main::create_skull_break_particles(
+	const app::boss_skull& _skull
+) {
+
+	auto origin=_skull.ent.get_origin();
+	for(int i=0; i<4; i++) {
+		current_map.particle_manager.add(app::prt_smoke, origin);
+	}
+
+	for(int i=0; i<8; i++) {
+		current_map.particle_manager.add(app::prt_projectile_splash, origin);
+	}
+}
+
+void main::boss_spawn_particle(
+	d2d::collision::point _origin,
+	int _type
+) {
+
+	current_map.particle_manager.add(_type, _origin);
 }
 
 #ifdef IS_DEBUG_BUILD

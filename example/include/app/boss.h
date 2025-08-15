@@ -98,6 +98,7 @@ class boss {
 
 	//Resumes pause, sets up lengths and next stage.
 	void            ready_pause(stages, ldtools::tdelta);
+	int             get_volley_gap(int) const;
 
 	int             appear_x_start{0},
 	                appear_y_target{0},

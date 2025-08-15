@@ -29,6 +29,8 @@ boss::boss(
 	//Save the target y for the first phase...
 	appear_y_target=ent.get_y();
 	reset();
+
+	stage=stages::setup_stage_7;
 }
 
 int boss::get_volley_count() const {
@@ -542,6 +544,20 @@ void boss::setup_stage_eight() {
 	timeouts.target(timeout_fire, phase_eight_fire_delay)
 		.restart();
 
+	//Summon the particles... We need the gap function and shit??
+	int gap=get_volley_gap(volley_count);
+	for(int i=2; i<15; i++) {
+
+		if(i==gap)  {
+
+			continue;
+		}
+
+		double x=ent.get_origin().x; 
+		double y=(i*tile_h)-(tile_h/2);
+		bmi->boss_spawn_particle({x, y}, app::prt_flame);
+	}
+
 	stage=stages::stage_8;
 }
 
@@ -552,15 +568,7 @@ void boss::stage_eight(
 	//Shot a "wall" of projectiles with a gap.
 	if(timeouts.is_finished(timeout_fire)) {
 
-		int gap=0;
-		switch(volley_count) {
-
-			case 0: gap=4; break;
-			case 1: gap=9; break;
-			case 2: gap=12; break;
-			case 3: gap=9; break;
-			case 4: gap=2; break;
-		}
+		int gap=get_volley_gap(volley_count);
 
 		for(int i=2; i<15; i++) {
 		
@@ -569,9 +577,14 @@ void boss::stage_eight(
 				continue;
 			}
 
-			double x=ent.get_origin().x; double y=(i*tile_h)-(tile_h/2);
+			double x=ent.get_origin().x; 
+			double y=(i*tile_h)-(tile_h/2);
 			d2d::collision::point origin{x, y};
 			bmi->boss_create_linear_projectile(origin, -75.);
+
+			for(int j=0; j<4; j++) {
+				bmi->boss_spawn_particle(origin, app::prt_smoke);
+			}
 		}
 
 		timeouts.restart(timeout_fire);
@@ -579,6 +592,19 @@ void boss::stage_eight(
 
 			ready_pause(stages::setup_stage_9, 6.);
 			return;
+		}
+
+		//Summon the particles again for the next volley!
+		gap=get_volley_gap(volley_count);
+		for(int i=2; i<15; i++) {
+	
+			if(i==gap) {
+
+				continue;
+			}
+			double x=ent.get_origin().x; 
+			double y=(i*tile_h)-(tile_h/2);
+			bmi->boss_spawn_particle({x, y}, app::prt_flame);
 		}
 	}
 }
@@ -619,6 +645,21 @@ void boss::stage_nine(
 	//How about WIDE shots?
 }
 
+int boss::get_volley_gap(
+	int _count
+) const {
+
+	switch(_count) {
+
+		case 0: return 4;
+		case 1: return 9;
+		case 2: return 12;
+		case 3: return 9;
+		case 4: return 2;
+	}
+
+	return 0;
+}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,

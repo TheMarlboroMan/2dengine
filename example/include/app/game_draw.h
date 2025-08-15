@@ -87,6 +87,7 @@ class game_draw:
 
 	private:
 
+	//Outside references..
 	ldv::camera&                camera;
 	d2d::video::scenery_tile_draw&  scenery_tile_draw;
 	d2d::video::sprite_draw&        sprite_draw;
@@ -94,6 +95,7 @@ class game_draw:
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
 	random&                     rng;
 
+	//Properties...
 	ldtools::view_composer      area_name_view;
 	ldtools::view_composer      lives_banner_view;
 	ldv::ttf_font               exit_number_font;
@@ -122,12 +124,7 @@ class game_draw:
 	void                        draw_toggle_block(ldv::screen&, const app::toggle_block&);
 	void                        draw_boss(ldv::screen&, const app::boss&);
 	void                        draw_boss_skull(ldv::screen&, const app::boss_skull&);
-	void                        draw_particle_fall_flame_end(ldv::screen&, const d2d::components::particle&);
-	void                        draw_particle_flame(ldv::screen&, const d2d::components::particle&);
-	void                        draw_particle_horizontal_splash(ldv::screen&, const d2d::components::particle&);
-	void                        draw_particle_breaking_platform(ldv::screen&, const d2d::components::particle&, particle_index);
-	void                        draw_particle_bonus(ldv::screen&, const d2d::components::particle&, particle_index);
-	void                        draw_particle_smoke(ldv::screen&, const d2d::components::particle&, particle_index);
-
+	void                        draw_animated_particle(ldv::screen&, const d2d::components::particle&, int, int);
+	void                        draw_indexed_sprite_particle(ldv::screen&, const d2d::components::particle&, particle_index, int);
 };
 }

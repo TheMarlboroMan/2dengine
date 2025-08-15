@@ -2,6 +2,8 @@ next steps:
 
 	make the first example game
 
+		- particles on item pickup??
+
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.
 

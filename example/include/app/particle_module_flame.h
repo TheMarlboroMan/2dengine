@@ -21,9 +21,7 @@ class particle_module_flame
 	void    tic(particle&, tdelta, particle_index);
 	void    expire(particle&, particle_index);
 
-	private: 
-
-	unsigned added{0};
+	private:
 };
 
 }

@@ -86,17 +86,16 @@ enum animations{
 	anim_snake=153,
 	anim_bat=154,
 	anim_piranha=155,
-	anim_flames=156,
 	anim_projectile_round=157,
-	anim_projectile_round_end=158,
 	anim_timed_trap_fire=159,
 	anim_projectile_falling=203,
-	anim_projectile_falling_end=204,
 	anim_projectile_vertical_flame=205,
 
 	//particles...
-	//TODO: WHere is 206 xD?
-	anim_smoke=207,
+	anim_flames=156,
+	anim_projectile_round_end=158,
+	anim_projectile_falling_end=204,
+	anim_smoke=206,
 
 	//other stuff
 	anim_breaking_platform=200,
@@ -187,7 +186,7 @@ enum class faces {
 };
 
 enum particles {
-	prt_flame=0,
+	prt_flame=0, //flame that appears before the boss fires vertical barrages.
 	prt_projectile_splash=1,
 	prt_projectile_horizontal_splash=2,
 	prt_breaking_platform=3,

@@ -49,9 +49,17 @@ game_draw::game_draw(
 	sprite_fill_draw(_sprite_fill_draw),
 	animation_sprite_finder(_animation_sprite_finder),
 	rng{_rand},
-	exit_number_font{_ttf_manager.get("exit_number_font", 8)},
-	particle_persistence_table{app::particle_manager_size, 0}
+	exit_number_font{_ttf_manager.get("exit_number_font", 8)}
 {
+
+	particle_persistence_table.reserve(app::particle_manager_size);
+	particle_persistence_table.insert(
+		std::begin(particle_persistence_table),
+		app::particle_manager_size,
+		0
+	);
+	assert(particle_persistence_table.size()==app::particle_manager_size);
+
 	const std::string layout_path=_env.build_app_path("resources/layout/views.json");
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
 
@@ -116,6 +124,7 @@ game_draw::game_draw(
 
 	scenery_tile_draw.set_camera(camera);
 	scenery_tile_draw.set_with_camera(true);
+
 }
 
 void game_draw::setup_lives_banner(
@@ -1063,18 +1072,17 @@ void game_draw::draw(
 	switch(_particle.type) {
 
 		case app::prt_projectile_splash: 
-			return draw_particle_fall_flame_end(_screen, _particle);
+			return draw_animated_particle(_screen, _particle, app::anim_projectile_falling_end, 128);
 		case app::prt_flame: 
-			//TODO: Is this in use?
-			return draw_particle_flame(_screen, _particle);
+			return draw_animated_particle(_screen, _particle, app::anim_projectile_vertical_flame, 128);
 		case app::prt_projectile_horizontal_splash: 
-			return draw_particle_horizontal_splash(_screen, _particle);
+			return draw_animated_particle(_screen, _particle, app::anim_projectile_falling_end, 128);
 		case app::prt_breaking_platform: 
-			return draw_particle_breaking_platform(_screen, _particle, _index);
+			return draw_indexed_sprite_particle(_screen, _particle, _index, 255);
 		case app::prt_bonus:
-			return draw_particle_bonus(_screen, _particle, _index);
+			return draw_indexed_sprite_particle(_screen, _particle, _index, 128);
 		case app::prt_smoke:
-			return draw_particle_smoke(_screen, _particle, _index);
+			return draw_animated_particle(_screen, _particle, app::anim_smoke, 128);
 	}
 }
 
@@ -1107,115 +1115,43 @@ void game_draw::expire(
 ) {
 }
 
-//TODO: Repeated AF.
-void game_draw::draw_particle_fall_flame_end(
-	ldv::screen& _screen,
-	const d2d::components::particle& _particle
-) {
-
-	int animation_index=app::anim_projectile_falling_end;
-	const auto& line=animation_sprite_finder.get(animation_index); 
-
-	d2d::video::sprite_draw::modifiers mod{0};
-	mod=animation_sprite_finder.modifiers(line, mod);
-	mod.alpha=128;
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_particle.pos),
-		line.frame,
-		mod
-	);
-}
-
-//TODO: Repeated AF.
-void game_draw::draw_particle_flame(
-	ldv::screen& _screen,
-	const d2d::components::particle& _particle
-) {
-
-	int animation_index=app::anim_projectile_vertical_flame;
-	const auto& line=animation_sprite_finder.get(animation_index); 
-
-	d2d::video::sprite_draw::modifiers mod{0};
-	mod=animation_sprite_finder.modifiers(line, mod);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_particle.pos),
-		line.frame,
-		mod
-	);
-}
-
-//TODO: Repeated AF.
-void game_draw::draw_particle_horizontal_splash(
-	ldv::screen& _screen,
-	const d2d::components::particle& _particle
-) {
-
-	//TODO: Should be another!
-	int animation_index=app::anim_projectile_falling_end;
-	const auto& line=animation_sprite_finder.get(animation_index); 
-
-	d2d::video::sprite_draw::modifiers mod{0};
-	mod=animation_sprite_finder.modifiers(line, mod);
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_particle.pos),
-		line.frame,
-		mod
-	);
-}
-
-//TODO: Repeated AF.
-void game_draw::draw_particle_breaking_platform(
+void game_draw::draw_animated_particle(
 	ldv::screen& _screen,
 	const d2d::components::particle& _particle,
-	particle_index _index
+	int _animation_index,
+	int _alpha
+) {
+
+	const auto& line=animation_sprite_finder.get(_animation_index); 
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod=animation_sprite_finder.modifiers(line, mod);
+	mod.alpha=_alpha;
+
+	sprite_draw.draw(
+		_screen, 
+		d2d::video::to_screen(_particle.pos),
+		line.frame,
+		mod
+	);
+}
+
+void game_draw::draw_indexed_sprite_particle(
+	ldv::screen& _screen,
+	const d2d::components::particle& _particle,
+	particle_index _index,
+	int _alpha
 ) {
 
 	int index=particle_persistence_table[_index];
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod.alpha=_alpha;
 
 	sprite_draw.draw(
 		_screen, 
 		d2d::video::to_screen(_particle.pos),
-		index
-	);
-}
-
-//TODO: Repeated AF.
-void game_draw::draw_particle_bonus(
-	ldv::screen& _screen,
-	const d2d::components::particle& _particle,
-	particle_index _index
-) {
-
-	int index=particle_persistence_table[_index];
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_particle.pos),
-		index
-	);
-}
-
-//TODO: Repeated af
-void game_draw::draw_particle_smoke(
-	ldv::screen& _screen,
-	const d2d::components::particle& _particle,
-	particle_index
-) {
-
-	const auto& line=animation_sprite_finder.get(app::anim_smoke);
-	d2d::video::sprite_draw::modifiers mod;
-	mod.alpha=128;
-
-	sprite_draw.draw(
-		_screen, 
-		d2d::video::to_screen(_particle.pos),
-		line.frame,
+		index,
 		mod
 	);
 }
+

@@ -64,6 +64,7 @@ class tile_impl;
 class automap;
 class inventory;
 class game_session;
+class random;
 
 class service_provider {
 
@@ -98,6 +99,7 @@ class service_provider {
 	automap&                get_automap();
 	inventory&              get_inventory();
 	game_session&           get_game_session();
+	random&                 get_random();
 
 	private:
 
@@ -128,5 +130,6 @@ class service_provider {
 	std::unique_ptr<automap> game_automap{nullptr};
 	std::unique_ptr<inventory> game_inventory{nullptr};
 	std::unique_ptr<game_session> session{nullptr};
+	std::unique_ptr<random> rng{nullptr};
 };
 }
