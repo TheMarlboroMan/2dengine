@@ -621,9 +621,13 @@ void thing_loader::add_boss(
 	d2d::collision::point _pos
 ) {
 
-	curmap.boss.reset(
-		new boss(_pos, difficulty_setting)
-	);
+	//Do not even load the boss if it was defeated.
+	if(!persistence.has(pergr_events, perev_boss_defeated)) {
+
+		curmap.boss.reset(
+			new boss(_pos, difficulty_setting)
+		);
+	}
 }
 
 void thing_loader::add_boss_skull_spawn(

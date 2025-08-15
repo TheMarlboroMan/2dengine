@@ -22,6 +22,7 @@ boss::boss(
 	//The pause state timer starts... paused.
 	timeouts.add(timeout_pause, 0., 0., true);
 	timeouts.add(timeout_fire, 0., 0., true);
+	timeouts.add(timeout_secondary_fire, 0., 0., true);
 	timeouts.add(timeout_summon_skull, 0., 0., true);
 
 	appear_x_start=ent.get_x();
@@ -29,8 +30,16 @@ boss::boss(
 	//Save the target y for the first phase...
 	appear_y_target=ent.get_y();
 	reset();
+}
 
-	stage=stages::setup_stage_7;
+bool boss::is_being_defeated() const {
+
+	return stages::defeat==stage;
+}
+
+bool boss::is_defeated() const {
+
+	return stages::defeated==stage;
 }
 
 int boss::get_volley_count() const {
@@ -54,6 +63,22 @@ void boss::setup_facing(
 		: faces::right;
 }
 
+int boss::get_volley_gap(
+	int _count
+) const {
+
+	switch(_count) {
+
+		case 0: return 4;
+		case 1: return 9;
+		case 2: return 12;
+		case 3: return 9;
+		case 4: return 2;
+	}
+
+	return 0;
+}
+
 void boss::notify_skull_destroyed(
 	int _skulls_left
 ) {
@@ -75,10 +100,47 @@ void boss::notify_skull_destroyed(
 	}
 	else if(stage==stages::stage_9) {
 
-		//TODO: defeated on easy!!
+		stage_nine_hit_skull();
 		//TODO: Sky might flash?
 	}
 }
+
+void boss::do_directed_projectile(
+	double _fire_delay,
+	double _volley_delay,
+	double _velocity
+) {
+
+	auto origin=ent.get_origin();
+	origin.x+=uses_left_hand
+		? left_hand_offset
+		: right_hand_offset;
+
+	//When starting the volley, lock the target and the short delay.
+	if(0==volley_count) {
+
+		timeouts.target(timeout_fire, _fire_delay)
+			.restart();
+
+		const auto target=bmi->boss_get_target();
+		volley_angle=ldt::angle_between(origin, target);
+	}
+
+	bmi->boss_create_directed_projectile(origin, volley_angle, _velocity);
+
+	//Volley done? Change the delay and hand.
+	if(++volley_count >= volley_total) {
+
+		timeouts.target(timeout_fire, _volley_delay)
+			.restart();
+		volley_count=0;
+		uses_left_hand=!uses_left_hand;
+		return;
+	}
+
+	timeouts.restart(timeout_fire);
+}
+
 
 void boss::reset() {
 
@@ -108,11 +170,12 @@ void boss::set_boss_map_interface(
 }
 
 void boss::tic(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	timeouts.tic(_delta);
 
+	//The horror xD
 	switch(stage) {
 
 		case stages::pause:
@@ -167,11 +230,21 @@ void boss::tic(
 			[[fallthrough]];
 		case stages::stage_9:
 			return stage_nine(_delta);
+
+		//TODO: Rest of phases...
+
+		case stages::setup_stage_defeat:
+			setup_stage_defeat();
+			[[fallthrough]];
+		case stages::defeat:
+			return stage_defeat(_delta);
+		case stages::defeated:
+			return;
 	}
 }
 
 void boss::do_side_movement(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	double _velocity
 ) {
 
@@ -208,7 +281,7 @@ void boss::ready_targeted_movement(
 }
 
 bool boss::do_targeted_movement(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	d2d::motion::mover mv;
@@ -220,7 +293,7 @@ bool boss::do_targeted_movement(
 
 void boss::ready_pause(
 	boss::stages _stage,
-	ldtools::tdelta _timer
+	tdelta _timer
 ) {
 
 	after_pause_stage=_stage;
@@ -230,7 +303,7 @@ void boss::ready_pause(
 }
 
 void boss::stage_pause(
-	ldtools::tdelta
+	tdelta
 ) {
 
 	//This is every pause that the boss makes...
@@ -256,7 +329,7 @@ void boss::setup_stage_appear() {
 }
 
 void boss::stage_appear(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	if(do_targeted_movement(_delta)) {
@@ -284,7 +357,7 @@ void boss::setup_stage_one() {
 }
 
 void boss::stage_one(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	//Move left and right... and shoot alternately from each "hand".
@@ -314,7 +387,7 @@ void boss::setup_stage_two() {
 }
 
 void boss::stage_two(
-	ldtools::tdelta
+	tdelta
 ) {
 
 	//Shoot triple volleys against the player...
@@ -347,7 +420,7 @@ void boss::setup_stage_three() {
 }
 
 void boss::stage_three(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	//We are not accounting for any extra distance but this is a good enough
@@ -410,7 +483,7 @@ void boss::setup_stage_five() {
 }
 
 void boss::stage_five(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	//A bit of faster movement, but only when not firing!
@@ -437,35 +510,7 @@ void boss::stage_five(
 	//shots go in volleys of three so we can't camp behind the skulls now!
 	if(timeouts.is_finished(timeout_fire)) {
 
-		auto origin=ent.get_origin();
-		origin.x+=uses_left_hand
-			? left_hand_offset
-			: right_hand_offset;
-
-		//When starting the volley, lock the target and the short delay.
-		if(0==volley_count) {
-
-			timeouts.target(timeout_fire, phase_five_fire_delay)
-				.restart();
-
-			const auto target=bmi->boss_get_target();
-			volley_angle=ldt::angle_between(origin, target);
-		}
-
-		//TODO: All these 100. should be constants somewhere.
-		bmi->boss_create_directed_projectile(origin, volley_angle, 100.);
-
-		//Volley done? Change the delay and hand.
-		if(++volley_count >= volley_total) {
-
-			timeouts.target(timeout_fire, phase_five_volley_delay)
-				.restart();
-			volley_count=0;
-			uses_left_hand=!uses_left_hand;
-			return;
-		}
-
-		timeouts.restart(timeout_fire);
+		do_directed_projectile(phase_five_fire_delay, phase_five_volley_delay, 100.);
 	}
 }
 
@@ -495,7 +540,7 @@ void boss::setup_stage_six() {
 }
 
 void boss::stage_six(
-	ldtools::tdelta
+	tdelta
 ) {
 
 	//Shoot volleys against the player, each shot has different velocity!
@@ -527,7 +572,7 @@ void boss::setup_stage_seven() {
 }
 
 void boss::stage_seven(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	if(do_targeted_movement(_delta)) {
@@ -562,7 +607,7 @@ void boss::setup_stage_eight() {
 }
 
 void boss::stage_eight(
-	ldtools::tdelta 
+	tdelta 
 ) {
 
 	//Shot a "wall" of projectiles with a gap.
@@ -570,8 +615,10 @@ void boss::stage_eight(
 
 		int gap=get_volley_gap(volley_count);
 
-		for(int i=2; i<15; i++) {
-		
+		//Shots are fired above the camera too, in case the player tries to 
+		//be sneaky.
+		for(int i=2; i<20; i++) {
+
 			if(gap==i) {
 
 				continue;
@@ -590,7 +637,7 @@ void boss::stage_eight(
 		timeouts.restart(timeout_fire);
 		if(++volley_count >= volley_total) {
 
-			ready_pause(stages::setup_stage_9, 6.);
+			ready_pause(stages::setup_stage_9, 3.);
 			return;
 		}
 
@@ -613,8 +660,7 @@ void boss::setup_stage_nine() {
 
 	skull_count=0;
 	volley_count=0;
-	//TODO:
-	volley_total=0;
+	volley_total=get_volley_count();
 	uses_left_hand=true;
 
 	timeouts.target(timeout_summon_skull, phase_nine_summon_skull_delay)
@@ -623,14 +669,44 @@ void boss::setup_stage_nine() {
 	timeouts.target(timeout_fire, phase_nine_volley_delay)
 		.restart();
 
+	timeouts.target(timeout_secondary_fire, phase_nine_secondary_fire_delay)
+		.restart();
+
 	ent.set_motion_vector({phase_nine_horizontal_speed, 0.});
 
 	stage=stages::stage_9;
 }
 
 void boss::stage_nine(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
+
+	//Skulls are summoned in sequence as they are destroyed.
+	if(timeouts.is_finished(timeout_summon_skull)) {
+
+		int spawn_id=0;
+		switch(skull_count) {
+
+			case 0: spawn_id=4; break;
+			case 1: spawn_id=5; break;
+			case 2: spawn_id=3; break;
+			case 3: spawn_id=7; break;
+			case 4: spawn_id=6; break;
+			case 5: spawn_id=8; break;
+		}
+
+		bmi->boss_spawn_skull(spawn_id, 2.);
+		timeouts.reset(timeout_summon_skull);
+	}
+
+	//Fire to both sides...
+	if(timeouts.is_finished(timeout_secondary_fire)) {
+
+		d2d::collision::point origin=ldt::get_center(ent.get_box());
+		bmi->boss_create_linear_projectile(origin, -125.);
+		bmi->boss_create_linear_projectile(origin, 125.);
+		timeouts.restart(timeout_secondary_fire);
+	}
 
 	//Again, no firing while moving!!
 	if(0==volley_count) {
@@ -638,27 +714,45 @@ void boss::stage_nine(
 		do_side_movement(_delta, phase_nine_horizontal_speed);
 	}
 
-	//TODO: I thought, since the boss is on the low part maybe the player
-	//has to move on the upper side while the boss shots upwards... But of
-	//course, what about the skulls??
+	if(timeouts.is_finished(timeout_fire)) {
 
-	//How about WIDE shots?
+		do_directed_projectile(phase_nine_fire_delay, phase_nine_volley_delay, 120.);
+	}
 }
 
-int boss::get_volley_gap(
-	int _count
-) const {
+void boss::stage_nine_hit_skull() {
 
-	switch(_count) {
+	//Mostly the same as phase 5.
+	++skull_count;
 
-		case 0: return 4;
-		case 1: return 9;
-		case 2: return 12;
-		case 3: return 9;
-		case 4: return 2;
+	if(skull_count==6) {
+
+		if(skills::easy==skill) {
+
+			stage=stages::setup_stage_defeat;
+		}
+
+		//TODO: NEXT???
+		stage=stages::setup_stage_defeat;
+		return;
 	}
 
-	return 0;
+	timeouts.restart(timeout_summon_skull);
+}
+
+void boss::setup_stage_defeat() {
+
+	//TODO:
+	bmi->boss_defeat();
+	stage=stages::defeat;
+}
+
+void boss::stage_defeat(
+	tdelta
+) {
+
+	//TODO:
+	//Consume the boss slowly xD!
 }
 
 std::ostream& app::operator<<(

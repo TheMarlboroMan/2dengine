@@ -384,7 +384,8 @@ void main::load_map(
 
 	//More stuff... if there's a boss, inject this controller so we can interact
 	//with the world.
-	if(current_map.boss) {
+	//TODO: Ok, ok...
+	if(current_map.boss && !current_map.boss->is_defeated()) {
 
 		current_map.boss->set_boss_map_interface(*this);
 	}
@@ -565,6 +566,7 @@ void main::restart_level() {
 	ctracker.reset();
 	clear_transient_state();
 	current_map.projectiles.clear();
+	current_map.particle_manager.clear();
 
 	for(auto& monster: current_map.linear_monsters) {
 
@@ -603,8 +605,12 @@ void main::restart_level() {
 
 	if(current_map.boss) {
 
-		current_map.boss->reset();
-		current_map.skulls.clear();
+		//TODO: Think.
+		if(!current_map.boss->is_defeated()) {
+
+			current_map.boss->reset();
+			current_map.skulls.clear();
+		}
 	}
 
 	take_player_to_entry(player, last_entry_id, nullptr);
@@ -715,14 +721,29 @@ void main::clean_expired_entities() {
 		current_map.projectiles.end()
 	);
 
+	bool check_map_complete=false;
 	current_map.collectibles.erase(
 		std::remove_if(
 			current_map.collectibles.begin(),
 			current_map.collectibles.end(),
-			[](app::collectible& _node) {return _node.is_to_be_removed();}
+			[&check_map_complete](app::collectible& _node) {
+				bool result=_node.is_to_be_removed();
+				check_map_complete|=result;
+				return result;
+			}
 		),
 		current_map.collectibles.end()
 	);
+
+	//Must we update the automap state because this room is now complete???
+	if(check_map_complete) {
+
+		if(is_map_complete()) {
+
+			mark_map_as_complete();
+		}
+	}
+
 
 	current_map.skulls.erase(
 		std::remove_if(
@@ -771,7 +792,7 @@ void main::post_tic() {
 		}
 	}
 
-	if(current_map.boss) {
+	if(current_map.boss && !current_map.boss->is_defeated()) {
 
 		if(d2d::collision::collides_with(player.ent, current_map.boss->ent)) {
 
@@ -795,7 +816,6 @@ void main::post_tic() {
 			defeat(player);
 			return;
 		}
-
 
 		for(auto& skull : current_map.skulls) {
 
@@ -867,23 +887,11 @@ void main::post_tic() {
 	}
 
 	//any collectibles at hand??
-	bool check_map_complete=false;
 	for(auto& _collectible : current_map.collectibles) {
 
 		if(d2d::collision::collides_with(player.ent, _collectible.ent)) {
 
 			pick_up_collectible(player, _collectible);
-			check_map_complete=true;
-		}
-	}
-
-	//Must we update the automap state because this room is now complete???
-	if(check_map_complete) {
-
-		check_map_complete=false;
-		if(is_map_complete()) {
-
-			mark_map_as_complete();
 		}
 	}
 
@@ -940,7 +948,7 @@ void main::tic_world(
 	current_map.particle_manager.tic(_delta);
 
 	d2d::motion::mover mover{};
-	if(current_map.boss) {
+	if(current_map.boss && !current_map.boss->is_defeated()) {
 
 		current_map.boss->setup_facing(
 			ldt::get_center(player.ent.get_box()).x
@@ -1164,7 +1172,7 @@ void main::tic_ground(
 		app::button * btnptr{nullptr};
 		if(can_activate_button(_player, btnptr)) {
 
-			activate_button(_player, *btnptr);
+			activate_button(*btnptr);
 			return;
 		}
 	}
@@ -1331,7 +1339,7 @@ void main::tic_air(
 		app::button * btnptr{nullptr};
 		if(can_activate_button(_player, btnptr)) {
 
-			activate_button(_player, *btnptr);
+			activate_button(*btnptr);
 		}
 	}
 
@@ -1527,6 +1535,10 @@ void main::pick_up_collectible(
 
 			inventory.green_keys++;
 		break;
+		case app::collectible::ultimate:
+
+			inventory.ultimate++;
+		break;
 	}
 }
 
@@ -1568,7 +1580,6 @@ void main::start_falling(
 }
 
 void main::activate_button(
-	app::player& /*_player*/,
 	app::button& _button
 ) {
 
@@ -1932,7 +1943,8 @@ void main::save_game(
 		inventory.yellow_keys,
 		inventory.blue_keys,
 		inventory.red_keys,
-		inventory.green_keys
+		inventory.green_keys,
+		inventory.ultimate
 	};
 
 	app::savegame_io sio{};
@@ -2272,7 +2284,7 @@ bool main::is_map_complete(
 
 	if(current_map.collectibles.size()) {
 
-		lm::log(logger).debug()<<"there collectibles remaining in the map"<<std::endl;
+		lm::log(logger).debug()<<"there are "<<current_map.collectibles.size()<<" collectibles in the map still"<<std::endl;
 		return false;
 	}
 
@@ -2458,6 +2470,22 @@ void main::boss_spawn_particle(
 ) {
 
 	current_map.particle_manager.add(_type, _origin);
+}
+
+void main::boss_defeat() {
+
+	lm::log(logger).info()<<"boss has been defeated"<<std::endl;
+
+	//Mark the boss as defeated, never again will it show up!.
+	persistence.add(app::pergr_events, app::perev_boss_defeated, 1);
+
+	//There will be only one button in the boss map, not accesible by the
+	//player. Will get activated when the boss is done and will open the
+	//arena gates, allowing the player to leave.
+	activate_button(current_map.buttons[0]);
+
+	//Remove the boss instance from the game.
+	current_map.boss.reset(nullptr);
 }
 
 #ifdef IS_DEBUG_BUILD

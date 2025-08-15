@@ -93,6 +93,10 @@ savegame savegame_io::load(
 
 			ss>>result.green_keys;
 		}
+		else if(type=="ultimate") {
+
+			ss>>result.ultimate;
+		}
 
 		ss.clear();
 	}
@@ -125,6 +129,7 @@ void savegame_io::save(
 		<<"yellow_keys "<<_data.yellow_keys<<"\n"
 		<<"blue_keys "<<_data.blue_keys<<"\n"
 		<<"red_keys "<<_data.red_keys<<"\n"
-		<<"green_keys "<<_data.green_keys
+		<<"green_keys "<<_data.green_keys<<"\n"
+		<<"ultimate "<<_data.ultimate
 		<<std::endl;
 }

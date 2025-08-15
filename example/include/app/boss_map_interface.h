@@ -31,6 +31,9 @@ class boss_map_interface {
 	//Must spawn a particle in the given position.
 	virtual void boss_spawn_particle(d2d::collision::point, int)=0;
 
+	//Must do whatever must be done when the boss is defeated.
+	virtual void boss_defeat()=0;
+
 	//Must return the center of the player.
 	virtual d2d::collision::point boss_get_target() const=0;
 };

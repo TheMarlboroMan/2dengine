@@ -148,12 +148,15 @@ void state_driver::prepare_resources(
 		new app::service_provider{env, config, log, _kernel}
 	);
 
+	//TODO: I dislike this part here... One does not really understand where
+	//it came from...
 	auto& persistence=service_provider->get_persistence();
 	persistence.add(app::pergr_collectibles);
 	persistence.add(app::pergr_secret_covers);
 	persistence.add(app::pergr_buttons);
 	persistence.add(app::pergr_touch_triggers);
 	persistence.add(app::pergr_automap);
+	persistence.add(app::pergr_events);
 
 	_kernel.get_screen().set_title(
 		service_provider->get_localization().get("window-title")

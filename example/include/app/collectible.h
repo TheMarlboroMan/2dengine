@@ -18,7 +18,8 @@ class collectible {
 		yellow_key=10,
 		blue_key=11,
 		red_key=12,
-		green_key=13
+		green_key=13,
+		ultimate=14
 	};
 
 /*

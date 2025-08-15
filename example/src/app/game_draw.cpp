@@ -393,6 +393,7 @@ void game_draw::draw_collectible(
 		case app::collectible::blue_key:    sprite_index=app::spr_key_blue; break;
 		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
 		case app::collectible::green_key:   sprite_index=app::spr_key_green; break;
+		case app::collectible::ultimate:    sprite_index=app::spr_ultimate; break;
 	}
 
 	sprite_draw.draw(

@@ -324,6 +324,13 @@
 			"texture":"main",
 			"clip":[48, 19, 16, 10],
 			"location":[184, 48, 16, 10]
+		},
+		{
+			"id":"ultimate_icon",
+			"type":"bitmap",
+			"texture":"main",
+			"clip":[114, 49, 13, 14],
+			"location":[144, 48, 13, 14]
 		}
 	],
 	"lives_banner":[

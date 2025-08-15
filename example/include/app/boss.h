@@ -9,6 +9,8 @@
 
 namespace app {
 
+using ldtools::tdelta;
+
 /**
  * game boss. Most stuff about it is hardcoded.
  */
@@ -16,13 +18,16 @@ class boss {
 
 	public:
 
+
 	                boss(d2d::collision::point, int);
-	void            tic(ldtools::tdelta);
+	void            tic(tdelta);
 	void            set_boss_map_interface(boss_map_interface&);
 	//Notifies the boss of a skull destroyed and tells about the remaining ones.
 	void            notify_skull_destroyed(int);
 	void            reset();
 	void            setup_facing(double);
+	bool            is_defeated() const;
+	bool            is_being_defeated() const;
 
 	entity          ent;
 	faces           facing{faces::right};
@@ -59,45 +64,51 @@ class boss {
 		stage_8,
 		//SKULLS...
 		setup_stage_9, //moves left to right, this time on the bottom...
-		stage_9
+		stage_9,
 
-		//TODO: Third skull phase is last on easy
 		//TODO: Fourth skull phase is last on medium
 		//TODO: Fifth skull phase is last on hard
+		setup_stage_defeat,
+		defeat,
+		defeated
 	}               stage{stages::setup_appear},
-					after_pause_stage{stages::setup_appear};
+	                after_pause_stage{stages::setup_appear};
 
-	void            stage_pause(ldtools::tdelta);
+	void            stage_pause(tdelta);
 	void            setup_stage_appear();
-	void            stage_appear(ldtools::tdelta);
+	void            stage_appear(tdelta);
 	void            setup_stage_one();
-	void            stage_one(ldtools::tdelta);
+	void            stage_one(tdelta);
 	void            setup_stage_two();
-	void            stage_two(ldtools::tdelta);
+	void            stage_two(tdelta);
 	void            setup_stage_three();
-	void            stage_three(ldtools::tdelta);
+	void            stage_three(tdelta);
 	void            setup_stage_four();
 	void            stage_four();
 	void            setup_stage_five();
-	void            stage_five(ldtools::tdelta);
+	void            stage_five(tdelta);
 	void            stage_five_hit_skull();
 	void            setup_stage_six();
-	void            stage_six(ldtools::tdelta);
+	void            stage_six(tdelta);
 	void            setup_stage_seven();
-	void            stage_seven(ldtools::tdelta);
+	void            stage_seven(tdelta);
 	void            setup_stage_eight();
-	void            stage_eight(ldtools::tdelta);
+	void            stage_eight(tdelta);
 	void            setup_stage_nine();
-	void            stage_nine(ldtools::tdelta);
+	void            stage_nine(tdelta);
+	void            stage_nine_hit_skull();
+	void            setup_stage_defeat();
+	void            stage_defeat(tdelta);
 
-	void            do_side_movement(ldtools::tdelta, double);
+	void            do_side_movement(tdelta, double);
 	void            ready_targeted_movement(d2d::collision::point, double);
-	bool            do_targeted_movement(ldtools::tdelta);
+	void            do_directed_projectile(double, double, double);
+	bool            do_targeted_movement(tdelta);
 	//Depending on the skill level there will be more or less projectiles.
 	int             get_volley_count() const;
 
 	//Resumes pause, sets up lengths and next stage.
-	void            ready_pause(stages, ldtools::tdelta);
+	void            ready_pause(stages, tdelta);
 	int             get_volley_gap(int) const;
 
 	int             appear_x_start{0},
@@ -116,6 +127,7 @@ class boss {
 	enum {
 		timeout_pause=0,
 		timeout_fire,
+		timeout_secondary_fire,
 		timeout_summon_skull
 	};
 	static const int w{16};
@@ -141,6 +153,7 @@ class boss {
 	static constexpr double phase_nine_horizontal_speed{76.};
 	static constexpr double phase_nine_volley_delay{1.5};
 	static constexpr double phase_nine_fire_delay{.15};
+	static constexpr double phase_nine_secondary_fire_delay{0.5};
 	static constexpr double phase_nine_summon_skull_delay{4.};
 };
 

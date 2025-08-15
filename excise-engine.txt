@@ -2,6 +2,8 @@ next steps:
 
 	make the first example game
 
+		- reorder boss, maybe it's tooo long!!!
+		- make boss end animation and stuff...
 		- particles on item pickup??
 
 		... Check all levels that begin with a ladder!. Use the "defeat"

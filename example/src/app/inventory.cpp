@@ -9,4 +9,5 @@ void inventory::reset() {
 	red_keys=0;
 	green_keys=0;
 	total_collectibles=0;
+	ultimate=0;
 }

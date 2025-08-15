@@ -44,7 +44,12 @@ enum persistence_groups {
 	pergr_secret_covers=2, //black rectangles covering secret areas.
 	pergr_buttons=3, //buttons and keyholes.
 	pergr_touch_triggers=4, //touch triggers
-	pergr_automap=5, //automap discovery state.
+	pergr_automap=5, //automap discovery state
+	pergr_events=6 //game events.
+};
+
+enum per_events {
+	perev_boss_defeated=0
 };
 
 enum automap_flags {
@@ -117,6 +122,7 @@ enum sprites {
 	spr_key_red=305,
 	spr_key_green=306,
 	spr_diamond=307,
+	spr_ultimate=308,
 
 	//Special world elements
 	spr_spike=169,

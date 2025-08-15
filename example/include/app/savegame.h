@@ -14,7 +14,8 @@ struct savegame {
 	    yellow_keys{-1},
 	    blue_keys{-1},
 	    red_keys{-1},
-	    green_keys{-1};
+	    green_keys{-1},
+		ultimate{-1};
 
 	bool is_malformed() const {
 
@@ -27,7 +28,8 @@ struct savegame {
 			|| yellow_keys==-1
 			|| blue_keys==-1
 			|| red_keys==-1
-			|| green_keys==-1;
+			|| green_keys==-1
+			|| ultimate==-1;
 	}
 };
 

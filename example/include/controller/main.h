@@ -106,7 +106,7 @@ class main:
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
 	void                        pick_up_collectible(app::player&, app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
-	void                        activate_button(app::player&, app::button&);
+	void                        activate_button(app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
 	int                         play_sound(int);
 	void                        save_game(const std::string&, int);
@@ -248,6 +248,7 @@ class main:
 	void boss_create_linear_projectile(d2d::collision::point, double);
 	void boss_spawn_skull(int, double);
 	void boss_spawn_particle(d2d::collision::point, int);
+	void boss_defeat();
 	d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };
