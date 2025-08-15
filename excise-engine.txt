@@ -2,20 +2,18 @@ next steps:
 
 	make the first example game
 
-		- reorder boss, maybe it's tooo long!!!
-		- make boss end animation and stuff...
 		- particles on item pickup??
+
+
+		- add 2 challenge rooms (doors) per level with extra treasure.
+
+		- add the last furnace level xD.
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.
 
 		- remove the test controller, I guess
 
-		- easy stuff
-			- timed platforms, ragequit inducing.
-				- if one appears at your position go you to its bottom.
-
-		- add 2 challenge rooms (doors) per level with extra treasure.
 
 		what's wrong with the torch animation??
 

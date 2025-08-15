@@ -50,6 +50,8 @@ int boss::get_volley_count() const {
 		case skills::normal: return 4;
 		case skills::hard: return 5;
 	}
+
+	return 5; //whatever... The compiler should not complain about this!
 }
 
 void boss::setup_facing(
@@ -522,6 +524,13 @@ void boss::stage_five_hit_skull() {
 
 	if(skull_count==4) {
 
+		//This is the end of the boss in easy mode!
+		if(skills::easy==skill) {
+
+			stage=stages::setup_stage_defeat;
+			return;
+		}
+
 		ready_pause(stages::setup_stage_6, 2.);
 		return;
 	}
@@ -727,12 +736,6 @@ void boss::stage_nine_hit_skull() {
 
 	if(skull_count==6) {
 
-		if(skills::easy==skill) {
-
-			stage=stages::setup_stage_defeat;
-		}
-
-		//TODO: NEXT???
 		stage=stages::setup_stage_defeat;
 		return;
 	}
@@ -742,17 +745,49 @@ void boss::stage_nine_hit_skull() {
 
 void boss::setup_stage_defeat() {
 
-	//TODO:
+	//Slowly rise...
+	ent.set_motion_vector({0., 12.});
+
+	//Use timers for other things...
+	timeouts.target(timeout_fire, defeat_timeout)
+		.restart();
+
+	timeouts.target(timeout_secondary_fire, defeat_particle_timeout)
+		.restart();
+
 	bmi->boss_defeat();
 	stage=stages::defeat;
 }
 
 void boss::stage_defeat(
-	tdelta
+	tdelta _delta
 ) {
 
-	//TODO:
-	//Consume the boss slowly xD!
+	d2d::motion::mover mv;
+	mv.apply_and_commit(ent, _delta);
+
+	if(timeouts.is_finished(timeout_secondary_fire)) {
+
+		//Lots of particles xD.
+		const auto origin=ldt::get_center(ent.get_box());
+		for(int i=0; i<8; i++) {
+			bmi->boss_spawn_particle(origin, app::prt_smoke);
+		}
+
+		for(int i=0; i<12; i++) {
+			bmi->boss_spawn_particle(origin, app::prt_projectile_splash);
+		}
+
+		timeouts.restart(timeout_secondary_fire);
+	}
+
+	if(!timeouts.is_finished(timeout_fire)) {
+
+		return;
+	}
+
+	bmi->boss_remove();
+	stage=stages::defeated;
 }
 
 std::ostream& app::operator<<(

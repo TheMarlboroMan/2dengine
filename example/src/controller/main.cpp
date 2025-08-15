@@ -2479,10 +2479,21 @@ void main::boss_defeat() {
 	//Mark the boss as defeated, never again will it show up!.
 	persistence.add(app::pergr_events, app::perev_boss_defeated, 1);
 
+	//Remove all projectiles, so the player cannot be killed...
+	//TODO: Check this, maybe it still can happen...
+	for(auto& projectile : current_map.projectiles) {
+
+		projectile.finish();
+		create_projectile_end_particles(projectile);
+	}
+
 	//There will be only one button in the boss map, not accesible by the
 	//player. Will get activated when the boss is done and will open the
 	//arena gates, allowing the player to leave.
 	activate_button(current_map.buttons[0]);
+}
+
+void main::boss_remove() {
 
 	//Remove the boss instance from the game.
 	current_map.boss.reset(nullptr);

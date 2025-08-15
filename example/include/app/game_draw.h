@@ -123,6 +123,8 @@ class game_draw:
 	void                        draw_exit(ldv::screen&, const app::exit&, int);
 	void                        draw_toggle_block(ldv::screen&, const app::toggle_block&);
 	void                        draw_boss(ldv::screen&, const app::boss&);
+	void                        draw_boss_regular(ldv::screen&, const app::boss&);
+	void                        draw_boss_defeat(ldv::screen&, const app::boss&);
 	void                        draw_boss_skull(ldv::screen&, const app::boss_skull&);
 	void                        draw_animated_particle(ldv::screen&, const d2d::components::particle&, int, int);
 	void                        draw_indexed_sprite_particle(ldv::screen&, const d2d::components::particle&, particle_index, int);

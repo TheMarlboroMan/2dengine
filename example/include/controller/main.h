@@ -249,6 +249,7 @@ class main:
 	void boss_spawn_skull(int, double);
 	void boss_spawn_particle(d2d::collision::point, int);
 	void boss_defeat();
+	void boss_remove();
 	d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };

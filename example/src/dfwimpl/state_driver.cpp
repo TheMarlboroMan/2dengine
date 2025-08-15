@@ -310,9 +310,18 @@ void state_driver::start_app(
 
 			switch(skill) {
 
-				case 1: gs.set_skill_level(app::skill_easy); break;
-				case 2: gs.set_skill_level(app::skill_normal); break;
-				case 3: gs.set_skill_level(app::skill_hard); break;
+				case 1:
+					gs.set_skill_level(app::skill_easy); 
+					lm::log(log).info()<<"skill set to easy"<<std::endl;
+				break;
+				case 2:
+					gs.set_skill_level(app::skill_normal); 
+					lm::log(log).info()<<"skill set to normal"<<std::endl;
+				break;
+				case 3:
+					gs.set_skill_level(app::skill_hard); 
+					lm::log(log).info()<<"skill set to hard"<<std::endl;
+				break;
 				default:
 					gs.set_skill_level(app::skill_normal);
 					lm::log(log).notice()<<"skill set to normal, possible values are 1=easy, 2=normal and 3=hard"<<std::endl;

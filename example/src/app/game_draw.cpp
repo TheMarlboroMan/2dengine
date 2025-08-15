@@ -986,6 +986,15 @@ void game_draw::draw_boss(
 	const app::boss& _boss
 ) {
 
+	return _boss.is_being_defeated()
+		? draw_boss_defeat(_screen, _boss)
+		: draw_boss_regular(_screen, _boss);
+}
+
+void game_draw::draw_boss_regular(
+	ldv::screen& _screen,
+	const app::boss& _boss
+) {
 	auto origin=d2d::video::to_screen(_boss.ent.get_origin());
 
 	//The sprite is much larger than the realhitbox, we must move it 
@@ -1029,18 +1038,54 @@ void game_draw::draw_boss(
 		spr_boss_side,
 		{d2d::video::sprite_draw::modifiers::flip_horizontal}
 	);
+}
 
-/**
-	ldv::box_representation box{
-		d2d::video::to_screen_rect(_boss.ent),
-		ldv::rgba_color(255,0,0,128),
-		ldv::box_representation::type::fill
-	};
+void game_draw::draw_boss_defeat(
+	ldv::screen& _screen,
+	const app::boss& _boss
+) {
+	auto origin=d2d::video::to_screen(_boss.ent.get_origin());
 
-	box.set_blend(ldv::representation::blends::alpha);
-	box.set_alpha(128);
-	box.draw(_screen, camera);
-*/
+	//Adjust...
+	origin.y-=19;
+
+	d2d::video::sprite_draw::modifiers mod{0};
+	mod.alpha=127;
+
+	//TODO: This may be... bad xD!
+	//Now, the boss trembles while being destroyed xD.
+	origin.x-=rng.get(0, 6)-3;
+	origin.y-=rng.get(0, 6)-3;
+
+	//The boss must be drawn by pieces....
+	//Center...
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_center,
+		mod
+	);
+
+	//Left side
+	origin.x-=app::tile_w;
+	origin.y+=8;
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_side,
+		mod
+	);
+
+	mod.flags|=d2d::video::sprite_draw::modifiers::flip_horizontal;
+
+	//Right side,
+	origin.x+=2*app::tile_w;
+	sprite_draw.draw(
+		_screen,
+		origin,
+		spr_boss_side,
+		mod
+	);
 }
 
 void game_draw::draw_boss_skull(

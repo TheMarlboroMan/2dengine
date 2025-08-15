@@ -34,6 +34,9 @@ class boss_map_interface {
 	//Must do whatever must be done when the boss is defeated.
 	virtual void boss_defeat()=0;
 
+	//Must do whatever must be done when the boss must be removed from play.
+	virtual void boss_remove()=0;
+
 	//Must return the center of the player.
 	virtual d2d::collision::point boss_get_target() const=0;
 };

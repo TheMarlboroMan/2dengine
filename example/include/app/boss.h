@@ -155,6 +155,8 @@ class boss {
 	static constexpr double phase_nine_fire_delay{.15};
 	static constexpr double phase_nine_secondary_fire_delay{0.5};
 	static constexpr double phase_nine_summon_skull_delay{4.};
+	static constexpr double defeat_timeout{6.};
+	static constexpr double defeat_particle_timeout{0.1};
 };
 
 std::ostream& operator<<(std::ostream&, const boss&);
