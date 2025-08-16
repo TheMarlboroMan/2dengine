@@ -74,7 +74,8 @@ main::main(
 	particle_mod_projectile_horizontal_splash{_sp.get_random()},
 	particle_mod_breaking_platform{_sp.get_random()},
 	particle_mod_bonus{_sp.get_random()},
-	particle_mod_smoke{_sp.get_random()}
+	particle_mod_smoke{_sp.get_random()},
+	particle_mod_pickup{_sp.get_random()}
 #ifdef IS_DEBUG_BUILD
 	,
 	dd{app::logic_screen_w, app::logic_screen_h}
@@ -113,6 +114,9 @@ main::main(
 	current_map.particle_manager.register_renderer(gd);
 
 	current_map.particle_manager.register_module(particle_mod_smoke);
+	current_map.particle_manager.register_renderer(gd);
+
+	current_map.particle_manager.register_module(particle_mod_pickup);
 	current_map.particle_manager.register_renderer(gd);
 
 	game_timeouts.add(timeout_lives_banner, 4., 4., true);
@@ -1509,6 +1513,14 @@ void main::pick_up_collectible(
 
 	//play a jingle :D.
 	play_sound(app::snd_item_pickup);
+
+	//Spawn a lot of particles...
+	for(int i=0; i<12; i++) {
+		current_map.particle_manager.add(
+			app::prt_pickup, 
+			ldt::get_center(_collectible.ent.get_box())
+		);
+	}
 
 	switch(_collectible.type) {
 

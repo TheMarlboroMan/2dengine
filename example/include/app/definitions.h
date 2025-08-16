@@ -124,6 +124,20 @@ enum sprites {
 	spr_diamond=307,
 	spr_ultimate=308,
 
+	//Particles.
+	spr_particle_breaking_plat_1=310,
+	spr_particle_breaking_plat_2=311,
+	spr_particle_breaking_plat_3=312,
+	spr_particle_breaking_plat_4=313,
+	spr_particle_bonus_1=314,
+	spr_particle_bonus_2=315,
+	spr_particle_bonus_3=316,
+	spr_particle_bonus_4=317,
+	spr_particle_smoke_1=318,
+	spr_particle_smoke_2=319,
+	spr_particle_smoke_3=320,
+	spr_particle_smoke_4=321,
+
 	//Special world elements
 	spr_spike=169,
 	spr_ladder_yellow=350,
@@ -146,18 +160,6 @@ enum sprites {
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
 	spr_block_arrow=512,
-	spr_particle_breaking_plat_1=514,
-	spr_particle_breaking_plat_2=515,
-	spr_particle_breaking_plat_3=516,
-	spr_particle_breaking_plat_4=517,
-	spr_particle_bonus_1=518,
-	spr_particle_bonus_2=519,
-	spr_particle_bonus_3=520,
-	spr_particle_bonus_4=521,
-	spr_particle_smoke_1=522,
-	spr_particle_smoke_2=523,
-	spr_particle_smoke_3=524,
-	spr_particle_smoke_4=525,
 
 	spr_boss_center=420,
 	spr_boss_side=421,
@@ -197,7 +199,8 @@ enum particles {
 	prt_projectile_horizontal_splash=2,
 	prt_breaking_platform=3,
 	prt_bonus=4,
-	prt_smoke=5
+	prt_smoke=5,
+	prt_pickup=6,
 };
 
 }

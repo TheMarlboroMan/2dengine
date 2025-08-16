@@ -24,6 +24,7 @@
 #include "app/particle_module_breaking_platform.h"
 #include "app/particle_module_bonus.h"
 #include "app/particle_module_smoke.h"
+#include "app/particle_module_pickup.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -157,6 +158,7 @@ class main:
 	app::particle_module_breaking_platform  particle_mod_breaking_platform;
 	app::particle_module_bonus  particle_mod_bonus;
 	app::particle_module_smoke  particle_mod_smoke;
+	app::particle_module_pickup  particle_mod_pickup;
 
 	//game state stuff.
 	app::simulation             simulation;

@@ -1126,6 +1126,7 @@ void game_draw::draw(
 		case app::prt_breaking_platform: 
 			return draw_indexed_sprite_particle(_screen, _particle, _index, 255);
 		case app::prt_bonus:
+		case app::prt_pickup:
 			return draw_indexed_sprite_particle(_screen, _particle, _index, 128);
 		case app::prt_smoke:
 			return draw_animated_particle(_screen, _particle, app::anim_smoke, 128);
@@ -1137,7 +1138,8 @@ bool game_draw::must_subscribe(
 ) const {
 
 	return app::prt_breaking_platform==_particle.type
-		|| app::prt_bonus==_particle.type;
+		|| app::prt_bonus==_particle.type
+		|| app::prt_pickup==_particle.type;
 }
 
 void game_draw::subscribe(
@@ -1150,6 +1152,7 @@ void game_draw::subscribe(
 			particle_persistence_table[_index]=rng.get(0, 3)+spr_particle_breaking_plat_1;
 		break;
 		case prt_bonus:
+		case prt_pickup:
 			particle_persistence_table[_index]=rng.get(0, 3)+spr_particle_bonus_1;
 		break;
 	}

@@ -2,17 +2,9 @@ next steps:
 
 	make the first example game
 
-		- reorder tiles, this makes no sense :(. Have ranges for tiles.
-		  animations, sprites, particles...
-			- 1 - 299 -> tiles
-			- 300-499 -> things
-			- 500 > -> animated tiles
+		- design the 2 challenge rooms (doors) per level with extra treasure.
 
-		- particles on item pickup??
-
-		- add 2 challenge rooms (doors) per level with extra treasure.
-
-		- add the last furnace level xD.
+		- design the last furnace level xD.
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.
