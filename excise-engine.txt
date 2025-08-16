@@ -2,10 +2,11 @@ next steps:
 
 	make the first example game
 
-		- free up tile space removing unused tiles with tile report :D
-
-		- reorder tiles, this makes no sense :(. Have ranges for tiles,
+		- reorder tiles, this makes no sense :(. Have ranges for tiles.
 		  animations, sprites, particles...
+			- 1 - 299 -> tiles
+			- 300-499 -> things
+			- 500 > -> animated tiles
 
 		- particles on item pickup??
 
