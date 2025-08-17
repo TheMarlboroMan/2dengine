@@ -371,19 +371,7 @@ void main::load_map(
 	//Ok, discover this map...
 	if(!persistence.has(app::pergr_automap, automap_id)) {
 
-		lm::log(logger).debug()<<"will add id "<<automap_id<<" to automap..."<<std::endl;
-		persistence.add(
-			app::pergr_automap,
-			automap_id,
-			app::am_discovered
-		);
-
-		lm::log(logger).debug()<<"total discovered: "<<get_discovered_map_count()<<std::endl;
-
-		if(is_map_complete()) {
-
-			mark_map_as_complete();
-		}
+		discover_map(automap_id);
 	}
 
 	//More stuff... if there's a boss, inject this controller so we can interact
@@ -402,7 +390,7 @@ void main::exit_to(
 
 	if(0!=_exit.min_rooms) {
 
-		int visited=get_discovered_map_count();
+		int visited=game_session.get_discovered_map_count();
 		if(visited < _exit.min_rooms) {
 
 			lm::log(logger).debug()<<"cannot enter, "<<visited<<"/"<<_exit.min_rooms<<" rooms visited"<<std::endl;
@@ -1481,7 +1469,7 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	gd.draw(_screen, current_map, player, get_discovered_map_count());
+	gd.draw(_screen, current_map, player, game_session.get_discovered_map_count());
 
 	if(game_timeouts.is_running(timeout_area_banner)) {
 
@@ -1548,7 +1536,7 @@ void main::pick_up_collectible(
 		case app::collectible::ruby:
 		case app::collectible::diamond:
 
-			++inventory.total_collectibles;
+			++inventory.treasure;
 		break;
 		case app::collectible::yellow_key:
 
@@ -1993,16 +1981,19 @@ void main::load_game() {
 	auto save=sio.load_from_file(game_session.savegame_file);
 	reset_game(save.difficulty_setting, game_session.savegame_file);
 
+	persistence.load_from_string(save.persistence_string);
+
 	inventory.red_keys=save.red_keys;
 	inventory.blue_keys=save.blue_keys;
 	inventory.green_keys=save.green_keys;
 	inventory.yellow_keys=save.yellow_keys;
+	//Treasure actually comes from the persistence layer.
+	inventory.treasure=persistence.size(app::pergr_collectibles);
 
 	game_session.skill_level=save.difficulty_setting;
 	game_session.elapsed_seconds=save.elapsed_seconds;
 	game_session.lives=save.lives;
 
-	persistence.load_from_string(save.persistence_string);
 
 	start(save.map_filename, save.entry_id);
 }
@@ -2378,9 +2369,25 @@ void main::mark_map_as_complete() {
 	);
 }
 
-int main::get_discovered_map_count() const {
+void main::discover_map(
+	int _automap_id
+) {
 
-	return persistence.size(app::pergr_automap);
+	lm::log(logger).debug()<<"will add id "<<_automap_id<<" to automap..."<<std::endl;
+	persistence.add(
+		app::pergr_automap,
+		_automap_id,
+		app::am_discovered
+	);
+
+	lm::log(logger).debug()<<"total discovered: "<<game_session.get_discovered_map_count()<<std::endl;
+
+	++game_session.discovered_rooms;
+
+	if(is_map_complete()) {
+
+		mark_map_as_complete();
+	}
 }
 
 

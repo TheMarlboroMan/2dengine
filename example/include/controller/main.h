@@ -134,8 +134,9 @@ class main:
 	void                        toggle_blocks(app::player&);
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
-	int                         get_discovered_map_count() const;
-	//TODO: Move me to another entity...
+	void                        discover_map(int);
+
+	//TODO: Move me to another entity... with all the properties too...
 	void                        create_projectile_end_particles(const app::projectile&);
 	void                        create_breaking_block_particles(const app::breaking_platform&);
 	void                        create_skull_break_particles(const app::boss_skull&);
@@ -214,6 +215,7 @@ class main:
 	bool                        console_enabled{false};
 	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
+
 	                            current_map_name;
 #endif
 

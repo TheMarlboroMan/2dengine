@@ -9,7 +9,13 @@ struct game_session {
 
 	int     skill_level{0},
 	        lives{0},
-	        elapsed_seconds{0}; 
+	        elapsed_seconds{0},
+	        discovered_rooms{0};
+#ifdef IS_DEBUG_BUILD
+	int     debug_discovered_rooms{-1};
+
+#endif
+
 	std::string savegame_file;
 
 /**
@@ -30,5 +36,6 @@ struct game_session {
 	bool    is_with_timer() const;
 	void    reset(int, const std::string&);
 	void    set_skill_level(int);
+	int     get_discovered_map_count() const;
 };
 }

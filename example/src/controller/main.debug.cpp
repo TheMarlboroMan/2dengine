@@ -199,6 +199,13 @@ console::result main::execute_cmd(
 
 		return {0, ss.str()};
 	}
+	if(_cmd=="discover") {
+
+		game_session.debug_discovered_rooms=_args[0].get_int();
+		std::stringstream ss;
+		ss<<"discovery room value set to "<<game_session.get_discovered_map_count();
+		return {0, ss.str()};
+	}
 
 	if(_cmd=="setinmortal") {
 
@@ -263,6 +270,7 @@ void main::setup_console(
 	console->map_command("give", {{console::types::integer}});
 	console->map_command("map", {{console::types::string}, {console::types::integer, true, 1}});
 	console->map_command("mapname", {});
+	console->map_command("discover", {{console::types::integer}});
 }
 
 void main::draw_debug(

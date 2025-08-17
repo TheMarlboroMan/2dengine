@@ -10,17 +10,20 @@ struct savegame {
 	int entry_id{-1},
 	    difficulty_setting{-1},
 	    elapsed_seconds{-1},
+	    discovered_rooms{-1},
 	    lives{-1},
 	    yellow_keys{-1},
 	    blue_keys{-1},
 	    red_keys{-1},
 	    green_keys{-1},
-		ultimate{-1};
+	    treasure{-1},
+	    ultimate{-1};
 
 	bool is_malformed() const {
 
 		return !map_filename.size()
 			|| !persistence_string.size()
+			|| discovered_rooms==-1
 			|| entry_id==-1
 			|| difficulty_setting==-1
 			|| elapsed_seconds==-1
@@ -29,6 +32,7 @@ struct savegame {
 			|| blue_keys==-1
 			|| red_keys==-1
 			|| green_keys==-1
+			|| treasure==-1
 			|| ultimate==-1;
 	}
 };

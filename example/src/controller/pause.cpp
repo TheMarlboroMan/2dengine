@@ -61,10 +61,10 @@ void pause::awake(
 	view.set_visible("blue_key_icon", inventory.blue_keys!=0);
 	view.set_visible("green_key_icon", inventory.green_keys!=0);
 	view.set_visible("ultimate_icon", inventory.ultimate!=0);
-		
+
 	//Update the values to be shown...
 	std::stringstream ss;
-	ss<<" x "<<persistence.size(app::pergr_collectibles);
+	ss<<" x "<<inventory.treasure;
 	view.set_text("treasure_value", ss.str());
 
 	ss.str("");
@@ -72,7 +72,7 @@ void pause::awake(
 	view.set_text("keys_value", ss.str());
 
 	ss.str("");
-	ss<<" x "<<persistence.size(app::pergr_automap);
+	ss<<" x "<<game_session.get_discovered_map_count();
 	view.set_text("rooms_value", ss.str());
 
 	if(game_session.is_with_lives()) {

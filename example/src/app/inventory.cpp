@@ -8,6 +8,6 @@ void inventory::reset() {
 	blue_keys=0;
 	red_keys=0;
 	green_keys=0;
-	total_collectibles=0;
 	ultimate=0;
+	treasure=0;
 }

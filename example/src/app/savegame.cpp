@@ -97,6 +97,14 @@ savegame savegame_io::load(
 
 			ss>>result.ultimate;
 		}
+		else if(type=="treasure") {
+
+			ss>>result.treasure;
+		}
+		else if(type=="discovered_rooms") {
+
+			ss>>result.discovered_rooms;
+		}
 
 		ss.clear();
 	}
@@ -125,11 +133,13 @@ void savegame_io::save(
 		<<"entry_id "<<_data.entry_id<<"\n"
 		<<"difficulty_setting "<<_data.difficulty_setting<<"\n"
 		<<"elapsed_seconds "<<_data.elapsed_seconds<<"\n"
+		<<"discovered_rooms "<<_data.discovered_rooms<<"\n"
 		<<"lives "<<_data.lives<<"\n"
 		<<"yellow_keys "<<_data.yellow_keys<<"\n"
 		<<"blue_keys "<<_data.blue_keys<<"\n"
 		<<"red_keys "<<_data.red_keys<<"\n"
 		<<"green_keys "<<_data.green_keys<<"\n"
-		<<"ultimate "<<_data.ultimate
+		<<"ultimate "<<_data.ultimate<<"\n"
+		<<"treasure "<<_data.treasure
 		<<std::endl;
 }

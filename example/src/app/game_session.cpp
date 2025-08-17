@@ -14,6 +14,7 @@ void game_session::reset(
 	lives=0;
 	elapsed_seconds=0;
 	current_map_id=0;
+	discovered_rooms=0;
 	game_clock.reset();
 }
 
@@ -50,4 +51,19 @@ bool game_session::is_with_lives() const {
 bool game_session::is_with_timer() const {
 
 	return skill_level != app::skill_easy;
+}
+
+int game_session::get_discovered_map_count() const {
+
+#ifdef IS_DEBUG_BUILD
+
+	//Allow for faking this in debug mode, so we can test stuff out..
+	if(-1!=debug_discovered_rooms) {
+
+		return debug_discovered_rooms;
+	}
+
+#endif
+
+	return discovered_rooms;
 }
