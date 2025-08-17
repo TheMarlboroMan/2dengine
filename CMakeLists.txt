@@ -140,7 +140,7 @@ if(${BUILD_EXAMPLE})
 	add_library(exlib SHARED ${EXAMPLE_SOURCE})
 	set_target_properties(exlib PROPERTIES OUTPUT_NAME exlib)
 
-	add_executable(example-app example/src/main.cpp)
+	add_executable(example-app example/src/app_main.cpp)
 
 	if(${BUILD_DEBUG})
 

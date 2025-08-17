@@ -2267,8 +2267,11 @@ void main::write_moving_block(
 		return;
 	}
 
-	//Set the block target to it moves towards the waypoint. Set also the NEXT
-	//waypoint for once we arrive.
+	//Set the block target so it moves towards the waypoint. Set also the NEXT
+	//waypoint for once we arrive. The means that the block will start moving
+	//towards its first set waypoint at that waypoint's velocity when the map
+	//loads. Whenever a new waypoint is reached we call this again with the
+	//new waypoint's next id.
 	const auto& waypoint=current_map.moving_block_nodes.at(_target_id);
 	lm::log(logger).info()<<"moving block is set towards "<<waypoint.point<<"\n";
 	_block.set_target(waypoint.point, waypoint.velocity, waypoint.wait_ms, waypoint.nextid);
