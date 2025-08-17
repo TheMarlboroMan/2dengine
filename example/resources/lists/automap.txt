@@ -149,7 +149,7 @@
 ;0 0 1
 >4 automap-volcano
 *volcano_001 401 8 3 2 1
-;0 0 8
+;0 0 24
 ;1 0 2
 ;2 0 32
 *volcano_002 402 7 0 1 4
@@ -205,8 +205,9 @@
 ;0 1 64
 *volcano_018 418 8 0 1 1
 ;0 0 24
-*volcano_019 419 8 2 1 1
+*volcano_019 419 8 0 1 3
 ;0 0 16
+;0 2 16
 >5 automap-green_vault
 *green_001 501 4 0 3 1
 ;-1 0 32

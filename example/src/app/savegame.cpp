@@ -111,7 +111,7 @@ savegame savegame_io::load(
 
 	if(result.is_malformed()) {
 
-		throw std::runtime_error("malformed save!");
+		throw std::runtime_error("could not load, malformed save!");
 	}
 
 	return result;
