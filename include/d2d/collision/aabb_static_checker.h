@@ -18,7 +18,9 @@ class aabb_static_checker {
 
 	public:
 
+	//!Second parameter indicates with early exit.
 	                        aabb_static_checker(const d2d::collision::spatiable&, bool=false);
+	//!Second parameter indicates with early exit.
 	                        aabb_static_checker(const d2d::collision::box&, bool=false);
 /**
  * clears the results
@@ -52,6 +54,8 @@ class aabb_static_checker {
  * runs through all given nodes checking collisions and adding their results.
  * Returns true if there was any collision with any of the nodes. Can opt
  * for an early exit if need be. Works on containers of pointers or not.
+ * Assumes nodes are spatiables or pointers to them. If the pointers are not
+ * spatiables but can behave as one, check the overload with the dereferencer.
  */
 	template<typename T>
 	aabb_static_checker&      detect_all(
@@ -110,6 +114,8 @@ class aabb_static_checker {
  * as long as the _skipper functor returns true. 
  * Returns true if there was any collision with any of the nodes. Can opt
  * for an early exit if need be. Works on containers of pointers or not.
+ * Assumes nodes are spatiables. If they are not but can behave as one,
+ * check the overload with the dereferencer.
  */
 	template<typename T, typename P>
 	aabb_static_checker&     detect_if(

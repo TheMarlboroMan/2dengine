@@ -621,7 +621,7 @@ void main::restart_level() {
 }
 
 void main::tic(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	app::player_input _pli
 ) {
 
@@ -808,6 +808,7 @@ void main::post_tic() {
 	//Or a projectile?
 	for(auto& projectile : current_map.projectiles) {
 
+		//TODO: Do we need this??
 		if(!projectile.is_moving()) {
 
 			continue;
@@ -946,7 +947,7 @@ void main::post_tic() {
 }
 
 void main::tic_world(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	current_map.particle_manager.tic(_delta);
@@ -1009,37 +1010,10 @@ void main::tic_world(
 		gate.tic(_delta);
 	}
 
-	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+
 	for(auto& projectile : current_map.projectiles) {
 
-		//Rising projectiles expire after they slow down enough...
-		if(app::projectile::types::vertical==projectile.get_type()
-			&& projectile.ent.get_motion_vector_y() <= 0.1) {
-
-			create_projectile_end_particles(projectile);
-			projectile.finish();
-		}
-
-		projectile.tic(_delta, mover);
-
-		//Outside map boundaries? dissapear at once.
-		if(!current_map.is_within_boundaries(projectile.ent)) {
-
-			projectile.finish();
-			continue;
-		}
-
-		//We won't correct the collisions, so we will check if the projectile
-		//is already moving.
-		if(projectile.is_moving() && adapter.has(
-			projectile.ent,
-			current_map.tile_finder,
-			app::filter_tiles_projectile{}
-		)) {
-
-			projectile.finish();
-			create_projectile_end_particles(projectile);
-		}
+		tic_projectile(projectile, _delta);
 	}
 
 	for(auto& pg : current_map.projectile_generators) {
@@ -1099,6 +1073,54 @@ void main::tic_world(
 	}
 }
 
+void main::tic_projectile(
+	app::projectile& _projectile,
+	tdelta _delta
+) {
+
+	d2d::motion::mover mover{};
+
+	//Rising projectiles expire after they slow down enough...
+	if(app::projectile::types::vertical==_projectile.get_type()
+		&& _projectile.ent.get_motion_vector_y() <= 0.1) {
+
+		create_projectile_end_particles(_projectile);
+		_projectile.finish();
+		return;
+	}
+
+	_projectile.tic(_delta, mover);
+
+	//Outside map boundaries? dissapear at once.
+	if(!current_map.is_within_boundaries(_projectile.ent)) {
+
+		_projectile.finish();
+		return;
+	}
+
+	//TODO: Do we need this?
+	if(!_projectile.is_moving()) {
+
+		return;
+	}
+
+	//We won't correct the collisions, just blow up.
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	const auto tiles_to_check=adapter.find(_projectile.ent, current_map.tile_finder);
+
+	d2d::collision::aabb_static_checker static_check(_projectile.ent, true);
+	static_check.detect_all(tiles_to_check)
+		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{});
+
+	if(static_check.has_collision()) {
+
+		_projectile.finish();
+		create_projectile_end_particles(_projectile);
+		return;
+	}
+}
+
 void main::generate_projectile(
 	const app::projectile_generator& _generator
 ) {
@@ -1148,7 +1170,7 @@ void main::generate_projectile(
 }
 
 void main::tic_ground(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1255,7 +1277,7 @@ void main::tic_ground(
 }
 
 void main::tic_ladder(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1288,10 +1310,7 @@ void main::tic_ladder(
 		}
 		else {
 
-			//_x_force is -1 or 1.
-			double velocity=(double)_pli.x*simulation.walk_max_velocity;
-			player.jump_out_of_ladder(velocity, simulation.jump_force);
-			play_sound(app::snd_jump);
+			player_jump_out_of_ladder(_player, _pli.x);
 		}
 	}
 
@@ -1321,7 +1340,7 @@ void main::tic_ladder(
 }
 
 void main::tic_air(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
 ) {
@@ -1411,7 +1430,7 @@ void main::tic_air(
 }
 
 void main::tic_defeat(
-	ldtools::tdelta _delta,
+	tdelta _delta,
 	app::player& _player,
 	app::player_input
 ) {
@@ -2033,7 +2052,7 @@ void main::clear_transient_state() {
 void main::player_motion(
 	app::player& _player,
 	d2d::motion::motion_vector _mv,
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	d2d::motion::mover mover{};
@@ -2043,7 +2062,7 @@ void main::player_motion(
 int main::player_collision(
 	app::player& _player,
 	d2d::motion::motion_vector _mv,
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	//We can easily make composite filters by chaining calls.
@@ -2270,10 +2289,33 @@ void main::player_jump(
 
 	_player.jump(simulation.jump_force);
 	play_sound(app::snd_jump);
+	toggle_blocks(_player);
+}
+
+void main::player_jump_out_of_ladder(
+	app::player& _player,
+	double _x
+) {
+
+	//_x_force is -1 or 1.
+	double velocity=_x*simulation.walk_max_velocity;
+	_player.jump_out_of_ladder(velocity, simulation.jump_force);
+	play_sound(app::snd_jump);
+	toggle_blocks(_player);
+}
+
+void main::toggle_blocks(
+	app::player& _player
+) {
 
 	for(auto& block : current_map.toggle_blocks) {
 
+		//TODO: Particles when they dissapear???
 		block.toggle();
+		if(block.is_active() && d2d::collision::collides_with(block.ent, _player.ent)) {
+
+			defeat(_player);
+		}
 	}
 }
 

@@ -37,6 +37,8 @@
 #include <memory>
 #include <ldtools/time_definitions.h>
 
+using ldtools::tdelta;
+
 namespace controller {
 
 class main:
@@ -66,16 +68,17 @@ class main:
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
 	void                        draw_scene(ldv::screen&);
 
-	void                        tic(ldtools::tdelta, app::player_input);
-	void                        tic_world(ldtools::tdelta);
+	void                        tic(tdelta, app::player_input);
+	void                        tic_world(tdelta);
+	void                        tic_projectile(app::projectile&, tdelta);
 	void                        clean_expired_entities();
-	void                        tic_ground(ldtools::tdelta, app::player&, app::player_input);
-	void                        tic_ladder(ldtools::tdelta, app::player&, app::player_input);
-	void                        tic_air(ldtools::tdelta, app::player&, app::player_input);
-	void                        tic_crouch(ldtools::tdelta, app::player&, app::player_input);
-	void                        tic_defeat(ldtools::tdelta, app::player&, app::player_input);
-	void                        player_motion(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
-	int                         player_collision(app::player&, d2d::motion::motion_vector, ldtools::tdelta);
+	void                        tic_ground(tdelta, app::player&, app::player_input);
+	void                        tic_ladder(tdelta, app::player&, app::player_input);
+	void                        tic_air(tdelta, app::player&, app::player_input);
+	void                        tic_crouch(tdelta, app::player&, app::player_input);
+	void                        tic_defeat(tdelta, app::player&, app::player_input);
+	void                        player_motion(app::player&, d2d::motion::motion_vector, tdelta);
+	int                         player_collision(app::player&, d2d::motion::motion_vector, tdelta);
 	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool);
 	bool                        is_in_legal_position(const d2d::collision::box&, bool);
 
@@ -115,6 +118,7 @@ class main:
 	void                        game_over();
 	void                        mount_player_in_blocks(app::player&);
 	void                        player_jump(app::player&);
+	void                        player_jump_out_of_ladder(app::player&, double);
 
 	//////
 	//world methods.
@@ -127,6 +131,7 @@ class main:
 	void                        setup_moving_blocks();
 	void                        write_moving_block(app::moving_block&, int);
 	void                        sync_facing_blocks();
+	void                        toggle_blocks(app::player&);
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
 	int                         get_discovered_map_count() const;
