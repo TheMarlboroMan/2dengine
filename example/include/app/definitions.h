@@ -159,7 +159,7 @@ enum sprites {
 	spr_platform_branch=155,
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
-	spr_block_arrow=512,
+	spr_block_arrow=255,
 
 	spr_boss_center=420,
 	spr_boss_side=421,
