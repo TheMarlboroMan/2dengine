@@ -61,6 +61,8 @@ class timed_trap {
 
 	static const int    fire_h{14};
 	static const int    spikes_h{8};
+	friend std::ostream& operator<<(std::ostream&, const timed_trap&);
+
 };
 
 std::ostream& operator<<(std::ostream&, const timed_trap&);

@@ -6,6 +6,8 @@
 
 namespace d2d { namespace components {
 
+using ldtools::tdelta;
+
 /**
  * Timeouts count from zero to a limit. When the limit is reached we say the
  * timeout "is expired". The counter increases by a delta time whenever
@@ -19,22 +21,25 @@ class timeout {
 /**
  * maximum, current and paused.
 */
-	                timeout(ldtools::tdelta, ldtools::tdelta=0., bool=false);
+	                timeout(tdelta, tdelta=0., bool=false);
 
 	bool            is_finished() const;
 	bool            is_running() const;
 	bool            is_paused() const;
-	ldtools::tdelta get() const;
-	ldtools::tdelta get_max() const;
-	timeout&        tic(ldtools::tdelta);
+	//Returns the current value.
+	tdelta get() const;
+	//Returns the max value.
+	tdelta get_max() const;
+	//Tics 
+	timeout&        tic(tdelta);
 /**
  * sets the new maximum value.
  */
-	timeout&        target(ldtools::tdelta);
+	timeout&        target(tdelta);
 /**
  * sets the current value.
  */
-	timeout&        set(ldtools::tdelta);
+	timeout&        set(tdelta);
 /**
  * resets the current value to zero, does not resume!
  */
@@ -51,7 +56,7 @@ class timeout {
 
 	private:
 
-	ldtools::tdelta   timer{0.},
+	tdelta   timer{0.},
 	        max{0.};
 	bool    paused{false};
 
@@ -67,17 +72,17 @@ class timeouts {
 /**
  * tics all timeouts.
  */
-	void            tic(ldtools::tdelta);
+	void            tic(tdelta);
 
 /**
  * tics one timeout
  */
-	void            tic(int, ldtools::tdelta);
+	void            tic(int, tdelta);
 
 /**
  * returns the given timeout value
  */
-	ldtools::tdelta get(int) const;
+	tdelta get(int) const;
 
 /**
  * returns the given timeout.
@@ -92,7 +97,7 @@ class timeouts {
 /**
  * returns the given timeout max
  */
-	ldtools::tdelta get_max(int) const;
+	tdelta get_max(int) const;
 
 /**
  * adds a new timeout to the list with an identifier and its max value. If
@@ -101,13 +106,13 @@ class timeouts {
  * paused.
  */
 
-	timeouts&       add(int, ldtools::tdelta, ldtools::tdelta=0., bool=false);
+	timeouts&       add(int, tdelta, tdelta=0., bool=false);
 
 
 /*
  * forces the timeout to be set at the given value and returns it.
  */ 
-	timeout&       set(int, ldtools::tdelta);
+	timeout&       set(int, tdelta);
 
 /**
  * resets the timeout identified by the identifier to its max value and
@@ -118,7 +123,7 @@ class timeouts {
 /**
  * changes the target for the given timeout and returns that timeout.
  */
-	timeout&       target(int, ldtools::tdelta);
+	timeout&       target(int, tdelta);
 
 /**
  * resets all timeouts.

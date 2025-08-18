@@ -3,8 +3,8 @@
 using namespace d2d::components;
 
 timeout::timeout(
-	ldtools::tdelta _max,
-	ldtools::tdelta _timer,
+	tdelta _max,
+	tdelta _timer,
 	bool _paused
 ):
 	timer{_timer},
@@ -13,7 +13,7 @@ timeout::timeout(
 {}
 
 timeout& timeout::tic(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	if(paused) {
@@ -32,7 +32,7 @@ timeout& timeout::tic(
 }
 
 timeout& timeout::target(
-	ldtools::tdelta _value
+	tdelta _value
 ) {
 
 	max=_value;
@@ -79,18 +79,18 @@ bool timeout::is_finished() const {
 	return timer == max;
 }
 
-ldtools::tdelta timeout::get() const {
+tdelta timeout::get() const {
 
 	return timer;
 }
 
-ldtools::tdelta timeout::get_max() const {
+tdelta timeout::get_max() const {
 
 	return max;
 }
 
 timeout& timeout::set(
-	ldtools::tdelta _val
+	tdelta _val
 ) {
 
 	timer=_val;
@@ -100,7 +100,7 @@ timeout& timeout::set(
 ////////////////////////////////
 
 void timeouts::tic(
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	for(auto& pair : data) {
@@ -111,7 +111,7 @@ void timeouts::tic(
 
 void timeouts::tic(
 	int _id,
-	ldtools::tdelta _delta
+	tdelta _delta
 ) {
 
 	data.at(_id).tic(_delta);
@@ -119,8 +119,8 @@ void timeouts::tic(
 
 timeouts& timeouts::add(
 	int _id,
-	ldtools::tdelta _max_value,
-	ldtools::tdelta _value,
+	tdelta _max_value,
+	tdelta _value,
 	bool _paused
 ) {
 
@@ -128,14 +128,14 @@ timeouts& timeouts::add(
 	return *this;
 }
 
-ldtools::tdelta timeouts::get(
+tdelta timeouts::get(
 	int _id
 ) const {
 
 	return data.at(_id).get();
 }
 
-ldtools::tdelta timeouts::get_max(
+tdelta timeouts::get_max(
 	int _id
 ) const {
 
@@ -158,7 +158,7 @@ bool timeouts::is_running(
 
 timeout& timeouts::set(
 	int _id,
-	ldtools::tdelta _value
+	tdelta _value
 ) {
 
 	return data.at(_id).set(_value);
@@ -173,7 +173,7 @@ timeout& timeouts::reset(
 
 timeout& timeouts::target(
 	int _id,
-	ldtools::tdelta _value
+	tdelta _value
 ) {
 
 	return data.at(_id).target(_value);
