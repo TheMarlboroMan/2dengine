@@ -7,6 +7,45 @@
 
 using namespace app;
 
+savegame::savegame(
+	const std::string& _map_filename,
+	const std::string& _persistence_string,
+	int _entry_id,
+	int _difficulty_setting,
+	int _elapsed_seconds,
+	int _discovered_rooms,
+	int _lives,
+	int _yellow_keys,
+	int _blue_keys,
+	int _red_keys,
+	int _green_keys,
+	int _treasure,
+	int _ultimate
+):
+	map_filename(_map_filename),
+	persistence_string{_persistence_string},
+	entry_id{_entry_id},
+	difficulty_setting{_difficulty_setting},
+	elapsed_seconds{_elapsed_seconds},
+	discovered_rooms{_discovered_rooms},
+	lives{_lives},
+	yellow_keys{_yellow_keys},
+	blue_keys{_blue_keys},
+	red_keys{_red_keys},
+	green_keys{_green_keys},
+	treasure{_treasure},
+	ultimate{_ultimate}
+{}
+
+savegame savegame::from_default() {
+
+	return savegame("", "", -1, -1, //name, persistence, entry, rooms,
+		-1, -1, -1,  //skill, seconds, lives
+		-1, -1, -1, -1, //keys
+		-1, -1); //treasure and ultimate.
+}
+
+
 savegame savegame_io::load_from_file(
 	const std::string& _filename
 ) {
@@ -35,7 +74,7 @@ savegame savegame_io::load(
 ) {
 
 	std::istringstream ss;
-	savegame result{};
+	savegame result=savegame::from_default();
 
 	while(true) {
 

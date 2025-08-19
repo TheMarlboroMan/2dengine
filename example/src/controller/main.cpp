@@ -892,6 +892,9 @@ void main::tic_world(
 	tdelta _delta
 ) {
 
+	//TODO: I guess I could move a lot of stuff to the map so that the map
+	//tics????
+
 	current_map.particle_manager.tic(_delta);
 
 	d2d::motion::mover mover{};
@@ -930,6 +933,11 @@ void main::tic_world(
 
 		sound_player.stop(trap_sound.channel_index);
 		trap_sound.channel_index=-1;
+	}
+
+	for(auto& button : current_map.buttons) {
+
+		button.tic(_delta);
 	}
 
 	for(auto& monster : current_map.linear_monsters) {
@@ -1556,17 +1564,19 @@ void main::activate_button(
 	app::button& _button
 ) {
 
-	_button.used=true;
+	_button.toggle();
 
 	//Buttons that can be "reused" when the level reloads are not added to
 	//any persistence group.
 	if(_button.keep_used_when_reset) {
 
-		persistence.add(app::pergr_buttons, _button.id, 1);
+		int persistence_value=_button.used ? 1 : 0;
+		persistence.has(app::pergr_buttons, _button.id)
+			? persistence.set(app::pergr_buttons, _button.id, persistence_value)
+			: persistence.add(app::pergr_buttons, _button.id, persistence_value);
 	}
 
-
-	//Consume the key...
+	//Consume the key if needed.
 	switch(_button.type) {
 
 		case app::button::types::regular: break;
@@ -1748,7 +1758,7 @@ bool main::can_activate_button(
 
 		if(d2d::collision::collides_with(_player.ent, button.ent)) {
 
-			if(button.used) {
+			if(!button.can_be_activated()) {
 
 				continue;
 			}
@@ -1920,13 +1930,15 @@ void main::save_game(
 		persistence.save_to_string(),
 		_entry_id,
 		game_session.skill_level,
+		game_session.get_discovered_map_count(),
 		game_session.elapsed_seconds+(int)game_session.game_clock.get_seconds(),
 		game_session.lives,
 		inventory.yellow_keys,
 		inventory.blue_keys,
 		inventory.red_keys,
 		inventory.green_keys,
-		inventory.ultimate
+		inventory.ultimate,
+		inventory.treasure
 	};
 
 	app::savegame_io sio{};

@@ -199,6 +199,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name repeatable
+		type int 
+		default 0
+		comment 1=can be activated repeatedly
+		linkedto nothing
+	endproperty
+	beginproperty
 		name type
 		type int
 		default 1

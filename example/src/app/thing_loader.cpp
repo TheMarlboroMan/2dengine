@@ -322,8 +322,9 @@ void thing_loader::add_button(
 ) {
 
 	int id=_attributes.at("id").get_int();
-	bool used=persistence.has(pergr_buttons, id);
+	bool used=persistence.has(pergr_buttons, id) && persistence.get(pergr_buttons, id)==1;
 	bool keep_used=_attributes.at("keep_used_reset").get_int()==1;
+	bool repeatable=_attributes.at("repeatable").get_int()==1;
 	int tag=_attributes.at("tag").get_int();
 
 	button::types type=button::types::regular;
@@ -337,7 +338,7 @@ void thing_loader::add_button(
 	}
 
 	curmap.buttons.push_back(
-		{ _pos, type, id, tag, used, keep_used}
+		{ _pos, type, id, tag, used, keep_used, repeatable}
 	);
 }
 
