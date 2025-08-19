@@ -331,8 +331,8 @@
 ;0 0 1
 *fortress_021 621 6 9 1 1
 ;0 0 2
-*fortress_022 622 3 7 1 1
-;0 0 16
+*fortress_022 622 2 8 2 1
+;1 0 16
 *fortress_023 623 5 2 2 1
 ;1 0 16
 >7 automap-red_vault
