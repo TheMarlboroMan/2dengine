@@ -4,11 +4,9 @@ next steps:
 
 	make the first example game
 
-		- graphic for the repeatable button!
+		- do a test run and SAVE IT...
 
-		- design the 2 challenge rooms (doors) per level with extra treasure.
-
-		- particles for facing and toggle blocks!!!
+		- particles for facing and toggle blocks going away / coming in ??
 
 		- design the last furnace level xD.
 
@@ -16,7 +14,6 @@ next steps:
 		command.
 
 		- remove the test controller, I guess
-
 
 		what's wrong with the torch animation??
 

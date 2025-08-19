@@ -15,6 +15,19 @@ class sprite_fill_draw {
 
 	public:
 
+	struct modifiers {
+
+		//These are the "flags".
+		enum {
+			flip_horizontal=1,
+			flip_vertical=2
+		};
+
+		int     flags{0};
+		int     rotation_degrees{0};
+		int     alpha{255};
+	};
+
 
 	                                sprite_fill_draw(const ldtools::sprite_table&, const ldv::texture&, ldv::camera* =nullptr, bool=false);
 
@@ -22,11 +35,20 @@ class sprite_fill_draw {
  * in this screen, fill the rectangle with the given frame.
  */
 	void                            fill(ldv::screen&, ldv::rect, const ldtools::sprite_frame&);
+/**
+ * in this screen, fill the rectangle with the given frame and modifiers
+ */
+	void                            fill(ldv::screen&, ldv::rect, const ldtools::sprite_frame&, modifiers);
 
 /**
  * in this screen, fill the rectangle with the frame identified by the given integer.
  */
 	void                            fill(ldv::screen&, ldv::rect, int);
+/**
+ * in this screen, fill the rectangle with the frame identified by the given integer and modifiers.
+ */
+	void                            fill(ldv::screen&, ldv::rect, int, modifiers);
+
 
 /**
  * sets if a camera will be used.

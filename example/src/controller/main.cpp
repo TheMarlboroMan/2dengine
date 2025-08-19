@@ -1056,7 +1056,12 @@ void main::tic_projectile(
 
 	//We won't correct the collisions, just blow up.
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
-	const auto tiles_to_check=adapter.find(_projectile.ent, current_map.tile_finder);
+
+	const auto tiles_to_check=adapter.find(
+		_projectile.ent, 
+		current_map.tile_finder,
+		app::filter_tiles_projectile{}
+	);
 
 	d2d::collision::aabb_static_checker static_check(_projectile.ent, true);
 	static_check.detect_all(tiles_to_check)

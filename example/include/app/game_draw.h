@@ -110,6 +110,8 @@ class game_draw:
 	void                        draw_timed_trap(ldv::screen&, const app::timed_trap&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
+	void                        draw_one_use_button(ldv::screen&, const app::button&);
+	void                        draw_repeatable_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
 	void                        draw_projectile(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);

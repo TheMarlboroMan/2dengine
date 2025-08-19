@@ -17,7 +17,7 @@ void particle_module_bonus::add(
 	double lifetime=rand.get(30, 90);
 	_particle.max_lifetime=lifetime/100.;
 
-	double vy=rand.get(40, 80);
+	double vy=rand.get(30, 60);
 	double x=rand.get(0, 10)-5;
 
 	_origin.x+=x;

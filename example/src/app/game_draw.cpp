@@ -294,6 +294,35 @@ void game_draw::draw_button(
 	const app::button& _button
 ) {
 
+	return _button.repeatable
+		? draw_repeatable_button(_screen, _button)
+		: draw_one_use_button(_screen, _button);
+}
+
+void game_draw::draw_repeatable_button(
+	ldv::screen& _screen,
+	const app::button& _button
+) {
+
+	int sprite_index=_button.used
+		? app::spr_repeat_button_used
+		: app::spr_repeat_button;
+
+	auto origin=d2d::video::to_screen(_button.ent.get_origin());
+
+	sprite_draw.draw(
+		_screen,
+		origin,
+		sprite_index
+	);
+
+}
+
+void game_draw::draw_one_use_button(
+	ldv::screen& _screen,
+	const app::button& _button
+) {
+
 	int sprite_index=app::spr_key_yellow;
 	switch(_button.type) {
 
@@ -771,16 +800,25 @@ void game_draw::draw_facing_block(
 	const app::facing_block& _block
 ) {
 
+/**
 	if(!_block.is_active()) {
 
 		return;
 	}
+*/
+	int alpha=_block.is_active()
+		? 255
+		: 64;
 
 	auto box=d2d::video::to_screen(_block.ent.get_box());
+	d2d::video::sprite_fill_draw::modifiers mod{0};
+	mod.alpha=alpha;
+
 	switch(_block.get_type()) {
 
 		case 0:
-			sprite_fill_draw.fill(_screen, box, 1);
+			//TODO: ... no magic pls
+			sprite_fill_draw.fill(_screen, box, 1, mod);
 		break;
 
 	}
@@ -792,7 +830,9 @@ void game_draw::draw_facing_block(
 		flags=modifiers::flip_horizontal;
 	}
 
-	d2d::video::sprite_draw::modifiers mod{flags};
+	d2d::video::sprite_draw::modifiers arrow_mod{};
+	arrow_mod.flags=flags;
+	arrow_mod.alpha=alpha;
 
 	//There is an arrow centered on the block...
 	auto arrow_pos=d2d::video::to_screen(
@@ -805,7 +845,7 @@ void game_draw::draw_facing_block(
 		_screen,
 		arrow_pos,
 		app::spr_block_arrow,
-		mod
+		arrow_mod
 	);
 }
 
@@ -814,10 +854,18 @@ void game_draw::draw_toggle_block(
 	const app::toggle_block& _block
 ) {
 
+/**
 	if(!_block.is_active()) {
 
 		return;
 	}
+*/
+	int alpha=_block.is_active()
+		? 255
+		: 64;
+
+	d2d::video::sprite_fill_draw::modifiers mod{0};
+	mod.alpha=alpha;
 
 	switch(_block.get_type()) {
 
@@ -825,7 +873,8 @@ void game_draw::draw_toggle_block(
 			sprite_fill_draw.fill(
 				_screen, 
 				d2d::video::to_screen(_block.ent.get_box()),
-				1
+				1, //TODO: ... no magic pls
+				mod
 			);
 			return;
 	}
