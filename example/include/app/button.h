@@ -20,13 +20,16 @@ class button {
 		green_keyhole
 	};
 
-	                                button(d2d::collision::point, types, int, int, bool);
+	                                button(d2d::collision::point, types, int, int, bool, bool);
+	void                            reset();
 
 	entity                          ent;
 	types                           type;
 	int                             id;
 	int                             tag;
-	bool                            used;
+	bool                            used,
+	//Stay "used" when the level resets or is re-entered. For persistent buttons.
+	                                keep_used_when_reset;
 };
 
 std::ostream& operator<<(std::ostream&, const button&);

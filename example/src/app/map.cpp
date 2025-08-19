@@ -52,6 +52,62 @@ std::ostream& app::operator<<(
 	return _stream;
 }
 
+void map::reset() {
+
+	projectiles.clear();
+	particle_manager.clear();
+
+	for(auto& monster: linear_monsters) {
+
+		monster.reset();
+	}
+
+	for(auto& trap : timed_traps) {
+
+		trap.reset();
+	}
+
+	for(auto& generator : projectile_generators) {
+
+		generator.reset();
+	}
+
+	for(auto& platform : breaking_platforms) {
+
+		platform.reset();
+	}
+
+	for(auto& button : buttons) {
+
+		button.reset();
+	}
+
+	for(auto& trigger : touch_triggers) {
+
+		trigger.reset();
+	}
+
+	for(auto& block : moving_blocks) {
+
+		block.reset();
+	}
+
+	for(auto& block : toggle_blocks) {
+
+		block.reset();
+	}
+
+	if(boss) {
+
+		if(!boss->is_defeated()) {
+
+			boss->reset();
+			skulls.clear();
+		}
+	}
+}
+
+
 void map::clear() {
 
 	collision_tiles.clear();

@@ -557,53 +557,7 @@ void main::restart_level() {
 
 	ctracker.reset();
 	clear_transient_state();
-	current_map.projectiles.clear();
-	current_map.particle_manager.clear();
-
-	for(auto& monster: current_map.linear_monsters) {
-
-		monster.reset();
-	}
-
-	for(auto& trap : current_map.timed_traps) {
-
-		trap.reset();
-	}
-
-	for(auto& generator : current_map.projectile_generators) {
-
-		generator.reset();
-	}
-
-	for(auto& platform : current_map.breaking_platforms) {
-
-		platform.reset();
-	}
-
-	for(auto& trigger : current_map.touch_triggers) {
-
-		trigger.reset();
-	}
-
-	for(auto& block : current_map.moving_blocks) {
-
-		block.reset();
-	}
-
-	for(auto& block : current_map.toggle_blocks) {
-
-		block.reset();
-	}
-
-	if(current_map.boss) {
-
-		//TODO: Think.
-		if(!current_map.boss->is_defeated()) {
-
-			current_map.boss->reset();
-			current_map.skulls.clear();
-		}
-	}
+	current_map.reset();
 
 	take_player_to_entry(player, last_entry_id, nullptr);
 }
@@ -1602,8 +1556,15 @@ void main::activate_button(
 	app::button& _button
 ) {
 
-	persistence.add(app::pergr_buttons, _button.id, 1);
 	_button.used=true;
+
+	//Buttons that can be "reused" when the level reloads are not added to
+	//any persistence group.
+	if(_button.keep_used_when_reset) {
+
+		persistence.add(app::pergr_buttons, _button.id, 1);
+	}
+
 
 	//Consume the key...
 	switch(_button.type) {
@@ -1878,6 +1839,7 @@ void main::activate_tag(
 	bool _previously_activated
 ) {
 
+	//Gates can ONLY open and remain open until the end of the game.
 	for(auto& gate : current_map.gates) {
 
 		if(gate.tag==_tag) {
@@ -1911,6 +1873,7 @@ void main::activate_tag(
 			}
 		}
 	}
+
 
 	for(auto& generator : current_map.projectile_generators) {
 

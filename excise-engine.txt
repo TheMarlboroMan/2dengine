@@ -4,6 +4,8 @@ next steps:
 
 		- design the 2 challenge rooms (doors) per level with extra treasure.
 
+		- particles for facing and toggle blocks!!!
+
 		- design the last furnace level xD.
 
 		... Check all levels that begin with a ladder!. Use the "defeat"

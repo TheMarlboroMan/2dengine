@@ -192,6 +192,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name keep_used_reset
+		type int 
+		default 1
+		comment 1=keeps used status between level resets
+		linkedto nothing
+	endproperty
+	beginproperty
 		name type
 		type int
 		default 1

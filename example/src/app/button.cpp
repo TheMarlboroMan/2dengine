@@ -8,14 +8,24 @@ button::button(
 	types _type,
 	int _id,
 	int _tag,
-	bool _used
+	bool _used,
+	bool _keep_used
 ):
 	ent{_pt, app::tile_w, app::tile_h},
 	type{_type},
 	id{_id},
 	tag{_tag},
-	used{_used}
+	used{_used},
+	keep_used_when_reset{_keep_used}
 {}
+
+void button::reset() {
+
+	if(!keep_used_when_reset) {
+
+		used=false;
+	}
+}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream,

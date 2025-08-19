@@ -41,6 +41,7 @@ class map {
 	public:
 
 	                                        map();
+	void                                    reset();
 	void                                    clear();
 
 	//100% public, no need to hide any of these.
