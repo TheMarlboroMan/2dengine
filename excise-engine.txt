@@ -5,6 +5,7 @@ next steps:
 	make the first example game
 
 		- do a test run and SAVE IT...
+			- and review it xD... It has worked so far anyway.
 
 		- particles for facing and toggle blocks going away / coming in ??
 

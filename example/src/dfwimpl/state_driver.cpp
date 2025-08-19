@@ -10,6 +10,7 @@
 #include <tools/i8n.h>
 #include <algorithm>
 #include <filesystem>
+#include <stdexcept>
 
 #include "controller/main.h"
 #include "controller/menu.h"
@@ -302,9 +303,19 @@ void state_driver::start_app(
 
 	if(_argman.exists("--map")) {
 
+		if(!_argman.arg_follows("--map")) {
+
+			throw std::runtime_error("an argument must follow --map");
+		}
+
 		auto& gs=service_provider->get_game_session();
 
 		if(_argman.exists("--skill")) {
+
+			if(!_argman.arg_follows("--skill")) {
+
+				throw std::runtime_error("an argument must follow --skill (1, 2, 3)");
+			}
 
 			int skill=std::stoi(_argman.get_following("--skill"));
 
@@ -340,6 +351,11 @@ void state_driver::start_app(
 
 		if(_argman.exists("--eid")) {
 
+			if(!_argman.arg_follows("--eid")) {
+
+				throw std::runtime_error("an argument must follow --eid with the entry id");
+			}
+
 			entry_id=std::stoi(_argman.get_following("--eid"));
 		}
 
@@ -349,8 +365,20 @@ void state_driver::start_app(
 
 	if(_argman.exists("--record")) {
 
+		if(!_argman.arg_follows("--record")) {
+
+			throw std::runtime_error("--record must be followed by filename");
+		}
+
+		auto recorded_filename=_argman.get_following("--record");
+		if(std::filesystem::exists(recorded_filename)) {
+
+			throw std::runtime_error("file for --record already exists, refusing to overwrite");
+		}
+
+
 		dfw::input_recorder_file_8bit * ir=new dfw::input_recorder_file_8bit{_in, input_converter};
-		ir->open_file("recorded-play");
+		ir->open_file(recorded_filename);
 		ir->set_active(true);
 		ir->set_inputs({
 			app::input::escape,
@@ -370,9 +398,20 @@ void state_driver::start_app(
 	}
 	else if(_argman.exists("--replay")) {
 
+		if(!_argman.arg_follows("--replay")) {
+
+			throw std::runtime_error("--replay must be followed by filename");
+		}
+
+		auto recorded_filename=_argman.get_following("--replay");
+		if(!std::filesystem::exists(recorded_filename)) {
+
+			throw std::runtime_error("file for --replay not found");
+		}
+
 		dfw::input_generator_file_8bit * ig=new dfw::input_generator_file_8bit{input_converter};
 		ig->set_active(true);
-		ig->open_file("recorded-play"); 
+		ig->open_file(recorded_filename);
 
 		input_generator.reset(ig);
 		_in.set_generator(input_generator.get());
