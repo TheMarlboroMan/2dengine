@@ -30,7 +30,8 @@ pause::pause(
 	wall_complete{ldv::rgba8(255, 255, 255, 255)},
 	wall_incomplete{ldv::rgba8(157, 157, 157, 255)},
 	regular_fill{ldv::rgba8(164, 100, 34, 255)},
-	current_fill{ldv::rgba8(190, 38, 51, 255)}
+	current_fill{ldv::rgba8(190, 38, 51, 255)},
+	timeout{0.5, 0., false}
 {
 
 	view.map_font(
@@ -49,8 +50,7 @@ void pause::awake(
 	dfw::input& /*input*/
 ) {
 
-	timeout_passed=false;
-	time_elapsed=0.0f;
+	timeout.restart();
 
 	//Hide or show stuff according to game mode.
 	view.set_visible("lives_icon", game_session.is_with_lives());
@@ -92,6 +92,7 @@ void pause::awake(
 		view.set_text("time_value", ss.str());
 	}
 
+	//TODO: Actually, we should do this "in game" right??
 	//Update the automap so that we can go back and forth between discovered
 	//areas...
 	for(auto i=automap_interface.get_min_area_id(); i<=automap_interface.get_max_area_id(); i++) {
@@ -115,9 +116,13 @@ void pause::awake(
 	
 	//Finally set the map.
 	lm::log(logger).debug()<<"attempting to locate area for "<<game_session.current_map_id<<"\n";
+
 	auto area_id=automap.find_area_by_map_id(game_session.current_map_id).id;
 	automap_interface.set(area_id);
-	ready_map();
+
+	//Disallow map changing when in "nowhere" zones.
+	can_change_area=automap_interface.get().must_draw_map;
+	ready_view();
 }
 
 void pause::slumber(
@@ -126,15 +131,17 @@ void pause::slumber(
 
 }
 
+bool pause::can_leave_state() const {
+
+	return timeout.is_finished();
+}
+
 void pause::loop(
 	dfw::input& _input,
 	const dfw::loop_iteration_data& _lid
 ) {
 
-	if(!timeout_passed) {
-
-		evaluate_timeout(_lid.delta);
-	}
+	timeout.tic(_lid.delta);
 
 	if(_input().is_exit_signal()) {
 		set_leave(true);
@@ -152,29 +159,26 @@ void pause::loop(
 
 #ifdef IS_DEBUG_BUILD
 
-	//if(_input.is_input_down(app::input::jump)) {
-	if(false) {
-
-		
+	if(_input.is_input_down(app::input::tic)) {
 
 		lm::log(logger).debug()<<"toggling 'display_all_maps'\n";
 		display_all_maps=!display_all_maps;
 		automap_interface.debug_all_discovered=display_all_maps;
-		ready_map();
+		ready_view();
 	}
 #endif
 
-	if(_input.is_input_down(app::input::left)) {
+	if(can_change_area && _input.is_input_down(app::input::left)) {
 
 		automap_interface.previous();
-		ready_map();
+		ready_view();
 		return;
 	}
 
-	if(_input.is_input_down(app::input::right)) {
+	if(can_change_area && _input.is_input_down(app::input::right)) {
 
 		automap_interface.next();
-		ready_map();
+		ready_view();
 		return;
 	}
 }
@@ -188,7 +192,7 @@ void pause::draw(
 	map_representation.draw(_screen);
 }
 
-void pause::ready_map() {
+void pause::ready_view() {
 
 	const auto& area=automap_interface.get();
 
@@ -216,14 +220,23 @@ void pause::ready_map() {
 	}
 
 	map_representation.clear();
+	if(area.must_draw_map) {
 
-	bool area_complete=cells.size() == area.cells.size();
-	for(const auto& cell : cells) {
+		ready_map_view(cells);
+	}
 
-		if(!ready_room(*cell)) {
+	ready_map_name(cells);
 
-			area_complete=false;
-		}
+}
+
+void pause::ready_map_view(
+	const std::vector<const app::map_cell*>& _cells
+) {
+
+
+	for(const auto& cell : _cells) {
+
+		ready_room(*cell);
 	}
 
 	//only distant parts of the map (from 0.0) may be available, so in 
@@ -251,24 +264,9 @@ void pause::ready_map() {
 	lm::log(logger).debug()<<"map view position after centering: "<<map_representation.get_view_position()<<std::endl;
 
 #endif
-
-	auto area_color=area_complete
-		? ldv::rgba8(247, 226, 107, 255)
-		: ldv::rgba8(255, 255, 255, 255);
-
-	view.set_text("area_name", localization.get(area.localization_key));
-	view.set_text_color("area_name", area_color);
-	auto area_name=view.get_by_id("area_name");
-	area_name->align(
-		*center_box,
-		{
-			ldv::representation_alignment::h::center,
-			ldv::representation_alignment::v::inner_top
-		}
-	);
 }
 
-bool pause::ready_room(
+void pause::ready_room(
 	const app::map_cell& _cell
 ) {
 
@@ -278,9 +276,6 @@ bool pause::ready_room(
 	    y=_cell.y*hu;
 	unsigned w=_cell.w*wu,
 		h=_cell.h*hu;
-
-	bool room_complete=persistence.has(app::pergr_automap, _cell.id)
-		&& persistence.get(app::pergr_automap, _cell.id)==app::am_complete;
 
 	auto wall_color=!persistence.has(app::pergr_automap, _cell.id)
 			? wall_incomplete
@@ -303,6 +298,7 @@ bool pause::ready_room(
 	y+=wallw;
 	w-=2*wallw;
 	h-=2*wallw;
+
 	map_representation.insert(
 		new ldv::box_representation({x, y, w, h}, fill_color)
 	); 
@@ -371,25 +367,35 @@ bool pause::ready_room(
 			}
 		}
 	}
-
-	return room_complete;
 }
 
-void pause::evaluate_timeout(
-	ldtools::tdelta _delta
+void pause::ready_map_name(
+	const std::vector<const app::map_cell*>& _cells
 ) {
 
-	//Can only leave this controller after a X time has passed, to prevent
-	//crazy controller shifting.
-	time_elapsed+=_delta;
-	timeout_passed=time_elapsed >= 0.5f;
+	const auto& area=automap_interface.get();
+	bool area_complete=_cells.size() == area.cells.size();
+	for(const auto& cell : _cells) {
 
-#ifdef IS_DEBUG_BUILD
-
-	if(timeout_passed) {
-
-		lm::log(logger).debug()<<"timeout passed, can leave controller now\n";
+		bool room_complete=persistence.has(app::pergr_automap, cell->id)
+			&& persistence.get(app::pergr_automap, cell->id)==app::am_complete;
+		area_complete&=room_complete;
 	}
 
-#endif
+	auto area_color=area_complete
+		? ldv::rgba8(247, 226, 107, 255)
+		: ldv::rgba8(255, 255, 255, 255);
+
+	view.set_text("area_name", localization.get(area.localization_key));
+	view.set_text_color("area_name", area_color);
+	auto area_name=view.get_by_id("area_name");
+
+	auto center_box=view.get_by_id("automap_center_box");
+	area_name->align(
+		*center_box,
+		{
+			ldv::representation_alignment::h::center,
+			ldv::representation_alignment::v::inner_top
+		}
+	);
 }

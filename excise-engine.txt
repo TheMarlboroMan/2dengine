@@ -9,6 +9,15 @@ next steps:
 
 		- particles for facing and toggle blocks going away / coming in ??
 
+		- the keys are "characters".
+			- the key teleports you to a straight N room challenge.
+				- we should have some animation, right? the key moves away
+				- from the player, out of the screen, the world fades to black.
+				- the key is in a piece that looks exactly like the one in the
+				  real world.
+				- when picking it up again, we need a transition too!
+			- the key is at the end of the challenge.
+
 		- design the last furnace level xD.
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
@@ -41,7 +50,14 @@ next steps:
 			- does the game over screen FUCK UP your save file??? Oh yeah, 
 			it should xD
 
-============================0
+============================
+
+story: 
+
+- each character tells contradicting accounts.
+- the book itself behaves as a character!
+
+============================
 
 	engine:
 		I guess slopes -> but this shit will wait xD!

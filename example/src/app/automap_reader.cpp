@@ -92,14 +92,15 @@ void automap_reader::parse_area(
 
 	int id{0};
 	std::string localization_key{};
+	bool must_draw_map;
 
-	infile>>id>>localization_key;
+	infile>>id>>localization_key>>must_draw_map;
 	if(infile.fail()) {
 
 		throw std::runtime_error("bad area definition");
 	}
 
-	_map.areas.push_back({id, localization_key, {}});
+	_map.areas.push_back({id, localization_key, must_draw_map, {}});
 }
 
 void automap_reader::parse_cell(

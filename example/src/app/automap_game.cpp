@@ -19,7 +19,7 @@ automap_game::automap_game(
 	for(const auto& area : map.areas) {
 
 		//Start at index zero, go up.
-		area_index.insert({area.id, {area_index.size(), false}});
+		area_index.insert({area.id, {area_index.size(), false, area.must_draw_map}});
 		max_area_id=std::max(area.id, max_area_id);
 		min_area_id=std::min(area.id, min_area_id);
 	}
@@ -76,7 +76,8 @@ void automap_game::next() {
 			continue;
 		}
 
-		if(area_index.at(current_area_id).discovered) {
+		const auto& info=area_index.at(current_area_id);
+		if(info.discovered && info.selectable) {
 
 			return;
 		}
@@ -110,7 +111,8 @@ void automap_game::previous() {
 			continue;
 		}
 
-		if(area_index.at(current_area_id).discovered) {
+		const auto& info=area_index.at(current_area_id);
+		if(info.discovered && info.selectable) {
 
 			return;
 		}

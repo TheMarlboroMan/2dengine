@@ -134,7 +134,7 @@ class main:
 	void                        toggle_blocks(app::player&);
 	bool                        is_map_complete(const std::string="") const;
 	void                        mark_map_as_complete();
-	void                        discover_map(int);
+	void                        discover_map(int, bool);
 
 	//TODO: Move me to another entity... with all the properties too...
 	void                        create_projectile_end_particles(const app::projectile&);

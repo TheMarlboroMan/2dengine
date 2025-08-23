@@ -76,7 +76,8 @@ class automap_game {
 
 	struct area_info {
 		std::size_t index;
-		bool discovered{false};
+		bool discovered{false},
+		selectable{false};
 	};
 
 	const automap&  map;

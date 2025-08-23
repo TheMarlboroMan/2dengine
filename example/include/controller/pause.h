@@ -15,6 +15,7 @@
 #include <tools/i8n.h>
 #include <ldv/group_representation.h>
 #include <ldv/color.h>
+#include <d2d/components/timeout.h>
 
 namespace controller {
 
@@ -29,13 +30,14 @@ class pause:
 	virtual void                draw(ldv::screen&, int);
 	virtual void                awake(dfw::input& /*input*/);
 	virtual void                slumber(dfw::input& /*input*/);
-	virtual bool                can_leave_state() const {return timeout_passed;}
+	virtual bool                can_leave_state() const;
 
 	private:
 
-	void                        ready_map();
-	bool                        ready_room(const app::map_cell&);
-	void                        evaluate_timeout(ldtools::tdelta);
+	void                        ready_view();
+	void                        ready_map_view(const std::vector<const app::map_cell*>&);
+	void                        ready_map_name(const std::vector<const app::map_cell*>&);
+	void                        ready_room(const app::map_cell&);
 
 	const appenv::env&          env;
 	lm::logger&                 logger;
@@ -54,9 +56,9 @@ class pause:
 	                            regular_fill,
 	                            current_fill;
 
-	bool                        timeout_passed{false};
-	ldtools::tdelta             time_elapsed{0.0};
+	d2d::components::timeout     timeout;
 
+	bool                        can_change_area{true};
 #ifdef IS_DEBUG_BUILD
 	bool                        display_all_maps{false};
 #endif 

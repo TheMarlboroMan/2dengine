@@ -371,7 +371,7 @@ void main::load_map(
 	//Ok, discover this map...
 	if(!persistence.has(app::pergr_automap, automap_id)) {
 
-		discover_map(automap_id);
+		discover_map(automap_id, area.must_draw_map);
 	}
 
 	//More stuff... if there's a boss, inject this controller so we can interact
@@ -2353,7 +2353,8 @@ void main::mark_map_as_complete() {
 }
 
 void main::discover_map(
-	int _automap_id
+	int _automap_id,
+	bool _add_to_tally
 ) {
 
 	lm::log(logger).debug()<<"will add id "<<_automap_id<<" to automap..."<<std::endl;
@@ -2365,7 +2366,12 @@ void main::discover_map(
 
 	lm::log(logger).debug()<<"total discovered: "<<game_session.get_discovered_map_count()<<std::endl;
 
-	++game_session.discovered_rooms;
+	//If the area is not "nowhere" we can discover this new room. Nowhere
+	//maps don't count for this tally.
+	if(_add_to_tally) {
+
+		++game_session.discovered_rooms;
+	}
 
 	if(is_map_complete()) {
 

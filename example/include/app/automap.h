@@ -37,6 +37,7 @@ struct map_area {
 
 	int id;
 	std::string localization_key;
+	bool must_draw_map;
 	std::vector<map_cell> cells;
 	bool has_map(int) const;
 };
