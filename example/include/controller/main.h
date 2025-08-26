@@ -17,6 +17,7 @@
 #include "app/inventory.h"
 #include "app/game_session.h"
 #include "app/game_draw.h"
+#include "app/map_transition.h"
 #include "app/boss_map_interface.h"
 #include "app/particle_module_flame.h"
 #include "app/particle_module_projectile_splash.h"
@@ -87,8 +88,9 @@ class main:
 /**
  * unloads map, loads new map, takes player to it.
  */
-	void                        exit_to(app::player&, app::exit);
-	void                        take_player_to_entry(app::player&, int, const app::exit* =nullptr);
+	void                        attempt_exit(const app::exit&);
+	void                        exit_to(const app::exit&);
+	void                        take_player_to_entry(int, const app::exit* =nullptr);
 	void                        restart_level();
 	app::entry                  find_entry_by_id(int) const;
 
@@ -172,6 +174,8 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
+	std::unique_ptr<app::map_transition> transition{nullptr};
+
 
 	struct {
 		int                     active_count{0},

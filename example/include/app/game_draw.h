@@ -2,6 +2,7 @@
 
 #include "app/env.h"
 #include "app/random.h"
+#include "app/map_transition.h"
 #include <d2d/components/particle.h>
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
@@ -68,7 +69,7 @@ class game_draw:
 	);
 	                            ~game_draw();
 
-	void                        draw(ldv::screen&, const app::map&, const app::player&, int discovered_rooms);
+	void                        draw(ldv::screen&, const app::map&, const app::player&, int discovered_rooms, const app::map_transition*);
 	void                        draw_area_name_banner(ldv::screen&);
 	void                        draw_lives_banner(ldv::screen&);
 

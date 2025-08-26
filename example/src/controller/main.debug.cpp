@@ -63,7 +63,7 @@ console::result main::execute_cmd(
 	if(_cmd=="gotoentry") {
 
 		int id=_args[0].get_int();
-		take_player_to_entry(player, id, nullptr);
+		take_player_to_entry(id, nullptr);
 		return {0, "ok"};
 	}
 
@@ -106,7 +106,7 @@ console::result main::execute_cmd(
 	if(_cmd=="map") {
 
 		load_map(_args[0].get_string());
-		take_player_to_entry(player, _args[1].get_int(), nullptr);
+		take_player_to_entry(_args[1].get_int(), nullptr);
 		return {1, "map loaded"};
 	}
 

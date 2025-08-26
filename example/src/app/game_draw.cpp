@@ -183,7 +183,8 @@ void game_draw::draw(
 	ldv::screen& _screen,
 	const app::map& _map,
 	const app::player& _player,
-	int _discovered_rooms
+	int _discovered_rooms,
+	const map_transition * _transition
 ) {
 
 	_screen.clear(_map.background_color);
@@ -286,6 +287,11 @@ void game_draw::draw(
 		}
 
 		draw_secret_cover(_screen, secret_cover);
+	}
+
+	if(nullptr!=_transition) {
+
+		_transition->draw(_screen);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "app/savegame.h"
 #include "app/automap_game.h" //to obtain area names...
 #include "app/projectile_creator.h"
+#include "app/map_transition_fade.h"
 
 #include "dfwimpl/config.h"
 
@@ -130,7 +131,7 @@ void main::start(
 ) {
 
 	load_map(_map);
-	take_player_to_entry(player, _entry_id, nullptr);
+	take_player_to_entry(_entry_id, nullptr);
 }
 
 void main::new_game(
@@ -163,6 +164,20 @@ void main::loop(
 	dfw::input& _input,
 	const dfw::loop_iteration_data& _lid
 ) {
+
+	//If a map transition is taking place tic that instead of our regular 
+	//stuff.
+	if(transition) {
+
+		transition->tic(_lid.delta);
+		if(!transition->is_finished()) {
+
+			return;
+		}
+
+		exit_to(transition->get_original_exit());
+		transition.reset(nullptr);
+	}
 
 #ifdef IS_DEBUG_BUILD
 	loop_debug(_input, _lid);
@@ -376,16 +391,14 @@ void main::load_map(
 
 	//More stuff... if there's a boss, inject this controller so we can interact
 	//with the world.
-	//TODO: Ok, ok...
 	if(current_map.boss && !current_map.boss->is_defeated()) {
 
 		current_map.boss->set_boss_map_interface(*this);
 	}
 }
 
-void main::exit_to(
-	app::player& _player,
-	app::exit _exit
+void main::attempt_exit(
+	const app::exit& _exit
 ) {
 
 	if(0!=_exit.min_rooms) {
@@ -399,31 +412,40 @@ void main::exit_to(
 		}
 	}
 
-	//first off, is the current map complete?
+	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
+
+	//TODO: ASSIGN THE TRANSITION! When the exit says so???
+	//transition.reset(new app::map_transition_fade(_exit));
+
+	exit_to(_exit);
+}
+
+void main::exit_to(
+	const app::exit& _exit
+) {
+
+	//TODO: What is this doing???
+	//TODO: The current map??? no.. this is the new map...
+	//first off, is the current map complete? 
 	if(is_map_complete(_exit.map_filename)) {
 
 		mark_map_as_complete();
 	}
 
-/**
- * there is a reason why arguments are copied: the exit belongs to the map
- * which will get unloaded soon and would cause the original reference or
- * pointer to be lost. It has already happened to me so please, do not attempt
- * to "fix" it.
- */
-
 	player.current_ladder=nullptr;
 
-	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
-	load_map(_exit.map_filename);
-	take_player_to_entry(_player, _exit.next_entry_id, &_exit);
+	//Make a copy of the exit: when we load the map the reference to the _exit
+	//will be invalidated.
+	app::exit exit_copy{_exit};
+
+	load_map(exit_copy.map_filename);
+	take_player_to_entry(exit_copy.next_entry_id, &exit_copy);
 
 	//game is saved at each map change xD
-	save_game(_exit.map_filename, _exit.next_entry_id);
+	save_game(exit_copy.map_filename, exit_copy.next_entry_id);
 }
 
 void main::take_player_to_entry(
-	app::player& _player,
 	int _id,
 	const app::exit * _last_exit
 ) {
@@ -454,19 +476,17 @@ void main::take_player_to_entry(
 		if(ladders.size()) {
 
 			lm::log(logger).info()<<"found ladder in entry point, it will be used\n";
-			grab_ladder(_player, *ladders[0]);
+			grab_ladder(player, *ladders[0]);
 
 			if(app::entry::inner_top_edge==map_entry.position) {
 
 				lm::log(logger).info()<<"will match the top of ladder\n";
-				//d2d::collision::match_top_of(_player.ent, *ladders[0], app::tile_h);
-				d2d::collision::match_top_of(_player.ent, map_entry.ent);
+				d2d::collision::match_top_of(player.ent, map_entry.ent);
 			}
 			else if(app::entry::inner_bottom_edge==map_entry.position) {
 
 				lm::log(logger).info()<<"will match the bottom of ladder\n";
-				//d2d::collision::match_bottom_of(_player.ent, *ladders[0], app::tile_h);
-				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
+				d2d::collision::match_bottom_of(player.ent, map_entry.ent);
 			}
 			else {
 
@@ -476,12 +496,12 @@ void main::take_player_to_entry(
 		else {
 
 			lm::log(logger).info()<<"no ladder in entry point, player will stand up";
-			_player.ent.set_origin(map_entry.ent.get_origin());
-			_player.stand_up();
+			player.ent.set_origin(map_entry.ent.get_origin());
+			player.stand_up();
 		}
 
 		//Stop all velocity.
-		_player.ent.set_motion_vector({0., 0.});
+		player.ent.set_motion_vector({0., 0.});
 	}
 	else {
 
@@ -494,29 +514,29 @@ void main::take_player_to_entry(
 
 			case app::entry::position::center_bottom:
 
-				land_on_ground(_player);
+				land_on_ground(player);
 				player.ent.set_motion_vector_x(0.);
-				d2d::collision::center_horizontally(_player.ent, map_entry.ent);
-				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
+				d2d::collision::center_horizontally(player.ent, map_entry.ent);
+				d2d::collision::match_bottom_of(player.ent, map_entry.ent);
 			break;
 			case app::entry::position::inner_top_edge:
-				d2d::collision::match_top_of(_player.ent, map_entry.ent);
-				_player.ent.set_x(entry_pt.x+exit_offset.x);
+				d2d::collision::match_top_of(player.ent, map_entry.ent);
+				player.ent.set_x(entry_pt.x+exit_offset.x);
 			break;
 
 			case app::entry::position::inner_bottom_edge:
-				d2d::collision::match_bottom_of(_player.ent, map_entry.ent);
-				_player.ent.set_x(entry_pt.x+exit_offset.x);
+				d2d::collision::match_bottom_of(player.ent, map_entry.ent);
+				player.ent.set_x(entry_pt.x+exit_offset.x);
 			break;
 
 			case app::entry::position::inner_right_edge:
-				d2d::collision::match_right_of(_player.ent, map_entry.ent);
-				_player.ent.set_y(entry_pt.y+exit_offset.y);
+				d2d::collision::match_right_of(player.ent, map_entry.ent);
+				player.ent.set_y(entry_pt.y+exit_offset.y);
 			break;
 
 			case app::entry::position::inner_left_edge:
-				d2d::collision::match_left_of(_player.ent, map_entry.ent);
-				_player.ent.set_y(entry_pt.y+exit_offset.y);
+				d2d::collision::match_left_of(player.ent, map_entry.ent);
+				player.ent.set_y(entry_pt.y+exit_offset.y);
 			break;
 		}
 
@@ -530,16 +550,16 @@ void main::take_player_to_entry(
 				throw std::runtime_error("there should be a ladder at the entrypoint");
 			}
 
-			grab_ladder(_player, *ladders[0]);
+			grab_ladder(player, *ladders[0]);
 		}
 	}
 
 	//Commit positions so we don't get phantom collisions later!
-	_player.ent.commit_box();
+	player.ent.commit_box();
 
-	lm::log(logger).debug()<<"new player position is "<<_player.ent.get_origin()<<"\n";
-	lm::log(logger).debug()<<"player box at "<<_player.ent.get_box()<<"\n";
-	lm::log(logger).debug()<<"player prev box at "<<_player.ent.get_previous_box()<<"\n";
+	lm::log(logger).debug()<<"new player position is "<<player.ent.get_origin()<<"\n";
+	lm::log(logger).debug()<<"player box at "<<player.ent.get_box()<<"\n";
+	lm::log(logger).debug()<<"player prev box at "<<player.ent.get_previous_box()<<"\n";
 
 	//Center camera on map now..
 	camera.center_on(
@@ -559,7 +579,7 @@ void main::restart_level() {
 	clear_transient_state();
 	current_map.reset();
 
-	take_player_to_entry(player, last_entry_id, nullptr);
+	take_player_to_entry(last_entry_id, nullptr);
 }
 
 void main::tic(
@@ -883,7 +903,7 @@ void main::post_tic() {
 	const app::exit * exitptr{nullptr};
 	if(is_on_exit(player, exitptr, true)) {
 
-		exit_to(player, *exitptr);
+		attempt_exit(*exitptr);
 		return;
 	}
 }
@@ -1145,7 +1165,7 @@ void main::tic_ground(
 		const app::exit * exitptr{nullptr};
 		if(is_on_exit(_player, exitptr, false)) {
 
-			exit_to(_player, *exitptr);
+			attempt_exit(*exitptr);
 			return;
 		}
 
@@ -1436,7 +1456,13 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
-	gd.draw(_screen, current_map, player, game_session.get_discovered_map_count());
+	gd.draw(
+		_screen, 
+		current_map, 
+		player, 
+		game_session.get_discovered_map_count(),
+		transition.get()
+	);
 
 	if(game_timeouts.is_running(timeout_area_banner)) {
 
@@ -2343,6 +2369,7 @@ bool main::is_map_complete(
 	return true;
 }
 
+//TODO: Maybe we should use the id...
 void main::mark_map_as_complete() {
 
 	persistence.set(
