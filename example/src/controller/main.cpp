@@ -130,8 +130,15 @@ void main::start(
 	int _entry_id
 ) {
 
+	//Ready a simple transition...
+	transition_out.reset(new app::map_transition_fade(
+		app::map_transition_fade::colors::color_black,
+		1, //from,
+		1.0 //one second.
+	));
+	transition_exit_info.apply=false; //Do not attempt to load any other map after the transition!
 	load_map(_map);
-	take_player_to_entry(_entry_id, nullptr);
+	take_player_to_entry(_entry_id, true);
 }
 
 void main::new_game(
@@ -167,30 +174,11 @@ void main::loop(
 
 	//If a map transition is taking place tic that instead of our regular 
 	//stuff.
-	//TODO: God this is ugly xD
 	if(transition || transition_out) {
 
-		if(transition) {
+		if(loop_transition(_lid.delta)) {
 
-			transition->tic(_lid.delta);
-			if(!transition->is_finished()) {
-
-				return;
-			}
-
-			exit_to(transition->get_original_exit());
-			transition.reset(nullptr);
-		}
-
-		if(transition_out) {
-
-			transition_out->tic(_lid.delta);
-			if(!transition_out->is_finished()) {
-
-				return;
-			}
-
-			transition_out.reset(nullptr);
+			return;
 		}
 	}
 
@@ -199,6 +187,46 @@ void main::loop(
 #else
 	loop_scene(_input, _lid);
 #endif
+}
+
+bool main::loop_transition(
+	double _delta
+) {
+
+	if(transition) {
+
+		transition->tic(_delta);
+		if(!transition->is_finished()) {
+
+			return true;
+		}
+
+		transition.reset(nullptr);
+
+		//Load next map if need be.
+		if(transition_exit_info.apply) {
+
+			exit_to(
+				transition_exit_info.map_filename,
+				transition_exit_info.next_entry_id,
+				transition_exit_info.exit_origin,
+				transition_exit_info.hard_exit
+			);
+		}
+	}
+
+	if(transition_out) {
+
+		transition_out->tic(_delta);
+		if(!transition_out->is_finished()) {
+
+			return true;
+		}
+
+		transition_out.reset(nullptr);
+	}
+
+	return false;
 }
 
 void main::loop_scene(
@@ -432,41 +460,55 @@ void main::attempt_exit(
 	switch(_exit.transition_type) {
 
 		case app::exit::transition_fade_to_black:
+
 			transition.reset(new app::map_transition_fade(
-				_exit,
 				app::map_transition_fade::colors::color_black,
 				0, //to,
 				0.25 //quarter of a second
 			));
 
 			transition_out.reset(new app::map_transition_fade(
-				_exit,
 				app::map_transition_fade::colors::color_black,
 				1, //from,
 				0.25 //quarter of a second
 			));
-		break;
+
+			transition_exit_info={
+				_exit.map_filename,
+				_exit.next_entry_id,
+				false, 
+				true,
+				_exit.ent.get_origin()
+			};
+
+			return;
 		case app::exit::transition_fade_to_white:
 
 			transition.reset(new app::map_transition_fade(
-				_exit,
 				app::map_transition_fade::colors::color_white,
 				0, //to,
 				2.0 //some seconds...
 			));
 
 			transition_out.reset(new app::map_transition_fade(
-				_exit,
 				app::map_transition_fade::colors::color_white,
 				1, //from,
 				2.0 //some seconds...
 			));
-		break;
+
+			transition_exit_info={
+				_exit.map_filename,
+				_exit.next_entry_id,
+				false, 
+				true,
+				_exit.ent.get_origin()
+			};
+
+			return;
+
 		case app::exit::transition_none:
 		default:
-			exit_to(_exit);
-		break;
-
+			return exit_to(_exit);
 	}
 }
 
@@ -474,30 +516,38 @@ void main::exit_to(
 	const app::exit& _exit
 ) {
 
+	//Assume a soft exit, since we have an exit.
+	exit_to(_exit.map_filename, _exit.next_entry_id, _exit.ent.get_origin(), false);
+}
+
+void main::exit_to(
+	const std::string& _map_filename,
+	int _next_entry_id,
+	d2d::collision::point _prev_exit_pos,
+	bool _hard_exit
+) {
+
 	//TODO: What is this doing???
 	//TODO: The current map??? no.. this is the new map...
 	//first off, is the current map complete? 
-	if(is_map_complete(_exit.map_filename)) {
+	if(is_map_complete(_map_filename)) {
 
 		mark_map_as_complete();
 	}
 
 	player.current_ladder=nullptr;
 
-	//Make a copy of the exit: when we load the map the reference to the _exit
-	//will be invalidated.
-	app::exit exit_copy{_exit};
-
-	load_map(exit_copy.map_filename);
-	take_player_to_entry(exit_copy.next_entry_id, &exit_copy);
+	load_map(_map_filename);
+	take_player_to_entry(_next_entry_id, _hard_exit, _prev_exit_pos);
 
 	//game is saved at each map change xD
-	save_game(exit_copy.map_filename, exit_copy.next_entry_id);
+	save_game(_map_filename, _next_entry_id);
 }
 
 void main::take_player_to_entry(
 	int _id,
-	const app::exit * _last_exit
+	bool _hard_exit,
+	d2d::collision::point _prev_exit_pos
 ) {
 
 	lm::log(logger).info()<<"will attempt to set player at entry "<<_id<<"\n";
@@ -514,7 +564,7 @@ void main::take_player_to_entry(
 
 	//If no exit is indicated this is a "hard transition", e.g. reloading after
 	//defeat.
-	if(nullptr==_last_exit) {
+	if(_hard_exit) {
 
 		lm::log(logger).info()<<"taking player to exit (hard mode)\n";
 
@@ -558,7 +608,7 @@ void main::take_player_to_entry(
 		lm::log(logger).info()<<"taking player to exit (soft mode)\n";
 		auto& pos=player.ent.get_box();
 		auto entry_pt=map_entry.ent.get_origin();
-		d2d::collision::point exit_offset=pos.origin-_last_exit->ent.get_origin();
+		d2d::collision::point exit_offset=pos.origin-_prev_exit_pos;
 
 		switch(map_entry.position) {
 
@@ -629,7 +679,7 @@ void main::restart_level() {
 	clear_transient_state();
 	current_map.reset();
 
-	take_player_to_entry(last_entry_id, nullptr);
+	take_player_to_entry(last_entry_id, true);
 }
 
 void main::tic(

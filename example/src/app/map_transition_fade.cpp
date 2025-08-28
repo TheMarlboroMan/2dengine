@@ -5,13 +5,11 @@
 using namespace app;
 
 map_transition_fade::map_transition_fade(
-	const app::exit& _exit,
 	int _color,
 	int _direction,
 	double _time
 )
 	:timer{_time, 0., false},
-	original_exit{_exit},
 	color{ldv::rgba8(0,0,0,255)},
 	direction{0==_direction ? directions::to : directions::from}
 {

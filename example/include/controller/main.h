@@ -67,6 +67,7 @@ class main:
 	private:
 
 	void                        loop_scene(dfw::input&, const dfw::loop_iteration_data&);
+	bool                        loop_transition(double);
 	void                        draw_scene(ldv::screen&);
 
 	void                        tic(tdelta, app::player_input);
@@ -85,12 +86,10 @@ class main:
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
-/**
- * unloads map, loads new map, takes player to it.
- */
 	void                        attempt_exit(const app::exit&);
 	void                        exit_to(const app::exit&);
-	void                        take_player_to_entry(int, const app::exit* =nullptr);
+	void                        exit_to(const std::string&, int, d2d::collision::point, bool);
+	void                        take_player_to_entry(int, bool, d2d::collision::point={0.,0.});
 	void                        restart_level();
 	app::entry                  find_entry_by_id(int) const;
 
@@ -102,7 +101,7 @@ class main:
 	bool                        can_activate_button(const app::player&, app::button *&);
 	bool                        has_key(const app::player&, const app::button&) const;
 
-	//act on player methods..u
+	//act on player methods...
 	void                        start_falling(app::player&);
 	void                        land_on_ground(app::player&);
 	void                        collide_with_wall(app::player&);
@@ -177,11 +176,20 @@ class main:
 	std::unique_ptr<app::map_transition> transition{nullptr},
 	                            transition_out{nullptr};
 
-
 	struct {
 		int                     active_count{0},
 		                        channel_index{-1};
 	}                           trap_sound;
+
+	//This will be used to store information of the next level after a transition
+	//when needed.
+	struct {
+		std::string             map_filename;
+		int                     next_entry_id{0};
+		bool                    hard_exit{false},
+		                        apply{false};
+		d2d::collision::point   exit_origin{0., 0.};
+	}                           transition_exit_info;
 
 	enum {
 		timeout_lives_banner=1,

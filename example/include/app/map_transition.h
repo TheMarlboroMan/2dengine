@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ldtools/time_definitions.h>
-#include "exit.h"
 
 namespace ldv {
 
@@ -21,9 +20,6 @@ using ldtools::tdelta;
 class map_transition {
 
 	public:
-
-	//exit taken on the original map.
-	virtual const app::exit get_original_exit() const=0;
 
 	//tics the transition.
 	virtual void tic(tdelta)=0;

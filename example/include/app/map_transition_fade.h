@@ -24,10 +24,9 @@ class map_transition_fade
 		from //anything else.
 	};
 
-	//exit, color and direction.
-	        map_transition_fade(const exit&, int, int, double);
+	//color, direction and duration.
+	        map_transition_fade(int, int, double);
 
-	const app::exit get_original_exit() const {return original_exit;}
 	void    tic(tdelta);
 	bool    is_finished() const;
 	void    draw(ldv::screen&) const;
@@ -35,7 +34,6 @@ class map_transition_fade
 	private:
 
 	d2d::components::timeout    timer;
-	exit                        original_exit;
 	ldv::rgba_color             color;
 	directions                  direction;
 };
