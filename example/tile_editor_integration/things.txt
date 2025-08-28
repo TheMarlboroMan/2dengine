@@ -82,6 +82,13 @@ beginobject
 		comment rooms the player must have visited to enter.
 		linkedto nothing
 	endproperty
+	beginproperty
+		name transition
+		type int
+		default 0
+		comment 0=no transition 1=fade black 2=fade white
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject

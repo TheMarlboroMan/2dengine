@@ -111,6 +111,7 @@ void thing_loader::add_exit(
 	int h=_attributes.at("height").get_int();
 	int next_id=_attributes.at("next_entry_id").get_int();
 	int min_rooms=_attributes.at("min_rooms").get_int();
+	int transition=_attributes.at("transition").get_int();
 	bool touch=_attributes.at("type").get_int()==1;
 	std::string filename=_attributes.at("map_filename").get_string();
 
@@ -119,6 +120,7 @@ void thing_loader::add_exit(
 		filename,
 		next_id,
 		min_rooms,
+		transition,
 		touch
 	});
 }

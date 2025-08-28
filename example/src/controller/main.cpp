@@ -167,16 +167,31 @@ void main::loop(
 
 	//If a map transition is taking place tic that instead of our regular 
 	//stuff.
-	if(transition) {
+	//TODO: God this is ugly xD
+	if(transition || transition_out) {
 
-		transition->tic(_lid.delta);
-		if(!transition->is_finished()) {
+		if(transition) {
 
-			return;
+			transition->tic(_lid.delta);
+			if(!transition->is_finished()) {
+
+				return;
+			}
+
+			exit_to(transition->get_original_exit());
+			transition.reset(nullptr);
 		}
 
-		exit_to(transition->get_original_exit());
-		transition.reset(nullptr);
+		if(transition_out) {
+
+			transition_out->tic(_lid.delta);
+			if(!transition_out->is_finished()) {
+
+				return;
+			}
+
+			transition_out.reset(nullptr);
+		}
 	}
 
 #ifdef IS_DEBUG_BUILD
@@ -414,10 +429,45 @@ void main::attempt_exit(
 
 	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
 
-	//TODO: ASSIGN THE TRANSITION! When the exit says so???
-	//transition.reset(new app::map_transition_fade(_exit));
+	switch(_exit.transition_type) {
 
-	exit_to(_exit);
+		case app::exit::transition_fade_to_black:
+			transition.reset(new app::map_transition_fade(
+				_exit,
+				app::map_transition_fade::colors::color_black,
+				0, //to,
+				0.25 //quarter of a second
+			));
+
+			transition_out.reset(new app::map_transition_fade(
+				_exit,
+				app::map_transition_fade::colors::color_black,
+				1, //from,
+				0.25 //quarter of a second
+			));
+		break;
+		case app::exit::transition_fade_to_white:
+
+			transition.reset(new app::map_transition_fade(
+				_exit,
+				app::map_transition_fade::colors::color_white,
+				0, //to,
+				2.0 //some seconds...
+			));
+
+			transition_out.reset(new app::map_transition_fade(
+				_exit,
+				app::map_transition_fade::colors::color_white,
+				1, //from,
+				2.0 //some seconds...
+			));
+		break;
+		case app::exit::transition_none:
+		default:
+			exit_to(_exit);
+		break;
+
+	}
 }
 
 void main::exit_to(
@@ -1456,12 +1506,18 @@ void main::draw_scene(
 	ldv::screen& _screen
 ) {
 
+	//Draw in transition, out transition or... none.
+	app::map_transition * active_transition{nullptr};
+	active_transition=transition 
+		? transition.get()
+		: transition_out.get();
+
 	gd.draw(
 		_screen, 
 		current_map, 
 		player, 
 		game_session.get_discovered_map_count(),
-		transition.get()
+		active_transition
 	);
 
 	if(game_timeouts.is_running(timeout_area_banner)) {

@@ -174,7 +174,8 @@ class main:
 	app::player                 player;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
-	std::unique_ptr<app::map_transition> transition{nullptr};
+	std::unique_ptr<app::map_transition> transition{nullptr},
+	                            transition_out{nullptr};
 
 
 	struct {
