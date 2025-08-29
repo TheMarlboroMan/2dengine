@@ -968,6 +968,33 @@ void game_draw::draw_exit(
 	int _discovered_rooms
 ) {
 
+	//Special exits are rendered as keys...
+	int sprite_index=0;
+	switch(_exit.type) {
+
+		case app::exit::types::redkey:
+			sprite_index=app::spr_key_red;
+		break;
+		case app::exit::types::bluekey:
+			sprite_index=app::spr_key_blue;
+		break;
+		case app::exit::types::greenkey:
+			sprite_index=app::spr_key_green;
+		break;
+	}
+
+	if(0!=sprite_index) {
+
+		auto origin=d2d::video::to_screen(_exit.ent.get_origin());
+
+		sprite_draw.draw(
+			_screen,
+			origin,
+			sprite_index
+		);
+	}
+
+	//Stop rendering if there is no minimal room requirement...
 	if(!_exit.min_rooms) {
 
 		return;

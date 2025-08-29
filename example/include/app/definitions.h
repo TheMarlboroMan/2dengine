@@ -48,8 +48,12 @@ enum persistence_groups {
 	pergr_events=6 //game events.
 };
 
+//Game event ids...
 enum per_events {
-	perev_boss_defeated=0
+	perev_fake_red_key=0,
+	perev_fake_blue_key=1,
+	perev_fake_green_key=2,
+	perev_boss_defeated=3
 };
 
 enum automap_flags {

@@ -131,7 +131,7 @@ void main::start(
 ) {
 
 	//Ready a simple transition...
-	transition_out.reset(new app::map_transition_fade(
+	transition.reset(new app::map_transition_fade(
 		app::map_transition_fade::colors::color_black,
 		1, //from,
 		1.0 //one second.
@@ -172,8 +172,30 @@ void main::loop(
 	const dfw::loop_iteration_data& _lid
 ) {
 
-	//If a map transition is taking place tic that instead of our regular 
-	//stuff.
+	//Exiting and escaping to the menu is always possible.
+	if(_input().is_exit_signal()) {
+
+		lm::log(logger).info()<<"caught exit signal, quitting\n";
+		set_leave(true);
+		return;
+	}
+
+	if(_input.is_input_down(app::input::escape)) {
+
+		if(1!=state_size()) {
+
+			lm::log(logger).info()<<"will go back to main menu\n";
+			pop_state();
+			return;
+		}
+
+		lm::log(logger).info()<<"attemping to leave main state with no stack, exiting";
+		set_leave(true);
+		return;
+	}
+
+
+	//If a map transition is taking place tic that instead of our regular stuff.
 	if(transition || transition_out) {
 
 		if(loop_transition(_lid.delta)) {
@@ -235,27 +257,6 @@ void main::loop_scene(
 ) {
 
 	game_timeouts.tic(_lid.delta);
-
-	if(_input().is_exit_signal()) {
-
-		lm::log(logger).info()<<"caught exit signal, quitting\n";
-		set_leave(true);
-		return;
-	}
-
-	if(_input.is_input_down(app::input::escape)) {
-
-		if(1!=state_size()) {
-
-			lm::log(logger).info()<<"will go back to main menu\n";
-			pop_state();
-			return;
-		}
-
-		lm::log(logger).info()<<"attemping to leave main state with no stack, exiting";
-		set_leave(true);
-		return;
-	}
 
 	if(_input.is_input_down(app::input::pause)) {
 
@@ -320,7 +321,6 @@ void main::load_map(
 
 	const std::string map_path{ss.str()};
 
-
 	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
 
 	d2d::storage::map_loader loader(map_path);
@@ -371,6 +371,8 @@ void main::load_map(
 	app::automap_game automap{automap_srv};
 	int automap_id=automap.map_id_from_map(_map_name);
 	game_session.current_map_id=automap_id;
+
+	lm::log(logger).info()<<"automap id for "<<_map_name<<" = "<<automap_id<<"\n";
 
 	//Should we show a new area banner? We need first to infer the new
 	//area id... This will also make the banner show whenever a game is
@@ -455,7 +457,33 @@ void main::attempt_exit(
 		}
 	}
 
+	//From this point on, an exit to another room will happen.
 	lm::log(logger).info()<<"player is on exit to "<<_exit.map_filename<<" with entry id "<<_exit.next_entry_id<<"\n";
+
+	//Special exits are marked as visited so they will not be loaded again
+	//when re-entering this room. These count towards room completion so we must
+	//also check for that.
+
+	if(_exit.is_special()) {
+
+		switch(_exit.type) {
+
+			case app::exit::types::redkey:
+				persistence.add(app::pergr_events, app::perev_fake_red_key, 1);
+			break;
+			case app::exit::types::bluekey:
+				persistence.add(app::pergr_events, app::perev_fake_blue_key, 1);
+			break;
+			case app::exit::types::greenkey:
+				persistence.add(app::pergr_events, app::perev_fake_green_key, 1);
+			break;
+		}
+
+		if(is_map_complete(_exit.map_filename)) {
+
+			mark_map_as_complete();
+		}
+	}
 
 	switch(_exit.transition_type) {
 
@@ -521,19 +549,11 @@ void main::exit_to(
 }
 
 void main::exit_to(
-	const std::string& _map_filename,
+	const std::string _map_filename, //a copy, because the original will be gone after load_map.
 	int _next_entry_id,
 	d2d::collision::point _prev_exit_pos,
 	bool _hard_exit
 ) {
-
-	//TODO: What is this doing???
-	//TODO: The current map??? no.. this is the new map...
-	//first off, is the current map complete? 
-	if(is_map_complete(_map_filename)) {
-
-		mark_map_as_complete();
-	}
 
 	player.current_ladder=nullptr;
 
@@ -595,7 +615,7 @@ void main::take_player_to_entry(
 		}
 		else {
 
-			lm::log(logger).info()<<"no ladder in entry point, player will stand up";
+			lm::log(logger).info()<<"no ladder in entry point, player will stand up\n";
 			player.ent.set_origin(map_entry.ent.get_origin());
 			player.stand_up();
 		}
@@ -802,14 +822,10 @@ void main::clean_expired_entities() {
 	);
 
 	//Must we update the automap state because this room is now complete???
-	if(check_map_complete) {
+	if(check_map_complete && is_map_complete()) {
 
-		if(is_map_complete()) {
-
-			mark_map_as_complete();
-		}
+		mark_map_as_complete();
 	}
-
 
 	current_map.skulls.erase(
 		std::remove_if(
@@ -1855,7 +1871,7 @@ bool main::is_on_exit(
 
 	for(const auto& exit : current_map.exits) {
 
-		if(exit.touch==_is_touch && d2d::collision::collides_with(_player.ent, exit.ent)) {
+		if(exit.is_touch()==_is_touch && d2d::collision::collides_with(_player.ent, exit.ent)) {
 
 			_exitptr=&exit;
 			return true;
@@ -2448,10 +2464,21 @@ bool main::is_map_complete(
 		return false;
 	}
 
+	//check locked and special exits...
 	const auto& automap_srv=sp.get_automap();
 	app::automap_game automap{automap_srv};
 	for(const auto& exit : current_map.exits) {
 
+		//special exits will not be loaded once visited. Still, we check against
+		//the next map name, in case we are currently exiting through this one.
+		if(exit.is_special() && _next_map!=exit.map_filename) {
+
+			lm::log(logger).debug()<<"there are special exits in the map"<<std::endl;
+			return false;
+		}
+
+		//Skip regular exits, skip also if we are entering a locked exit so 
+		//that we end up returning true.
 		if(0==exit.min_rooms) {
 
 			continue;

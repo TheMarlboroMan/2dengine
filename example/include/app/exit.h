@@ -16,14 +16,25 @@ class exit {
 		transition_fade_to_white=2,
 	};
 
-	                        exit(d2d::collision::box, const std::string&, int, int, int, bool);
+	enum types {
+		trigger=0,
+		touch=1,
+		redkey=2,
+		bluekey=3,
+		greenkey=4
+	};
+
+	                        exit(d2d::collision::box, const std::string&, int, int, int, int);
+	//All exits are "touch" except for trigger ones.
+	bool                    is_touch() const {return type!=trigger;}
+	bool                    is_special() const {return type >= redkey;}
 
 	entity                  ent;
 	std::string             map_filename;
 	int                     next_entry_id,
 	                        min_rooms, //minimum rooms visited to activate this exit.
-	                        transition_type; //transition to next map according to enum above.
-	bool                    touch; //whether or not this exit is activated by touch or "action".
+	                        transition_type, //transition to next map according to enum above.
+	                        type; //exit type.
 };
 
 std::ostream& operator<<(std::ostream&, const exit&);

@@ -88,7 +88,7 @@ class main:
 	void                        load_map(const std::string&);
 	void                        attempt_exit(const app::exit&);
 	void                        exit_to(const app::exit&);
-	void                        exit_to(const std::string&, int, d2d::collision::point, bool);
+	void                        exit_to(const std::string, int, d2d::collision::point, bool);
 	void                        take_player_to_entry(int, bool, d2d::collision::point={0.,0.});
 	void                        restart_level();
 	app::entry                  find_entry_by_id(int) const;

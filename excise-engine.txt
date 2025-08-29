@@ -5,19 +5,18 @@ next steps:
 	make the first example game
 
 		- the keys are "characters"
-			- the key teleports you to a straight N room challenge. So the key
-			must actually become a type of exit. Just number them...
-			- Once used, the exit should be added to some persistence layer
-			so that it won't appear again! Maps don't have ids so we can just
-			add their magic type.
-				- we should have some animation, right? the key moves away
-				This will be a problem... exit_to does all shit, then exits...
-				so this can be a problem: no transitions are planned.
-				- from the player, out of the screen, the world fades to black.
-				- the key is in a piece that looks exactly like the one in the
-				  real world.
-				- when picking it up again, we need a transition too!
+			- a sprite for the character appears on each key challenge room
+			  to deliver a speech.
+			- the REAL key is in a piece that looks exactly like the one in the
+			  real world.
 			- the key is at the end of the challenge.
+
+		- a conundrum, what if we EXIT when attempt_exit with a special exit
+		type?? Would we still be safe while the game is NOT SAVED?
+
+		- The text and story part...
+			a) Text overlaid on the regular controller...
+			b) Pictures and shit.
 
 		- do a test run and SAVE IT...
 			- and review it xD... It has worked so far anyway.

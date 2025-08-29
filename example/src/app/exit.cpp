@@ -8,14 +8,14 @@ exit::exit(
 	int _next_entry_id, 
 	int _min_rooms, 
 	int _transition, 
-	bool _touch
+	int _type
 ):
 	ent{_box},
 	map_filename{_map_filename},
 	next_entry_id{_next_entry_id},
 	min_rooms{_min_rooms},
 	transition_type{_transition},
-	touch{_touch}
+	type{_type}
 {}
 
 

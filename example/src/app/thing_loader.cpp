@@ -107,12 +107,33 @@ void thing_loader::add_exit(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int type=_attributes.at("type").get_int();
+	int event_id=-1;
+	switch(type) {
+
+		case app::exit::types::redkey:
+			event_id=perev_fake_red_key;
+		break;
+		case app::exit::types::bluekey:
+			event_id=perev_fake_blue_key;
+		break;
+		case app::exit::types::greenkey:
+			event_id=perev_fake_green_key;
+		break;
+	}
+
+	//Do not add the exit again if already visited and of a special type!
+	if(-1!=event_id && persistence.has(pergr_events, event_id)) {
+
+		return;
+	}
+
 	int w=_attributes.at("width").get_int();
 	int h=_attributes.at("height").get_int();
 	int next_id=_attributes.at("next_entry_id").get_int();
 	int min_rooms=_attributes.at("min_rooms").get_int();
 	int transition=_attributes.at("transition").get_int();
-	bool touch=_attributes.at("type").get_int()==1;
+
 	std::string filename=_attributes.at("map_filename").get_string();
 
 	curmap.exits.push_back({
@@ -121,7 +142,7 @@ void thing_loader::add_exit(
 		next_id,
 		min_rooms,
 		transition,
-		touch
+		type
 	});
 }
 
