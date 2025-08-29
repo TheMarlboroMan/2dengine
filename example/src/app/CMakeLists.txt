@@ -40,6 +40,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/boss.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/boss_skull_spawn.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/text_node.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_flame.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_splash.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_projectile_horizontal_splash.cpp
@@ -49,6 +50,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/particle_module_pickup.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/random.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/map_transition_fade.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/show_text_exchange.cpp
 	PARENT_SCOPE
 )
 

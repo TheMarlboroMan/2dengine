@@ -1,0 +1,9 @@
+console_font 8 resources/fonts/publicpixel.ttf
+pause_font 8 resources/fonts/publicpixel.ttf
+menu_font 16 resources/fonts/publicpixel.ttf
+menu_font 8 resources/fonts/publicpixel.ttf
+area_banner_font 8 resources/fonts/publicpixel.ttf
+lives_banner_font 8 resources/fonts/publicpixel.ttf
+exit_number_font 8 resources/fonts/publicpixel.ttf
+exit_number_font 8 resources/fonts/publicpixel.ttf
+show_text_font 8 resources/fonts/publicpixel.ttf

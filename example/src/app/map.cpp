@@ -41,6 +41,7 @@ std::ostream& app::operator<<(
 	print_node("moving_block_nodes", _map.moving_block_nodes, _stream);
 	print_node("facing_blocks", _map.facing_blocks, _stream);
 	print_node("toggle_blocks", _map.toggle_blocks, _stream);
+	print_node("text_nodes", _map.text_nodes, _stream);
 
 	if(_map.boss) {
 
@@ -138,6 +139,7 @@ void map::clear() {
 	skulls.clear();
 	skull_spawns.clear();
 	particle_manager.clear();
+	text_nodes.clear();
 	this->boss.reset(nullptr);
 }
 

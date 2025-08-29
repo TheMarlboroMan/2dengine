@@ -6,6 +6,7 @@
 #include "app/inventory.h"
 #include "app/game_session.h"
 #include "app/random.h"
+#include "app/show_text_exchange.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -327,4 +328,18 @@ app::random& service_provider::get_random() {
 	}
 
 	return *rng;
+}
+
+app::show_text_exchange& service_provider::get_show_text_exchange() {
+
+	if(nullptr==text_exchange) {
+
+		text_exchange.reset(
+			new show_text_exchange(
+				get_localization()
+			)
+		);
+	}
+
+	return *text_exchange;
 }

@@ -41,6 +41,7 @@ void thing_loader::setup() {
 	curmap.toggle_blocks.clear();
 	curmap.boss.reset(nullptr);
 	curmap.skull_spawns.clear();
+	curmap.text_nodes.clear();
 }
 
 void thing_loader::load(
@@ -65,6 +66,7 @@ void thing_loader::load(
 			case 9: return add_breaking_platform(pos, _attributes);
 			case 10: return add_platform(pos, _attributes);
 			case 11: return add_touch_trigger(pos, _attributes);
+			case 12: return add_text_node(_attributes);
 
 			case 50: return add_linear_monster(pos, _attributes);
 			case 51: return add_projectile_generator(pos, _attributes);
@@ -667,5 +669,23 @@ void thing_loader::add_boss_skull_spawn(
 
 	curmap.skull_spawns.push_back(
 		{ _pos, id}
+	);
+}
+
+void thing_loader::add_text_node(
+	const thing_loader::attrmap& _attributes
+) {
+
+	int id=_attributes.at("event_id").get_int();
+	if(persistence.has(pergr_texts, id)) {
+
+		return;
+	}
+
+	int tag=_attributes.at("tag").get_int();
+	std::string key=_attributes.at("text_id").get_string();
+
+	curmap.text_nodes.push_back(
+		{id, tag, key}
 	);
 }

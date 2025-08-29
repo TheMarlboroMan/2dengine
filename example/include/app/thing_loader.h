@@ -42,6 +42,7 @@ class thing_loader
 	void                add_toggle_block(d2d::collision::point, const attrmap&);
 	void                add_boss(d2d::collision::point);
 	void                add_boss_skull_spawn(d2d::collision::point, const attrmap&);
+	void                add_text_node(const attrmap&);
 
 	double              find_lower_x_bound(d2d::collision::tile_coords) const;
 	double              find_upper_x_bound(d2d::collision::tile_coords) const;

@@ -17,6 +17,7 @@
 #include "controller/pause.h"
 #include "controller/controls.h"
 #include "controller/options.h"
+#include "controller/show_text.h"
 #ifdef IS_DEBUG_BUILD
 	#include "controller/test.h"
 	#include <dfw/input_recorder_file_8bit.h>
@@ -158,6 +159,7 @@ void state_driver::prepare_resources(
 	persistence.add(app::pergr_touch_triggers);
 	persistence.add(app::pergr_automap);
 	persistence.add(app::pergr_events);
+	persistence.add(app::pergr_texts);
 
 	_kernel.get_screen().set_title(
 		service_provider->get_localization().get("window-title")
@@ -202,6 +204,12 @@ void state_driver::register_controllers(
 		c_options,
 		controller::state_options,
 		new controller::options(*service_provider)
+	);
+
+	reg(
+		c_show_text,
+		controller::state_show_text,
+		new controller::show_text(*service_provider)
 	);
 
 #ifdef IS_DEBUG_BUILD
@@ -445,46 +453,21 @@ void state_driver::load_resources() {
 		ldtools::animation_table{ spritesheets.at(app::ss_tiles), env.build_app_path("resources/lists/animations.txt")}
 	);
 
+	//Ready ttf fonts...
+	std::ifstream font_stream{env.build_app_path("resources/lists/fonts.txt")};
+	std::string font_id, font_path;
+	int font_size;
+
 	auto &ttf_manager=service_provider->get_ttf_manager();
-	ttf_manager.insert(
-		"console_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
+	while(true) {
 
-	ttf_manager.insert(
-		"pause_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
+		font_stream>>font_id>>font_size>>font_path;
 
-	ttf_manager.insert(
-		"menu_font",
-		16,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
+		if(font_stream.eof()) {
 
-	ttf_manager.insert(
-		"menu_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
+			break;
+		}
 
-	ttf_manager.insert(
-		"area_banner_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
-
-	ttf_manager.insert(
-		"lives_banner_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
-
-	ttf_manager.insert(
-		"exit_number_font",
-		8,
-		env.build_app_path("resources/fonts/publicpixel.ttf")
-	);
+		ttf_manager.insert(font_id, font_size, env.build_app_path(font_path));
+	}
 }

@@ -66,6 +66,7 @@ class state_driver:
 	ptr_controller                  c_pause;
 	ptr_controller                  c_controls;
 	ptr_controller                  c_options;
+	ptr_controller                  c_show_text;
 #ifdef IS_DEBUG_BUILD
 	ptr_controller                  c_test;
 #endif

@@ -65,6 +65,7 @@ class automap;
 class inventory;
 class game_session;
 class random;
+class show_text_exchange;
 
 class service_provider {
 
@@ -100,6 +101,7 @@ class service_provider {
 	inventory&              get_inventory();
 	game_session&           get_game_session();
 	random&                 get_random();
+	show_text_exchange&     get_show_text_exchange();
 
 	private:
 
@@ -131,5 +133,6 @@ class service_provider {
 	std::unique_ptr<inventory> game_inventory{nullptr};
 	std::unique_ptr<game_session> session{nullptr};
 	std::unique_ptr<random> rng{nullptr};
+	std::unique_ptr<show_text_exchange> text_exchange{nullptr};
 };
 }

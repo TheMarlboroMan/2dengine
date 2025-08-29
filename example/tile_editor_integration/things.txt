@@ -345,6 +345,35 @@ beginobject
 endobject
 
 beginobject
+	id 12
+	name text node
+	w 16
+	h 16
+	color 255 255 255 255
+	beginproperty
+		name event_id
+		type int
+		default 0
+		comment should be unique
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment activation tag
+		linkedto nothing
+	endproperty
+	beginproperty
+		name text_id
+		type string
+		default -
+		comment text index in the i8n files
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 50
 	name linear monster
 	w 16

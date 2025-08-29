@@ -35,3 +35,17 @@
 [[automap-fortress]]{{Fortress}}
 [[automap-tower]]{{Wizard's tower}}
 [[automap-nowhere]]{{???}}
+#Text width #####################
+#Three lines max#################
+#	Tabs workax##################
+[[game-redkey-text-001]]{{
+Welcome traveller.
+I was there and I saw it all...
+[@np]
+I am the Owl.
+Stuff. More stuff.
+And stuff.
+[@np]
+And this is done.
+}}
+[[game-redkey-text-002]]{{And this is some other text.}}

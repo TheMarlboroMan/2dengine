@@ -45,7 +45,8 @@ enum persistence_groups {
 	pergr_buttons=3, //buttons and keyholes.
 	pergr_touch_triggers=4, //touch triggers
 	pergr_automap=5, //automap discovery state
-	pergr_events=6 //game events.
+	pergr_events=6, //game events.
+	pergr_texts=7 //shown texts
 };
 
 //Game event ids...

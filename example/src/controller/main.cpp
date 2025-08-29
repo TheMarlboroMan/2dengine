@@ -8,6 +8,7 @@
 #include "app/automap_game.h" //to obtain area names...
 #include "app/projectile_creator.h"
 #include "app/map_transition_fade.h"
+#include "app/show_text_exchange.h"
 
 #include "dfwimpl/config.h"
 
@@ -2037,7 +2038,6 @@ void main::activate_tag(
 		}
 	}
 
-
 	for(auto& generator : current_map.projectile_generators) {
 
 		if(generator.get_tag()==_tag) {
@@ -2051,6 +2051,17 @@ void main::activate_tag(
 		if(block.get_tag()==_tag) {
 
 			block.activate();
+		}
+	}
+
+	for(auto& node : current_map.text_nodes) {
+
+		if(node.tag==_tag) {
+
+			//Add it to the persistence layer so it's never loaded again.
+			persistence.add(app::pergr_texts, node.event_id, 1);
+			sp.get_show_text_exchange().set(node.text_index);
+			push_state(controller::state_show_text);
 		}
 	}
 }

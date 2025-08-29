@@ -20,6 +20,7 @@
 #include "moving_block_node.h"
 #include "facing_block.h"
 #include "toggle_block.h"
+#include "text_node.h"
 #include "boss.h"
 #include "boss_skull.h"
 #include "boss_skull_spawn.h"
@@ -68,6 +69,7 @@ class map {
 	std::map<int, moving_block_node>        moving_block_nodes;
 	std::vector<facing_block>               facing_blocks;
 	std::vector<toggle_block>               toggle_blocks;
+	std::vector<text_node>                  text_nodes;
 	std::vector<app::projectile>            projectiles;
 	std::unique_ptr<app::boss>              boss{nullptr};
 	std::vector<app::boss_skull>            skulls;

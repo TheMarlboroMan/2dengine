@@ -371,5 +371,43 @@
 			"font":"font",
 			"rgba":[255, 255, 255, 128]
 		}
+	],
+	"text_display": [
+		{
+			"__":"background",
+			"type":"box",
+			"location":[0, 0, 288, 224],
+			"rgba":[0,0,128,64],
+			"order": 10
+		},
+		{
+			"__":"text_background",
+			"type":"box",
+			"location":[0, 164, 288, 224],
+			"rgba":[0,0,0,220],
+			"order": 20
+		},
+		{
+			"id":"main_text",
+			"type":"ttf",
+			"location":[16, 180],
+			"text":"-",
+			"font":"text_font",
+			"rgba":[255, 255, 255, 255],
+			"order": 100,
+			"visible": true,
+			"line_height_ratio":1.5
+		},
+		{
+			"id":"wait_text",
+			"type":"ttf",
+			"location":[260, 208],
+			"text":"...",
+			"font":"text_font",
+			"rgba":[255, 255, 255, 255],
+			"id":"wait_text",
+			"order": 200,
+			"visible": false
+		}
 	]
 }
