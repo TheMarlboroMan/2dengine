@@ -419,8 +419,14 @@ void state_driver::prepare_state(
 }
 
 void state_driver::start_app(
+
+#ifdef IS_DEBUG_BUILD
 	const tools::arg_manager& _argman,
 	dfw::input& _in
+#else
+	const tools::arg_manager&,
+	dfw::input&
+#endif
 ) {
 
 #ifdef IS_DEBUG_BUILD

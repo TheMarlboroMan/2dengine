@@ -4,6 +4,10 @@
 
 - Streamline the experience of creating a 2dgame by providing a set of commonly used tools.
 
+## what I don't want is
+
+- To replace the DFW jumpstart. That should be still usable and this library should be pluggable into it.
+
 ## namespaces of d2d
 
 ### audio

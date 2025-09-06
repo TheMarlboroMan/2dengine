@@ -1612,7 +1612,7 @@ void main::draw(
 
 #else
 
-	this.draw_scene(_screen);
+	draw_scene(_screen);
 #endif
 }
 

@@ -3,10 +3,10 @@ project(d2d)
 
 option(BUILD_DEBUG "Build a debug release" ON)
 option(BUILD_SHARED "Build a shared library" ON)
-option(BUILD_STATIC "Build a static library" OFF)
-option(BUILD_EXAMPLE "Build example" "ON")
-option(BUILD_TESTS "Build test code" "ON")
-option(BUILD_EXAMPLE_APPIMAGE "Build example as appimage" "OFF")
+option(BUILD_STATIC "Build a static library" ON)
+option(BUILD_EXAMPLES "Build example" ON)
+option(BUILD_TESTS "Build test code" ON)
+option(BUILD_EXAMPLE_APPIMAGE "Build example as appimage" OFF)
 
 #library version
 set(MAJOR_VERSION 0)
@@ -96,7 +96,7 @@ if(${BUILD_SHARED})
 endif()
 
 #setup libraries for example and tests.
-if(${BUILD_EXAMPLE} OR ${BUILD_TESTS})
+if(${BUILD_EXAMPLES} OR ${BUILD_TESTS})
 
 	#add the framework dependencies
 	add_library(lm SHARED IMPORTED)
@@ -130,7 +130,7 @@ if(${BUILD_EXAMPLE} OR ${BUILD_TESTS})
 
 endif()
 
-if(${BUILD_EXAMPLE})
+if(${BUILD_EXAMPLES})
 
 	message("will build example")
 
