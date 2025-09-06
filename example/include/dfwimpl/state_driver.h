@@ -53,6 +53,7 @@ class state_driver:
 	std::vector<dfw::input_pair>    get_input_pairs() const;
 	void                            start_app(const tools::arg_manager&, dfw::input&);
 	int                             get_input_axis_threshold() const;
+	std::string                     build_resource_path(const std::string, const std::string) const;
 
 	//references
 	dfwimpl::config&                config;

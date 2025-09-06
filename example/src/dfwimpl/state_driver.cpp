@@ -176,19 +176,22 @@ void state_driver::load_resources(
 	);
 
 	//Textures.
-	r_loader.generate_textures(tools::explode_lines_from_file(env.build_app_path("resources/lists/textures.txt")));
+	r_loader.generate_textures(tools::explode_lines_from_file(build_resource_path("lists", "textures.txt")));
 
 	//Ssurfaces that may need to be loaded, for later manipulation into composite backgrounds.
-	//r_loader.generate_surfaces(tools::explode_lines_from_file(env.build_app_path("data/lists/surfaces.txt"));
+	//r_loader.generate_surfaces(tools::explode_lines_from_file(build_resource_path("lists", "surfaces.txt")));
 	
 	//Sounds.
-	r_loader.generate_sounds(tools::explode_lines_from_file(env.build_app_path("resources/lists/sounds.txt")));
+	r_loader.generate_sounds(tools::explode_lines_from_file(build_resource_path("lists", "sounds.txt")));
 	
 	//Music, unless it will be loaded and unloaded dynamically.
-	//r_loader.generate_music(tools::explode_lines_from_file(env.build_app_path("resources/lists/music.txt")));
+	//r_loader.generate_music(tools::explode_lines_from_file(build_resource_path("lists", "music.txt")));
 }
 
-void state_driver::common_pre_loop_input(dfw::input& input, ldtools::tdelta /*delta*/) {
+void state_driver::common_pre_loop_input(
+	dfw::input& input, 
+	ldtools::tdelta /*delta*/
+) {
 
 	if(input().is_event_joystick_connected()) {
 
@@ -223,13 +226,13 @@ void state_driver::ready_resources(
 	auto& spritesheets=service_provider->get_spritesheet_manager();
 	spritesheets.add(
 		app::ss_tiles,
-		ldtools::sprite_table{env.build_app_path("resources/lists/tiles.txt")}
+		ldtools::sprite_table{build_resource_path("lists", "tiles.txt")}
 	);
 
 	auto& animations=service_provider->get_animation_manager();
 	animations.add(
 		app::animgr_tiles,
-		ldtools::animation_table{ spritesheets.at(app::ss_tiles), env.build_app_path("resources/lists/animations.txt")}
+		ldtools::animation_table{ spritesheets.at(app::ss_tiles), build_resource_path("lists", "animations.txt")}
 	);
 
 	//Ready ttf fonts...
@@ -241,7 +244,7 @@ void state_driver::load_fonts(
 	ldtools::ttf_manager& _ttf_manager
 ) {
 
-	std::ifstream font_stream{env.build_app_path("resources/lists/fonts.txt")};
+	std::ifstream font_stream{build_resource_path("lists", "fonts.txt")};
 	std::string font_id, font_path;
 	int font_size;
 
@@ -309,6 +312,18 @@ bool state_driver::validate_state(
 	return _v > controller::state_min 
 		&& _v < controller::state_max;
 }
+
+
+std::string state_driver::build_resource_path(
+	const std::string _type,
+	const std::string _str
+) {
+
+	std::stringstream ss;
+	ss<<"resources/"<<type<<"/"<<_str;
+	return env.build_app_path(ss.str())};
+};
+
 
 /**
  * And here are the "application-specific" pieces. The structure of 
