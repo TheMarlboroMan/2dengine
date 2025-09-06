@@ -13,8 +13,8 @@ show_text::show_text(
 	app::service_provider& _sp
 ):
 	log{_sp.get_logger()},
-	current_index(0),
-	text_exchange{_sp.get_show_text_exchange()}
+	text_exchange{_sp.get_show_text_exchange()},
+	current_index(0)
 {
 
 	timers.add(time_text, 0.05, 0., true);
