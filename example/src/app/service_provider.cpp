@@ -106,6 +106,13 @@ app::tpersistence& service_provider::get_persistence() {
 	if(nullptr==persistence.get()) {
 
 		persistence.reset(new tpersistence());
+		persistence->add(app::pergr_collectibles);
+		persistence->add(app::pergr_secret_covers);
+		persistence->add(app::pergr_buttons);
+		persistence->add(app::pergr_touch_triggers);
+		persistence->add(app::pergr_automap);
+		persistence->add(app::pergr_events);
+		persistence->add(app::pergr_texts);
 	}
 
 	return *persistence;

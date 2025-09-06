@@ -152,6 +152,53 @@ void main::new_game(
 	start("start_001", 1);
 }
 
+void main::load_game() {
+
+	app::savegame_io sio{};
+	lm::log(logger).info()<<"loading game from "<<game_session.savegame_file<<std::endl;
+
+	auto save=sio.load_from_file(game_session.savegame_file);
+	reset_game(save.difficulty_setting, game_session.savegame_file);
+
+	//No need to add groups: the persistence will do it.
+	persistence.reset();
+	persistence.load_from_string(save.persistence_string);
+
+	inventory.red_keys=save.red_keys;
+	inventory.blue_keys=save.blue_keys;
+	inventory.green_keys=save.green_keys;
+	inventory.yellow_keys=save.yellow_keys;
+	//Treasure actually comes from the persistence layer.
+	inventory.treasure=persistence.size(app::pergr_collectibles);
+
+	game_session.skill_level=save.difficulty_setting;
+	game_session.elapsed_seconds=save.elapsed_seconds;
+	game_session.lives=save.lives;
+
+	start(save.map_filename, save.entry_id);
+}
+
+void main::reset_game(
+	int _skill,
+	const std::string& _savegame_file
+) {
+
+	//TODO: Why should this go here in this controller?
+	//I don't know, I don't remember... where is this called from? Who
+	//owns these things?
+	persistence.reset();
+
+	player.reset();
+	inventory.reset();
+	game_session.reset(_skill, _savegame_file);
+}
+
+void main::game_over() {
+
+	//TODO: This is only hard mode and it should remove the save xD
+	throw std::runtime_error("game over is not implemented!");
+}
+
 void main::awake(
 	dfw::input& /*input*/
 ) {
@@ -2110,52 +2157,6 @@ void main::save_game(
 		game_session.savegame_file,
 		save
 	);
-}
-
-void main::load_game() {
-
-	app::savegame_io sio{};
-	lm::log(logger).info()<<"loading game from "<<game_session.savegame_file<<std::endl;
-
-	auto save=sio.load_from_file(game_session.savegame_file);
-	reset_game(save.difficulty_setting, game_session.savegame_file);
-
-	persistence.load_from_string(save.persistence_string);
-
-	inventory.red_keys=save.red_keys;
-	inventory.blue_keys=save.blue_keys;
-	inventory.green_keys=save.green_keys;
-	inventory.yellow_keys=save.yellow_keys;
-	//Treasure actually comes from the persistence layer.
-	inventory.treasure=persistence.size(app::pergr_collectibles);
-
-	game_session.skill_level=save.difficulty_setting;
-	game_session.elapsed_seconds=save.elapsed_seconds;
-	game_session.lives=save.lives;
-
-
-	start(save.map_filename, save.entry_id);
-}
-
-void main::reset_game(
-	int _skill,
-	const std::string& _savegame_file
-) {
-
-	//TODO: Why should this go here in this controller?
-	//I don't know, I don't remember... where is this called from? Who
-	//owns these things?
-	persistence.reset();
-	player.reset();
-	inventory.reset();
-	game_session.reset(_skill, _savegame_file);
-}
-
-void main::game_over() {
-
-	//TODO: This is only hard mode and it should remove the save xD
-	throw std::runtime_error("game over is not implemented!");
-
 }
 
 void main::setup_area_banner(

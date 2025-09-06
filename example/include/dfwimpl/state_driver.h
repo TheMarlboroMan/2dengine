@@ -37,19 +37,29 @@ class state_driver:
 
 	private:
 
-	void                            prepare_video(dfw::kernel&);
+	bool                            validate_state(int);
+	void                            prepare_video(dfw::kernel&, dfw::window_info, bool);
 	void                            prepare_audio(dfw::kernel&);
 	void                            prepare_input(dfw::kernel&);
 	void                            prepare_resources(dfw::kernel&);
+	void                            virtualize_input(dfw::input& input, int);
+
+	dfw::window_info                get_video_init_data() const;
+	dfw::audio_info                 get_audio_init_data() const;
+	void                            load_resources(dfw::kernel&);
+	void                            load_fonts(ldtools::ttf_manager&);
 	void                            register_controllers(dfw::kernel&);
-	void                            virtualize_input(dfw::input& input);
-	void                            load_resources();
+	void                            ready_resources(dfw::kernel&);
+	std::vector<dfw::input_pair>    get_input_pairs() const;
 	void                            start_app(const tools::arg_manager&, dfw::input&);
+	int                             get_input_axis_threshold() const;
 
 	//references
 	dfwimpl::config&                config;
 	lm::logger&                     log;
 	const appenv::env&              env;
+
+	//data.
 	std::unique_ptr<app::service_provider>  service_provider{nullptr};
 
 #ifdef IS_DEBUG_BUILD
