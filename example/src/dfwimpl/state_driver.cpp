@@ -317,11 +317,11 @@ bool state_driver::validate_state(
 std::string state_driver::build_resource_path(
 	const std::string _type,
 	const std::string _str
-) {
+) const {
 
 	std::stringstream ss;
-	ss<<"resources/"<<type<<"/"<<_str;
-	return env.build_app_path(ss.str())};
+	ss<<"resources/"<<_type<<"/"<<_str;
+	return env.build_app_path(ss.str());
 };
 
 

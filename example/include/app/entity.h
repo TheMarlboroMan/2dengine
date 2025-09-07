@@ -1,50 +1,13 @@
 #pragma once
 
-#include <d2d/collision/spatiable.h>
+#include <d2d/collision/spatiable_box.h>
 #include <d2d/motion/definitions.h>
 #include <iostream>
 
 namespace app {
 
-/**
- * single implementation for spatiable things that do not need to be 
- * tracked and can be composed instead of inherited.
- */
-class entity:
-	public d2d::collision::spatiable {
+//The spatiable_box used to be an "entity" in this application before it was
+//promoted to the library.
+using entity=d2d::collision::spatiable_box;
 
-	public:
-
-	                                    entity(int, int, int, int);
-	                                    entity(d2d::collision::point, int, int);
-	                                    entity(d2d::collision::box);
-	void                                commit_box();
-	void                                rollback_box();
-
-//Begin implementation of spatiable
-
-	virtual d2d::collision::box&             get_box() {return collision_box;}
-	virtual const d2d::collision::box&       get_box() const {return collision_box;}
-	virtual const d2d::collision::box&       get_previous_box() const {return previous_box;}
-	virtual d2d::collision::point&           get_origin() {return collision_box.origin;}
-	virtual const d2d::collision::point&     get_origin() const {return collision_box.origin;}
-	virtual double                      get_x() const {return collision_box.origin.x;}
-	virtual double                      get_y() const {return collision_box.origin.y;}
-	virtual int                         get_w() const {return collision_box.w;}
-	virtual int                         get_h() const {return collision_box.h;}
-	virtual bool                            is_passable_edge(d2d::collision::box_edge) const {return false;}
-	virtual d2d::motion::motion_vector      get_motion_vector() const {return vector;}
-	virtual void                            set_motion_vector(d2d::motion::motion_vector _v) {vector=_v;}
-	//virtual color                       get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
-	//virtual color                       get_debug_fill_color() const {return cimpl->get_fill_color(*this);}
-//End implementation of spatiable
-
-	private:
-
-	d2d::collision::box                 collision_box,
-										previous_box;
-	d2d::motion::motion_vector          vector;
-};
-
-std::ostream& operator<<(std::ostream&, const entity&);
 }

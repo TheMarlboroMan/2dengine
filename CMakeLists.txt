@@ -95,6 +95,9 @@ if(${BUILD_SHARED})
 	message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-shared")
 endif()
 
+set(INSTALL_DIR "include/")
+install(DIRECTORY include/ DESTINATION ${INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
+
 #setup libraries for example and tests.
 if(${BUILD_EXAMPLES} OR ${BUILD_TESTS})
 

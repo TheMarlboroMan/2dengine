@@ -30,7 +30,7 @@ test::test(
 	player{17, 16, 10, 25}
 {
 
-	auto create_block=[&](int _grid_x, int _grid_y) -> void {
+	auto create_block=[&](double _grid_x, double _grid_y) -> void {
 
 		obstacles.push_back({_grid_x*16, _grid_y*16, 16, 16});
 	};

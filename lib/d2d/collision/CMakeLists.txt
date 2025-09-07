@@ -3,6 +3,7 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/aabb_solver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/aabb_phase.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/spatiable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/spatiable_box.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tools.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/shaper_default.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tile.cpp

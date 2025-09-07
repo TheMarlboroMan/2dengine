@@ -16,9 +16,9 @@ PATCH_VERSION=0
 export VERSION="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
 echo "will build $VERSION"
 $2 --appdir AppDir
-cp -r resources/* AppDir/usr/share
+cp -r example/resources/* AppDir/usr/share
 mkdir -p AppDir/usr/share/metainfo
-cp linuxdeploy/*.xml AppDir/usr/share/metainfo/
-$2 --executable $1 --appdir AppDir -i ./linuxdeploy/icon.png -d ./linuxdeploy/app.desktop --output appimage
+cp example/linuxdeploy/*.xml AppDir/usr/share/metainfo/
+$2 --executable $1 --appdir AppDir -i ./example/linuxdeploy/icon.png -d ./example/linuxdeploy/app.desktop --output appimage
 rm -rf AppDir
 exit 0
