@@ -44,10 +44,10 @@ bool spatiable_box::is_passable_edge(
 
 	switch(_edge) {
 
-		case box_edge::top: return edges & aabb_edges::top;
-		case box_edge::bottom: return edges & aabb_edges::bottom;
-		case box_edge::right: return edges & aabb_edges::left;
-		case box_edge::left: return edges & aabb_edges::right;
+		case box_edge::top: return !(edges & aabb_edges::top);
+		case box_edge::bottom: return !(edges & aabb_edges::bottom);
+		case box_edge::right: return !(edges & aabb_edges::left);
+		case box_edge::left: return !(edges & aabb_edges::right);
 		default: 
 			return false; //as much as box_edge is an enum class g++ keeps complaining.
 	}

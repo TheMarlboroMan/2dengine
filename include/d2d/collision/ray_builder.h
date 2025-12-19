@@ -11,12 +11,15 @@ class ray_builder {
 	public:
 
 /**
- * builds the ray for the spatiable and vector.
+ * builds the ray for the spatiable and vector. This gives the full ray, not 
+ * taking into account any delta time (multiply by delta to know the ray for
+ * the current tic of a spatiable!).
  */
 	ray     get(const spatiable&, const d2d::motion::motion_vector&) const;
 	ray     get(const spatiable&) const;
 /**
- * builds the ray for the previous position of the spatiable.
+ * builds the ray for the previous position of the spatiable. Same delta time
+ * considerations as above apply.
  */
 	ray     get_previous(const spatiable&, const d2d::motion::motion_vector&) const;
 	ray     get_previous(const spatiable&) const;

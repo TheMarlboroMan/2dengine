@@ -242,7 +242,6 @@ void main::loop(
 		return;
 	}
 
-
 	//If a map transition is taking place tic that instead of our regular stuff.
 	if(transition || transition_out) {
 

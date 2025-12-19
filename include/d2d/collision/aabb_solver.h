@@ -45,10 +45,10 @@ class aabb_solver {
 
 	public:
 
-	//Solve against the first obstacle found.
+	//Solve against the first obstacle found. The spatiable box will not be commited.
 	void                    horizontal(collision::spatiable&, const std::vector<collision::spatiable const *>&);
 	void                    vertical(collision::spatiable&, const std::vector<collision::spatiable const *>&);
-	//Solve against the nearest obstacle found!
+	//Solve against the nearest obstacle found! The spatiable box will not be commited.
 	aabb_response           horizontal_complex(const collision::spatiable&, const std::vector<collision::spatiable const *>&);
 	aabb_response           vertical_complex(const collision::spatiable&, const std::vector<collision::spatiable const *>&);
 

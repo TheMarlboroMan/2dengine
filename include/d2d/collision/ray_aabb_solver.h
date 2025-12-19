@@ -23,13 +23,15 @@ class ray_aabb_solver {
 /**
  * Returns edges as spatiable collided with N edge of something. The vector
  * WILL BE CHANGED (as in sorted) using the default sort by intersection time.
- * This may not be enough in perfect corner collisions!
+ * This may not be enough in perfect corner collisions!. The spatiable box
+ * WILL NOT BE commited.
  */
 	result  sort_and_solve(spatiable&, std::vector<ray_aabb_info>&) const;
 
 /**
  * Returns edges as spatiable collided with N edge of something. The vector
  * will not be changed and is assumed to be sorted as the application needs.
+ * The spatiable box will not be commited.
  */
 	result  solve(spatiable&, const std::vector<ray_aabb_info>&) const;
 

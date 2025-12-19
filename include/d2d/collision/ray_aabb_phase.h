@@ -49,8 +49,9 @@ class ray_aabb_phase {
 	ray_aabb_phase&     reset();
 	ray_aabb_phase&     flags(int);
 	ray_aabb_phase&     early_exit(bool);
-	ray_aabb_phase&     detect_one(const d2d::collision::spatiable&, int=0);
-	ray_aabb_phase&     detect_one(const d2d::collision::spatiable * _node, int _flags=0) {return detect_one(*_node, _flags);}
+	//!If no flags are specified the collision_flags property is used.
+	ray_aabb_phase&     detect_one(const d2d::collision::spatiable&, int=-1);
+	ray_aabb_phase&     detect_one(const d2d::collision::spatiable * _node, int _flags=-1) {return detect_one(*_node, _flags);}
 
 	template<typename T>
 	ray_aabb_phase&     detect_all(

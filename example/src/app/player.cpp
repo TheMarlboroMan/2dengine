@@ -77,6 +77,7 @@ void player::reset() {
 
 	facing=faces::right;
 	timeouts.restart();
+	timeouts.pause(timeout_jump_buffer); //avoid automatic jumping because of has_jump_buffered!
 	current_ladder=nullptr;
 	jump_shortened=false;
 }
@@ -169,7 +170,8 @@ bool player::has_jump_last_chance() const {
 
 bool player::has_jump_buffered() const {
 
-	return !timeouts.is_finished(timeout_jump_buffer);
+	return !timeouts.is_paused(timeout_jump_buffer)
+		&& !timeouts.is_finished(timeout_jump_buffer);
 }
 
 bool player::is_defeat_timeout_done() const {

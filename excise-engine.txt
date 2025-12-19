@@ -9,11 +9,14 @@ next steps:
 
 		- the keys are "characters"
 			- the REAL key is in a piece that looks exactly like the one in the
-			  real world.
+			  real world (what I mean is that the end of the challange looks
+			  like its regular level counterpart where the key is, but the
+			  rest can be PURE fantasy.
 			- the key is at the end of the challenge.
 
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
+			- I don't know what I meant with this...
 
 		- do a test run and SAVE IT...
 			- and review it xD... It has worked so far anyway.

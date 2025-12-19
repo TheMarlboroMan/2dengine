@@ -34,6 +34,15 @@ ldv::point d2d::video::to_screen_coordinates(
 	return {_point.x, y};
 }
 
+ldv::point d2d::video::to_screen_coordinates(
+	d2d::collision::point _point,
+	unsigned _h
+) {
+
+	int y=-(int)_point.y-_h;
+	return {(int)_point.x, y};
+}
+
 ldv::rect d2d::video::to_screen_rect(
 	const d2d::collision::box& _box
 ) {

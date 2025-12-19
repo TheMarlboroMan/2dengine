@@ -44,7 +44,7 @@ class spatiable_box:
 	box                                 collision_box, 
 	                                    previous_box; 
 	motion_vector                       vector;
-	int                                 edges{15};
+	int                                 edges{15}; //indicates solid edges.
 };
 
 std::ostream& operator<<(std::ostream&, const spatiable_box&);

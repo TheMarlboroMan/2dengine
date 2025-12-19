@@ -53,7 +53,11 @@ ray_aabb_phase& ray_aabb_phase::detect_one(
 		return *this;
 	}
 
-	bool must_check_side=!(_flags & flag_skip_passable_side_check);
+	int flags=-1==_flags 
+		? collision_flags
+		: 0;
+
+	bool must_check_side=!(flags & flag_skip_passable_side_check);
 	if(must_check_side) {
 
 		if(info.normal.x!=0.) {

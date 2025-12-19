@@ -22,11 +22,14 @@ ldv::rect to_screen(const d2d::collision::box&);
 ldv::rect to_screen(const d2d::collision::spatiable&);
 
 /**
- * converts a logic point to screen coordinates from x, y and h.
+ * converts a logic or video point to screen coordinates from x, y and h.
  * the logic point is expressed in absolute units (not tile
- * units). The y component is inverted.
+ * units). The y component is inverted. The h argument is used when converting
+ * a point and adding and offset (such as when converting the origin of a box
+ * ) and can be left at zero when working with pure points.
  */
-ldv::point to_screen_coordinates(ldv::point, unsigned);
+ldv::point to_screen_coordinates(d2d::collision::point, unsigned=0);
+ldv::point to_screen_coordinates(ldv::point, unsigned=0);
 
 /**
  * converts collision boxes to screen coordinates by manipulating the y
