@@ -6,6 +6,7 @@ next steps:
 
 		- a sprite for the character appears on each key challenge room. It
 			is actually a special type of switch that triggers the text-node.
+			... -> yeah, sure mate... I guess we actually need one for the 
 
 		- the keys are "characters"
 			- the REAL key is in a piece that looks exactly like the one in the
@@ -60,6 +61,11 @@ next steps:
 story: 
 
 - each character tells contradicting accounts.
+	- owl -> mage archetype
+	- cat -> rogue archetype
+	- ??? -> knight archetype
+	- book -> the wizard itself
+
 - the book itself behaves as a character!
 
 ============================

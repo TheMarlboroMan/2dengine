@@ -678,7 +678,7 @@ void menu::set_savegame_description(
 	int area_id=automap_interface.area_id_from_map(slot.levelname);
 	const auto& area=automap_interface.get(area_id);
 	ss<<"\n\n  "<<sp.get_localization().get(area.localization_key);
-	
+
 	view.set_text("menu_savegame_description", ss.str());
 }
 

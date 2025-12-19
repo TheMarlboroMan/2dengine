@@ -174,6 +174,7 @@ void main::load_game() {
 	game_session.skill_level=save.difficulty_setting;
 	game_session.elapsed_seconds=save.elapsed_seconds;
 	game_session.lives=save.lives;
+	game_session.discovered_rooms=save.discovered_rooms;
 
 	start(save.map_filename, save.entry_id);
 }
@@ -2140,8 +2141,8 @@ void main::save_game(
 		persistence.save_to_string(),
 		_entry_id,
 		game_session.skill_level,
-		game_session.get_discovered_map_count(),
 		game_session.elapsed_seconds+(int)game_session.game_clock.get_seconds(),
+		game_session.get_discovered_map_count(),
 		game_session.lives,
 		inventory.yellow_keys,
 		inventory.blue_keys,
@@ -2549,7 +2550,6 @@ void main::discover_map(
 		mark_map_as_complete();
 	}
 }
-
 
 void main::boss_create_targeted_projectile(
 	d2d::collision::point _origin,

@@ -199,6 +199,7 @@ console::result main::execute_cmd(
 
 		return {0, ss.str()};
 	}
+
 	if(_cmd=="discover") {
 
 		game_session.debug_discovered_rooms=_args[0].get_int();
