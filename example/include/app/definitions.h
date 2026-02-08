@@ -116,7 +116,7 @@ enum sprites {
 	spr_water_surface=500, 
 	spr_waterfall=504,
 	spr_lava_surface=508,
-	spr_wall_torch=215,
+	spr_wall_torch=526,
 
 	//Collectibles
 	spr_gold_ingot=300,

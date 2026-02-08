@@ -350,3 +350,12 @@ app::show_text_exchange& service_provider::get_show_text_exchange() {
 
 	return *text_exchange;
 }
+
+void service_provider::reset_game_properties(
+	int _skill,
+	const std::string& _savegame_file
+) {
+
+	get_inventory().reset();
+	get_game_session().reset(_skill, _savegame_file);
+}

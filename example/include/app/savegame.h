@@ -8,17 +8,17 @@ struct savegame {
 	               savegame(
 						const std::string&, //name
 						const std::string&, //persistence
-						int, //entry
+						int, //entry_id
 						int, //skill
 						int, //seconds
 						int, //rooms
 						int, //lives
-						int, //keys
-						int,
-						int,
-						int,
-						int, //ultimate
-						int //treasure
+						int, //keys y
+						int, //keys b
+						int, //keys r
+						int, //keys g
+						int, //treasure
+						int //ultimate
 					);
 	static savegame from_default();
 

@@ -58,6 +58,7 @@ struct tile_impl:
 	) const {
 
 		switch(_tile.type) {
+			case tile_full_no_camera:
 			case tile_full:
 			case tile_harm:
 			case tile_harm_half_bottom:
@@ -90,7 +91,6 @@ struct tile_impl:
 				}
 			break;
 
-			case tile_full_no_camera:
 			case tile_camera_stop:
 				return true;
 		}

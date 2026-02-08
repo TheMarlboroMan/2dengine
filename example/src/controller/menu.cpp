@@ -415,7 +415,6 @@ void menu::set_visible_skill_select(
 
 void menu::ready_skill_select() {
 
-
 	set_visible_skill_select(true);
 	set_visible_main(false);
 	set_visible_slot_select(false);

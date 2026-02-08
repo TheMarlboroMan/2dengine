@@ -1,6 +1,6 @@
 next steps:
 
-	current commit: 2e201a01b85c5eac9649ab9e367f3545b3ade9b0
+	BUGS:
 
 	make the first example game
 
@@ -31,8 +31,6 @@ next steps:
 
 		- remove the test controller, I guess
 
-		what's wrong with the torch animation??
-
 		make death pits aesthetically the same (do not see player bounce!)
 
 		solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
@@ -60,13 +58,77 @@ next steps:
 
 story: 
 
-- each character tells contradicting accounts.
-	- owl -> mage archetype
-	- cat -> rogue archetype
-	- ??? -> knight archetype
-	- book -> the wizard itself
+- what about the accounts of the story for each character? they should
+  contradict each other, for fun.
+	- the owl: court magician/seer/astrologer. Tried to convince the "book"
+		character to stay inside the place because the world outside is no
+		place for such power. 
+			> Feared the influence of the cat [the dog tells],
+			> thought the dog was too naive [tells itself], 
+			> maybe wanted to make itself powerful through the book [cat tells]
 
-- the book itself behaves as a character!
+	- the cat: trusted counselor. Tried to convince the "book" character to
+	  take it outside and use its power. 
+			> [????]
+			> [????]
+			> [????]
+
+	- the dog: personal guard. Tried to convince the "book" character to burn
+	  the book and go back to the world outside. It would have wanted to go
+	  back for selfish reasons some other characters would fill in, like 
+	  family or a confortable life.
+			> [????]
+			> [????]
+			> [????]
+
+	- the book: ruler of sorts. Maybe the one which could be telling mostly 
+		the truth.
+			> [????]
+
+	- The owl, cat and dog agreed to become seals because the book itself was
+	 going mad by the minute and wanted to find out a way to stall whatever
+	 that was going on.
+
+- each character should have a different agenda towards the book.
+	- owl 
+		- wanted to stay inside and study the book.
+		- wants wants to have the player keep the book into the game world as
+			some sort of guardian.
+		- neutral or good ending.
+			-> sure, where does the player have to go to get this ending?
+			I have this idea of some sort of library somewhere that would
+			lock itself in. It is just fitting.
+			[?????] Fitting or not, where is it
+	- cat
+		- wanted to take the book to the world outside, for power of course,
+			not necessarily for evil.
+		- wants: the player to take the book and itself to the world outside.
+			-> bad ending, likely??
+	- dog
+			- wanted: to destroy the book and go back to its life.
+			- wants the player to destroy the book.
+			- canonical ending -> throw the book to the furnace.
+	- book
+		- wanted: [????]
+		- wants: [????]
+		- got consumed by the book and now is a voice among many others in its
+		pages.
+
+	[????] And what is the power of the book???
+		- tell the future
+		- shape the future
+		- who cares? it just makes people mad and ends up assimilating them.
+
+	[????] The cat would not have agreed if there was not a secret plan in
+	 place. 
+		- Maybe the player is that secret plan. In which case it would be 
+		"glad to see you again" and "how many years has it been? you really
+		have grown up" implying that there was some sort of relation.
+		I like this explanation.
+	[????] Why would the cat want to take the book to the world outside?
+		- Because it is the book itself (wtf)
+		- Because it would grant quite a lot of power for himself.
+		- Because it plans to take the book for itself.
 
 ============================
 

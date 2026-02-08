@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include <memory>
+#include <string>
 #include <dfw/kernel.h>
 
 namespace appenv {
@@ -102,6 +103,9 @@ class service_provider {
 	game_session&           get_game_session();
 	random&                 get_random();
 	show_text_exchange&     get_show_text_exchange();
+
+	//Resets stuff related to the game but shared between controllers.
+	void                    reset_game_properties(int, const std::string&);
 
 	private:
 
