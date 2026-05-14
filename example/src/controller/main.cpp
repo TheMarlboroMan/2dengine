@@ -354,7 +354,6 @@ void main::load_map(
 ) {
 	std::stringstream ss;
 
-
 #ifdef IS_DEBUG_BUILD
 
 	current_map_name=_map_name;
@@ -503,6 +502,11 @@ void main::attempt_exit(
 			play_sound(app::snd_forbidden);
 			return;
 		}
+
+		if(is_map_complete(&_exit)) {
+
+			mark_map_as_complete();
+		}
 	}
 
 	//From this point on, an exit to another room will happen.
@@ -527,7 +531,7 @@ void main::attempt_exit(
 			break;
 		}
 
-		if(is_map_complete(_exit.map_filename)) {
+		if(is_map_complete(&_exit)) {
 
 			mark_map_as_complete();
 		}
@@ -2462,12 +2466,13 @@ void main::sync_facing_blocks() {
 }
 
 /**
- * we can pass around an optional string representing a map
- * we are entering, so we can check doors against this map
- * filename and skip them.
- */
+* we can pass around an optional exit we are taking
+* *TODO: SO WHAT??? Complete the docs!
+* we are entering, so we can check doors against this map
+* filename and skip them.
+*/
 bool main::is_map_complete(
-	const std::string _next_map
+	const app::exit* _exit
 ) const {
 
 	if(current_map.collectibles.size()) {
@@ -2483,7 +2488,8 @@ bool main::is_map_complete(
 
 		//special exits will not be loaded once visited. Still, we check against
 		//the next map name, in case we are currently exiting through this one.
-		if(exit.is_special() && _next_map!=exit.map_filename) {
+		//TODO: WILL THIS MAKE SPECIAL EXITS NEVER BE COUNTED???
+		if(exit.is_special() && nullptr!=_exit && exit!=*_exit) {
 
 			lm::log(logger).debug()<<"there are special exits in the map"<<std::endl;
 			return false;
@@ -2496,7 +2502,10 @@ bool main::is_map_complete(
 			continue;
 		}
 
-		if(_next_map==exit.map_filename) {
+		//This is a special counted door: If we are exiting through it then
+		//it's ok, do not check if we already discovered what lies behind it.
+		//and continue checking all other exits.
+		if(nullptr!=_exit && *_exit==exit) {
 
 			continue;
 		}

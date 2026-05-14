@@ -928,9 +928,9 @@ void game_draw::draw_player(
 		break;
 		case app::player::states::ladder:
 			animation_index=app::anim_climb;
-			int y_mod=(int)_player.ent.get_origin().y % 10;
-			frame_index=abs(y_mod) <= 4 ? 0 : 1;
+			int y_mod=(int)_player.ent.get_origin().y % 20;
 			//This is the wonkiest fix ever...
+			frame_index=abs(y_mod) <= 10 ? 0 : 1;
 		break;
 	}
 

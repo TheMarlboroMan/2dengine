@@ -133,7 +133,7 @@ class main:
 	void                        write_moving_block(app::moving_block&, int);
 	void                        sync_facing_blocks();
 	void                        toggle_blocks(app::player&);
-	bool                        is_map_complete(const std::string="") const;
+	bool                        is_map_complete(const app::exit* =nullptr) const;
 	void                        mark_map_as_complete();
 	void                        discover_map(int, bool);
 

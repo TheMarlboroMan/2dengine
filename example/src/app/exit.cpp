@@ -18,6 +18,17 @@ exit::exit(
 	type{_type}
 {}
 
+bool exit::operator==(
+	const exit& _other
+) const {
+
+	return ent.get_box()==_other.ent.get_box()
+		&& map_filename==_other.map_filename
+		&& next_entry_id==_other.next_entry_id
+		&& min_rooms==_other.min_rooms
+		&& transition_type==_other.transition_type
+		&& type==_other.type;
+}
 
 std::ostream& app::operator<<(
 	std::ostream& _stream, 

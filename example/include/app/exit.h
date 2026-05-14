@@ -28,6 +28,8 @@ class exit {
 	//All exits are "touch" except for trigger ones.
 	bool                    is_touch() const {return type!=trigger;}
 	bool                    is_special() const {return type >= redkey;}
+	bool                    operator!=(const exit& _other) const {return !(*this==_other);}
+	bool                    operator==(const exit&) const;
 
 	entity                  ent;
 	std::string             map_filename;
