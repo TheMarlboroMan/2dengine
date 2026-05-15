@@ -374,11 +374,15 @@ void pause::ready_map_name(
 ) {
 
 	const auto& area=automap_interface.get();
+
 	bool area_complete=_cells.size() == area.cells.size();
+	lm::log(logger).debug()<<"readying map name, "<<_cells.size()<<" vs "<<area.cells.size()<<"\n";
 	for(const auto& cell : _cells) {
 
 		bool room_complete=persistence.has(app::pergr_automap, cell->id)
 			&& persistence.get(app::pergr_automap, cell->id)==app::am_complete;
+
+		lm::log(logger).debug()<<"room "<<cell->id<<" is "<<(room_complete ? "complete" : "incomplete")<<"\n";
 		area_complete&=room_complete;
 	}
 

@@ -228,7 +228,6 @@ class main:
 	bool                        console_enabled{false};
 	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
-
 	                            current_map_name;
 #endif
 
