@@ -114,13 +114,13 @@ void thing_loader::add_exit(
 	switch(type) {
 
 		case app::exit::types::redkey:
-			event_id=perev_fake_red_key;
+			event_id=perev_red_key_teleport;
 		break;
 		case app::exit::types::bluekey:
-			event_id=perev_fake_blue_key;
+			event_id=perev_blue_key_teleport;
 		break;
 		case app::exit::types::greenkey:
-			event_id=perev_fake_green_key;
+			event_id=perev_green_key_teleport;
 		break;
 	}
 

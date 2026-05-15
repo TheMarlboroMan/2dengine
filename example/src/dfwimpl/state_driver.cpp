@@ -6,9 +6,8 @@
 #include <stdexcept>
 
 #ifdef IS_DEBUG_BUILD
-	#include "controller/test.h"
-	#include <dfw/input_recorder_file_8bit.h>
-	#include <dfw/input_generator_file_8bit.h>
+#include <dfw/input_recorder_file_8bit.h>
+#include <dfw/input_generator_file_8bit.h>
 #endif
 
 //Libraries and application specifics.
@@ -376,16 +375,6 @@ void state_driver::register_controllers(
 		controller::state_show_text,
 		new controller::show_text(*service_provider)
 	);
-
-#ifdef IS_DEBUG_BUILD
-
-	reg(
-		c_test,
-		controller::state_test,
-		new controller::test(*service_provider)
-	);
-
-#endif
 }
 
 void state_driver::prepare_state(
@@ -521,6 +510,7 @@ void state_driver::start_app(
 			throw std::runtime_error("file for --record already exists, refusing to overwrite");
 		}
 
+		//TODO: Does this throw memory out??
 		dfw::input_recorder_file_8bit * ir=new dfw::input_recorder_file_8bit{_in, input_converter};
 		ir->open_file(recorded_filename);
 		ir->set_active(true);
@@ -538,7 +528,7 @@ void state_driver::start_app(
 //TODO: Should be checked in dfw::input to see if any inputs are being watched.
 		_in.set_recorder(input_recorder.get());
 
-		lm::log(log).info()<<"inputs will be recorded to recorded-play"<<std::endl;
+		lm::log(log).info()<<"inputs will be recorded to "<<recorded_filename<<std::endl;
 	}
 	else if(_argman.exists("--replay")) {
 
@@ -553,6 +543,7 @@ void state_driver::start_app(
 			throw std::runtime_error("file for --replay not found");
 		}
 
+		//TODO: Does this throw memory out??
 		dfw::input_generator_file_8bit * ig=new dfw::input_generator_file_8bit{input_converter};
 		ig->set_active(true);
 		ig->open_file(recorded_filename);
@@ -560,7 +551,7 @@ void state_driver::start_app(
 		input_generator.reset(ig);
 		_in.set_generator(input_generator.get());
 
-		lm::log(log).info()<<"inputs will be replayed from recorded-play"<<std::endl;
+		lm::log(log).info()<<"inputs will be replayed from "<<recorded_filename<<std::endl;
 	}
 
 #endif

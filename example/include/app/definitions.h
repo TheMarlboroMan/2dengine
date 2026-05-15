@@ -51,9 +51,9 @@ enum persistence_groups {
 
 //Game event ids...
 enum per_events {
-	perev_fake_red_key=0,
-	perev_fake_blue_key=1,
-	perev_fake_green_key=2,
+	perev_red_key_teleport=0,
+	perev_blue_key_teleport=1,
+	perev_green_key_teleport=2,
 	perev_boss_defeated=3
 };
 

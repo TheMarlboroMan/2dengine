@@ -7,6 +7,7 @@
 #include "app/game_session.h"
 #include "app/random.h"
 #include "app/show_text_exchange.h"
+#include "app/starfield.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -349,6 +350,23 @@ app::show_text_exchange& service_provider::get_show_text_exchange() {
 	}
 
 	return *text_exchange;
+}
+
+app::starfield& service_provider::get_starfield() {
+
+	if(nullptr==starfield_bg) {
+
+		starfield_bg.reset(
+			new starfield(
+				screen.get_w(),
+				screen.get_h(),
+				160, //stars
+				get_random()
+			)
+		);
+	}
+
+	return *starfield_bg;
 }
 
 void service_provider::reset_game_properties(

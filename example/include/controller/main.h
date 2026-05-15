@@ -156,6 +156,7 @@ class main:
 	//visual stuff.
 	ldv::camera                 camera;
 	app::game_draw              gd; //carries some state, so it must be a property.
+	app::starfield&             starfield_bg;
 
 	//components...
 	//TODO: Move me somewhere else??

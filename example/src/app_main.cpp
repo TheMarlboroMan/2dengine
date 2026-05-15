@@ -1,12 +1,15 @@
-#include "app/env.h"
+#include "app/env.h" 
 #include "app/debug.h"
 #include "controller/controller_states.h"
 #include "dfwimpl/config.h"
 #include "dfwimpl/state_driver.h"
 #include <lm/ostream_logger.h>
 #include <ldt/sdl_tools.h>
+#include <iostream>
 
 std::unique_ptr<appenv::env> make_env(lm::logger&);
+
+void show_help(const char *);
 
 int main(int argc, char ** argv)
 {
@@ -48,18 +51,22 @@ int main(int argc, char ** argv)
 		//Create the kernel, which will own all system stuff, thus cannot be
 		//destroyed BEFORE the state driver.
 		tools::arg_manager carg(argc, argv);
+
+#ifdef IS_DEBUG_BUILD
+
+		if(carg.exists("--help")) {
+
+			show_help(argv[0]);
+			return 0;
+		}
+#endif
+
 		lm::log(app_log).info()<<"creating kernel..."<<std::endl;
 		dfw::kernel kernel(app_log, carg);
 
 		//Init the state driver, this should NOT start system stuff yet!.
 		lm::log(app_log).info()<<"building state driver..."<<std::endl;
-#ifdef IS_DEBUG_BUILD
-		int initial_state=carg.exists("--test") 
-			? controller::state_test
-			: controller::state_menu;
-#else
 		int initial_state=controller::state_menu;
-#endif
 		dfwimpl::state_driver sd(config, app_log, (*env), initial_state);
 
 		//Init system-dependant stuff and application stuff.
@@ -108,4 +115,19 @@ std::unique_ptr<appenv::env> make_env(
 #endif
 
 	return result;
+}
+
+void show_help(
+	const char * _app_name
+) {
+
+	std::cout<<_app_name<<" [--map #mapname [--skill 1|2|3] [--eid #entry_id]] [--record #filename | --replay #filename]\n"
+	"\n"
+	"--map map_name, no file extension\n"
+	"--skill: 1=easy, 2=normal, 3=hard, only with --map, defaults to normal\n"
+	"--eid #entry_id, to choose the starting point on the map\n"
+	"--record to record the full set of inputs\n"
+	"--replay to replay a recorded input\n"
+	"\n"
+	<<_app_name<<" built with libd2d v"<<MAJOR_VERSION<<"."<<MINOR_VERSION<<"."<<PATCH_VERSION<<"\n";
 }

@@ -10,7 +10,7 @@ option(BUILD_EXAMPLE_APPIMAGE "Build example as appimage" OFF)
 
 #library version
 set(MAJOR_VERSION 0)
-set(MINOR_VERSION 0)
+set(MINOR_VERSION 1)
 set(PATCH_VERSION 0)
 
 if(${BUILD_DEBUG})

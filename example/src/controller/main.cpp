@@ -70,8 +70,10 @@ main::main(
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager(),
 		env,
-		_sp.get_random()
+		_sp.get_random(),
+		_sp.get_starfield()
 	},
+	starfield_bg{_sp.get_starfield()},
 	particle_mod_projectile_splash{_sp.get_random()},
 	particle_mod_projectile_horizontal_splash{_sp.get_random()},
 	particle_mod_breaking_platform{_sp.get_random()},
@@ -229,6 +231,16 @@ void main::loop(
 		return;
 	}
 
+	//Transitions override regular input, including going back to the menu.
+	if(transition || transition_out) {
+
+		if(loop_transition(_lid.delta)) {
+
+			return;
+		}
+	}
+
+
 	if(_input.is_input_down(app::input::escape)) {
 
 		if(1!=state_size()) {
@@ -241,15 +253,6 @@ void main::loop(
 		lm::log(logger).info()<<"attemping to leave main state with no stack, exiting";
 		set_leave(true);
 		return;
-	}
-
-	//If a map transition is taking place tic that instead of our regular stuff.
-	if(transition || transition_out) {
-
-		if(loop_transition(_lid.delta)) {
-
-			return;
-		}
 	}
 
 #ifdef IS_DEBUG_BUILD
@@ -401,14 +404,27 @@ void main::load_map(
 	setup_moving_blocks();
 
 	//The loader takes references to the map data.
-	app::map_attribute_loader attrl{current_map.background_color, current_map.music_id};
+	app::map_attribute_loader attrl{
+		current_map.background_color,
+		current_map.music_id,
+		current_map.background_effect
+	};
+
+
 	loader.load_properties(attrl);
 	lm::log(logger).info()<<"map musicid is "
 		<<current_map.music_id
-		<<" and backgroundcolor is "
+		<<", backgroundcolor is "
 		<<current_map.background_color.r<<", "
 		<<current_map.background_color.g<<", "
-		<<current_map.background_color.b<<"\n";
+		<<current_map.background_color.b
+		<<" and effect is "<<current_map.background_effect<<"\n";
+
+	switch(current_map.background_effect) {
+
+		//TODO: BAD CONST
+		case 1: starfield_bg.reload(); break;
+	}
 
 	//Now the music... pieces are loaded in real time so nothing to do here.
 	music_player.swap(current_map.music_id, 500);
@@ -518,16 +534,21 @@ void main::attempt_exit(
 
 	if(_exit.is_special()) {
 
+		//TODO: The problem with this according to excise engine: we may crash
+		//or exit, the persistence is saved but we haven't yet left this
+		//room. Because the exist will disspear we will not be able to
+		//finish the game anymore.
+
 		switch(_exit.type) {
 
 			case app::exit::types::redkey:
-				persistence.add(app::pergr_events, app::perev_fake_red_key, 1);
+				persistence.add(app::pergr_events, app::perev_red_key_teleport, 1);
 			break;
 			case app::exit::types::bluekey:
-				persistence.add(app::pergr_events, app::perev_fake_blue_key, 1);
+				persistence.add(app::pergr_events, app::perev_blue_key_teleport, 1);
 			break;
 			case app::exit::types::greenkey:
-				persistence.add(app::pergr_events, app::perev_fake_green_key, 1);
+				persistence.add(app::pergr_events, app::perev_green_key_teleport, 1);
 			break;
 		}
 
@@ -1084,6 +1105,12 @@ void main::tic_world(
 	//tics????
 
 	current_map.particle_manager.tic(_delta);
+
+	switch(current_map.background_effect) {
+
+		//TODO: BAD CONST!
+		case 1: starfield_bg.tic(_delta); break;
+	}
 
 	d2d::motion::mover mover{};
 	if(current_map.boss && !current_map.boss->is_defeated()) {

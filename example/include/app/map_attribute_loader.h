@@ -11,10 +11,11 @@ class map_attribute_loader:
 
 	public:
 
-	                            map_attribute_loader(ldv::rgba_color&, int&);
+	                            map_attribute_loader(ldv::rgba_color&, int&, int&);
 
 	ldv::rgba_color&            background_color;
 	int&                        music_id;
+	int&                        background_effect;
 
 //begin implementation of base class
 	virtual void                setup();

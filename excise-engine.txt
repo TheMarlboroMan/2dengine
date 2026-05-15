@@ -1,23 +1,55 @@
 next steps:
 
-	BUGS:
-
 	make the first example game
 
-		- a sprite for the character appears on each key challenge room. It
-			is actually a special type of switch that triggers the text-node.
-			... -> yeah, sure mate... I guess we actually need one for the 
+	BUGS:
+		- ultimate and treasure seem to be exchanged in the savegame file.
 
-		- the keys are "characters"
-			- the REAL key is in a piece that looks exactly like the one in the
-			  real world (what I mean is that the end of the challange looks
-			  like its regular level counterpart where the key is, but the
-			  rest can be PURE fantasy.
-			- the key is at the end of the challenge.
+	IDEAS:
+
+		make the starfield be some interface we can instantiate when needed
+
+		add variation to star shades of white-gray
+
+		it would be nice if the starfield had as many stars as treasure we
+		got when we're there.
+
+		for blue key, throw player down the key pit, long fall down, ends on 
+		horizontal platformer over water, with platforms rising from the water
+		itself and then going down.
+
+		for green key maybe the theme is a lot of green keys but they are just
+		scenery.
+
+	WISHLIST-BALANCING-POLISHING:
+		- can we have non crushing moving blocks for the elevator at tower 002?
+		- particles when the player eats a projectile!
+		- fortress 017 and challenge room sky should be pink
+		- fortress 003 has one way only fall which i dislike intensely.
+		- fortress 003 better spikes than a scorpion??
+		- river_010 give some context to floating platforms!
+		- blue_010 pedestal for treasure
+		- blue_015 put something as origin of shots.
+		- green_006 is fire pattern as it should be??
+		- green_009 gray platforms looke like something should happen
+		- green_009 left jump platforms can be skipped from the rightmost one.
+		- green_016 treasure pedestal and platform below
+		- green_017 lower right corner should be black
+		- fortress_022 upper left decorations
+		- fortress_022 left door!
+		- volcano 013 floating platforms context
+		- red_010 pedestal treasure
+		- tower 019 key pedestal
+		- tower 022 last part, with the collapsing platforms, too hard???
+		  maybe the player is too wide????
+		- tower 024 elevator too slow Maybe we need alternatives.
+		- warning spawn skull not found, lies, on boss.
+		- game segfaulted a couple times... 
 
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
-			- I don't know what I meant with this...
+			- I don't know what I meant with this... Oh, maybe I meant DURING
+			the transition?????
 
 		- do a test run and SAVE IT...
 			- and review it xD... It has worked so far anyway.
@@ -28,8 +60,6 @@ next steps:
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
 		command.
-
-		- remove the test controller, I guess
 
 		make death pits aesthetically the same (do not see player bounce!)
 

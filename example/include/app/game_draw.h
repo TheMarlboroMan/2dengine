@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/env.h"
+#include "app/starfield.h"
 #include "app/random.h"
 #include "app/map_transition.h"
 #include <d2d/components/particle.h>
@@ -52,20 +53,21 @@ class boss_skull;
  * possible hassle.
  */
 class game_draw:
-	public d2d::components::particle_render_interface { 
+	public d2d::components::particle_render_interface {
 
 	public:
 
 	                            game_draw(
 		ldv::camera&,
-		d2d::video::scenery_tile_draw&, 
+		d2d::video::scenery_tile_draw&,
 		d2d::video::sprite_draw&,
 		d2d::video::sprite_fill_draw&,
 		d2d::video::animation_sprite_finder&,
 		ldtools::ttf_manager&,
 		const ldv::resource_manager&,
 		const appenv::env&,
-		random&
+		random&,
+		starfield&
 	);
 	                            ~game_draw();
 
@@ -95,6 +97,7 @@ class game_draw:
 	d2d::video::sprite_fill_draw&   sprite_fill_draw;
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
 	random&                     rng;
+	starfield&                  starfield_bg;
 
 	//Properties...
 	ldtools::view_composer      area_name_view;
@@ -131,5 +134,6 @@ class game_draw:
 	void                        draw_boss_skull(ldv::screen&, const app::boss_skull&);
 	void                        draw_animated_particle(ldv::screen&, const d2d::components::particle&, int, int);
 	void                        draw_indexed_sprite_particle(ldv::screen&, const d2d::components::particle&, particle_index, int);
+	void                        draw_background_somewhere_else(ldv::screen&);
 };
 }
