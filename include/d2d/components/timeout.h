@@ -10,7 +10,7 @@ using ldtools::tdelta;
 
 /**
  * Timeouts count from zero to a limit. When the limit is reached we say the
- * timeout "is expired". The counter increases by a delta time whenever
+ * timeout "is is_finished". The counter increases by a delta time whenever
  * "tic" is called. Once a timeout has expired it must be reset with "reset"
  * so it can be used again. Once a timeout has expired it pauses on its own!
  */

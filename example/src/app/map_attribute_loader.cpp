@@ -35,10 +35,18 @@ void map_attribute_loader::load(
 		//winter
 		case 3: background_color=ldv::rgba8(224, 111, 139, 255); break;
 
-		//somewhere else, black, and activates a special effect.
+		//starfield, black, and activates a special effect.
 		case 4:
 			background_color=ldv::rgba8(0, 0, 0, 255);
+//TODO: BAD CONST
 			background_effect=1;
+		break;
+
+		//storm, black, and activates a special effect.
+		case 5:
+			background_color=ldv::rgba8(0, 0, 0, 255);
+//TODO: BAD CONST
+			background_effect=2;
 		break;
 
 		default: //default is black.

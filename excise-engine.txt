@@ -7,11 +7,7 @@ next steps:
 
 	IDEAS:
 
-		for blue key, throw player down the key pit, long fall down, ends on 
-		horizontal platformer over water, with platforms rising from the water
-		itself and then going down.
-
-		for blue key, have birds in the background???
+		for blue key, sound of thunderclap.
 
 		for green key maybe the theme is a lot of green keys but they are just
 		scenery.

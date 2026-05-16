@@ -10,6 +10,7 @@
 #include "app/map_transition_fade.h"
 #include "app/show_text_exchange.h"
 #include "app/starfield.h"
+#include "app/storm.h"
 
 #include "dfwimpl/config.h"
 
@@ -429,6 +430,14 @@ void main::load_map(
 					camera.get_pos_box().w,
 					camera.get_pos_box().h,
 					inventory.treasure, //as many stars as treasure we got. That's poetic.
+					sp.get_random()
+				)
+			);
+		break;
+		//TODO: BAD CONST
+		case 2:
+			background.reset(
+				new app::storm(
 					sp.get_random()
 				)
 			);
