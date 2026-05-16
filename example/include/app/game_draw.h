@@ -1,9 +1,9 @@
 #pragma once
 
 #include "app/env.h"
-#include "app/starfield.h"
 #include "app/random.h"
 #include "app/map_transition.h"
+#include "app/background_interface.h"
 #include <d2d/components/particle.h>
 #include <d2d/video/scenery_tile_draw.h>
 #include <d2d/video/sprite_draw.h>
@@ -19,6 +19,7 @@
 #include <ldv/bitmap_representation.h>
 #include <ldv/resource_manager.h>
 #include <string>
+#include <memory>
 
 namespace app {
 
@@ -66,8 +67,7 @@ class game_draw:
 		ldtools::ttf_manager&,
 		const ldv::resource_manager&,
 		const appenv::env&,
-		random&,
-		starfield&
+		random&
 	);
 	                            ~game_draw();
 
@@ -77,6 +77,9 @@ class game_draw:
 
 	void                        setup_area_name_banner(const std::string&);
 	void                        setup_lives_banner(int);
+
+	//!Can be used to set a background or null.
+	void                        set_background(background_interface * _bg) {background=_bg;}
 
 	//////
 	//implementation of particle_render_interface
@@ -97,7 +100,6 @@ class game_draw:
 	d2d::video::sprite_fill_draw&   sprite_fill_draw;
 	d2d::video::animation_sprite_finder& animation_sprite_finder;
 	random&                     rng;
-	starfield&                  starfield_bg;
 
 	//Properties...
 	ldtools::view_composer      area_name_view;
@@ -105,6 +107,7 @@ class game_draw:
 	ldv::ttf_font               exit_number_font;
 	//A table of N integers to store the "drawing types" of particles.
 	std::vector<int>            particle_persistence_table;
+	background_interface *      background{nullptr};
 
 	void                        draw_player(ldv::screen&, const app::player&);
 	void                        draw_ladder(ldv::screen&, const app::ladder&);

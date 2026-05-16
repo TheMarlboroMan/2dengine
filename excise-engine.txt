@@ -7,16 +7,11 @@ next steps:
 
 	IDEAS:
 
-		make the starfield be some interface we can instantiate when needed
-
-		add variation to star shades of white-gray
-
-		it would be nice if the starfield had as many stars as treasure we
-		got when we're there.
-
 		for blue key, throw player down the key pit, long fall down, ends on 
 		horizontal platformer over water, with platforms rising from the water
 		itself and then going down.
+
+		for blue key, have birds in the background???
 
 		for green key maybe the theme is a lot of green keys but they are just
 		scenery.

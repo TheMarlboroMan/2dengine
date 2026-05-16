@@ -9,6 +9,7 @@
 #include "app/projectile_creator.h"
 #include "app/map_transition_fade.h"
 #include "app/show_text_exchange.h"
+#include "app/starfield.h"
 
 #include "dfwimpl/config.h"
 
@@ -70,10 +71,8 @@ main::main(
 		_sp.get_ttf_manager(),
 		_sp.get_video_resource_manager(),
 		env,
-		_sp.get_random(),
-		_sp.get_starfield()
+		_sp.get_random()
 	},
-	starfield_bg{_sp.get_starfield()},
 	particle_mod_projectile_splash{_sp.get_random()},
 	particle_mod_projectile_horizontal_splash{_sp.get_random()},
 	particle_mod_breaking_platform{_sp.get_random()},
@@ -420,11 +419,23 @@ void main::load_map(
 		<<current_map.background_color.b
 		<<" and effect is "<<current_map.background_effect<<"\n";
 
+	background.reset(nullptr);
 	switch(current_map.background_effect) {
 
 		//TODO: BAD CONST
-		case 1: starfield_bg.reload(); break;
+		case 1: 
+			background.reset(
+				new app::starfield(
+					camera.get_pos_box().w,
+					camera.get_pos_box().h,
+					inventory.treasure, //as many stars as treasure we got. That's poetic.
+					sp.get_random()
+				)
+			);
+		break;
 	}
+
+	gd.set_background(background.get());
 
 	//Now the music... pieces are loaded in real time so nothing to do here.
 	music_player.swap(current_map.music_id, 500);
@@ -1106,10 +1117,9 @@ void main::tic_world(
 
 	current_map.particle_manager.tic(_delta);
 
-	switch(current_map.background_effect) {
+	if(nullptr!=background) {
 
-		//TODO: BAD CONST!
-		case 1: starfield_bg.tic(_delta); break;
+		background->tic(_delta);
 	}
 
 	d2d::motion::mover mover{};

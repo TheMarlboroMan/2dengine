@@ -5,6 +5,7 @@
 #include <console/console.h>
 #endif
 
+#include "app/background_interface.h"
 #include "app/service_provider.h"
 #include "app/env.h"
 #include "app/map.h"
@@ -156,7 +157,7 @@ class main:
 	//visual stuff.
 	ldv::camera                 camera;
 	app::game_draw              gd; //carries some state, so it must be a property.
-	app::starfield&             starfield_bg;
+	std::unique_ptr<app::background_interface> background;
 
 	//components...
 	//TODO: Move me somewhere else??

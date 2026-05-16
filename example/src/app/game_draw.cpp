@@ -16,10 +16,8 @@
 #include "app/facing_block.h"
 #include "app/toggle_block.h"
 #include "app/exit.h"
-
 #include <ldv/color.h>
 #include <ldv/box_representation.h>
-#include <ldv/point_representation.h>
 #include <ldv/resource_manager.h>
 #include <d2d/video/tools.h>
 #include <d2d/video/sprite_draw.h>
@@ -42,8 +40,7 @@ game_draw::game_draw(
 	ldtools::ttf_manager& _ttf_manager,
 	const ldv::resource_manager& _video_resource_manager,
 	const appenv::env& _env,
-	random& _rand,
-	starfield& _starfield
+	random& _rand
 ):
 	camera(_camera),
 	scenery_tile_draw(_scenery_tile_draw),
@@ -51,7 +48,6 @@ game_draw::game_draw(
 	sprite_fill_draw(_sprite_fill_draw),
 	animation_sprite_finder(_animation_sprite_finder),
 	rng{_rand},
-	starfield_bg{_starfield},
 	exit_number_font{_ttf_manager.get("exit_number_font", 8)}
 {
 
@@ -192,10 +188,9 @@ void game_draw::draw(
 
 	_screen.clear(_map.background_color);
 
-	switch(_map.background_effect) {
+	if(nullptr!=background) {
 
-		//TODO: BAD CONST
-		case 1: draw_background_somewhere_else(_screen); break;
+		background->draw(_screen);
 	}
 
 	scenery_tile_draw.draw_animation(_screen, _map.background_tiles);
@@ -1267,44 +1262,4 @@ void game_draw::draw_indexed_sprite_particle(
 		index,
 		mod
 	);
-}
-
-void game_draw::draw_background_somewhere_else(
-	ldv::screen& _screen
-) {
-
-/**
- * TODO: Better to have this as a property and forego allocation each draw!
- * TODO: This would work as long as the first point is in 0,0 because that is
- * the origin... Then again, it would ALWAYS DRAW at 0.0. This is libdansdl2
- * stuff. Take it up with myself there.
-	ldv::point_representation pt{
-		{0,0},
-		ldv::rgba_color(255,255,255,255)
-	};
-
-	for(const auto& dot : starfield_bg.get_moving()) {
-
-		pt.go_to({dot.x, dot.y});
-		pt.draw(_screen);
-	}
-*/
-
-	for(const auto& dot : starfield_bg.get_moving()) {
-
-		ldv::point_representation pt{
-			{dot.x, dot.y},
-			ldv::rgba_color(255,255,255,255)
-		};
-		pt.draw(_screen);
-	}
-
-	for(const auto& dot : starfield_bg.get_static()) {
-
-		ldv::point_representation pt{
-			{dot.x, dot.y},
-			ldv::rgba_color(255,0,0,255)
-		};
-		pt.draw(_screen);
-	}
 }

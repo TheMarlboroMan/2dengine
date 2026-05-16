@@ -67,7 +67,6 @@ class inventory;
 class game_session;
 class random;
 class show_text_exchange;
-class starfield;
 
 class service_provider {
 
@@ -104,7 +103,6 @@ class service_provider {
 	game_session&           get_game_session();
 	random&                 get_random();
 	show_text_exchange&     get_show_text_exchange();
-	starfield&              get_starfield();
 
 	//Resets stuff related to the game but shared between controllers.
 	void                    reset_game_properties(int, const std::string&);
@@ -140,6 +138,5 @@ class service_provider {
 	std::unique_ptr<game_session> session{nullptr};
 	std::unique_ptr<random> rng{nullptr};
 	std::unique_ptr<show_text_exchange> text_exchange{nullptr};
-	std::unique_ptr<starfield> starfield_bg{nullptr};
 };
 }
