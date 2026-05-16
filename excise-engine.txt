@@ -3,7 +3,7 @@ next steps:
 	make the first example game
 
 	BUGS:
-		- ultimate and treasure seem to be exchanged in the savegame file.
+		 - check if ultimate and treasure get swapped in the savegame file.
 
 	IDEAS:
 
