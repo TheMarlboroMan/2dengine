@@ -14,6 +14,21 @@ storm::storm(
 
 	timeouts.add(timeout_wait, rng.get(5, 15), 0., false);
 	timeouts.add(timeout_thunder, 0.5, 0., true);
+
+	//The shape of a key.
+	auto blue_color=ldv::rgba8(0, 87, 132, 255);
+	stars={
+		{{40, 20}, blue_color},
+		{{33, 23}, blue_color},
+		{{35, 31}, blue_color},
+		{{46, 32}, blue_color},
+		{{39, 45}, blue_color},
+		{{51, 74}, blue_color},
+		{{50, 65}, blue_color},
+		{{33, 64}, blue_color},
+		{{30, 74}, blue_color},
+		{{42, 77}, blue_color},
+	};
 }
 
 void storm::tic(
@@ -57,4 +72,9 @@ void storm::draw(
 	_screen.clear(
 		ldv::rgba8(color_val, color_val, color_val, 255)
 	);
+
+	for(auto& pt : stars) {
+
+		pt.draw(_screen);
+	}
 }

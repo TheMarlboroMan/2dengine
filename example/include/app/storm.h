@@ -3,6 +3,7 @@
 #include "app/background_interface.h"
 #include "app/random.h"
 #include <d2d/components/timeout.h>
+#include <ldv/point_representation.h>
 #include <vector>
 
 using ldtools::tdelta;
@@ -30,7 +31,8 @@ class storm
 		timeout_thunder=1
 	};
 
-	d2d::components::timeouts timeouts;
-	random&                 rng;
+	random&                                 rng;
+	d2d::components::timeouts               timeouts;
+	std::vector<ldv::point_representation>  stars;
 };
 }
