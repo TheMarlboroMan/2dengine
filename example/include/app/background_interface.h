@@ -18,5 +18,8 @@ class background_interface {
 	virtual void draw(ldv::screen&)=0;
 	//!Must tic the background.
 	virtual void tic(tdelta)=0;
+	//!Must return the id of a sound to play, zero if none.
+	//!Will be called AFTER tic.
+	virtual int get_sound() const=0;
 };
 }

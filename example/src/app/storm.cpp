@@ -1,5 +1,6 @@
 #include "app/storm.h"
 #include "app/random.h"
+#include "app/definitions.h"
 
 #include <ldv/screen.h>
 #include <ldv/color.h>
@@ -10,7 +11,7 @@ using namespace app;
 
 storm::storm(
 	random& _rng
-): rng{_rng} {
+): rng{_rng}, state{state_wait} {
 
 	timeouts.add(timeout_wait, rng.get(5, 15), 0., false);
 	timeouts.add(timeout_thunder, 0.5, 0., true);
@@ -35,25 +36,42 @@ void storm::tic(
 	tdelta _delta
 ) {
 
-	timeouts.tic(_delta);
+	play_sound=false;
+
+	switch(state) {
+
+		case state_wait: return tic_wait(_delta);
+		case state_thunder: return tic_thunder(_delta);
+	}
+}
+
+void storm::tic_wait(
+	tdelta _delta
+) {
+
+	timeouts.tic(timeout_wait, _delta);
 	if(!timeouts.is_finished(timeout_wait)) {
 
 		return;
 	}
 
-	if(timeouts.is_paused(timeout_thunder)) {
+	play_sound=true;
+	state=state_thunder;
+	timeouts.restart(timeout_thunder);
+}
 
-		timeouts.resume(timeout_thunder);
-	}
+void storm::tic_thunder(
+	tdelta _delta
+) {
+
+	timeouts.tic(timeout_thunder, _delta);
 
 	if(!timeouts.is_finished(timeout_thunder)) {
 
 		return;
 	}
 
-	timeouts.pause(timeout_thunder);
-	timeouts.reset(timeout_thunder);
-
+	state=state_wait;
 	timeouts.target(timeout_wait, rng.get(10, 20));
 	timeouts.restart(timeout_wait);
 }
@@ -77,4 +95,11 @@ void storm::draw(
 
 		pt.draw(_screen);
 	}
+}
+
+int storm::get_sound() const {
+
+	return play_sound
+		? snd_thunder
+		: 0;
 }

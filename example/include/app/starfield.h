@@ -27,6 +27,7 @@ class starfield
 	//Implementation of background_interface
 	void                    draw(ldv::screen&);
 	void                    tic(tdelta);
+	int                     get_sound() const {return 0;}
 
 	private:
 

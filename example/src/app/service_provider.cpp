@@ -253,7 +253,9 @@ d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 				return _index==app::spr_water_surface
 				|| _index==app::spr_waterfall
 				|| _index==app::spr_lava_surface
-				|| _index==app::spr_wall_torch;
+				|| _index==app::spr_wall_torch
+				|| _index==app::spr_water_surface_inverted
+				|| _index==app::spr_waterfall_inverted;
 			}
 		);
 
@@ -266,6 +268,8 @@ d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 					case app::spr_waterfall: return app::anim_waterfall;
 					case app::spr_lava_surface: return app::anim_lava_surface;
 					case app::spr_wall_torch: return app::anim_wall_torch;
+					case app::spr_water_surface_inverted: return app::anim_water_surface_inverted;
+					case app::spr_waterfall_inverted: return app::anim_waterfall_inverted;
 				}
 
 				return 0;

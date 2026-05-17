@@ -27,7 +27,13 @@ enum sound {
 	snd_fire=8,
 	snd_launch_player=9,
 	snd_block_break=10,
-	snd_forbidden=11
+	snd_forbidden=11,
+	snd_thunder=12
+};
+
+enum special_backgrounds {
+	bg_starfield=1,
+	bg_storm=2
 };
 
 /**
@@ -80,6 +86,8 @@ enum animations{
 	anim_waterfall=2,
 	anim_lava_surface=3,
 	anim_wall_torch=4,
+	anim_water_surface_inverted=5,
+	anim_waterfall_inverted=6,
 
 	//player
 	anim_idle=110,
@@ -117,6 +125,8 @@ enum sprites {
 	spr_waterfall=504,
 	spr_lava_surface=508,
 	spr_wall_torch=526,
+	spr_water_surface_inverted=512, 
+	spr_waterfall_inverted=515,
 
 	//Collectibles
 	spr_gold_ingot=300,

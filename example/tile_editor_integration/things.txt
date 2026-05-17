@@ -590,14 +590,14 @@ beginobject
 		name width
 		type int
 		default 16
-		comment entry width.
+		comment width.
 		linkedto w
 	endproperty
 	beginproperty
 		name height
 		type int
 		default 16
-		comment entry height.
+		comment height.
 		linkedto h
 	endproperty
 	beginproperty

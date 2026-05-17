@@ -9,3 +9,4 @@
 9	resources/sounds/launch_player.ogg
 10	resources/sounds/block_break.ogg
 11	resources/sounds/forbidden.ogg
+12	resources/sounds/thunder.ogg

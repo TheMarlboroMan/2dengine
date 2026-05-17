@@ -423,8 +423,7 @@ void main::load_map(
 	background.reset(nullptr);
 	switch(current_map.background_effect) {
 
-		//TODO: BAD CONST
-		case 1: 
+		case app::bg_starfield:
 			background.reset(
 				new app::starfield(
 					camera.get_pos_box().w,
@@ -434,8 +433,7 @@ void main::load_map(
 				)
 			);
 		break;
-		//TODO: BAD CONST
-		case 2:
+		case app::bg_storm:
 			background.reset(
 				new app::storm(
 					sp.get_random()
@@ -1129,6 +1127,11 @@ void main::tic_world(
 	if(nullptr!=background) {
 
 		background->tic(_delta);
+		int snd=background->get_sound();
+		if(0!=snd) {
+
+			play_sound(snd);
+		}
 	}
 
 	d2d::motion::mover mover{};

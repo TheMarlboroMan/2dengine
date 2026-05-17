@@ -1,4 +1,5 @@
 #include "app/map_attribute_loader.h"
+#include "app/definitions.h"
 #include <vector>
 
 using namespace app;
@@ -38,15 +39,13 @@ void map_attribute_loader::load(
 		//starfield, black, and activates a special effect.
 		case 4:
 			background_color=ldv::rgba8(0, 0, 0, 255);
-//TODO: BAD CONST
-			background_effect=1;
+			background_effect=bg_starfield;
 		break;
 
 		//storm, black, and activates a special effect.
 		case 5:
 			background_color=ldv::rgba8(0, 0, 0, 255);
-//TODO: BAD CONST
-			background_effect=2;
+			background_effect=bg_storm;
 		break;
 
 		default: //default is black.

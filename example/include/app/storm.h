@@ -23,16 +23,27 @@ class storm
 	//Implementation of background_interface
 	void                    draw(ldv::screen&);
 	void                    tic(tdelta);
+	int                     get_sound() const;
 
 	private:
+
+	void                    tic_wait(tdelta);
+	void                    tic_thunder(tdelta);
 
 	enum {
 		timeout_wait=0,
 		timeout_thunder=1
 	};
 
+	enum {
+		state_wait,
+		state_thunder
+	};
+
 	random&                                 rng;
 	d2d::components::timeouts               timeouts;
 	std::vector<ldv::point_representation>  stars;
+	int                                     state;
+	bool                                    play_sound{false};
 };
 }
