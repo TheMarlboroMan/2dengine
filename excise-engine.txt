@@ -13,6 +13,7 @@ next steps:
 		scenery.
 
 	WISHLIST-BALANCING-POLISHING:
+		- avoid background stars overlap with themselves and the static ones?
 		- can we have non crushing moving blocks for the elevator at tower 002?
 		- particles when the player eats a projectile!
 		- fortress 017 and challenge room sky should be pink
