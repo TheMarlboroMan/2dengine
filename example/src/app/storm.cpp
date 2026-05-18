@@ -10,8 +10,11 @@
 using namespace app;
 
 storm::storm(
-	random& _rng
-): rng{_rng}, state{state_wait} {
+	random& _rng,
+	int _w,
+	int _h,
+	int _star_count
+): rng{_rng}, w{_w}, h{_h}, state{state_wait}, star_count{_star_count} {
 
 	timeouts.add(timeout_wait, rng.get(5, 15), 0., false);
 	timeouts.add(timeout_thunder, 0.5, 0., true);
@@ -30,6 +33,9 @@ storm::storm(
 		{{30, 74}, blue_color},
 		{{42, 77}, blue_color},
 	};
+
+	random_stars.reserve(star_count);
+	shuffle_stars();
 }
 
 void storm::tic(
@@ -58,6 +64,7 @@ void storm::tic_wait(
 	play_sound=true;
 	state=state_thunder;
 	timeouts.restart(timeout_thunder);
+	shuffle_stars();
 }
 
 void storm::tic_thunder(
@@ -80,20 +87,27 @@ void storm::draw(
 	ldv::screen& _screen
 ) {
 
-	if(timeouts.is_paused(timeout_thunder)) {
+	if(state_thunder==state) {
 
-		return;
+		//the max value of thunder is black, zero is white, calculate.
+		int color_val=255 - ( timeouts.get(timeout_thunder) * (255 / timeouts.get_max(timeout_thunder)) );
+		_screen.clear(
+			ldv::rgba8(color_val, color_val, color_val, 255)
+		);
 	}
 
-	//the max value of thunder is black, zero is white, calculate.
-	int color_val=255 - ( timeouts.get(timeout_thunder) * (255 / timeouts.get_max(timeout_thunder)) );
-	_screen.clear(
-		ldv::rgba8(color_val, color_val, color_val, 255)
-	);
-
-	for(auto& pt : stars) {
+	for(auto& pt : random_stars) {
 
 		pt.draw(_screen);
+	}
+
+	//Draw thunder stars after, in case of overlap.
+	if(state_thunder==state) {
+
+		for(auto& pt : stars) {
+
+			pt.draw(_screen);
+		}
 	}
 }
 
@@ -102,4 +116,27 @@ int storm::get_sound() const {
 	return play_sound
 		? snd_thunder
 		: 0;
+}
+
+void storm::shuffle_stars() {
+
+	//Palette colors for stars...
+	ldv::rgba_color variants[]={
+		ldv::rgba8(255,255,255,255),
+		ldv::rgba8(157, 157, 157, 255),
+		ldv::rgba8(27, 38, 50,255),
+		ldv::rgba8(178, 220, 239, 255)
+	};
+
+	random_stars.clear();
+	for(int i=0; i<star_count; i++) {
+
+		random_stars.push_back({
+			{
+				rng.get(1, w-1),
+				rng.get(1, h-1)
+			},
+			variants[rng.get(0, 3)]
+		});
+	}
 }

@@ -18,7 +18,7 @@ class storm
 {
 	public:
 
-	                        storm(random&);
+	                        storm(random&, int, int, int);
 
 	//Implementation of background_interface
 	void                    draw(ldv::screen&);
@@ -29,6 +29,7 @@ class storm
 
 	void                    tic_wait(tdelta);
 	void                    tic_thunder(tdelta);
+	void                    shuffle_stars();
 
 	enum {
 		timeout_wait=0,
@@ -42,8 +43,9 @@ class storm
 
 	random&                                 rng;
 	d2d::components::timeouts               timeouts;
-	std::vector<ldv::point_representation>  stars;
-	int                                     state;
+	std::vector<ldv::point_representation>  stars,
+	                                        random_stars;
+	int                                     w, h, state, star_count;
 	bool                                    play_sound{false};
 };
 }

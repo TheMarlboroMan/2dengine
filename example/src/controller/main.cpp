@@ -436,7 +436,10 @@ void main::load_map(
 		case app::bg_storm:
 			background.reset(
 				new app::storm(
-					sp.get_random()
+					sp.get_random(),
+					camera.get_pos_box().w,
+					camera.get_pos_box().h,
+					inventory.treasure //same, stars.
 				)
 			);
 		break;
