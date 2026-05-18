@@ -6,6 +6,7 @@
 #include <ldv/color.h>
 
 #include <iostream>
+#include <algorithm>
 
 using namespace app;
 
@@ -128,15 +129,40 @@ void storm::shuffle_stars() {
 		ldv::rgba8(178, 220, 239, 255)
 	};
 
+	struct point {
+		int x, y;
+		bool operator==(const point& _other) const {return _other.x==x && _other.y==y;}
+	};
+
+	//Add all static stars...
+	std::vector<point> pts;
+	for(const auto& p : stars) {
+
+		const auto& pos=p.get_position();
+		pts.push_back({pos.x, pos.y});
+	}
+
 	random_stars.clear();
-	for(int i=0; i<star_count; i++) {
+	for(int i=0; i<star_count;) {
+
+		point pt={
+			rng.get(1, w-1),
+			rng.get(1, h-1)
+		};
+
+		//Make sure stars are not repeated.
+		if(0!=std::count(std::begin(pts), std::end(pts), pt)) {
+
+			continue;
+		}
+
+		pts.push_back(pt);
 
 		random_stars.push_back({
-			{
-				rng.get(1, w-1),
-				rng.get(1, h-1)
-			},
+			{pt.x, pt.y},
 			variants[rng.get(0, 3)]
 		});
+
+		i++;
 	}
 }

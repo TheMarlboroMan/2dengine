@@ -3,6 +3,7 @@
 
 #include <ldv/screen.h>
 #include <ldv/point_representation.h>
+#include <algorithm>
 
 using namespace app;
 
@@ -14,7 +15,11 @@ starfield::starfield(
 ): w{_w}, h{_h}, time{0.0}, pulse_time{0.0}, rng{_rng} {
 
 	//This is the shape of a key.
-	struct p{int x, y;};
+	struct p{
+		int x, y;
+		bool operator==(const p& _other) const {return _other.x==x && _other.y==y;}
+	};
+
 	std::vector<p> pts{
 		{150, 150},
 		{142, 138},
@@ -38,14 +43,22 @@ starfield::starfield(
 
 	//count better be positive...
 	moving_stars.reserve(_count);
-	for(int i=0; i<_count; i++) {
+	for(int i=0; i<_count;) {
 
-		int x=rng.get(1, w-1);
-		int y=rng.get(1, h-1);
+		//Make sure we don´t repeat positions...
+		p pt{rng.get(1, w-1), rng.get(1, h-1)};
+		if(0!=std::count(std::begin(pts), std::end(pts), pt)) {
+
+			continue;
+		}
+
+		pts.push_back(pt);
+
 		short int max_velocity=rng.get(1, 16);
 		short int variant=rng.get(0, 3);
 
-		moving_stars.push_back({x, y, max_velocity, max_velocity, variant});
+		moving_stars.push_back({pt.x, pt.y, max_velocity, max_velocity, variant});
+		i++;
 	}
 }
 

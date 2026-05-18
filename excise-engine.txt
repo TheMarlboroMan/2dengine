@@ -12,8 +12,13 @@ next steps:
 		for green key maybe the theme is a lot of green keys but they are just
 		scenery.
 
+		maybe the player can ask one question per key
+			- who are you?
+			- what is this place?
+			- where am I?
+			- what do I do?
+
 	WISHLIST-BALANCING-POLISHING:
-		- avoid background stars overlap with themselves and the static ones?
 		- can we have non crushing moving blocks for the elevator at tower 002?
 		- particles when the player eats a projectile!
 		- fortress 017 and challenge room sky should be pink
@@ -37,6 +42,7 @@ next steps:
 		- tower 024 elevator too slow Maybe we need alternatives.
 		- warning spawn skull not found, lies, on boss.
 		- game segfaulted a couple times... 
+			should do the ulimit -c 102400 thingy to dump core
 
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
