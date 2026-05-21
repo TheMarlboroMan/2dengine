@@ -160,6 +160,9 @@ story:
 
 ============================
 
+	stuff:
+		try migrating to c++20?
+
 	engine:
 		I guess slopes -> but this shit will wait xD!
 		tile graphics
