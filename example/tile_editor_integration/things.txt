@@ -672,6 +672,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name solid
+		type int
+		default 1
+		comment 1=completely solid, 0=solid only from above
+		linkedto nothing
+	endproperty
+	beginproperty
 		name difficulty
 		type int
 		default 7

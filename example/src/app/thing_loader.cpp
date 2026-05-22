@@ -581,9 +581,10 @@ void thing_loader::add_moving_block(
 	int width=_attributes.at("width").get_int();
 	int height=_attributes.at("height").get_int();
 	bool active=(bool)_attributes.at("active").get_int();
+	bool solid=(bool)_attributes.at("solid").get_int();
 
 	curmap.moving_blocks.push_back(
-		{ {_pos, width, height}, tag, node_id, type, active}
+		{ {_pos, width, height}, tag, node_id, type, active, solid}
 	);
 }
 

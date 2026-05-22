@@ -785,8 +785,6 @@ void main::take_player_to_entry(
 
 #ifdef IS_DEBUG_BUILD
 	dd.center_on(player.ent);
-#else
-
 #endif
 }
 
@@ -815,35 +813,13 @@ void main::tic(
 	if(current_map.moving_blocks.size() && !player.is_defeated()) {
 
 		//Tic and correct any pushes...
-//TODO: MOVING BLOCKS HERE TOO! 
-//THIS ACCOUNTS FOR PUSHING THE PLAYER BY A STATIONARY BLOCK
-//
-#ifdef IS_DEBUG_BUILD
-
-		if("false"!=debug_session_get("mounted_snaps")) {
-
-			lm::log(logger).debug()<<"doing the snap thing!...\n";
-			if(ctracker.tic().correct_snaps(player.ent)) {
-
-				lm::log(logger).debug()<<"player was snapped to block\n";
-
-				//Should only commit if the player was snapped in the previous tic!
-				//This allows our previous position not to be in collision with
-				//the box that pushed us.
-				player.ent.commit_box();
-			}
-	    }
-#else
-
 		if(ctracker.tic().correct_snaps(player.ent)) {
 
-			lm::log(logger).debug()<<"player was snapped to block\n";
 			//Should only commit if the player was snapped in the previous tic!
 			//This allows our previous position not to be in collision with
 			//the box that pushed us.
 			player.ent.commit_box();
 		}
-#endif
 	}
 
 	player.tic(_delta);
@@ -896,6 +872,7 @@ void main::tic(
 		camera.center_on(
 			d2d::video::to_screen(player.ent)
 		);
+
 
 #ifdef IS_DEBUG_BUILD
 		dd.center_on(player.ent);
@@ -959,7 +936,6 @@ void main::clean_expired_entities() {
 void main::post_tic() {
 
 	//Are we crushesd?
-	lm::log(logger).debug()<<"POST TIC\n";
 	if(!is_in_legal_position(player.ent, true)) {
 
 		lm::log(logger).info()<<"illegal position, assumed crushing\n";
@@ -1435,7 +1411,7 @@ void main::tic_ground(
 	}
 
 	//From this point on, there may be ground movement: all early returns
-	//have been done. First, does any block move the player?
+	//have been done. First, is the player riding any block?
 	d2d::motion::motion_vector passive_mv{0., 0.};
 	if(current_map.moving_blocks.size()) {
 
@@ -1456,7 +1432,6 @@ void main::tic_ground(
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
 
-		lm::log(logger).info()<<"TIC GROUND\n";
 		if(!is_in_legal_position(player.ent, true)) {
 
 			_player.crouch();
@@ -1978,30 +1953,11 @@ bool main::is_on_air(
 
 	//fine collision phase now, with early exits.
 	d2d::collision::aabb_static_checker cc(player_box_copy, true);
-
-//TODO: MOVING BLOCKS HERE. I GUESS WE CAN APPLY THE SAME FILTER THING.
-//TODO: OK??
-//THIS ACCOUNTS FOR KNOWING IF THE PLAYER IS ON THE AIR... WHICH I GUESS
-//IS GOOD ENOUGH AS IT IS!... or not, wait... the player may collide
-//with a moving block that is "transparent" and still be on air! We 
-//need this filter here too.
-#ifdef IS_DEBUG_BUILD
-
-	std::vector<app::moving_block> moving_blocks;
-	if("false"!=debug_session_get("on_air")) {
-
-		moving_blocks=current_map.moving_blocks;
-	}
-#else
-
-	const auto& moving_blocks=current_map.moving_blocks;
-#endif
-
 	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
 
 	if(cc.detect_all(contacting_tiles)
 		.detect_all(current_map.platform_blocks)
-		.detect_if(moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
@@ -2321,24 +2277,6 @@ int main::player_collision(
 		composite_filter
 	);
 
-//TODO: MOVING BLOCKS HERE... Could he also apply a filter??? Yes, surely 
-//and it would not be hard at all! Only account for solid blocks or non-solid
-//that are above the previous box or whatever.
-//THIS ACCOUNTS FOR HITTING A BLOCK AND BEING STOPPED.
-//TODO: OK
-#ifdef IS_DEBUG_BUILD
-
-	std::vector<app::moving_block> moving_blocks;
-	if("false"!=debug_session_get("collision")) {
-
-		moving_blocks=current_map.moving_blocks;
-	}
-
-#else
-
-	const auto& moving_blocks=current_map.moving_blocks;
-#endif
-
 	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
 	
 	//Collision...
@@ -2352,7 +2290,7 @@ int main::player_collision(
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
-		.detect_if(moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_all(current_map.platform_blocks);
 
 	if(!cph.has_collision()) {
@@ -2425,29 +2363,26 @@ bool main::is_in_legal_position(
 	d2d::collision::aabb_static_checker sc(_position);
 	sc.detect_all(current_tiles);
 
-	lm::log(logger).debug()<<"before moving blocks: position="<<_position<<" player="<<player.ent.get_box()<<" has collision="<<sc.has_collision()<<"\n";
+	//lm::log(logger).debug()<<"before moving blocks: position="<<_position<<" player="<<player.ent.get_box()<<" has collision="<<sc.has_collision()<<"\n";
 
 	if(_with_moving) {
 
-		app::thing_filter_moving_block moving_block_filter{_position};
+		//Am I riding a block? Am I being crushed by it because of engine 
+		//problems? See, we may be riding a block that pushes us to the 
+		//ceiling or wherever. Because we are riding, the collision tracker
+		//does not correct it as snaps but rather produces the passive 
+		//vector that is applied to the player and corrected. At the end of
+		//the tic we are INTO the elevator, thus this check.
+		
+		if(ctracker.is_attached(player.ent)) {
 
-//TODO: MOVING BLOCKS HERE!
-//TODO: THIS ACCOUNTS FOR "CAN I STAND UP" and for "CRUSHING THE PLAYER"
-//TODO: I CANT GET KILLED BY A TRANSPARENT BLOCK THAT I AM MOUNTED ON IF IT
-//TAKES ME TO THE CEILING. WELL, FUCK THAT xD
-#ifdef IS_DEBUG_BUILD
-
-		if("false"!=debug_session_get("legal")) {
-
-			lm::log(logger).debug()<<"doing moving blocks for legal...\n";
-			sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
+			sc.detect_one(*ctracker.get_host(player.ent));
 		}
 
-#else
-
-		lm::log(logger).debug()<<"doing regular moving blocks...\n";
+		//Check against other moving blocks... This is mostly to know if we
+		//can stand up when under a moving block.
+		app::thing_filter_moving_block moving_block_filter{_position};
 		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
-#endif
 	}
 
 	if(sc.has_collision()) {
@@ -2493,7 +2428,6 @@ void main::mount_player_in_blocks(
 		ctracker.detach_from_all(_player.ent);
 	}
 
-	//TODO: Make this shit a part of the library! an attacher!
 	//This takes place AFTER the player tic... if a block is under the player,
 	//we can mount it. But not if we are upwards bound so that we do not snap
 	//to the floor when we have still upwards momentum.
@@ -2504,25 +2438,17 @@ void main::mount_player_in_blocks(
 
 	for(const auto& plat : current_map.moving_blocks) {
 
-//TODO: MOVING BLOCKS HERE TOO.
-//TODO: OK???
-#ifdef IS_DEBUG_BUILD
-		if("false"==debug_session_get("mount")) {
-
-			continue;
-		}
-
-#endif
-
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
 
-			//Will not mount blocks above the real player box.
+			//Will not mount blocks above the real player box, this can 
+			//happen with blocks that are not fully solid.
 			if(!d2d::collision::is_below(plat.ent, player.ent)) {
 
 				continue;
 			}
 
-			//TODO: Is this even needed???
+			//TODO: Is this even needed??? the is_in_legal_position thingy. I 
+			//am sure this is here because of some reason.
 			if(is_in_legal_position(player_box_copy, false)) {
 
 				ctracker.attach(plat.ent, _player.ent);
@@ -2548,6 +2474,7 @@ void main::setup_moving_blocks() {
 	for(auto& block : current_map.moving_blocks) {
 
 		using namespace d2d::collision;
+		//TODO: nope nope nope, let us use an interface thingy.
 		collision_tracker::can_push_policy_fn policy=[&block](const spatiable&, const spatiable&) -> bool {
 
 			return block.get_type()==0;

@@ -48,6 +48,7 @@ class collision_tracker {
 
 	public:
 
+	//TODO: No no no, define an interface.
 	using can_push_policy_fn=std::function<bool(const spatiable&, const spatiable&)>;
 
 	std::size_t                     watched_size() const {return watched.size();}
@@ -118,6 +119,7 @@ class collision_tracker {
  * of a function that takes the spatiable of the watched and the spatiable of 
  * a target and must return true if the watched can push.
  */
+//TODO: No, define an interface
 	collision_tracker&              watch(const spatiable&, can_push_policy_fn={});
 /**
  * removes a node from the watched list, if found.
@@ -163,6 +165,8 @@ class collision_tracker {
 		const spatiable*            body;
 		std::vector<spatiable *>    attached;
 		d2d::motion::motion_vector  previous_vector;
+		//TODO: This should be an interface shit and not a std function,
+		//just put a std::unique_ptr here and enjoy the ride
 		can_push_policy_fn          can_push_policy;
 	};
 

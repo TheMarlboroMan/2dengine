@@ -9,7 +9,8 @@ moving_block::moving_block(
 	int _tag,
 	int _first_nodeid,
 	int _type,
-	bool _active
+	bool _active,
+	bool _solid
 ):
 	ent{_box},
 	state{states::receiving},
@@ -19,6 +20,7 @@ moving_block::moving_block(
 	type{_type},
 	active{_active}, 
 	initial_active{active},
+	solid{_solid},
 	target{0., 0.},
 	initial_position{ent.get_origin()},
 	timeout{0., 0, true}
