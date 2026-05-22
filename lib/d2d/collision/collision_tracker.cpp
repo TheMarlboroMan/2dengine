@@ -95,7 +95,7 @@ collision_tracker& collision_tracker::tic() {
 			//the point to do so.
 			if(watched_entity.can_push_policy) {
 
-				if(!watched_entity.can_push_policy(*watched_entity.body, *target)) {
+				if(!(*watched_entity.can_push_policy)(*watched_entity.body, *target)) {
 
 					continue;
 				}
@@ -148,7 +148,7 @@ collision_tracker& collision_tracker::tic() {
 
 collision_tracker& collision_tracker::watch(
 	const spatiable& _spatiable,
-	can_push_policy_fn _push_policy
+	can_push_policy_interface * _push_policy
 ) {
 
 	//Will not allow for the same node to be added twice...
@@ -171,7 +171,13 @@ collision_tracker& collision_tracker::watch(
 		throw std::runtime_error("cannot watch an element that is already into the target list");
 	}
 
-	watched.push_back({&_spatiable, {}, _spatiable.get_motion_vector(), _push_policy});
+	watched.push_back({
+		&_spatiable, 
+		{},
+		_spatiable.get_motion_vector(), 
+		std::unique_ptr<can_push_policy_interface>{_push_policy}
+	});
+
 	return *this;
 }
 

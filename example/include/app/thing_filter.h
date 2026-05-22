@@ -47,8 +47,9 @@ struct thing_filter_toggle_blocks{
 struct thing_filter_moving_block {
 
 	thing_filter_moving_block(
-		const d2d::collision::box& _ref
-	):ref_box(_ref) {}
+		const d2d::collision::box& _ref,
+		bool _positive_y_vector
+	):ref_box(_ref), positive_y_vector{_positive_y_vector} {}
 
 	bool operator()(const app::moving_block& _block) const {
 
@@ -57,12 +58,18 @@ struct thing_filter_moving_block {
 			return true;
 		}
 
-		//Now, for non solid blocks...Count only those above the reference box.
-		//
+		//Non solid blocks are non-existent if there is a positive y vector.
+		if(positive_y_vector) {
+
+			return false;
+		}
+
+		//Count only those above the reference box.
 		return d2d::collision::is_above(_block.ent, ref_box);
 	};
 
 	private:
 	const d2d::collision::box& ref_box;
+	bool positive_y_vector; //meaning the _ref box (the player in this game) has a positive y vector.
 };
 }

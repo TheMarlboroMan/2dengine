@@ -4,6 +4,7 @@
 #include "../motion/definitions.h"
 #include <vector>
 #include <functional>
+#include <memory>
 
 #ifdef IS_DEBUG_BUILD
 	#include <iostream>
@@ -48,8 +49,16 @@ class collision_tracker {
 
 	public:
 
-	//TODO: No no no, define an interface.
-	using can_push_policy_fn=std::function<bool(const spatiable&, const spatiable&)>;
+	/**
+    * Policy object operator. These can be added to any watched node to specify 
+    * if they will be able to push targets by answering the question 
+    * using the first and second args (the node body and the target). The idea
+    * here is to specialize this to include application specifics.
+    */
+	struct can_push_policy_interface {
+
+		virtual bool operator()(const spatiable&, const spatiable&) const=0;
+	};
 
 	std::size_t                     watched_size() const {return watched.size();}
 	std::size_t                     target_size() const {return targets.size();}
@@ -115,12 +124,11 @@ class collision_tracker {
 /**
  * adds a node to the "watched list" of spatiables that can push other
  * spatiables.Does not allow for repeated values. Does not allow for the
- * watched node to be also in the target list. If a policy is passed it consist
- * of a function that takes the spatiable of the watched and the spatiable of 
- * a target and must return true if the watched can push.
+ * watched node to be also in the target list. A policy can be added to 
+ * add customization points, in this case a class that tells us if the node
+ * can push a target around.
  */
-//TODO: No, define an interface
-	collision_tracker&              watch(const spatiable&, can_push_policy_fn={});
+	collision_tracker&              watch(const spatiable&, can_push_policy_interface* =nullptr);
 /**
  * removes a node from the watched list, if found.
  */
@@ -165,9 +173,7 @@ class collision_tracker {
 		const spatiable*            body;
 		std::vector<spatiable *>    attached;
 		d2d::motion::motion_vector  previous_vector;
-		//TODO: This should be an interface shit and not a std function,
-		//just put a std::unique_ptr here and enjoy the ride
-		can_push_policy_fn          can_push_policy;
+		std::unique_ptr<can_push_policy_interface> can_push_policy;
 	};
 
 	std::vector<node>               watched; //all moving nodes.

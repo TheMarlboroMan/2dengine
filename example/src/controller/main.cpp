@@ -1953,7 +1953,7 @@ bool main::is_on_air(
 
 	//fine collision phase now, with early exits.
 	d2d::collision::aabb_static_checker cc(player_box_copy, true);
-	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
+	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
 
 	if(cc.detect_all(contacting_tiles)
 		.detect_all(current_map.platform_blocks)
@@ -2277,7 +2277,7 @@ int main::player_collision(
 		composite_filter
 	);
 
-	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
+	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
 	
 	//Collision...
 	d2d::collision::ray_builder rb;
@@ -2381,7 +2381,7 @@ bool main::is_in_legal_position(
 
 		//Check against other moving blocks... This is mostly to know if we
 		//can stand up when under a moving block.
-		app::thing_filter_moving_block moving_block_filter{_position};
+		app::thing_filter_moving_block moving_block_filter{_position, false};
 		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
 	}
 
@@ -2469,18 +2469,30 @@ void main::setup_moving_blocks() {
 		return;
 	}
 
+	using namespace d2d::collision;
+
+	struct moving_blocks_can_push_policy 
+		: public collision_tracker::can_push_policy_interface {
+
+		moving_blocks_can_push_policy(const app::moving_block& _block)
+			:block{_block}
+		{}
+
+		bool operator()(const spatiable&, const spatiable&) const {
+
+			return block.is_solid();
+		}
+
+		private:
+
+		const app::moving_block& block;
+	};
+
 	//Setup the trackers...
 	ctracker.target(player.ent);
 	for(auto& block : current_map.moving_blocks) {
 
-		using namespace d2d::collision;
-		//TODO: nope nope nope, let us use an interface thingy.
-		collision_tracker::can_push_policy_fn policy=[&block](const spatiable&, const spatiable&) -> bool {
-
-			return block.is_solid();
-		};
-
-       ctracker.watch(block.ent, policy);
+		ctracker.watch(block.ent, new moving_blocks_can_push_policy(block));
 		write_moving_block(block, block.get_next_id());
 	}
 }
