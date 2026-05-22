@@ -1,9 +1,11 @@
 #include "controller/main.h"
+#include "controller/main.h"
 #include "controller/controller_states.h"
 #include "app/input.h"
 #include "app/thing_loader.h"
 #include "app/map_attribute_loader.h"
 #include "app/tile_filter.h"
+#include "app/thing_filter.h"
 #include "app/savegame.h"
 #include "app/automap_game.h" //to obtain area names...
 #include "app/projectile_creator.h"
@@ -89,6 +91,7 @@ main::main(
 #ifdef IS_DEBUG_BUILD
 
 	setup_console(_sp);
+	setup_debug_vars();
 	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
 	reload_values();
 
@@ -555,7 +558,7 @@ void main::attempt_exit(
 
 	if(_exit.is_special()) {
 
-		//TODO: The problem with this according to excise engine: we may crash
+		//TODO: The problem with this according to excise-engine.txt: we may crash
 		//or exit, the persistence is saved but we haven't yet left this
 		//room. Because the exist will disspear we will not be able to
 		//finish the game anymore.
@@ -812,13 +815,35 @@ void main::tic(
 	if(current_map.moving_blocks.size() && !player.is_defeated()) {
 
 		//Tic and correct any pushes...
+//TODO: MOVING BLOCKS HERE TOO! 
+//THIS ACCOUNTS FOR PUSHING THE PLAYER BY A STATIONARY BLOCK
+//
+#ifdef IS_DEBUG_BUILD
+
+		if("false"!=debug_session_get("mounted_snaps")) {
+
+			lm::log(logger).debug()<<"doing the snap thing!...\n";
+			if(ctracker.tic().correct_snaps(player.ent)) {
+
+				lm::log(logger).debug()<<"player was snapped to block\n";
+
+				//Should only commit if the player was snapped in the previous tic!
+				//This allows our previous position not to be in collision with
+				//the box that pushed us.
+				player.ent.commit_box();
+			}
+	    }
+#else
+
 		if(ctracker.tic().correct_snaps(player.ent)) {
 
+			lm::log(logger).debug()<<"player was snapped to block\n";
 			//Should only commit if the player was snapped in the previous tic!
 			//This allows our previous position not to be in collision with
 			//the box that pushed us.
 			player.ent.commit_box();
 		}
+#endif
 	}
 
 	player.tic(_delta);
@@ -934,7 +959,7 @@ void main::clean_expired_entities() {
 void main::post_tic() {
 
 	//Are we crushesd?
-	//if(!is_in_legal_position(player.ent, false)) {
+	lm::log(logger).debug()<<"POST TIC\n";
 	if(!is_in_legal_position(player.ent, true)) {
 
 		lm::log(logger).info()<<"illegal position, assumed crushing\n";
@@ -1306,7 +1331,7 @@ void main::tic_projectile(
 	d2d::collision::aabb_static_checker static_check(_projectile.ent, true);
 	static_check.detect_all(tiles_to_check)
 		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
-		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{});
+		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{});
 
 	if(static_check.has_collision()) {
 
@@ -1430,6 +1455,8 @@ void main::tic_ground(
 		_player.stand_up();
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
+
+		lm::log(logger).info()<<"TIC GROUND\n";
 		if(!is_in_legal_position(player.ent, true)) {
 
 			_player.crouch();
@@ -1952,12 +1979,32 @@ bool main::is_on_air(
 	//fine collision phase now, with early exits.
 	d2d::collision::aabb_static_checker cc(player_box_copy, true);
 
+//TODO: MOVING BLOCKS HERE. I GUESS WE CAN APPLY THE SAME FILTER THING.
+//TODO: OK??
+//THIS ACCOUNTS FOR KNOWING IF THE PLAYER IS ON THE AIR... WHICH I GUESS
+//IS GOOD ENOUGH AS IT IS!... or not, wait... the player may collide
+//with a moving block that is "transparent" and still be on air! We 
+//need this filter here too.
+#ifdef IS_DEBUG_BUILD
+
+	std::vector<app::moving_block> moving_blocks;
+	if("false"!=debug_session_get("on_air")) {
+
+		moving_blocks=current_map.moving_blocks;
+	}
+#else
+
+	const auto& moving_blocks=current_map.moving_blocks;
+#endif
+
+	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
+
 	if(cc.detect_all(contacting_tiles)
 		.detect_all(current_map.platform_blocks)
-		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
-		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
-		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
-		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
+		.detect_if(moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
+		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
+		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.has_collision()
 	) {
 
@@ -2252,7 +2299,8 @@ int main::player_collision(
 	tdelta _delta
 ) {
 
-	//We can easily make composite filters by chaining calls.
+	//First find out which tiles we need to check. We can easily make composite 
+	//filters by chaining calls...
 	struct {
 		const d2d::collision::box previous_box;
 		bool operator() (
@@ -2266,7 +2314,6 @@ int main::player_collision(
 		}
 	} composite_filter{_player.ent.get_previous_box()};
 
-	//Collision...
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto current_tiles=adapter.find(
 		_player.ent,
@@ -2274,17 +2321,38 @@ int main::player_collision(
 		composite_filter
 	);
 
+//TODO: MOVING BLOCKS HERE... Could he also apply a filter??? Yes, surely 
+//and it would not be hard at all! Only account for solid blocks or non-solid
+//that are above the previous box or whatever.
+//THIS ACCOUNTS FOR HITTING A BLOCK AND BEING STOPPED.
+//TODO: OK
+#ifdef IS_DEBUG_BUILD
+
+	std::vector<app::moving_block> moving_blocks;
+	if("false"!=debug_session_get("collision")) {
+
+		moving_blocks=current_map.moving_blocks;
+	}
+
+#else
+
+	const auto& moving_blocks=current_map.moving_blocks;
+#endif
+
+	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box()};
+	
+	//Collision...
 	d2d::collision::ray_builder rb;
 	auto player_ray=rb.get_previous(_player.ent, _mv)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
-		.detect_if(current_map.breaking_platforms, breaking_platforms_fn{})
-		.detect_if(current_map.facing_blocks, facing_blocks_fn{}, spatiable_dereferencer<app::facing_block>{})
-		.detect_if(current_map.toggle_blocks, toggle_blocks_fn{}, spatiable_dereferencer<app::toggle_block>{})
+		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
+		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
+		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
-		.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{})
+		.detect_if(moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_all(current_map.platform_blocks);
 
 	if(!cph.has_collision()) {
@@ -2357,14 +2425,34 @@ bool main::is_in_legal_position(
 	d2d::collision::aabb_static_checker sc(_position);
 	sc.detect_all(current_tiles);
 
+	lm::log(logger).debug()<<"before moving blocks: position="<<_position<<" player="<<player.ent.get_box()<<" has collision="<<sc.has_collision()<<"\n";
+
 	if(_with_moving) {
 
-		sc.detect_all(current_map.moving_blocks, spatiable_dereferencer<app::moving_block>{});
+		app::thing_filter_moving_block moving_block_filter{_position};
+
+//TODO: MOVING BLOCKS HERE!
+//TODO: THIS ACCOUNTS FOR "CAN I STAND UP" and for "CRUSHING THE PLAYER"
+//TODO: I CANT GET KILLED BY A TRANSPARENT BLOCK THAT I AM MOUNTED ON IF IT
+//TAKES ME TO THE CEILING. WELL, FUCK THAT xD
+#ifdef IS_DEBUG_BUILD
+
+		if("false"!=debug_session_get("legal")) {
+
+			lm::log(logger).debug()<<"doing moving blocks for legal...\n";
+			sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
+		}
+
+#else
+
+		lm::log(logger).debug()<<"doing regular moving blocks...\n";
+		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
+#endif
 	}
 
 	if(sc.has_collision()) {
 
-		lm::log(logger).debug()<<"illegal player position "<<player.ent.get_box()<<" against... \n";
+		lm::log(logger).debug()<<"illegal position for box "<<_position<<" against... \n";
 		for(auto& s : sc.get_results()) {
 
 			lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
@@ -2385,7 +2473,8 @@ void main::mount_player_in_blocks(
 
 	auto player_box_copy=_player.ent.get_box();
 
-	//This value can be tweaked so faster boxes catch the player too! 6 catches a box moving downwards at 100u/s.
+	//This value can be tweaked so faster boxes catch the player too! 
+	//6 catches a box moving downwards at 100u/s.
 	player_box_copy.origin.y-=2.0;
 
 	bool player_attached=ctracker.is_attached(_player.ent);
@@ -2415,8 +2504,25 @@ void main::mount_player_in_blocks(
 
 	for(const auto& plat : current_map.moving_blocks) {
 
+//TODO: MOVING BLOCKS HERE TOO.
+//TODO: OK???
+#ifdef IS_DEBUG_BUILD
+		if("false"==debug_session_get("mount")) {
+
+			continue;
+		}
+
+#endif
+
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
 
+			//Will not mount blocks above the real player box.
+			if(!d2d::collision::is_below(plat.ent, player.ent)) {
+
+				continue;
+			}
+
+			//TODO: Is this even needed???
 			if(is_in_legal_position(player_box_copy, false)) {
 
 				ctracker.attach(plat.ent, _player.ent);
@@ -2441,7 +2547,13 @@ void main::setup_moving_blocks() {
 	ctracker.target(player.ent);
 	for(auto& block : current_map.moving_blocks) {
 
-		ctracker.watch(block.ent);
+		using namespace d2d::collision;
+		collision_tracker::can_push_policy_fn policy=[&block](const spatiable&, const spatiable&) -> bool {
+
+			return block.get_type()==0;
+		};
+
+       ctracker.watch(block.ent, policy);
 		write_moving_block(block, block.get_next_id());
 	}
 }
@@ -2518,10 +2630,7 @@ void main::sync_facing_blocks() {
 }
 
 /**
-* we can pass around an optional exit we are taking
-* *TODO: SO WHAT??? Complete the docs!
-* we are entering, so we can check doors against this map
-* filename and skip them.
+* we can pass around an optional TODO: SO WHAT??? Complete the docs!
 */
 bool main::is_map_complete(
 	const app::exit* _exit

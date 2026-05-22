@@ -3,6 +3,7 @@
 #include "spatiable.h"
 #include "../motion/definitions.h"
 #include <vector>
+#include <functional>
 
 #ifdef IS_DEBUG_BUILD
 	#include <iostream>
@@ -18,24 +19,36 @@ namespace d2d { namespace collision {
 *A possible workflow is to reset, then watch all moving stuff and target all 
 *pushable nodes at the "map loading" point, then attach if needed, then tic 
 *after the "world_tic" is done. 
-*Of course, any illegal positions and shuch must be taken care of by the 
+*Of course, any illegal positions and such must be taken care of by the 
 *application itself.
 **/
 
+/**
+ * Represents a "watched" pushing a "target".
+ */
 struct collision_tracker_correction {
 
 	const spatiable *           watched;
 	spatiable *                 target;
-	d2d::motion::motion_vector  vector;
 	box_edge                    edge; //snap to this edge of
-	bool                        is_snap() const {return vector.x==0. && vector.y==0;}
 }; 
 
+/**
+ * Represents the movement of a "target" riding a "watched".
+ */
+struct collision_tracker_passive_movement {
+
+	const spatiable *           watched;
+	spatiable *                 target;
+	d2d::motion::motion_vector  vector;
+};
 
 //TODO: Sort of a stupid name.
 class collision_tracker {
 
 	public:
+
+	using can_push_policy_fn=std::function<bool(const spatiable&, const spatiable&)>;
 
 	std::size_t                     watched_size() const {return watched.size();}
 	std::size_t                     target_size() const {return targets.size();}
@@ -68,12 +81,13 @@ class collision_tracker {
 	collision_tracker&              tic();
 
 /**
- * Corrects all snaps from the last tic.
+ * Corrects all snaps from the last tic. A snap is when a watcher pushes
+ * a target around.
  */
 	collision_tracker&              correct_snaps();
 
 /**
- * Corrects all snaps from the last tic pertaining to the given spatiable, 
+ * Corrects all snaps from the last tic pertaining to the given spatiable,
  * that it, those that have the spatiable as the target in the correction
  * list. Returns an integer that is a flag of edge as defined in "definitions.h".
  * meaning that the target collided with the N sides of a watched node.
@@ -93,16 +107,18 @@ class collision_tracker {
 	d2d::motion::motion_vector      attached_vector_for(const spatiable&) const;
 
 /**
- * Returns the results of the previous tic.
+ * Returns the snaps of the previous tic
  */
 	const std::vector<collision_tracker_correction>& get_corrections() const {return corrections;}
 
 /**
  * adds a node to the "watched list" of spatiables that can push other
  * spatiables.Does not allow for repeated values. Does not allow for the
- * watched node to be also in the target list.
+ * watched node to be also in the target list. If a policy is passed it consist
+ * of a function that takes the spatiable of the watched and the spatiable of 
+ * a target and must return true if the watched can push.
  */
-	collision_tracker&              watch(const spatiable&);
+	collision_tracker&              watch(const spatiable&, can_push_policy_fn={});
 /**
  * removes a node from the watched list, if found.
  */
@@ -147,11 +163,13 @@ class collision_tracker {
 		const spatiable*            body;
 		std::vector<spatiable *>    attached;
 		d2d::motion::motion_vector  previous_vector;
+		can_push_policy_fn          can_push_policy;
 	};
 
 	std::vector<node>               watched; //all moving nodes.
 	std::vector<spatiable*>         targets; //all targets that can be pushed around by nodes.
 	std::vector<collision_tracker_correction> corrections;
+	std::vector<collision_tracker_passive_movement> passive_movements;
 };
 
 }}

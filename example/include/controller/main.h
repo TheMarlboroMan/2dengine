@@ -3,6 +3,8 @@
 #ifdef IS_DEBUG_BUILD
 #include <appconsole/console.h>
 #include <console/console.h>
+#include <map>
+#include <tools/string_utils.h>
 #endif
 
 #include "app/background_interface.h"
@@ -231,34 +233,16 @@ class main:
 	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
 	                            current_map_name;
+	//A map of string to string that we can use to test stuff without recompiling.
+	std::map<std::string, std::string> debug_session_vars;
+	void                        setup_debug_vars();
+	bool                        debug_session_has(const std::string&) const;
+	std::string                 debug_session_get(const std::string&) const;
 #endif
 
-	//We will also need some nice predicates and dereferencers...
-	struct breaking_platforms_fn{
-
-		bool operator()(const app::breaking_platform& _block) const {
-
-			return _block.is_solid();
-		}
-	};
-
-	//TODO: can this be a "template"???
-	struct facing_blocks_fn{
-
-		bool operator()(const app::facing_block& _block) const {
-
-			return _block.is_active();
-		}
-	};
-
-	struct toggle_blocks_fn{
-
-		bool operator()(const app::toggle_block& _block) const {
-
-			return _block.is_active();
-		}
-	};
-
+	//Something that takes a something that contains a spatiable entity and
+	//returns it. This normalizes the process of using the ray_aabb_phase
+	//collision thing.
 	template<typename T>
 	struct spatiable_dereferencer{
 

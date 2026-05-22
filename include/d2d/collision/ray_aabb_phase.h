@@ -53,6 +53,7 @@ class ray_aabb_phase {
 	ray_aabb_phase&     detect_one(const d2d::collision::spatiable&, int=-1);
 	ray_aabb_phase&     detect_one(const d2d::collision::spatiable * _node, int _flags=-1) {return detect_one(*_node, _flags);}
 
+	//!Detection in a traversable container
 	template<typename T>
 	ray_aabb_phase&     detect_all(
 		T& _nodes

@@ -1,3 +1,4 @@
+
 void main::console_display_onenter(
 	const std::string& _command
 ) {
@@ -220,7 +221,74 @@ console::result main::execute_cmd(
 		return {0, "player is mortal"};
 	}
 
+	if(_cmd=="setsess") {
+
+		const std::string name=_args[0].get_string(),
+			value=_args[1].get_string();
+
+		debug_session_vars[name]=value;
+		std::stringstream ss;
+		ss<<name<<" set to "<<value;
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="getsess") {
+
+		const std::string name=_args[0].get_string();
+
+		std::stringstream ss;
+		if(!debug_session_has(name)) {
+
+			ss<<name<<" is not defined";
+			return {0, ss.str()};
+		}
+
+		ss<<name<<" is "<<debug_session_get(name);
+		return {0, ss.str()};
+	}
+
+	if(_cmd=="sess") {
+
+		std::stringstream ss;
+		for(const auto& pair : debug_session_vars) {
+
+			ss<<pair.first<<"="<<pair.second<<" | ";
+		}
+
+		return {0, ss.str()};
+	}
+
 	return {0, "unknown command"};
+}
+
+void main::setup_debug_vars() {
+
+	std::string debug_file="debug_vars";
+	std::cout<<"values file will be read from "<<debug_file<<"\n";
+
+	std::ifstream file{debug_file};
+
+	if(!file.is_open()) {
+
+		std::cout<<"no debug file '"<<debug_file<<"' present\n";
+		return;
+	}
+
+	std::string key, val;
+	while(true) {
+
+		file>>key;
+		if(file.eof()) {
+
+			break;
+		}
+
+		std::getline(file, val);
+		val=tools::str_trim(val);
+		std::cout<<"debug value '"<<key<<"'='"<<val<<"'\n";
+
+		debug_session_vars[key]=val;
+	}
 }
 
 void main::setup_console(
@@ -272,6 +340,9 @@ void main::setup_console(
 	console->map_command("map", {{console::types::string}, {console::types::integer, true, 1}});
 	console->map_command("mapname", {});
 	console->map_command("discover", {{console::types::integer}});
+	console->map_command("sess", {});
+	console->map_command("setsess", {{console::types::string}, {console::types::string}});
+	console->map_command("getsess", {{console::types::string}});
 }
 
 void main::draw_debug(
@@ -541,4 +612,20 @@ void main::reload_values() {
 void main::reload_map_debug() {
 
 	load_map(current_map_name);
+}
+
+bool main::debug_session_has(
+	const std::string& _key
+) const {
+
+	return debug_session_vars.count(_key);
+}
+
+std::string main::debug_session_get(
+	const std::string& _key
+) const {
+
+	return debug_session_has(_key)
+		? debug_session_vars.at(_key)
+		: "";
 }

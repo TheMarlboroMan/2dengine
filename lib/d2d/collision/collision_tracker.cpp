@@ -48,6 +48,7 @@ collision_tracker& collision_tracker::restart() {
 collision_tracker& collision_tracker::reset() {
 
 	corrections.clear();
+	passive_movements.clear();
 	for(auto& item : watched) {
 
 		item.attached.clear();
@@ -58,33 +59,47 @@ collision_tracker& collision_tracker::reset() {
 collision_tracker& collision_tracker::tic() {
 
 	corrections.clear();
+	passive_movements.clear();
 
-	for(auto& entity : watched) {
+	for(auto& watched_entity : watched) {
 
 		//No movement? no problem.
-		if(!entity.body->has_moved()) {
+		if(!watched_entity.body->has_moved()) {
 
 			continue;
 		}
 
-		//TODO: Explain what is going on here!!
-		auto vector=entity.previous_vector;
-		entity.previous_vector=entity.body->get_motion_vector();
-//		const auto vector=entity.body->get_motion_vector();
-		if(entity.attached.size() 
+		//Overwrite the previous vector of the moving entity (fear not, part
+		//of the watched node and not the spatiable itself!).
+		auto vector=watched_entity.previous_vector;
+		watched_entity.previous_vector=watched_entity.body->get_motion_vector();
+
+		//If there are attached entities and we are moving we add passive
+		//movements for all the attached entities here.
+		if(watched_entity.attached.size() 
 			&& !(vector.x==0. && vector.y==0.)
 		) {
 
-			for(auto& attached : entity.attached) {
+			for(auto& attached : watched_entity.attached) {
 
-				//TODO: Not enjoying the edge part...
-				corrections.push_back({entity.body, attached, vector, box_edge::left});
+				passive_movements.push_back({watched_entity.body, attached, vector});
 			}
 		}
 
-		const auto& current=entity.body->get_box();
-		const auto& previous=entity.body->get_previous_box();
+		//Now, let's check all targets for collisions...
+		const auto& current=watched_entity.body->get_box();
+		const auto& previous=watched_entity.body->get_previous_box();
 		for(auto& target : targets) {
+
+			//Maybe we have to run some application-specific checks... This is
+			//the point to do so.
+			if(watched_entity.can_push_policy) {
+
+				if(!watched_entity.can_push_policy(*watched_entity.body, *target)) {
+
+					continue;
+				}
+			}
 
 			if(!collides_with(current, *target)) {
 
@@ -93,8 +108,8 @@ collision_tracker& collision_tracker::tic() {
 
 			//If attached, just ignore it!... 
 			if(std::any_of(
-				std::begin(entity.attached),
-				std::end(entity.attached),
+				std::begin(watched_entity.attached),
+				std::end(watched_entity.attached),
 				[&target](const spatiable * _att) -> bool {
 					return target==_att;
 				}
@@ -103,29 +118,27 @@ collision_tracker& collision_tracker::tic() {
 				continue;
 			}
 
-
 			//TODO TODO TODO
 			//all we know now is that the box moved but we don't know where
 			//the collision originates from... So we will just use a SHIT
 			//approximation and will change it because this will not work
 			//reliably when movement happens in both axes at once.
-			d2d::motion::motion_vector v{0., 0.};
 
 			if(is_left_of(*target, previous)) {
 
-				corrections.push_back({entity.body, target, v, box_edge::left});
+				corrections.push_back({watched_entity.body, target, box_edge::left});
 			}
 			else if(is_right_of(*target, previous)) {
 
-				corrections.push_back({entity.body, target, v, box_edge::right});
+				corrections.push_back({watched_entity.body, target, box_edge::right});
 			}
 			else if(is_above(*target, previous)) {
 
-				corrections.push_back({entity.body, target, v, box_edge::top});
+				corrections.push_back({watched_entity.body, target, box_edge::top});
 			}
 			else if(is_below(*target, previous)) {
 
-				corrections.push_back({entity.body, target, v, box_edge::bottom});
+				corrections.push_back({watched_entity.body, target, box_edge::bottom});
 			}
 		}
 	}
@@ -134,7 +147,8 @@ collision_tracker& collision_tracker::tic() {
 }
 
 collision_tracker& collision_tracker::watch(
-	const spatiable& _spatiable
+	const spatiable& _spatiable,
+	can_push_policy_fn _push_policy
 ) {
 
 	//Will not allow for the same node to be added twice...
@@ -157,7 +171,7 @@ collision_tracker& collision_tracker::watch(
 		throw std::runtime_error("cannot watch an element that is already into the target list");
 	}
 
-	watched.push_back({&_spatiable, {}, _spatiable.get_motion_vector()});
+	watched.push_back({&_spatiable, {}, _spatiable.get_motion_vector(), _push_policy});
 	return *this;
 }
 
@@ -334,7 +348,6 @@ int collision_tracker::correct_snaps(
 
 			edges|=correct_snap(c);
 		}
-
 	}
 
 	return edges;
@@ -343,12 +356,6 @@ int collision_tracker::correct_snaps(
 int collision_tracker::correct_snap(
 	const collision_tracker_correction& _node
 ) {
-
-	//Not a snap??
-	if(!_node.is_snap()) {
-
-		return 0;
-	}
 
 	switch(_node.edge) {
 
@@ -375,12 +382,7 @@ d2d::motion::motion_vector collision_tracker::attached_vector_for(
 
 	d2d::motion::motion_vector result{};
 
-	for(const auto& c : corrections) {
-
-		if(c.is_snap()) {
-
-			continue;
-		}
+	for(const auto& c : passive_movements) {
 
 		if(&_attached!=c.target) {
 
