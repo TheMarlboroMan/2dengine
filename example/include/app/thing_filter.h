@@ -6,6 +6,8 @@
 #include "toggle_block.h"
 #include <d2d/collision/tools.h>
 
+#include <iostream>
+
 namespace app {
 
 /**
@@ -50,13 +52,13 @@ struct thing_filter_moving_block {
 
 	bool operator()(const app::moving_block& _block) const {
 
-		//TODO: This will actually be "this block is fully solid".
-		if(_block.get_type()==0) {
+		if(_block.is_solid()) {
 
 			return true;
 		}
 
 		//Now, for non solid blocks...Count only those above the reference box.
+		//
 		return d2d::collision::is_above(_block.ent, ref_box);
 	};
 

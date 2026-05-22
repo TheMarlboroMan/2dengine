@@ -2477,7 +2477,7 @@ void main::setup_moving_blocks() {
 		//TODO: nope nope nope, let us use an interface thingy.
 		collision_tracker::can_push_policy_fn policy=[&block](const spatiable&, const spatiable&) -> bool {
 
-			return block.get_type()==0;
+			return block.is_solid();
 		};
 
        ctracker.watch(block.ent, policy);

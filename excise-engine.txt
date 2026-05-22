@@ -20,6 +20,7 @@ next steps:
 
 	WISHLIST-BALANCING-POLISHING:
 		- can we have non crushing moving blocks for the elevator at tower 002?
+
 		- particles when the player eats a projectile!
 		- fortress 017 and challenge room sky should be pink
 		- fortress 003 has one way only fall which i dislike intensely.
