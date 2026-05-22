@@ -4,6 +4,8 @@ next steps:
 
 	BUGS:
 		 - check if ultimate and treasure get swapped in the savegame file.
+		- test map, i have been able to jump down through the rightmost block.
+			same on green_key_004 last elevator
 
 	IDEAS:
 
@@ -19,8 +21,9 @@ next steps:
 			- what do I do?
 
 	WISHLIST-BALANCING-POLISHING:
-		- can we have non crushing moving blocks for the elevator at tower 002?
-
+		- can we find a better solution for "i am riding a platform, will 
+			check if I collide with it because the thing filter does not?
+			this is the "player_collision" method.
 		- particles when the player eats a projectile!
 		- fortress 017 and challenge room sky should be pink
 		- fortress 003 has one way only fall which i dislike intensely.

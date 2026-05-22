@@ -2293,6 +2293,16 @@ int main::player_collision(
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_all(current_map.platform_blocks);
 
+	//One more thing... we are riding a plataform, it may be moving down 
+	//and apply a downwards vector to us so we enter the platform. Detect_if
+	//failed because this block is below the player.
+	//TODO: this is a bad solution. Can we do something with the thing_filter_moving_block?
+	if(ctracker.is_attached(player.ent)) {
+
+		cph.detect_one(*ctracker.get_host(player.ent));
+	}
+
+
 	if(!cph.has_collision()) {
 
 		return 0;

@@ -6,6 +6,7 @@
 #include "toggle_block.h"
 #include <d2d/collision/tools.h>
 
+//TODO:
 #include <iostream>
 
 namespace app {
@@ -41,8 +42,9 @@ struct thing_filter_toggle_blocks{
 };
 
 /**
- * Moving blocks will not consider all-solid blocks unless they are 
- * below the player.
+ * Moving blocks will not consider semi-transparent moving blocks. These will
+ * not count when a positive vector exist or they are below the player.
+ * There is one exception: a block 
  */
 struct thing_filter_moving_block {
 
@@ -57,14 +59,16 @@ struct thing_filter_moving_block {
 
 			return true;
 		}
-
+	
 		//Non solid blocks are non-existent if there is a positive y vector.
 		if(positive_y_vector) {
 
 			return false;
 		}
 
-		//Count only those above the reference box.
+		//Count only those above the reference box. This takes care of
+		//semi transparent blocks moving sideways towards a player and
+		//not pushing them.
 		return d2d::collision::is_above(_block.ent, ref_box);
 	};
 
