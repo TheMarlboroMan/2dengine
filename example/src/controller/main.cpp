@@ -92,6 +92,7 @@ main::main(
 
 	setup_console(_sp);
 	setup_debug_vars();
+	setup_debug_trace();
 	dd.set_background_color(ldv::rgba_color(128, 128, 128, 0));
 	reload_values();
 
@@ -886,6 +887,10 @@ void main::tic(
 	}
 
 	clean_expired_entities();
+
+#ifdef IS_DEBUG_BUILD
+	debug_log_trace();
+#endif
 }
 
 void main::clean_expired_entities() {

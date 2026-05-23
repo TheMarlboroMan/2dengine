@@ -65,6 +65,7 @@ class state_driver:
 
 #ifdef IS_DEBUG_BUILD
 
+	void                            setup_input_recorder(dfw::input&, const std::string&);
 	dfw::input_converter_identity                     input_converter;
 	std::unique_ptr<dfw::input_recorder_interface>    input_recorder{nullptr};
 	std::unique_ptr<dfw::input_generator_interface>   input_generator{nullptr};
@@ -78,9 +79,6 @@ class state_driver:
 	ptr_controller                  c_controls;
 	ptr_controller                  c_options;
 	ptr_controller                  c_show_text;
-#ifdef IS_DEBUG_BUILD
-	ptr_controller                  c_test;
-#endif
 	//[new-controller-property-mark]
 };
 

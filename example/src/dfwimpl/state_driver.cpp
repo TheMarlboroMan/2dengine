@@ -8,6 +8,10 @@
 #ifdef IS_DEBUG_BUILD
 #include <dfw/input_recorder_file_8bit.h>
 #include <dfw/input_generator_file_8bit.h>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #endif
 
 //Libraries and application specifics.
@@ -510,24 +514,7 @@ void state_driver::start_app(
 			throw std::runtime_error("file for --record already exists, refusing to overwrite");
 		}
 
-		//TODO: Does this throw memory out??
-		dfw::input_recorder_file_8bit * ir=new dfw::input_recorder_file_8bit{_in, input_converter};
-		ir->open_file(recorded_filename);
-		ir->set_active(true);
-		ir->set_inputs({
-			app::input::escape,
-			app::input::left,
-			app::input::right,
-			app::input::up,
-			app::input::down,
-			app::input::jump,
-			app::input::pause
-		});
-
-		input_recorder.reset(ir);
-//TODO: Should be checked in dfw::input to see if any inputs are being watched.
-		_in.set_recorder(input_recorder.get());
-
+		setup_input_recorder(_in, recorded_filename);
 		lm::log(log).info()<<"inputs will be recorded to "<<recorded_filename<<std::endl;
 	}
 	else if(_argman.exists("--replay")) {
@@ -543,17 +530,56 @@ void state_driver::start_app(
 			throw std::runtime_error("file for --replay not found");
 		}
 
-		//TODO: Does this throw memory out??
 		dfw::input_generator_file_8bit * ig=new dfw::input_generator_file_8bit{input_converter};
+		input_generator.reset(ig);
+
 		ig->set_active(true);
 		ig->open_file(recorded_filename);
 
-		input_generator.reset(ig);
 		_in.set_generator(input_generator.get());
 
 		lm::log(log).info()<<"inputs will be replayed from "<<recorded_filename<<std::endl;
+	}
+	else {
+
+		std::time_t now=std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		struct std::tm * time_struct=std::localtime(&now);
+
+		std::stringstream ss;
+		ss<<"game_record-"<<std::put_time(time_struct,"%Y%m%d%H%M%S");
+		std::string recorded_filename{ss.str()};
+
+		setup_input_recorder(_in, recorded_filename);
+		lm::log(log).info()<<"inputs will be auto recorded to "<<recorded_filename<<std::endl;
 	}
 
 #endif
 }
 
+#ifdef IS_DEBUG_BUILD
+
+void state_driver::setup_input_recorder(
+	dfw::input& _in,
+	const std::string& _recorded_filename
+) {
+
+	//No memory is thrown out here.
+	dfw::input_recorder_file_8bit * ir=new dfw::input_recorder_file_8bit{_in, input_converter};
+	input_recorder.reset(ir);
+
+	ir->open_file(_recorded_filename);
+	ir->set_active(true);
+	ir->set_inputs({
+		app::input::escape,
+		app::input::left,
+		app::input::right,
+		app::input::up,
+		app::input::down,
+		app::input::jump,
+		app::input::pause
+	});
+
+//TODO: Should be checked in dfw::input to see if any inputs are being watched.
+	_in.set_recorder(input_recorder.get());
+}
+#endif

@@ -1,4 +1,3 @@
-
 void main::console_display_onenter(
 	const std::string& _command
 ) {
@@ -15,7 +14,6 @@ console::result main::execute_cmd(
 	const std::string& _cmd, 
 	const std::vector<console::argument>& _args
 ) {
-
 
 	if(_cmd=="exit" || _cmd=="quit" || _cmd=="q") {
 
@@ -258,7 +256,99 @@ console::result main::execute_cmd(
 		return {0, ss.str()};
 	}
 
+	if(_cmd=="trace") {
+
+		return debug_trace_entity(_args[0].get_string());
+	}
+
+	if(_cmd=="untrace") {
+
+		return debug_untrace_entity(_args[0].get_string());
+	}
+
+	if(_cmd=="traceinfo") {
+
+		std::stringstream ss;
+		ss<<"tracing: ";
+		for(const auto& t: traced_entities) {
+
+			ss<<t<<" ";
+		}
+
+		return {0, ss.str()};
+	}
+
 	return {0, "unknown command"};
+}
+
+console::result main::debug_trace_entity(
+	const std::string& _entity_str
+) {
+
+	if(_entity_str=="player") {
+
+		traced_entities.insert(_entity_str);
+		return {0, "player added to trace"};
+	}
+
+	//Validate trace...
+	char delimiter='-';
+	std::vector<std::string> parts;
+	std::string temp;
+
+	std::istringstream iss(_entity_str);
+	while(std::getline(iss, temp, delimiter)) {
+
+		parts.push_back(temp);
+	}
+
+	if(2!=parts.size()) {
+
+		return {1, "bad syntax, expected player, movingblock-tag"};
+	}
+
+	if("movingblock"==parts[0]) {
+
+		traced_entities.insert(_entity_str);
+		return {0, "moving block added to trace"};
+	}
+
+	return {1, "bad syntax, expected player, movingblock-tag"};
+}
+
+console::result main::debug_untrace_entity(
+	const std::string& _entity_str
+) {
+
+	if(_entity_str=="player") {
+
+		traced_entities.erase(_entity_str);
+		return {0, "player added to trace"};
+	}
+
+	//Validate trace...
+	char delimiter='-';
+	std::vector<std::string> parts;
+	std::string temp;
+
+	std::istringstream iss(_entity_str);
+	while(std::getline(iss, temp, delimiter)) {
+
+		parts.push_back(temp);
+	}
+
+	if(2!=parts.size()) {
+
+		return {1, "bad syntax, expected player, movingblock-tag"};
+	}
+
+	if("movingblock"==parts[0]) {
+
+		traced_entities.erase(_entity_str);
+		return {0, "moving block added to trace"};
+	}
+
+	return {1, "bad syntax, expected player, movingblock-tag"};
 }
 
 void main::setup_debug_vars() {
@@ -288,6 +378,33 @@ void main::setup_debug_vars() {
 		std::cout<<"debug value '"<<key<<"'='"<<val<<"'\n";
 
 		debug_session_vars[key]=val;
+	}
+}
+
+void main::setup_debug_trace() {
+
+	std::string debug_file="debug_trace";
+	std::cout<<"traced entities file will be read from "<<debug_file<<"\n";
+
+	std::ifstream file{debug_file};
+
+	if(!file.is_open()) {
+
+		std::cout<<"no trace file '"<<debug_file<<"' present\n";
+		return;
+	}
+
+	std::string key;
+	while(true) {
+
+		file>>key;
+		if(file.eof()) {
+
+			break;
+		}
+
+		auto res=debug_trace_entity(key);
+		std::cout<<res.output<<"\n";
 	}
 }
 
@@ -343,6 +460,9 @@ void main::setup_console(
 	console->map_command("sess", {});
 	console->map_command("setsess", {{console::types::string}, {console::types::string}});
 	console->map_command("getsess", {{console::types::string}});
+	console->map_command("traceinfo", {{}});
+	console->map_command("trace", {{console::types::string}});
+	console->map_command("untrace", {{console::types::string}});
 }
 
 void main::draw_debug(
@@ -628,4 +748,48 @@ std::string main::debug_session_get(
 	return debug_session_has(_key)
 		? debug_session_vars.at(_key)
 		: "";
+}
+
+void main::debug_log_trace() {
+
+	if(0==traced_entities.size()) {
+
+		return;
+	}
+
+	std::string type;
+	int tag;
+	std::stringstream ss;
+
+	for(const auto& entity : traced_entities) {
+
+		ss.str("");
+
+		if("player"==entity) {
+
+			ss<<player.ent;
+			lm::log(logger).debug()<<entity<<":"<<ss.str()<<"\n";
+			continue;
+		}
+
+		//piece shit together...
+		auto pos=entity.find('-');
+		type=entity.substr(0, pos);
+		tag=std::stoi(entity.substr(pos+1));
+
+		if("movingblock"==type) {
+
+			for(const auto& block : current_map.moving_blocks) {
+
+				if(tag!=block.get_tag()) {
+
+					continue;
+				}
+
+				ss<<block.ent;
+				lm::log(logger).debug()<<entity<<":"<<ss.str()<<"\n";
+				continue;
+			}
+		}
+	}
 }

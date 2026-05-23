@@ -4,6 +4,7 @@
 #include <appconsole/console.h>
 #include <console/console.h>
 #include <map>
+#include <set>
 #include <tools/string_utils.h>
 #endif
 
@@ -223,6 +224,14 @@ class main:
 	void                        setup_console(app::service_provider&);
 	void                        draw_debug(ldv::screen&);
 	console::result             execute_cmd(const std::string&, const std::vector<console::argument>&);
+	void                        console_display_onenter(const std::string&);
+	void                        setup_debug_vars();
+	void                        setup_debug_trace();
+	bool                        debug_session_has(const std::string&) const;
+	std::string                 debug_session_get(const std::string&) const;
+	console::result             debug_trace_entity(const std::string&);
+	console::result             debug_untrace_entity(const std::string&);
+	void                        debug_log_trace();
 
 	bool                        debug_draw{false};
 	bool                        inmortal{false};
@@ -230,14 +239,14 @@ class main:
 	std::unique_ptr<console::console>   console{nullptr};
 	std::unique_ptr<appconsole::console> console_display{nullptr};
 	bool                        console_enabled{false};
-	void                        console_display_onenter(const std::string&);
 	std::string                 last_command,
 	                            current_map_name;
 	//A map of string to string that we can use to test stuff without recompiling.
 	std::map<std::string, std::string> debug_session_vars;
-	void                        setup_debug_vars();
-	bool                        debug_session_has(const std::string&) const;
-	std::string                 debug_session_get(const std::string&) const;
+	//A map of strings representing things whose position/values can be traced.
+	//A valid value would be "player", and so would be "movingblock-1" where
+	//1 would be its tag.
+	std::set<std::string>       traced_entities;
 #endif
 
 	//Something that takes a something that contains a spatiable entity and
