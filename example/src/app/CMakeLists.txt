@@ -52,6 +52,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/show_text_exchange.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/starfield.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/storm.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/thing_filter.cpp
 	PARENT_SCOPE
 )
 

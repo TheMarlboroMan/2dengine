@@ -757,6 +757,8 @@ void main::debug_log_trace() {
 		return;
 	}
 
+	lm::log(logger).debug()<<"=== begin trace of entities after full tic ===\n";
+
 	std::string type;
 	int tag;
 	std::stringstream ss;

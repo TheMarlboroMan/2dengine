@@ -1741,7 +1741,6 @@ void main::pick_up_collectible(
 	//Does not actually make the collectible dissapear :P.
 	_collectible.mark_to_remove();
 
-	//std::cout<<"got collectible with id "<<_collectible.id<<std::endl;
 	persistence.add(app::pergr_collectibles, _collectible.id, 1);
 
 	//play a jingle :D.
@@ -1793,7 +1792,6 @@ void main::discover_secret(
 ) {
 
 	//Does not actually make the collectible dissapear :P.
-	//std::cout<<"discovered secret id "<<_secret_cover.id<<std::endl;
 	persistence.add(app::pergr_secret_covers, _secret_cover.id, 1);
 	_secret_cover.discover();
 	play_sound(app::snd_secret);
@@ -2301,7 +2299,9 @@ int main::player_collision(
 	//One more thing... we are riding a plataform, it may be moving down 
 	//and apply a downwards vector to us so we enter the platform. Detect_if
 	//failed because this block is below the player.
-	//TODO: this is a bad solution. Can we do something with the thing_filter_moving_block?
+	//We could attempt to enhance the moving block filter so it can thake
+	//care of this but a) this works and b) that filter is used in other
+	//contexts with non-current player positions.
 	if(ctracker.is_attached(player.ent)) {
 
 		cph.detect_one(*ctracker.get_host(player.ent));
@@ -2416,21 +2416,26 @@ void main::mount_player_in_blocks(
 	app::player& _player
 ) {
 
+/*
+ * TODO:
+ * now that I see this I think this is horseshit.
+*/
+
 	if(!current_map.moving_blocks.size()) {
 
 		return;
 	}
 
-	auto player_box_copy=_player.ent.get_box();
-
 	//This value can be tweaked so faster boxes catch the player too! 
-	//6 catches a box moving downwards at 100u/s.
-	player_box_copy.origin.y-=2.0;
+	//6 catches a box moving downwards at 100u/s (meaning the player cannot
+	//actually detach, mind you!).
+	const auto margin=2.0;
 
-	bool player_attached=ctracker.is_attached(_player.ent);
-
-	//Is the player still attached???
-	if(player_attached) {
+	//First we need to see if the player has detached from any block it was
+	//riding.
+	auto player_box_copy=_player.ent.get_box();
+	player_box_copy.origin.y-=margin;
+	if(ctracker.is_attached(_player.ent)) {
 
 		auto  host=ctracker.get_host(_player.ent);
 		//If we are still over the attached block, everything is fine.
@@ -2439,6 +2444,7 @@ void main::mount_player_in_blocks(
 			return;
 		}
 
+		//Or we can detach and see if we get attached to something later.
 		lm::log(logger).debug()<<"detached from moving platform player:"<<_player.ent.get_box()<<" check_box:"<<player_box_copy<<" host:"<<host->get_box()<<std::endl;
 		ctracker.detach_from_all(_player.ent);
 	}
@@ -2456,8 +2462,10 @@ void main::mount_player_in_blocks(
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
 
 			//Will not mount blocks above the real player box, this can 
-			//happen with blocks that are not fully solid.
-			if(!d2d::collision::is_below(plat.ent, player.ent)) {
+			//happen with blocks that are not fully solid... Still we need to 
+			//take the previous position into account: I saw the player move
+			//through a box that was moving down.
+			if(!d2d::collision::is_below(plat.ent, player.ent.get_previous_box())) {
 
 				continue;
 			}

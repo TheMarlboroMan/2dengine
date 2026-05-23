@@ -166,8 +166,6 @@ struct spatiable {
 	* Sets the bounding box height.
 	*/
 	void                    set_h(int);
-
-	
 };
 
 }}
