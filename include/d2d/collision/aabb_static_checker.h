@@ -3,6 +3,9 @@
 #include "spatiable.h"
 #include "../tools/to_ref.h"
 
+//TODO
+#include <iostream>
+
 namespace d2d { namespace collision {
 
 /**
@@ -31,7 +34,7 @@ class aabb_static_checker {
 	bool                    has_collision() const {return collision_found;}
 
 /**
- * sets the early exit for all calls to detect_all and detect_if. The way
+  sets the early exit for all calls to detect_all and detect_if. The way
  * this works is that 
  */
 	aabb_static_checker&      set_early_exit(bool);
@@ -59,7 +62,7 @@ class aabb_static_checker {
  */
 	template<typename T>
 	aabb_static_checker&      detect_all(
-		T& _nodes
+		const T& _nodes
 	) {
 
 		if(collision_found && with_early_exit) {
@@ -87,7 +90,7 @@ class aabb_static_checker {
  */
 	template<typename T, typename D>
 	aabb_static_checker&      detect_all(
-		T& _nodes,
+		const T& _nodes,
 		const D& _dereferencer
 	) {
 
@@ -119,16 +122,25 @@ class aabb_static_checker {
  */
 	template<typename T, typename P>
 	aabb_static_checker&     detect_if(
-		T& _nodes,
+		const T& _nodes,
 		const P& _skipper
 	) {
+
+std::cout<<"detect_if will run through "<<_nodes.size()<<" nodes\n";
 
 		if(collision_found && with_early_exit) {
 
 			return *this;
 		}
 
+
+
+int i=0;
+std::cout<<"detect_if will start processing now\n";
 		for(const auto& node : _nodes) {
+
+std::cout<<"node "<<i<<"\n";
+i++;
 
 			const auto& ref=d2d::tools::to_ref(node);
 			if(!_skipper(ref)) {
@@ -154,18 +166,23 @@ class aabb_static_checker {
  */
 	template<typename T, typename P, typename D>
 	aabb_static_checker&     detect_if(
-		T& _nodes,
+		const T& _nodes,
 		const P& _skipper,
 		const D& _dereferencer
 	) {
 
+std::cout<<"detect_if will run through "<<_nodes.size()<<" nodes\n";
 		if(collision_found && with_early_exit) {
 
 			return *this;
 		}
 
+int i=0;
+std::cout<<"detect_if will start processing now\n";
 		for(const auto& node : _nodes) {
 
+std::cout<<"node "<<i<<"\n";
+i++;
 			if(!_skipper(node)) {
 
 				continue;

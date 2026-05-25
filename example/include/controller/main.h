@@ -247,6 +247,7 @@ class main:
 	//A valid value would be "player", and so would be "movingblock-1" where
 	//1 would be its tag.
 	std::set<std::string>       traced_entities;
+	unsigned game_tics{0};
 #endif
 
 	//Something that takes a something that contains a spatiable entity and

@@ -14,8 +14,8 @@ bool ray_aabb_checker::check(
 	//there) or lie and expand the obstacle. We will do this last one.
 	
 	const auto& obstacle=_obstacle.get_box();
-	double half_w=(double)_box.get_w()/2,
-	    half_h=(double)_box.get_h()/2;
+	double half_w=(double)_box.get_w()/2.,
+	    half_h=(double)_box.get_h()/2.;
 
 	//Ok... the original box has an integer as its "size" but we need more
 	//precision so let's make up for it... I can see how this is going to
@@ -28,8 +28,8 @@ bool ray_aabb_checker::check(
 
 	enlarged.origin.x-=half_w;
 	enlarged.origin.y-=half_h;
-	enlarged.w+=half_w*2;
-	enlarged.h+=half_h*2;
+	enlarged.w+=half_w*2.;
+	enlarged.h+=half_h*2.;
 
 	//More suffering... the idea of rays vs aabb is "predictive" in nature and
 	//we want to work in a "corrective" way so we really need to set the ray

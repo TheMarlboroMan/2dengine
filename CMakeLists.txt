@@ -173,9 +173,11 @@ if(${BUILD_TESTS})
 	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
 	add_executable(persistence tests/persistence.cpp)
 	add_executable(particles tests/particles.cpp)
+	add_executable(aabb_static_checker tests/aabb_static_checker.cpp)
 
 	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 	target_link_libraries(persistence d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 	target_link_libraries(particles d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+	target_link_libraries(aabb_static_checker d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
 
 endif()

@@ -130,34 +130,68 @@ bool d2d::collision::is_right_of(
 
 bool d2d::collision::collides_with(
 	const spatiable& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	bool _touch_is_collision
 ) {
 
-	return _a.get_box().collides_with(_b.get_box());
+	//TODO: 
+	const auto& a=_a.get_box();
+	const auto& b=_b.get_box();
+
+	shit_overlap(
+		a.origin.x, a.origin.y, a.w, a.h,
+		b.origin.x, b.origin.y, b.w, b.h
+	);
+
+	return _a.get_box().collides_with(_b.get_box(), _touch_is_collision);
 }
 
 bool d2d::collision::collides_with(
 	const spatiable& _a, 
-	const box& _b
+	const box& _b,
+	bool _touch_is_collision
 ) {
 
-	return _a.get_box().collides_with(_b);
+	//TODO: 
+	const auto& a=_a.get_box();
+
+	shit_overlap(
+		a.origin.x, a.origin.y, a.w, a.h,
+		_b.origin.x, _b.origin.y, _b.w, _b.h
+	);
+
+	return _a.get_box().collides_with(_b, _touch_is_collision);
 }
 
 bool d2d::collision::collides_with(
 	const box& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	bool _touch_is_collision
 ) {
 
-	return _a.collides_with(_b.get_box());
+	const auto& b=_b.get_box();
+
+	shit_overlap(
+		_a.origin.x, _a.origin.y, _a.w, _a.h,
+		b.origin.x, b.origin.y, b.w, b.h
+	);
+
+	return _a.collides_with(_b.get_box(), _touch_is_collision);
 }
 
 bool d2d::collision::collides_with(
 	const box& _a, 
-	const box& _b
+	const box& _b,
+	bool _touch_is_collision
 ) {
 
-	return _a.collides_with(_b);
+
+	shit_overlap(
+		_a.origin.x, _a.origin.y, _a.w, _a.h,
+		_b.origin.x, _b.origin.y, _b.w, _b.h
+	);
+
+	return _a.collides_with(_b, _touch_is_collision);
 }
 
 void d2d::collision::snap_to_right_of(

@@ -12,6 +12,7 @@ next steps:
 				(2026-05-24 01:12:28) [debug]  >> 256,1008 16x16
 				(2026-05-24 01:12:28) [info] illegal position, assumed crushing
 		I just don't know what is this about!
+			- try and print more info? like vectors and shit??
 
 
 	IDEAS:

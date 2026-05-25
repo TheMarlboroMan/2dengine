@@ -803,6 +803,12 @@ void main::tic(
 	app::player_input _pli
 ) {
 
+#ifdef IS_DEBUG_BUILD
+std::cout<<"tic index: "<<game_tics<<"\n";
+++game_tics;
+
+#endif
+
 	sp.get_game_scenery_tile_draw().tic(_delta);
 	sp.get_game_animation_sprite_finder().tic(_delta);
 
@@ -1437,6 +1443,7 @@ void main::tic_ground(
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
 
+lm::log(logger).info()<<"FOR CROUCH!\n";
 		if(!is_in_legal_position(player.ent, true)) {
 
 			_player.crouch();
@@ -1612,6 +1619,7 @@ void main::tic_air(
 	player_motion(_player, _player.ent.get_motion_vector(), _delta);
 
 	int sides=player_collision(_player, _player.ent.get_motion_vector(), _delta);
+
 	if(0!=sides) {
 
 		using d2d::collision::ray_aabb_solver;
@@ -2287,6 +2295,12 @@ int main::player_collision(
 	auto player_ray=rb.get_previous(_player.ent, _mv)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
+//TODO: In game tic 9417 I x was 244.00000000000003 and no collision with the
+//tiles what detected. At least we should be able to go into the very specific
+//data to run as many simulations as we want
+//But that won't happen today.
+//
+
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
@@ -2296,7 +2310,7 @@ int main::player_collision(
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_all(current_map.platform_blocks);
 
-	//One more thing... we are riding a plataform, it may be moving down 
+	//One more thing... we are riding a plataform, it may be moving down
 	//and apply a downwards vector to us so we enter the platform. Detect_if
 	//failed because this block is below the player.
 	//We could attempt to enhance the moving block filter so it can thake
@@ -2307,14 +2321,10 @@ int main::player_collision(
 		cph.detect_one(*ctracker.get_host(player.ent));
 	}
 
-
 	if(!cph.has_collision()) {
 
 		return 0;
 	}
-
-	d2d::collision::ray_aabb_solver solver{};
-	auto collision_info=cph.get_results();
 
 	//Now, this is something the engine cannot solve for us: the collision
 	//info must be sorted but the default algorithm of "sort_and_solve" is not
@@ -2325,6 +2335,7 @@ int main::player_collision(
 	//the same "distance" that we cannot correctly solve.
 
 	using d2d::collision::ray_aabb_info;
+	auto collision_info=cph.get_results();
 
 	std::sort(
 		std::begin(collision_info),
@@ -2339,7 +2350,8 @@ int main::player_collision(
 		}
 	);
 
-
+	//TODO: Ok, this one is saying that we have no fucking edges. remember, 9417 is the tic when this happened.
+	d2d::collision::ray_aabb_solver solver{};
 	auto result=solver.solve(_player.ent, collision_info);
 	return result.edges;
 }
@@ -2375,10 +2387,28 @@ bool main::is_in_legal_position(
 		composite_filter
 	);
 
+
 	d2d::collision::aabb_static_checker sc(_position);
+
+lm::log(logger).debug()<<"\n\n==================== STEP =====================================\n\n";
+lm::log(logger).debug()<<"will check: "<<_position<<" player="<<player.ent.get_box()<<"\n";
+lm::log(logger).debug()<<"vector "<<player.ent.get_motion_vector()<<"\n";
+lm::log(logger).debug()<<" ==== detecting tiles: "<<current_tiles.size()<<"\n";
 	sc.detect_all(current_tiles);
 
-	//lm::log(logger).debug()<<"before moving blocks: position="<<_position<<" player="<<player.ent.get_box()<<" has collision="<<sc.has_collision()<<"\n";
+//TODO: This is just for debugging purposes!
+if(sc.has_collision()) {
+
+	lm::log(logger).debug()<<"there is a collision!!!!\n";
+	lm::log(logger).debug()<<"x="<<player.ent.get_x()<<" y="<<player.ent.get_y()<<" "<<player.ent.get_motion_vector()<<"\n";
+	for(auto& s : sc.get_results()) {
+
+		lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
+	}
+
+	//TODO: THis! should not happen!!
+	throw std::runtime_error("dafuq");
+}
 
 	if(_with_moving) {
 
@@ -2388,16 +2418,28 @@ bool main::is_in_legal_position(
 		//does not correct it as snaps but rather produces the passive 
 		//vector that is applied to the player and corrected. At the end of
 		//the tic we are INTO the elevator, thus this check.
-		
+
 		if(ctracker.is_attached(player.ent)) {
 
+lm::log(logger).debug()<<"detecting attached...\n";
 			sc.detect_one(*ctracker.get_host(player.ent));
+
+if(sc.has_collision()) {
+
+	lm::log(logger).debug()<<"there is a collision!!!!\n";
+}
 		}
 
 		//Check against other moving blocks... This is mostly to know if we
 		//can stand up when under a moving block.
+lm::log(logger).debug()<<" ==== detecting moving "<<current_map.moving_blocks.size()<<"\n";
 		app::thing_filter_moving_block moving_block_filter{_position, false};
 		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
+lm::log(logger).debug()<<" ==== end detecting moving\n";
+
+if(sc.has_collision()) {
+	lm::log(logger).debug()<<"there is a collision!!!!\n";
+}
 	}
 
 	if(sc.has_collision()) {
@@ -2409,17 +2451,13 @@ bool main::is_in_legal_position(
 		}
 	}
 
+lm::log(logger).debug()<<"END IS IN LEGAL POSITION\n";
 	return !sc.has_collision();
 }
 
 void main::mount_player_in_blocks(
 	app::player& _player
 ) {
-
-/*
- * TODO:
- * now that I see this I think this is horseshit.
-*/
 
 	if(!current_map.moving_blocks.size()) {
 
@@ -2470,6 +2508,7 @@ void main::mount_player_in_blocks(
 				continue;
 			}
 
+lm::log(logger).info()<<"BEFORE MOUNT PLAYER IN BLOCKS!\n";
 			//TODO: Is this even needed??? the is_in_legal_position thingy. I 
 			//am sure this is here because of some reason.
 			if(is_in_legal_position(player_box_copy, false)) {
