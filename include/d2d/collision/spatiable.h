@@ -71,25 +71,25 @@ struct spatiable {
 	* Must return the x component of the origin. Exists only to provide a way
 	* to directly access this property without passing through the box/origin.
 	*/
-	virtual double          get_x() const=0;
+	virtual t_position      get_x() const=0;
 
 	/**
 	* Must return the y component of the origin. Exists only to provide a way
 	* to directly access this property without passing through the box/origin.
 	*/
-	virtual double          get_y() const=0;
+	virtual t_position      get_y() const=0;
 
 	/**
 	* Must return the width of the bounding box. Exists only to provide a way
 	* to directly access this property without passing through the box getter.
 	*/
-	virtual int             get_w() const=0;
+	virtual t_size          get_w() const=0;
 
 	/**
 	* Must return the height of the bounding box. Exists only to provide a way
 	* to directly access this property without passing through the box getter.
 	*/
-	virtual int             get_h() const=0;
+	virtual t_size          get_h() const=0;
 
 	/**
 	* Must return if the box is passable from the given edge.
@@ -101,18 +101,18 @@ struct spatiable {
     */
 	virtual d2d::motion::motion_vector get_motion_vector() const=0;
 
-	double                  get_motion_vector_x() const {return get_motion_vector().x;}
-	double                  get_motion_vector_y() const {return get_motion_vector().y;}
+	t_position              get_motion_vector_x() const {return get_motion_vector().x;}
+	t_position              get_motion_vector_y() const {return get_motion_vector().y;}
 
 	virtual void            set_motion_vector(d2d::motion::motion_vector)=0;
 
-	void                    set_motion_vector_x(double _val) {
+	void                    set_motion_vector_x(t_position _val) {
 
 		auto vec=get_motion_vector();
 		set_motion_vector({_val, vec.y});
 	}
 
-	void                    set_motion_vector_y(double _val) {
+	void                    set_motion_vector_y(t_position _val) {
 
 		auto vec=get_motion_vector();
 		set_motion_vector({vec.x, _val});
@@ -121,12 +121,12 @@ struct spatiable {
 	/**
 	* Returns the y component plus the box height.
 	*/
-	double                  get_top() const {return get_y()+get_h();}
+	t_position              get_top() const {return get_y()+get_h();}
 
 	/**
 	* Returns the x component plus the box width.
 	*/
-	double                  get_right() const {return get_x()+get_w();}
+	t_position              get_right() const {return get_x()+get_w();}
 	/**
     * Returns true if boxes are different.
     */
@@ -150,22 +150,22 @@ struct spatiable {
 	/**
 	* Replaces the box origin x component with the given value.
 	*/
-	void                    set_x(double);
+	void                    set_x(t_position);
 
 	/**
 	* Replaces the box origin y component with the given value.
 	*/
-	void                    set_y(double);
+	void                    set_y(t_position);
 
 	/**
 	* Sets the bounding box width.
 	*/
-	void                    set_w(int);
+	void                    set_w(t_size);
 
 	/**
 	* Sets the bounding box height.
 	*/
-	void                    set_h(int);
+	void                    set_h(t_size);
 };
 
 }}

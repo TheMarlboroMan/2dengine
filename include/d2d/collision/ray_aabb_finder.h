@@ -21,8 +21,8 @@ namespace d2d { namespace collision {
 struct ray_aabb_info {
 
 	bool has_intersection;
-	double intersection_time;
-	ldt::vector_2d<double> normal;
+	t_position intersection_time; //time is expressed in the same resolution as position.
+	ldt::vector_2d<t_position> normal;
 	const spatiable * obstacle{nullptr};
 	operator bool() const {return has_intersection;}
 	//May not be enough in all cases!

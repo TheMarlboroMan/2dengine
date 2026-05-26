@@ -4,5 +4,7 @@
 
 namespace d2d { namespace motion {
 
-using motion_vector=ldt::vector_2d<double>;
+using t_motion=double;
+
+using motion_vector=ldt::vector_2d<t_motion>;
 }}

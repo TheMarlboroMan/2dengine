@@ -38,10 +38,10 @@ struct tile:
 	virtual const collision::box&      get_previous_box() const {return shaper->get_box(cimpl->to_shape(*this), x, y);}
 	virtual collision::point&          get_origin() {return shaper->get_box(cimpl->to_shape(*this), x, y).origin;}
 	virtual const collision::point&    get_origin() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin;}
-	virtual double          get_x() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin.x;}
-	virtual double          get_y() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin.y;}
-	virtual int             get_w() const {return shaper->get_box(cimpl->to_shape(*this), x, y).w;}
-	virtual int             get_h() const {return shaper->get_box(cimpl->to_shape(*this), x, y).h;}
+	virtual t_position      get_x() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin.x;}
+	virtual t_position      get_y() const {return shaper->get_box(cimpl->to_shape(*this), x, y).origin.y;}
+	virtual t_size          get_w() const {return shaper->get_box(cimpl->to_shape(*this), x, y).w;}
+	virtual t_size          get_h() const {return shaper->get_box(cimpl->to_shape(*this), x, y).h;}
 	virtual bool            is_passable_edge(box_edge _edge) const {return cimpl->is_passable_edge(*this, _edge);}
 	virtual color           get_debug_outline_color() const {return cimpl->get_outline_color(*this);}
 	virtual color           get_debug_fill_color() const {return cimpl->get_fill_color(*this);}

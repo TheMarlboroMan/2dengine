@@ -134,15 +134,6 @@ bool d2d::collision::collides_with(
 	bool _touch_is_collision
 ) {
 
-	//TODO: 
-	const auto& a=_a.get_box();
-	const auto& b=_b.get_box();
-
-	shit_overlap(
-		a.origin.x, a.origin.y, a.w, a.h,
-		b.origin.x, b.origin.y, b.w, b.h
-	);
-
 	return _a.get_box().collides_with(_b.get_box(), _touch_is_collision);
 }
 
@@ -151,14 +142,6 @@ bool d2d::collision::collides_with(
 	const box& _b,
 	bool _touch_is_collision
 ) {
-
-	//TODO: 
-	const auto& a=_a.get_box();
-
-	shit_overlap(
-		a.origin.x, a.origin.y, a.w, a.h,
-		_b.origin.x, _b.origin.y, _b.w, _b.h
-	);
 
 	return _a.get_box().collides_with(_b, _touch_is_collision);
 }
@@ -169,13 +152,6 @@ bool d2d::collision::collides_with(
 	bool _touch_is_collision
 ) {
 
-	const auto& b=_b.get_box();
-
-	shit_overlap(
-		_a.origin.x, _a.origin.y, _a.w, _a.h,
-		b.origin.x, b.origin.y, b.w, b.h
-	);
-
 	return _a.collides_with(_b.get_box(), _touch_is_collision);
 }
 
@@ -184,12 +160,6 @@ bool d2d::collision::collides_with(
 	const box& _b,
 	bool _touch_is_collision
 ) {
-
-
-	shit_overlap(
-		_a.origin.x, _a.origin.y, _a.w, _a.h,
-		_b.origin.x, _b.origin.y, _b.w, _b.h
-	);
 
 	return _a.collides_with(_b, _touch_is_collision);
 }

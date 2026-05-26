@@ -28,22 +28,24 @@ ray_aabb_solver::result ray_aabb_solver::solve(
 	int edges=0, collision_count=0;
 	for(const auto& info : _info) {
 
-		//What if we moved out of collision by then????? Just skip, right??
-		//TODO: The bug is... here...we are using a broad phase again or whatever.
-		//At this point I am grasping at straws here...  I cannot replace this
-		//because I don't have the ray anymore. Fuck fuck fuck fuck.
-		//TODO: You know, maybe... a ray told us there was a collision so
-		//let's assume touch is collision? that should still work!
-		//TODO:
-		//Mixing rays and aabb is a recipe for disaster!
-		/*
-		if(!collides_with(_target, *info.obstacle, false)) {
-
-			//TODO: Are you the one with the bug??????
-			continue;
-		}
-		*/
-
+		//There was a terrible bug here that I am compelled to document, so
+		//as not do do it again. For each obstacle we are potentially changing
+		//the subject position by snapping. which means that further obstacles
+		//may not be in collision anymore, thus we need to check if the updated
+		//position still needs a correction. 
+		//The collisions came from a ray, and we were using good old segment
+		//overlapping to check for collisions: this is mixing two worlds and
+		//was causing a rare precision bug in which the ray said there was
+		//a collision by the segment collision did not (because 244.000000000000003
+		//+12 is represented exactly as 256!), thus skipping all corrections
+		//and causing the player to eventually enter the wall until the 
+		//segment collision detected it and killed the player at the end of the
+		//tic.
+		//What we are doing now is simple: if we get a correction in an edge,
+		//all obstacles further away or in the same position of that edge are
+		//ignored. This way we correct at least one collision reported by the
+		//ray, reposition the player and respect the separation collision check
+		//types (using only rays in this case).
 
 		if(edges & aabb_edges::left) {
 

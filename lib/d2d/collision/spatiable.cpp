@@ -47,7 +47,7 @@ void spatiable::move_by(
 }
 
 void spatiable::set_x(
-	double _val
+	t_position _val
 ) {
 
 	auto& b=get_box();
@@ -55,7 +55,7 @@ void spatiable::set_x(
 }
 
 void spatiable::set_y(
-	double _val
+	t_position _val
 ) {
 
 	auto& b=get_box();
@@ -63,7 +63,7 @@ void spatiable::set_y(
 }
 
 void spatiable::set_w(
-	int _val
+	t_size _val
 ) {
 
 	auto& b=get_box();
@@ -71,7 +71,7 @@ void spatiable::set_w(
 }
 
 void spatiable::set_h(
-	int _val
+	t_size _val
 ) {
 
 	auto& b=get_box();

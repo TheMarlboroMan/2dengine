@@ -8,6 +8,15 @@
 
 - To replace the DFW jumpstart. That should be still usable and this library should be pluggable into it.
 
+## opinions of 2d2
+
+- motion vectors use doubles.
+- spatiable elements use doubles for position and integers for size.
+
+I have tested this with floats by changing the definitions and it works, but
+I don't want to make template classes to speed up compilation times. If we
+need floats, change, recompile and repackage.
+
 ## namespaces of d2d
 
 ### audio

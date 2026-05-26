@@ -3,10 +3,10 @@
 using namespace d2d::collision;
 
 spatiable_box::spatiable_box(
-	double _x,
-	double _y,
-	int _w, 
-	int _h
+	t_position _x,
+	t_position _y,
+	t_size _w, 
+	t_size _h
 ):
 	collision_box{_x, _y, _w, _h},
 	previous_box{collision_box}
@@ -14,8 +14,8 @@ spatiable_box::spatiable_box(
 
 spatiable_box::spatiable_box(
 	d2d::collision::point _pt,
-	int _w, 
-	int _h
+	t_size _w, 
+	t_size _h
 ):
 	collision_box{_pt, _w, _h},
 	previous_box{collision_box}

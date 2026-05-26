@@ -16,7 +16,7 @@ void accelerator::clamp(
 
 void accelerator::accelerate_x(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	away_from_zero(_target.x, _factor, clamp_vector.x);
@@ -24,7 +24,7 @@ void accelerator::accelerate_x(
 
 void accelerator::accelerate_y(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	away_from_zero(_target.y, _factor, clamp_vector.y);
@@ -32,7 +32,7 @@ void accelerator::accelerate_y(
 
 void accelerator::accelerate(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	away_from_zero(_target.x, _factor, clamp_vector.x);
@@ -50,7 +50,7 @@ void accelerator::accelerate(
 
 void accelerator::decelerate_x(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	towards_zero(_target.x, _factor, clamp_vector.x);
@@ -58,7 +58,7 @@ void accelerator::decelerate_x(
 
 void accelerator::decelerate_y(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	towards_zero(_target.y, _factor, clamp_vector.y);
@@ -66,7 +66,7 @@ void accelerator::decelerate_y(
 
 void accelerator::decelerate(
 	motion_vector& _target,
-	double _factor
+	t_motion _factor
 ) {
 
 	towards_zero(_target.x, _factor, clamp_vector.x);
@@ -83,9 +83,9 @@ void accelerator::decelerate(
 }
 
 void accelerator::away_from_zero(
-	double& _target,
-	double _factor,
-	double _clamp
+	t_motion& _target,
+	t_motion _factor,
+	t_motion _clamp
 ) {
 
 	//First, do we need to take into account the sign?
@@ -93,7 +93,7 @@ void accelerator::away_from_zero(
 		? _factor < 0.0
 		: _target < 0.0;
 
-	double copy=fabs(_target);
+	t_motion copy=fabs(_target);
 
 	//Next, apply.
 	copy+=fabs(_factor);
@@ -110,9 +110,9 @@ void accelerator::away_from_zero(
 }
 
 void accelerator::towards_zero(
-	double& _target,
-	double _factor,
-	double _clamp
+	t_motion& _target,
+	t_motion _factor,
+	t_motion _clamp
 ) {
 
 	if(0.0 == _target) {
@@ -121,7 +121,7 @@ void accelerator::towards_zero(
 	}
 
 	bool is_negative=_target < 0.0;
-	double copy=fabs(_target);
+	t_motion copy=fabs(_target);
 
 	copy-=fabs(_factor);
 	

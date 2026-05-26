@@ -126,21 +126,12 @@ class aabb_static_checker {
 		const P& _skipper
 	) {
 
-std::cout<<"detect_if will run through "<<_nodes.size()<<" nodes\n";
-
 		if(collision_found && with_early_exit) {
 
 			return *this;
 		}
 
-
-
-int i=0;
-std::cout<<"detect_if will start processing now\n";
 		for(const auto& node : _nodes) {
-
-std::cout<<"node "<<i<<"\n";
-i++;
 
 			const auto& ref=d2d::tools::to_ref(node);
 			if(!_skipper(ref)) {
@@ -171,18 +162,13 @@ i++;
 		const D& _dereferencer
 	) {
 
-std::cout<<"detect_if will run through "<<_nodes.size()<<" nodes\n";
 		if(collision_found && with_early_exit) {
 
 			return *this;
 		}
 
-int i=0;
-std::cout<<"detect_if will start processing now\n";
 		for(const auto& node : _nodes) {
 
-std::cout<<"node "<<i<<"\n";
-i++;
 			if(!_skipper(node)) {
 
 				continue;

@@ -79,8 +79,8 @@ d2d::collision::point tile_finder_matrix::to_point(
 	tile_coords _coord
 )const {
 
-	double x=_coord.x*tile_w;
-	double y=_coord.y*tile_h;
+	t_position x=_coord.x*tile_w;
+	t_position y=_coord.y*tile_h;
 	return {x, y};
 }
 

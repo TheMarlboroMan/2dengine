@@ -14,16 +14,16 @@ bool ray_aabb_checker::check(
 	//there) or lie and expand the obstacle. We will do this last one.
 	
 	const auto& obstacle=_obstacle.get_box();
-	double half_w=(double)_box.get_w()/2.,
-	    half_h=(double)_box.get_h()/2.;
+	t_position half_w=(t_position)_box.get_w()/2.,
+	    half_h=(t_position)_box.get_h()/2.;
 
 	//Ok... the original box has an integer as its "size" but we need more
 	//precision so let's make up for it... I can see how this is going to
 	//be a problem in many cases.
-	ldt::box<double, double> enlarged={
+	ldt::box<t_position, t_position> enlarged={
 		obstacle.origin,
-		(double)obstacle.w,
-		(double)obstacle.h
+		(t_position)obstacle.w,
+		(t_position)obstacle.h
 	};
 
 	enlarged.origin.x-=half_w;

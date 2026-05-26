@@ -1978,6 +1978,7 @@ bool main::is_on_air(
 	if(cc.detect_all(contacting_tiles)
 		.detect_all(current_map.platform_blocks)
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
+//TODO: BREAKING BLOCKS HERE
 		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
@@ -2306,6 +2307,7 @@ int main::player_collision(
 
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
+//TODO: BREAKING BLOCKS HERE
 		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})

@@ -15,8 +15,8 @@ class spatiable_box:
 
 	public:
 
-	                                    spatiable_box(double, double, int, int);
-	                                    spatiable_box(d2d::collision::point, int, int);
+	                                    spatiable_box(t_position, t_position, t_size, t_size);
+	                                    spatiable_box(d2d::collision::point, t_size, t_size);
 	                                    spatiable_box(d2d::collision::box);
 	void                                commit_box();
 	void                                rollback_box();
@@ -30,10 +30,10 @@ class spatiable_box:
 	const d2d::collision::box&          get_previous_box() const {return previous_box;}
 	d2d::collision::point&              get_origin() {return collision_box.origin;}
 	const d2d::collision::point&        get_origin() const {return collision_box.origin;}
-	double                              get_x() const {return collision_box.origin.x;}
-	double                              get_y() const {return collision_box.origin.y;}
-	int                                 get_w() const {return collision_box.w;}
-	int                                 get_h() const {return collision_box.h;}
+	t_position                          get_x() const {return collision_box.origin.x;}
+	t_position                          get_y() const {return collision_box.origin.y;}
+	t_size                              get_w() const {return collision_box.w;}
+	t_size                              get_h() const {return collision_box.h;}
 	bool                                is_passable_edge(d2d::collision::box_edge) const;
 	d2d::motion::motion_vector          get_motion_vector() const {return vector;}
 	void                                set_motion_vector(d2d::motion::motion_vector _v) {vector=_v;}
