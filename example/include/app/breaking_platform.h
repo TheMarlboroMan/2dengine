@@ -12,11 +12,16 @@ class breaking_platform:
 
 	public:
 
+	enum types {
+		solid_above=0, //can be jumped from below
+		fully_solid=1 //fully solid
+	}; //for the type.
+
 	/**
     * the three integers represent breaking, gone and returning times in 
-    * ms
+    * ms, then type.
     **/
-	                                        breaking_platform(d2d::collision::point, int, int, int);
+	                                        breaking_platform(d2d::collision::point, int, int, int, int);
 	void                                    tic(ldtools::tdelta);
 	void                                    reset();
 	void                                    start_breaking();
@@ -27,6 +32,7 @@ class breaking_platform:
 	bool                                    is_solid() const {return !is_gone();}
 	int                                     get_breaking_ms() const {return ms_breaking;}
 	int                                     get_returning_ms() const {return ms_returning;}
+	int                                     get_type() const {return type;}
 	ldtools::tdelta                         get_timer() const {return timeout.get();}
 
 //Begin implementation of spatiable
@@ -62,7 +68,8 @@ class breaking_platform:
 
 	int                                 ms_breaking,
 	                                    ms_gone,
-	                                    ms_returning;
+	                                    ms_returning,
+	                                    type;
 
 	d2d::components::timeout            timeout;
 	d2d::collision::box                 collision_box;

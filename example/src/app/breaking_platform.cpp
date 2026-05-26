@@ -7,11 +7,13 @@ breaking_platform::breaking_platform(
 	d2d::collision::point _pt,
 	int _breaking_ms,
 	int _gone_ms,
-	int _return_ms
+	int _return_ms,
+	int _type
 ):
 	ms_breaking{_breaking_ms},
 	ms_gone{_gone_ms},
 	ms_returning{_return_ms},
+	type{_type},
 	timeout{(double)ms_breaking / 1000.},
 	collision_box{_pt, w, h}
 {}

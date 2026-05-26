@@ -15,10 +15,13 @@ namespace app {
 //We will also need some nice predicates and dereferencers...
 struct thing_filter_breaking_platorms{
 
-	bool operator()(const app::breaking_platform& _block) const {
+	thing_filter_breaking_platorms(const d2d::collision::box&, bool);
 
-		return _block.is_solid();
-	}
+	bool operator()(const app::breaking_platform& _block) const;
+
+	private:
+	const d2d::collision::box& ref_box;
+	bool positive_y_vector; //meaning the _ref box (the player in this game) has a positive y vector.
 };
 
 struct thing_filter_facing_blocks{

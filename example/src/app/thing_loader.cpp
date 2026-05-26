@@ -443,14 +443,16 @@ void thing_loader::add_breaking_platform(
 	int ms_breaking=_attributes.at("ms_breaking").get_int();
 	int ms_gone=_attributes.at("ms_gone").get_int();
 	int ms_returning=_attributes.at("ms_returning").get_int();
+	int type=_attributes.at("type").get_int();
 
 	curmap.breaking_platforms.push_back(
 		{
 			_pos,
 			ms_breaking,
 			ms_gone,
-			ms_returning
-		} 
+			ms_returning,
+			type
+		}
 	);
 }
 

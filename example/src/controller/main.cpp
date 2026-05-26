@@ -1092,7 +1092,8 @@ void main::post_tic(
 		}
 	}
 
-	//Are we breaking any breakable platforms?
+	//Are we breaking any breakable platforms? We check if the player displaced
+	//a little below is inside their boxes, only when walking or crouched.
 	if(app::player::states::ground==player.state || app::player::states::crouch==player.state) {
 
 		auto player_box_copy=player.ent.get_box();
@@ -1974,12 +1975,12 @@ bool main::is_on_air(
 	//fine collision phase now, with early exits.
 	d2d::collision::aabb_static_checker cc(player_box_copy, true);
 	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
+	app::thing_filter_breaking_platorms breaking_platform_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
 
 	if(cc.detect_all(contacting_tiles)
 		.detect_all(current_map.platform_blocks)
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
-//TODO: BREAKING BLOCKS HERE
-		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
+		.detect_if(current_map.breaking_platforms, breaking_platform_filter)
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.has_collision()
@@ -2299,6 +2300,7 @@ int main::player_collision(
 	);
 
 	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
+	app::thing_filter_breaking_platorms breaking_platform_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
 	
 	//Collision...
 	d2d::collision::ray_builder rb;
@@ -2307,8 +2309,7 @@ int main::player_collision(
 
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
-//TODO: BREAKING BLOCKS HERE
-		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
+		.detect_if(current_map.breaking_platforms, breaking_platform_filter)
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})

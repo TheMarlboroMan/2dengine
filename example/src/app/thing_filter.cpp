@@ -3,6 +3,42 @@
 
 using namespace app;
 
+////
+// breaking blocks...
+thing_filter_breaking_platorms::thing_filter_breaking_platorms(
+	const d2d::collision::box& _ref,
+	bool _positive_y_vector
+):ref_box(_ref), positive_y_vector{_positive_y_vector}
+{}
+
+bool thing_filter_breaking_platorms::operator()(
+	const app::breaking_platform& _block
+) const {
+
+	//Is it gone??
+	if(!_block.is_solid()) {
+
+		return false;
+	}
+
+	if(app::breaking_platform::fully_solid==_block.get_type()) {
+
+		return true;
+	}
+
+	//Non solid blocks are non-existent if there is a positive y vector.
+	if(positive_y_vector) {
+
+		return false;
+	}
+
+	//Count only those below the reference box.
+	return d2d::collision::is_below(_block, ref_box);
+}
+
+///
+//moving blocks...
+
 thing_filter_moving_block::thing_filter_moving_block(
 	const d2d::collision::box& _ref,
 	bool _positive_y_vector

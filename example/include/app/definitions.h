@@ -118,6 +118,8 @@ enum animations{
 	//other stuff
 	anim_breaking_platform=200,
 	anim_breaking_platform_return=201,
+	anim_breaking_platform_one_way=207,
+	anim_breaking_platform_one_way_return=208,
 };
 
 enum sprites { 
@@ -173,6 +175,7 @@ enum sprites {
 	spr_repeat_button=269,
 	spr_repeat_button_used=370,
 	spr_breaking_block=362,
+	spr_breaking_block_one_way=371,
 	spr_platform_branch=155,
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,

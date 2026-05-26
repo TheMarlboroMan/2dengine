@@ -277,6 +277,13 @@ beginobject
 		comment how long the returning animation takes
 		linkedto nothing
 	endproperty
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=fully solid 0=solid only from above
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject

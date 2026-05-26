@@ -566,12 +566,16 @@ void game_draw::draw_breaking_platform(
 		return;
 	}
 
+	const auto is_one_way=app::breaking_platform::solid_above==_block.get_type();
+
 	if(_block.is_ok()) {
 
 		sprite_draw.draw(
 			_screen,
 			d2d::video::to_screen(_block.get_origin()),
-			app::spr_breaking_block
+			is_one_way
+				? app::spr_breaking_block_one_way
+				: app::spr_breaking_block
 		);
 		return;
 	}
@@ -582,12 +586,16 @@ void game_draw::draw_breaking_platform(
 	if(_block.is_breaking()) {
 
 		anim_len=_block.get_breaking_ms() / 1000.f;
-		animation_index=app::anim_breaking_platform;
+		animation_index=is_one_way
+			? app::anim_breaking_platform_one_way
+			: app::anim_breaking_platform;
 	}
 	else {// if block.is_returning
 
 		anim_len=_block.get_returning_ms() / 1000.f;
-		animation_index=app::anim_breaking_platform_return;
+		animation_index=is_one_way
+			? app::anim_breaking_platform_one_way_return
+			: app::anim_breaking_platform_return;
 	}
 
 	const auto& line=animation_sprite_finder.get(
