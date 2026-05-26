@@ -4,16 +4,6 @@ next steps:
 
 	BUGS:
 		 - check if ultimate and treasure get swapped in the savegame file.
-		- investigate game_record-20260524005945 for a strange player death
-		  in green_key_004 (start at green_key_001!!!)
-				(2026-05-24 01:12:28) [debug] illegal position for box 244,985 12x24 against... 
-				(2026-05-24 01:12:28) [debug]  >> 256,976 16x16
-				(2026-05-24 01:12:28) [debug]  >> 256,992 16x16
-				(2026-05-24 01:12:28) [debug]  >> 256,1008 16x16
-				(2026-05-24 01:12:28) [info] illegal position, assumed crushing
-		I just don't know what is this about!
-			- try and print more info? like vectors and shit??
-
 
 	IDEAS:
 
@@ -29,6 +19,7 @@ next steps:
 			- what do I do?
 
 	WISHLIST-BALANCING-POLISHING:
+		- delete test map
 		- crouch while a platform is moving up and the camera goes nuts.
 		- can we find a better solution for "i am riding a platform, will 
 			check if I collide with it because the thing filter does not?

@@ -78,15 +78,15 @@ class main:
 	void                        tic_world(tdelta);
 	void                        tic_projectile(app::projectile&, tdelta);
 	void                        clean_expired_entities();
-	void                        tic_ground(tdelta, app::player&, app::player_input);
+	int                         tic_ground(tdelta, app::player&, app::player_input);
 	void                        tic_ladder(tdelta, app::player&, app::player_input);
-	void                        tic_air(tdelta, app::player&, app::player_input);
+	int                         tic_air(tdelta, app::player&, app::player_input);
 	void                        tic_crouch(tdelta, app::player&, app::player_input);
 	void                        tic_defeat(tdelta, app::player&, app::player_input);
 	void                        player_motion(app::player&, d2d::motion::motion_vector, tdelta);
 	int                         player_collision(app::player&, d2d::motion::motion_vector, tdelta);
-	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool);
-	bool                        is_in_legal_position(const d2d::collision::box&, bool);
+	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool, int=0);
+	bool                        is_in_legal_position(const d2d::collision::box&, bool, int=0);
 
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
@@ -131,7 +131,7 @@ class main:
 	//Entrypoint for basic projectile generation from generators.
 	void                        generate_projectile(const app::projectile_generator&);
 	void                        activate_tag(int, bool);
-	void                        post_tic();
+	void                        post_tic(int);
 	void                        setup_area_banner(const std::string&);
 	void                        setup_moving_blocks();
 	void                        write_moving_block(app::moving_block&, int);

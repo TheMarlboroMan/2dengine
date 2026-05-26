@@ -78,7 +78,7 @@ projectile projectile_creator::create_directed(
 	int _angle
 ) const {
 
-	d2d::motion::motion_vector vec{ldt::vector_from_angle((double)_angle)};
+	d2d::motion::motion_vector vec{ldt::vector_from_angle((d2d::motion::t_motion)_angle)};
 	vec.normalize();
 	vec*=fabs(_velocity);
 

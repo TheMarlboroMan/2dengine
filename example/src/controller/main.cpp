@@ -775,9 +775,11 @@ void main::take_player_to_entry(
 	//Commit positions so we don't get phantom collisions later!
 	player.ent.commit_box();
 
+#ifdef IS_DEBUG_BUILD
 	lm::log(logger).debug()<<"new player position is "<<player.ent.get_origin()<<"\n";
 	lm::log(logger).debug()<<"player box at "<<player.ent.get_box()<<"\n";
 	lm::log(logger).debug()<<"player prev box at "<<player.ent.get_previous_box()<<"\n";
+#endif
 
 	//Center camera on map now..
 	camera.center_on(
@@ -804,9 +806,12 @@ void main::tic(
 ) {
 
 #ifdef IS_DEBUG_BUILD
-std::cout<<"tic index: "<<game_tics<<"\n";
-++game_tics;
+	if("true"==debug_session_get("log_tics")) {
 
+		lm::log(logger).debug()<<"tic="<<game_tics<<"\n";
+	}
+
+	game_tics++;
 #endif
 
 	sp.get_game_scenery_tile_draw().tic(_delta);
@@ -832,12 +837,13 @@ std::cout<<"tic index: "<<game_tics<<"\n";
 	player.tic(_delta);
 
 	const auto prev_face=player.facing;
+	int sides=0;
 
 	switch(player.state) {
 
 		case app::player::states::ground:
 		case app::player::states::crouch:
-			tic_ground(_delta, player, _pli);
+			sides=tic_ground(_delta, player, _pli);
 		break;
 
 		case app::player::states::ladder:
@@ -845,7 +851,7 @@ std::cout<<"tic index: "<<game_tics<<"\n";
 		break;
 
 		case app::player::states::air:
-			tic_air(_delta, player, _pli);
+			sides=tic_air(_delta, player, _pli);
 		break;
 
 		case app::player::states::defeat:
@@ -889,7 +895,7 @@ std::cout<<"tic index: "<<game_tics<<"\n";
 	//If the player can do things in the world, run them.
 	if(!player_defeated) {
 
-		post_tic();
+		post_tic(sides);
 	}
 
 	clean_expired_entities();
@@ -944,10 +950,12 @@ void main::clean_expired_entities() {
 	);
 }
 
-void main::post_tic() {
+void main::post_tic(
+	int _sides
+) {
 
 	//Are we crushesd?
-	if(!is_in_legal_position(player.ent, true)) {
+	if(!is_in_legal_position(player.ent, true, _sides)) {
 
 		lm::log(logger).info()<<"illegal position, assumed crushing\n";
 		defeat(player);
@@ -1376,7 +1384,7 @@ void main::generate_projectile(
 	}
 }
 
-void main::tic_ground(
+int main::tic_ground(
 	tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
@@ -1388,7 +1396,7 @@ void main::tic_ground(
 
 		grab_ladder(_player, *ladderptr);
 		tic_ladder(_delta, _player, _pli);
-		return;
+		return 0;
 	}
 
 	if(_pli.activate) {
@@ -1398,7 +1406,7 @@ void main::tic_ground(
 		if(is_on_exit(_player, exitptr, false)) {
 
 			attempt_exit(*exitptr);
-			return;
+			return 0;
 		}
 
 		//Attempt to activate a switch!
@@ -1406,7 +1414,7 @@ void main::tic_ground(
 		if(can_activate_button(_player, btnptr)) {
 
 			activate_button(*btnptr);
-			return;
+			return 0;
 		}
 	}
 
@@ -1417,8 +1425,7 @@ void main::tic_ground(
 	if(is_on_air(_player) && !ctracker.is_attached(_player.ent)) {
 
 		start_falling(_player);
-		tic_air(_delta, _player,_pli);
-		return;
+		return tic_air(_delta, _player,_pli);
 	}
 
 	//From this point on, there may be ground movement: all early returns
@@ -1443,7 +1450,6 @@ void main::tic_ground(
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
 
-lm::log(logger).info()<<"FOR CROUCH!\n";
 		if(!is_in_legal_position(player.ent, true)) {
 
 			_player.crouch();
@@ -1473,7 +1479,7 @@ lm::log(logger).info()<<"FOR CROUCH!\n";
 
 	player.ent.set_motion_vector(mv);
 	player_motion(_player, mv, _delta);
-	player_collision(_player, passive_mv+mv, _delta);
+	int sides=player_collision(_player, passive_mv+mv, _delta);
 
 	//Jumping... a buffered jump is as good as a jump per se so...
 	_pli.jump=_pli.jump || _player.has_jump_buffered();
@@ -1483,6 +1489,7 @@ lm::log(logger).info()<<"FOR CROUCH!\n";
 	}
 
 	//TODO: Sound when landing too???
+	return sides;
 }
 
 void main::tic_ladder(
@@ -1548,7 +1555,7 @@ void main::tic_ladder(
 	}
 }
 
-void main::tic_air(
+int main::tic_air(
 	tdelta _delta,
 	app::player& _player,
 	app::player_input _pli
@@ -1562,7 +1569,7 @@ void main::tic_air(
 
 		grab_ladder(_player, *ladderptr);
 		tic_ladder(_delta, _player,_pli);
-		return;
+		return 0;
 	}
 
 	if(_pli.activate) {
@@ -1637,6 +1644,8 @@ void main::tic_air(
 			touch_ceiling(_player);
 		}
 	}
+
+	return sides;
 }
 
 void main::tic_defeat(
@@ -2295,12 +2304,6 @@ int main::player_collision(
 	auto player_ray=rb.get_previous(_player.ent, _mv)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
 
-//TODO: In game tic 9417 I x was 244.00000000000003 and no collision with the
-//tiles what detected. At least we should be able to go into the very specific
-//data to run as many simulations as we want
-//But that won't happen today.
-//
-
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
 		.detect_if(current_map.breaking_platforms, app::thing_filter_breaking_platorms{})
@@ -2350,7 +2353,6 @@ int main::player_collision(
 		}
 	);
 
-	//TODO: Ok, this one is saying that we have no fucking edges. remember, 9417 is the tic when this happened.
 	d2d::collision::ray_aabb_solver solver{};
 	auto result=solver.solve(_player.ent, collision_info);
 	return result.edges;
@@ -2358,15 +2360,17 @@ int main::player_collision(
 
 bool main::is_in_legal_position(
 	const d2d::collision::spatiable& _spatiable,
-	bool _with_moving
+	bool _with_moving,
+	int _edges
 ) {
 
-	return is_in_legal_position(_spatiable.get_box(), _with_moving);
+	return is_in_legal_position(_spatiable.get_box(), _with_moving, _edges);
 }
 
 bool main::is_in_legal_position(
 	const d2d::collision::box& _position,
-	bool _with_moving
+	bool _with_moving,
+	int _edges
 ) {
 
 	struct {
@@ -2387,27 +2391,11 @@ bool main::is_in_legal_position(
 		composite_filter
 	);
 
-
 	d2d::collision::aabb_static_checker sc(_position);
-
-lm::log(logger).debug()<<"\n\n==================== STEP =====================================\n\n";
-lm::log(logger).debug()<<"will check: "<<_position<<" player="<<player.ent.get_box()<<"\n";
-lm::log(logger).debug()<<"vector "<<player.ent.get_motion_vector()<<"\n";
-lm::log(logger).debug()<<" ==== detecting tiles: "<<current_tiles.size()<<"\n";
 	sc.detect_all(current_tiles);
-
-//TODO: This is just for debugging purposes!
 if(sc.has_collision()) {
 
-	lm::log(logger).debug()<<"there is a collision!!!!\n";
-	lm::log(logger).debug()<<"x="<<player.ent.get_x()<<" y="<<player.ent.get_y()<<" "<<player.ent.get_motion_vector()<<"\n";
-	for(auto& s : sc.get_results()) {
-
-		lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
-	}
-
-	//TODO: THis! should not happen!!
-	throw std::runtime_error("dafuq");
+	lm::log(logger).debug()<<"with tiles\n";
 }
 
 	if(_with_moving) {
@@ -2418,28 +2406,20 @@ if(sc.has_collision()) {
 		//does not correct it as snaps but rather produces the passive 
 		//vector that is applied to the player and corrected. At the end of
 		//the tic we are INTO the elevator, thus this check.
+		//With lower precisions there comes a problem in whicch the player
+		//enters the elevator with it goes up... Just check for any previous
+		//collisions with other edges to know if there was a previous collision
+		//and if we are into the platform, we are crushed.
 
-		if(ctracker.is_attached(player.ent)) {
+		if(ctracker.is_attached(player.ent) && 0!=_edges) {
 
-lm::log(logger).debug()<<"detecting attached...\n";
 			sc.detect_one(*ctracker.get_host(player.ent));
-
-if(sc.has_collision()) {
-
-	lm::log(logger).debug()<<"there is a collision!!!!\n";
-}
 		}
 
 		//Check against other moving blocks... This is mostly to know if we
 		//can stand up when under a moving block.
-lm::log(logger).debug()<<" ==== detecting moving "<<current_map.moving_blocks.size()<<"\n";
 		app::thing_filter_moving_block moving_block_filter{_position, false};
 		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
-lm::log(logger).debug()<<" ==== end detecting moving\n";
-
-if(sc.has_collision()) {
-	lm::log(logger).debug()<<"there is a collision!!!!\n";
-}
 	}
 
 	if(sc.has_collision()) {
@@ -2451,7 +2431,6 @@ if(sc.has_collision()) {
 		}
 	}
 
-lm::log(logger).debug()<<"END IS IN LEGAL POSITION\n";
 	return !sc.has_collision();
 }
 
@@ -2508,7 +2487,6 @@ void main::mount_player_in_blocks(
 				continue;
 			}
 
-lm::log(logger).info()<<"BEFORE MOUNT PLAYER IN BLOCKS!\n";
 			//TODO: Is this even needed??? the is_in_legal_position thingy. I 
 			//am sure this is here because of some reason.
 			if(is_in_legal_position(player_box_copy, false)) {
