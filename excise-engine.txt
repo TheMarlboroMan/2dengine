@@ -19,6 +19,12 @@ next steps:
 			- what do I do?
 
 	WISHLIST-BALANCING-POLISHING:
+		- maybe everywhere there is "half a block" on the ceiling for
+		  background should have half a block in logic too, like in green key
+		0c02.
+		- for blocks fading into darkness, maybe the background should be 
+		transparent. We can play with middle and background tiles to make it
+		fully dark if the sky has a colour.
 		- see where we can put one-way breakable bloks
 		- delete test map
 		- breaking platforms last frame seems broken.
@@ -28,9 +34,6 @@ next steps:
 			this is the "player_collision" method.
 		- particles when the player eats a projectile!
 		- fortress 017 and challenge room sky should be pink
-		- fortress 003 has one way only fall which i dislike intensely.
-		- fortress 003 better spikes than a scorpion??
-		- river_010 give some context to floating platforms!
 		- blue_010 pedestal for treasure
 		- blue_015 put something as origin of shots.
 		- green_006 is fire pattern as it should be??
@@ -49,6 +52,8 @@ next steps:
 		- warning spawn skull not found, lies, on boss.
 		- game segfaulted a couple times... 
 			should do the ulimit -c 102400 thingy to dump core
+		- what is with the other switch sprite (369-370)? The repeatable ones?
+		  Are we using that???
 
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
