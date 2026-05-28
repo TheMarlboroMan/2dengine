@@ -176,6 +176,7 @@ class main:
 	app::simulation             simulation;
 	app::map                    current_map;
 	app::player                 player;
+	app::player_input           pli;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 	std::unique_ptr<app::map_transition> transition{nullptr},

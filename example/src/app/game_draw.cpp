@@ -190,7 +190,7 @@ void game_draw::draw(
 
 	if(nullptr!=background) {
 
-		background->draw(_screen);
+		background->draw_background(_screen);
 	}
 
 	scenery_tile_draw.draw_animation(_screen, _map.background_tiles);
@@ -291,6 +291,11 @@ void game_draw::draw(
 		}
 
 		draw_secret_cover(_screen, secret_cover);
+	}
+
+	if(nullptr!=background) {
+
+		background->draw_foreground(_screen);
 	}
 
 	if(nullptr!=_transition) {

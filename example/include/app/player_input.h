@@ -10,9 +10,7 @@ struct player_input {
 	            hold_jump{false},
 	            activate{false};
 
-	operator bool() const {
-
-		return x || y || jump || hold_jump || activate;
-	}
+	void        reset();
+	operator    bool() const;
 };
 }

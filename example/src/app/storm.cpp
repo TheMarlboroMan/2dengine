@@ -84,7 +84,7 @@ void storm::tic_thunder(
 	timeouts.restart(timeout_wait);
 }
 
-void storm::draw(
+void storm::draw_background(
 	ldv::screen& _screen
 ) {
 
@@ -165,4 +165,11 @@ void storm::shuffle_stars() {
 
 		i++;
 	}
+}
+
+
+void storm::draw_foreground(
+	ldv::screen& 
+) {
+
 }

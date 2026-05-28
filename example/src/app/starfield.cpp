@@ -93,7 +93,7 @@ void starfield::tic(
 	}
 }
 
-void starfield::draw(
+void starfield::draw_background(
 	ldv::screen& _screen
 ) {
 
@@ -131,4 +131,10 @@ void starfield::draw(
 		};
 		pt.draw(_screen);
 	}
+}
+
+void starfield::draw_foreground(
+	ldv::screen& 
+) {
+
 }

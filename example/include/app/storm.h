@@ -21,7 +21,8 @@ class storm
 	                        storm(random&, int, int, int);
 
 	//Implementation of background_interface
-	void                    draw(ldv::screen&);
+	void                    draw_background(ldv::screen&);
+	void                    draw_foreground(ldv::screen&);
 	void                    tic(tdelta);
 	int                     get_sound() const;
 

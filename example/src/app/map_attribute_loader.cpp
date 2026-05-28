@@ -47,6 +47,11 @@ void map_attribute_loader::load(
 			background_color=ldv::rgba8(0, 0, 0, 255);
 			background_effect=bg_storm;
 		break;
+		//suspension, black, and activates a special effect.
+		case 6:
+			background_color=ldv::rgba8(0, 0, 0, 255);
+			background_effect=bg_suspension;
+		break;
 
 		default: //default is black.
 		case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;

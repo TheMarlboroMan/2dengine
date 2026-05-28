@@ -9,8 +9,12 @@ next steps:
 
 		blue key, afterglow of stars after thunder
 
-		for green key maybe the theme is a lot of green keys but they are just
-		scenery.
+		- green key sky, is there a rightmost limit?????
+		- green ley sky: up and down bobbing auto.
+		- green key sky: different colors
+		- green key sky: where does the key itself appear? we had
+		  constellations earlier. Maybe it's fixed and lights up as one moves.
+		- green key sky: the text and shit.
 
 		maybe the player can ask one question per key
 			- who are you?

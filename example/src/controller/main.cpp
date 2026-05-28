@@ -13,6 +13,7 @@
 #include "app/show_text_exchange.h"
 #include "app/starfield.h"
 #include "app/storm.h"
+#include "app/suspension.h"
 
 #include "dfwimpl/config.h"
 
@@ -319,7 +320,7 @@ void main::loop_scene(
 		return;
 	}
 
-	app::player_input pli{};
+	pli.reset();
 	if(_input.is_input_pressed(app::input::down)) {
 
 		pli.y=-1;
@@ -440,6 +441,17 @@ void main::load_map(
 		case app::bg_storm:
 			background.reset(
 				new app::storm(
+					sp.get_random(),
+					camera.get_pos_box().w,
+					camera.get_pos_box().h,
+					inventory.treasure //same, stars.
+				)
+			);
+		break;
+		case app::bg_suspension:
+			background.reset(
+				new app::suspension(
+					pli,
 					sp.get_random(),
 					camera.get_pos_box().w,
 					camera.get_pos_box().h,

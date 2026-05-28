@@ -569,7 +569,7 @@ void main::loop_debug(
 		return;
 	}
 
-	app::player_input pli{};
+	pli.reset();
 	if(console_enabled) {
 
 		_input().start_text_input();
