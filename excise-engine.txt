@@ -8,7 +8,7 @@ next steps:
 	IDEAS:
 
 		- blue key, afterglow of stars after thunder
-		- green key sky: the text and shit.
+		- green key sky: text could always be at player Y level.
 
 		maybe the player can ask one question per key
 			- who are you?

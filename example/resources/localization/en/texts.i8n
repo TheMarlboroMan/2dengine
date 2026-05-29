@@ -35,9 +35,12 @@
 [[automap-fortress]]{{Fortress}}
 [[automap-tower]]{{Wizard's tower}}
 [[automap-nowhere]]{{???}}
+[[game-green_key_002-text_001]]{{Is there anybody there?}}
+[[game-green_key_002-text_002]]{{Who are you?}}
+[[game-green_key_002-text_003]]{{What are you doing here?}}
 #Text width #####################
 #Three lines max#################
-#	Tabs workax##################
+#	Tabs work####################
 [[game-redkey-text-001]]{{
 Welcome traveller.
 I was there and I saw it all...

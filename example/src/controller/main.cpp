@@ -34,7 +34,6 @@
 
 #include <tools/string_utils.h>
 #include <tools/ranged_value.h>
-#include <tools/i8n.h>
 
 #include <ldtools/ttf_manager.h>
 #include <ldt/box.h>
@@ -448,11 +447,13 @@ void main::load_map(
 				)
 			);
 		break;
-		case app::bg_suspension:
+		case app::bg_suspension: 
 			background.reset(
 				new app::suspension(
 					pli,
+					extract_green_key_text_nodes(),
 					sp.get_random(),
+					sp.get_ttf_manager().get("show_text_font", 8),
 					camera.get_pos_box().w,
 					camera.get_pos_box().h,
 					inventory.treasure //same, stars.
@@ -2882,6 +2883,25 @@ void main::boss_remove() {
 
 	//Remove the boss instance from the game.
 	current_map.boss.reset(nullptr);
+}
+
+std::vector<std::string> main::extract_green_key_text_nodes() const {
+
+	std::vector<std::string> result;
+
+	for(const auto& node : current_map.text_nodes) {
+
+		//We are only interested in special nodes with tag 999, which mean
+		//that the text will be used by the background.
+		if(999!=node.tag) {
+
+			continue;
+		}
+
+		result.push_back(sp.get_localization().get(node.text_index));
+	}
+
+	return result;
 }
 
 #ifdef IS_DEBUG_BUILD

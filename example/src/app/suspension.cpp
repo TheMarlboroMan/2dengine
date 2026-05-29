@@ -7,12 +7,20 @@ using namespace app;
 
 suspension::suspension(
 	const player_input& _pli,
+	std::vector<std::string> _texts,
 	random& _rng,
+	const ldv::ttf_font& _font,
 	int _w,
 	int _h,
 	int _star_count
 
-):pli{_pli}, rng{_rng}, w{_w}, h{_h}, movement{0.}, time{0.}
+):pli{_pli}, rng{_rng}, w{_w}, h{_h}, movement{0.}, time{0.},
+	texts{std::move(_texts)}, 
+	text_timeout{0, 0., false},
+	current_text_index{0},
+	text_font{_font},
+	text_x{0.},
+	current_text{nullptr}
 {
 
 	points.reserve(_star_count);
@@ -39,8 +47,11 @@ suspension::suspension(
 	};
 
 	shuffle();
-}
 
+	//Set the first timeout...
+	//TODO: BETTER TIMES
+	text_timeout.target(rng.get(1, 2));
+}
 
 void suspension::draw_background(
 	ldv::screen& _screen
@@ -79,15 +90,22 @@ void suspension::draw_background(
 }
 
 void suspension::draw_foreground(
-	ldv::screen&
+	ldv::screen& _screen
 ) {
 
-	//TODO:
+	if(!current_text) {
+
+		return;
+	}
+
+	current_text->draw(_screen);
 }
 
 void suspension::tic(
 	tdelta _delta
 ) {
+
+	tic_text(_delta);
 
 	auto constexpr two_pi=2 * M_PI;
 	time+=_delta;
@@ -203,4 +221,48 @@ void suspension::calculate_alpha(
 	}
 
 	key_alpha=std::clamp(key_alpha, 0., 1.);
+}
+
+void suspension::tic_text(
+	tdelta _delta
+) {
+
+	if(!current_text) {
+
+		text_timeout.tic(_delta);
+		if(text_timeout.is_finished()) {
+
+			if(current_text_index >= texts.size()) {
+
+				//TODO: Should we be even ticking?
+				return;
+			}
+
+			current_text.reset(
+				new ldv::ttf_representation(
+					text_font,
+					ldv::rgba8(255, 255, 255, 255),
+					texts[current_text_index++]
+				)
+			);
+
+			text_x=w;
+			current_text->go_to({w, h/2});
+		}
+
+		return;
+	}
+
+	text_x-=_delta * 50.;
+	current_text->go_to({(int)text_x, h/2});
+
+	const auto& pos=current_text->get_text_position();
+	auto end=pos.origin.x+pos.w;
+	if(0 >= end) {
+
+		current_text.reset(nullptr);
+//TODO: BETTER NUMBERS
+		text_timeout.target(rng.get(1, 5));
+		text_timeout.restart();
+	}
 }

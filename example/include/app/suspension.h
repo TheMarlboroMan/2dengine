@@ -3,7 +3,12 @@
 #include "app/background_interface.h"
 #include "app/random.h"
 #include "app/player_input.h"
+#include <d2d/components/timeout.h>
+#include <ldv/ttf_font.h>
+#include <ldv/ttf_representation.h>
 #include <vector>
+#include <string>
+#include <memory>
 
 namespace app {
 
@@ -15,7 +20,7 @@ class suspension:
 
 	public:
 
-	                        suspension(const player_input&, random&, int, int, int);
+	                        suspension(const player_input&, std::vector<std::string>, random&, const ldv::ttf_font&, int, int, int);
 
 	//Implementation of background_interface
 	void                    draw_background(ldv::screen&);
@@ -42,6 +47,7 @@ class suspension:
 	};
 
 	void                    shuffle();
+	void                    tic_text(tdelta);
 	void                    calculate_motion(tdelta);
 	void                    calculate_alpha(tdelta);
 
@@ -51,5 +57,11 @@ class suspension:
 	double                  movement, time, key_alpha;
 	std::vector<point>      points;
 	std::vector<coordinates> fixed;
+	std::vector<std::string> texts;
+	d2d::components::timeout text_timeout;
+	std::size_t             current_text_index;
+	const ldv::ttf_font&    text_font;
+	double                  text_x;
+	std::unique_ptr<ldv::ttf_representation> current_text;
 };
 }

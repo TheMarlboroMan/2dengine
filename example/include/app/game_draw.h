@@ -104,7 +104,7 @@ class game_draw:
 	//Properties...
 	ldtools::view_composer      area_name_view;
 	ldtools::view_composer      lives_banner_view;
-	ldv::ttf_font               exit_number_font;
+	const ldv::ttf_font&        exit_number_font;
 	//A table of N integers to store the "drawing types" of particles.
 	std::vector<int>            particle_persistence_table;
 	background_interface *      background{nullptr};
