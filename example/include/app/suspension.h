@@ -27,7 +27,9 @@ class suspension:
 
 	struct point{
 		int x, y;
-		short dispersion, max_dispersion;
+		//max_dispersion=x movement range, amplitude is for y
+		short dispersion, max_dispersion, amplitude, variant;
+		float time_displacement;
 	};
 
 	void                    shuffle();
@@ -36,7 +38,7 @@ class suspension:
 	const player_input&     pli;
 	random&                 rng;
 	int                     w, h;
-	double                  movement;
+	double                  movement, time;
 	std::vector<point>      points;
 };
 }

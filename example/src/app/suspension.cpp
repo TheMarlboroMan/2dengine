@@ -15,13 +15,13 @@ suspension::suspension(
 	int _h,
 	int _star_count
 
-):pli{_pli}, rng{_rng}, w{_w}, h{_h}, movement{0.}
+):pli{_pli}, rng{_rng}, w{_w}, h{_h}, movement{0.}, time{0.}
 {
 
 	points.reserve(_star_count);
 	for(int i=0; i<_star_count; i++) {
 
-		points.push_back({0,0,0,0});
+		points.push_back({0,0,0,0,0,0,0.f});
 	}
 
 	shuffle();
@@ -32,11 +32,21 @@ void suspension::draw_background(
 	ldv::screen& _screen
 ) {
 
+	ldv::rgba_color variants[]={
+		ldv::rgba8(255,255,255,255),
+		ldv::rgba8(157, 157, 157, 255),
+		ldv::rgba8(27, 38, 50,255),
+		ldv::rgba8(178, 220, 239, 255)
+	};
+
 	for(const auto& dot : points) {
 
+		int x=dot.x+dot.dispersion;
+		int y=dot.y + std::floor(sin(time+dot.time_displacement) * dot.amplitude);
+
 		ldv::point_representation pt{
-			{dot.x+dot.dispersion, dot.y},
-			ldv::rgba8(255,255,255,255)
+			{x, y},
+			variants[dot.variant]
 		};
 		pt.draw(_screen);
 	}
@@ -53,8 +63,15 @@ void suspension::tic(
 	tdelta _delta
 ) {
 
+	auto constexpr two_pi=2 * M_PI;
+	time+=_delta;
+	if(time >= two_pi) { //Wrap time to one.
+
+		time-=two_pi;
+	}
+
 	calculate_motion(_delta);
-	
+
 	for(auto& pt : points) {
 
 		//now, movement goes from -1 to 1. 0 is no dispersion,  -1 is
@@ -100,6 +117,11 @@ void suspension::shuffle() {
 		curpt.y=pt.y;
 		curpt.max_dispersion=rng.get(10, 40);
 		curpt.dispersion=0;
+		curpt.amplitude=rng.get(1, 10);
+		curpt.variant=rng.get(0, 3);
+
+		float fraction=(float)rng.get(0, 10) / 10.f;
+		curpt.time_displacement=1.f-(fraction / 5.f);
 
 		i++;
 	}

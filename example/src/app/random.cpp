@@ -3,7 +3,7 @@
 using namespace app;
 
 random::random()
-	:numgen{0, 255}
+	:numgen{0, 512}
 {}
 
 int random::get(

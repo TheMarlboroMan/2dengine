@@ -5,7 +5,7 @@
 namespace app {
 
 /**
- * pseudo-random generator between 0-255. A instance so that we can add doom
+ * pseudo-random generator between 0-512. A instance so that we can add doom
  * style pseudo-random deterministic values.
  */
 class random {
