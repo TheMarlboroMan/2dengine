@@ -1,5 +1,6 @@
 #include <app/suspension.h>
 #include <ldv/point_representation.h>
+#include <d2d/video/tools.h>
 #include <algorithm>
 #include <cmath>
 
@@ -9,12 +10,13 @@ suspension::suspension(
 	const player_input& _pli,
 	std::vector<std::string> _texts,
 	random& _rng,
+	const ldv::camera& _camera,
+	const double& _tracked_y,
 	const ldv::ttf_font& _font,
-	int _w,
-	int _h,
 	int _star_count
-
-):pli{_pli}, rng{_rng}, w{_w}, h{_h}, movement{0.}, time{0.},
+):pli{_pli}, rng{_rng}, camera{_camera},
+	tracked_y{_tracked_y},
+	movement{0.}, time{0.},
 	texts{std::move(_texts)}, 
 	text_timeout{0, 0., false},
 	current_text_index{0},
@@ -49,8 +51,7 @@ suspension::suspension(
 	shuffle();
 
 	//Set the first timeout...
-	//TODO: BETTER TIMES
-	text_timeout.target(rng.get(1, 2));
+	text_timeout.target(rng.get(6, 8));
 }
 
 void suspension::draw_background(
@@ -136,6 +137,10 @@ void suspension::shuffle() {
 	//be enough stars as to provoke a deadlock here.
 	std::vector<coordinates> existing;
 	std::copy(std::begin(fixed), std::end(fixed), std::back_inserter(existing));
+
+	const auto& camera_pos_box=camera.get_pos_box();
+	int w=camera_pos_box.w,
+	    h=camera_pos_box.h;
 
 	for(std::size_t i=0; i<points.size();) {
 
@@ -234,7 +239,6 @@ void suspension::tic_text(
 
 			if(current_text_index >= texts.size()) {
 
-				//TODO: Should we be even ticking?
 				return;
 			}
 
@@ -246,23 +250,33 @@ void suspension::tic_text(
 				)
 			);
 
-			text_x=w;
-			current_text->go_to({w, h/2});
+			//The X is absolute...
+			text_x=camera.get_pos_box().w;
 		}
 
-		return;
+		if(!current_text) { //if by now we haven't instantiaded, leave.
+
+			return;
+		}
 	}
 
 	text_x-=_delta * 50.;
-	current_text->go_to({(int)text_x, h/2});
 
-	const auto& pos=current_text->get_text_position();
-	auto end=pos.origin.x+pos.w;
+	//16 is track a bit upwards from the player... Also that tracked y is
+	//world position so we need to adjust for camera.
+	double y=camera.get_pos_box().h-(tracked_y+16-camera.get_y());
+
+	ldv::point pos{(int)text_x, (int)y};
+	current_text->go_to(pos);
+
+	//Remove when the text goes out of view.
+	const auto& text_pos=current_text->get_text_position();
+	auto end=text_pos.origin.x+text_pos.w;
+
 	if(0 >= end) {
 
 		current_text.reset(nullptr);
-//TODO: BETTER NUMBERS
-		text_timeout.target(rng.get(1, 5));
+		text_timeout.target(rng.get(3, 6));
 		text_timeout.restart();
 	}
 }

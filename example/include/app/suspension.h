@@ -4,6 +4,7 @@
 #include "app/random.h"
 #include "app/player_input.h"
 #include <d2d/components/timeout.h>
+#include <ldv/camera.h>
 #include <ldv/ttf_font.h>
 #include <ldv/ttf_representation.h>
 #include <vector>
@@ -20,7 +21,14 @@ class suspension:
 
 	public:
 
-	                        suspension(const player_input&, std::vector<std::string>, random&, const ldv::ttf_font&, int, int, int);
+	                        suspension(
+								const player_input&, 
+								std::vector<std::string>, 
+								random&, 
+								const ldv::camera&,
+								const double&, 
+								const ldv::ttf_font&, 
+								int);
 
 	//Implementation of background_interface
 	void                    draw_background(ldv::screen&);
@@ -53,7 +61,8 @@ class suspension:
 
 	const player_input&     pli;
 	random&                 rng;
-	int                     w, h;
+	const ldv::camera&      camera;
+	const double&           tracked_y;
 	double                  movement, time, key_alpha;
 	std::vector<point>      points;
 	std::vector<coordinates> fixed;

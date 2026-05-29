@@ -8,7 +8,6 @@ next steps:
 	IDEAS:
 
 		- blue key, afterglow of stars after thunder
-		- green key sky: text could always be at player Y level.
 
 		maybe the player can ask one question per key
 			- who are you?
@@ -18,6 +17,7 @@ next steps:
 
 	WISHLIST-BALANCING-POLISHING:
 		- delete test map
+		- after a full playthrough a room was undiscovered. I don't know why.
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!

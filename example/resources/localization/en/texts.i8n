@@ -35,9 +35,15 @@
 [[automap-fortress]]{{Fortress}}
 [[automap-tower]]{{Wizard's tower}}
 [[automap-nowhere]]{{???}}
-[[game-green_key_002-text_001]]{{Is there anybody there?}}
-[[game-green_key_002-text_002]]{{Who are you?}}
-[[game-green_key_002-text_003]]{{What are you doing here?}}
+[[game-green_key_002-text_001]]{{... Is there ...}}
+[[game-green_key_002-text_002]]{{... Is there anybody ...}}
+[[game-green_key_002-text_003]]{{... Is there anybody there?}}
+[[game-green_key_004-text_001]]{{Who... Who are you?}}
+[[game-green_key_004-text_002]]{{What... What are you doing here?}}
+[[game-green_key_004-text_003]]{{How... How did you find me?}}
+[[game-green_key_006-text_001]]{{I don't want you here!!!}}
+[[game-green_key_006-text_002]]{{I have nothing for you!!!}}
+[[game-green_key_006-text_003]]{{Leave this place at once!!!}}
 #Text width #####################
 #Three lines max#################
 #	Tabs work####################

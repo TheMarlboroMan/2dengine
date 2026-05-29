@@ -447,18 +447,20 @@ void main::load_map(
 				)
 			);
 		break;
-		case app::bg_suspension: 
+		case app::bg_suspension: {
+			const auto& tracked_box=player.ent.get_box();
 			background.reset(
 				new app::suspension(
 					pli,
 					extract_green_key_text_nodes(),
 					sp.get_random(),
+					camera,
+					tracked_box.origin.y,
 					sp.get_ttf_manager().get("show_text_font", 8),
-					camera.get_pos_box().w,
-					camera.get_pos_box().h,
 					inventory.treasure //same, stars.
 				)
 			);
+			}
 		break;
 	}
 
@@ -2900,6 +2902,16 @@ std::vector<std::string> main::extract_green_key_text_nodes() const {
 
 		result.push_back(sp.get_localization().get(node.text_index));
 	}
+
+#ifdef IS_DEBUG_BUILD
+
+	lm::log(logger).debug()<<"loaded "<<result.size()<<" background effect texts:\n";
+	for(const auto& str : result) {
+
+		lm::log(logger).debug()<<"text is: "<<str<<"\n";
+	}
+
+#endif
 
 	return result;
 }
