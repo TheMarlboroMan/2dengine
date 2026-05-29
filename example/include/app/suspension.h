@@ -25,6 +25,15 @@ class suspension:
 
 	private:
 
+	struct coordinates{
+		int x, y;
+
+		bool operator==(const coordinates& _other) const {
+			return _other.x==x
+			&& _other.y==y;
+		}
+	};
+
 	struct point{
 		int x, y;
 		//max_dispersion=x movement range, amplitude is for y
@@ -34,11 +43,13 @@ class suspension:
 
 	void                    shuffle();
 	void                    calculate_motion(tdelta);
+	void                    calculate_alpha(tdelta);
 
 	const player_input&     pli;
 	random&                 rng;
 	int                     w, h;
-	double                  movement, time;
+	double                  movement, time, key_alpha;
 	std::vector<point>      points;
+	std::vector<coordinates> fixed;
 };
 }

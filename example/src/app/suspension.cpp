@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-//TODO
-#include <iostream>
-
 using namespace app;
 
 suspension::suspension(
@@ -23,6 +20,23 @@ suspension::suspension(
 
 		points.push_back({0,0,0,0,0,0,0.f});
 	}
+
+	//The shape of yet another key
+	fixed={
+		{170, 127},
+		{165, 123},
+		{177, 125},
+		{176, 119},
+		{171, 116},
+		{174, 109},
+		{175, 100},
+		{177, 92},
+		{177, 84},
+		{179, 76},
+		{186, 77},
+		{186, 79},
+		{182, 84},
+	};
 
 	shuffle();
 }
@@ -50,6 +64,18 @@ void suspension::draw_background(
 		};
 		pt.draw(_screen);
 	}
+
+	double alpha=255.*key_alpha;
+	auto color=ldv::rgba8(68, 137, 26, alpha);
+	for(const auto& dot : fixed) {
+
+		ldv::point_representation pt{
+			{dot.x, dot.y},
+			color
+		};
+		pt.set_blend(ldv::representation::blends::alpha);
+		pt.draw(_screen);
+	}
 }
 
 void suspension::draw_foreground(
@@ -71,6 +97,7 @@ void suspension::tic(
 	}
 
 	calculate_motion(_delta);
+	calculate_alpha(_delta);
 
 	for(auto& pt : points) {
 
@@ -87,17 +114,11 @@ int suspension::get_sound() const {
 
 void suspension::shuffle() {
 
-	struct coordinates{
-		int x, y;
-		bool operator==(const coordinates& _other) const {
-			return _other.x==x
-			&& _other.y==y;
-		}
-	};
-
 	//Reposition stars, making sure that no position is repeated. There won't
 	//be enough stars as to provoke a deadlock here.
 	std::vector<coordinates> existing;
+	std::copy(std::begin(fixed), std::end(fixed), std::back_inserter(existing));
+
 	for(std::size_t i=0; i<points.size();) {
 
 		coordinates pt={
@@ -158,4 +179,28 @@ void suspension::calculate_motion(
 	constexpr double speed=.5;
 	movement+=speed * _delta * sign; //Takes one second to reach full speed.
 	movement=std::clamp(movement, -1., 1.);
+}
+
+void suspension::calculate_alpha(
+	tdelta _delta
+) {
+
+	constexpr double speed=1. / 5.; //Should take 5 seconds to reach max.
+
+	if(!pli) {
+
+		key_alpha-=_delta * speed;
+
+		if(key_alpha <= 0.05) {
+
+			key_alpha=0.;
+			return;
+		}
+	}
+	else {
+
+		key_alpha+=_delta * speed;
+	}
+
+	key_alpha=std::clamp(key_alpha, 0., 1.);
 }

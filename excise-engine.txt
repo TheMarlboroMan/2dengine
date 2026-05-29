@@ -7,13 +7,7 @@ next steps:
 
 	IDEAS:
 
-		blue key, afterglow of stars after thunder
-
-		- green key sky, is there a rightmost limit?????
-		- green ley sky: up and down bobbing auto.
-		- green key sky: different colors
-		- green key sky: where does the key itself appear? we had
-		  constellations earlier. Maybe it's fixed and lights up as one moves.
+		- blue key, afterglow of stars after thunder
 		- green key sky: the text and shit.
 
 		maybe the player can ask one question per key
@@ -33,12 +27,6 @@ next steps:
 		- what is with the other switch sprite (369-370)? The repeatable ones?
 		  Are we using that??? prepare something with the repeatable buttons.
 		- volcano_011 fire jet patterns.
-		- we need better blocks for:
-			- river_021 top, we need a better "low block". (green earth).
-			- fortress_003 bottom. a "low block" (blue brick)
-			- fortress_021 (blue brick).
-			- fortress_022 (blue brick).
-			- fortress_023 (blue brick).
 
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
