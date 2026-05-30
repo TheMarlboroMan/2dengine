@@ -35,26 +35,159 @@
 [[automap-fortress]]{{Fortress}}
 [[automap-tower]]{{Wizard's tower}}
 [[automap-nowhere]]{{???}}
-[[game-green_key_002-text_001]]{{... Is there ...}}
-[[game-green_key_002-text_002]]{{... Is there anybody ...}}
-[[game-green_key_002-text_003]]{{... Is there anybody there?}}
-[[game-green_key_004-text_001]]{{Who... Who are you?}}
-[[game-green_key_004-text_002]]{{What... What are you doing here?}}
-[[game-green_key_004-text_003]]{{How... How did you find me?}}
-[[game-green_key_006-text_001]]{{I don't want you here!!!}}
-[[game-green_key_006-text_002]]{{I have nothing for you!!!}}
-[[game-green_key_006-text_003]]{{Leave this place at once!!!}}
+
+#For text display, follow these
+#rules about witdth and max
+#height:
 #Text width #####################
 #Three lines max#################
 #	Tabs work####################
-[[game-redkey-text-001]]{{
+
+#Red key lines
+#The red key talks directly to the player, using the second person. It is
+#self-aggrandizing but honest.
+
+[[game-red_key_003-text]]{{
 Welcome traveller.
-I was there and I saw it all...
 [@np]
-I am the Owl.
-Stuff. More stuff.
-And stuff.
+I am the guardian of this place
+and I mean no harm.
 [@np]
-And this is done.
+The ravages of time have not
+dulled my mind one bit.
+I still remember my task.
+[@np]
+Press on, deeper into this dream.
 }}
-[[game-redkey-text-002]]{{And this is some other text.}}
+
+[[game-red_key_005-text]]{{
+All these stars I am dreaming
+for you, as if in the spoke of
+a turning wheel.
+[@np]
+Each revolution the crumbling of
+an empire, a cycle complete,
+patiently waiting for my turn.
+[@np]
+Do press on. 
+Share this dream with me.
+}}
+
+[[game-red_key_007-text]]{{
+I stand down.
+My task and my dream are over.
+[@np]
+This key is yours now,
+a third of a great secret.
+[@np]
+What will I awake to now?
+Will you remember me? 
+}}
+
+#Blue key lines
+#The blue key is the one that talks about the sea, time, memory and dreams.
+#It is aware of the player.
+
+[[game-blue_key_003-text]]{{
+The sea.
+I came from the sea.
+[@np]
+And I remember taming the waters
+with bravery and wood.
+Until it respected me and I it.
+[@np]
+I still dream about the sea
+but it brings me no peace.
+[@np]
+Always twisted and raging.
+Foaming at a thousand mouths.
+Screaming and devouring.
+}}
+
+[[game-blue_key_005-text]]{{
+I dreamt of this storm.
+[@np]
+Never ending-rain
+ponderous gray clouds,
+and the scream of thunder.
+[@np]
+Each like the blink of an eye
+that lasts for a million years.
+[@np]
+Towers deluged.
+Waves crashing 
+drowning the tolling of bells.
+[@np]
+But I remembered the reason why.
+}}
+
+[[game-blue_key_007-text]]{{
+Now that the storm is over
+this place is all damp and cold.
+[@np]
+This dream-sea
+it consumed everything.
+[@np]
+It had all the time in the world
+after all.
+}}
+
+[[game-blue_key_009-text]]{{
+I have held fast for a long time.
+[@np]
+I may have held doubts
+but I never wavered.
+Not once.
+[@np]
+Now you are here.
+I guard nothing anymore.
+My vigil has ended.
+}}
+
+#Green key lines, sorted by map order.
+#The green key talks to itself, in first person.
+#It becomes aware of the player.
+
+[[game-green_key_002-text_001]]{{... Is there ...}}
+[[game-green_key_002-text_002]]{{... Is there anybody ...}}
+[[game-green_key_002-text_003]]{{... Is there anybody there?}}
+
+[[game-green_key_003-text]]{{
+I am awake.
+Am I?
+Is this another dream?
+[@np]
+Not a dream.
+Someone broke into this place.
+I can feel it.
+}}
+
+[[game-green_key_004-text_001]]{{Who... Who is this?}}
+[[game-green_key_004-text_002]]{{What... What is it doing here?}}
+[[game-green_key_004-text_003]]{{How... How did it find me?}}
+
+[[game-green_key_005-text]]{{
+You.
+[@np]
+I don't know how you 
+found this place ...
+[@np]
+...
+
+But you are not welcome.
+}}
+
+[[game-green_key_006-text_001]]{{I don't want you here!!!}}
+[[game-green_key_006-text_002]]{{I have nothing for you!!!}}
+[[game-green_key_006-text_003]]{{Leave this place at once!!!}}
+
+[[game-green_key_007-text]]{{
+You will ruin everything!.
+[@np]
+Everything we guarded
+for so long.
+[@np]
+Are you not afraid?
+[@np]
+Leave!!!.
+}}
