@@ -150,11 +150,11 @@ see it to the end.
 
 [[game-blue_key_003-text]]{{
 The sea.
-I came from the sea.
+Did I come from the sea?
 [@np]
-And I remember taming the waters
-with bravery and wood.
-Until it respected me and I it.
+Did I tame the waters
+with bravery and wood
+Until it respected me and I it?
 [@np]
 I still dream about the sea
 but it brings me no peace.
@@ -166,6 +166,7 @@ Screaming and devouring.
 
 [[game-blue_key_005-text]]{{
 I dreamt of this storm.
+That was my task.
 [@np]
 Never ending-rain
 ponderous gray clouds,
@@ -175,10 +176,10 @@ Each like the blink of an eye
 that lasts for a million years.
 [@np]
 Towers deluged.
-Waves crashing 
+Waves crashing
 drowning the tolling of bells.
 [@np]
-But I remembered the reason why.
+Until I forgot the reason why.
 }}
 
 [[game-blue_key_007-text]]{{
@@ -193,43 +194,67 @@ after all.
 }}
 
 [[game-blue_key_009-text]]{{
-I have held fast for a long time.
+I have held this dream 
+for a long time.
 [@np]
 I may have held doubts
+which I cannot remember
 but I never wavered.
-Not once.
 [@np]
-Now you are here.
-I guard nothing anymore.
-My vigil has ended.
+Not once.
 }}
 
 [[game-blue_key-question]]{{
+The edges of the sea are fraying.
 [@np]
+Is this the end of the dream?
+[@np]
+Before all vanishes, what is it
+that you want to know?
 }}
 
 [[game-blue_key-farewell]]{{
 ...
 [@np]
+The storm subsides.
+My memory holds nothing anymore.
+[@np]
+The waters are gone.
 }}
 
 #Who are you?
 [[game-blue_key-answer_1]]{{
-...
+It is hard to remember now.
+I have been dreaming, that is
+all I have been.
+[@np]
+Everything before this sea
+is lost to the fog now.
+[@np]
+I hope it was worth it.
 [@np]
 <<game-blue_key-farewell>>
 }}
 
 #What is this place?
 [[game-blue_key-answer_2]]{{
-...
+A storm within a box 
+to hold fast the seal.
+[@np]
+If I knew something else, 
+if I knew someone else
+I have forgotten now.
 [@np]
 <<game-blue_key-farewell>>
 }}
 
 #What do I do???
 [[game-blue_key-answer_3]]{{
-...
+All I know is my task has ended.
+How that relates to you
+I cannot fathom.
+[@np]
+I wish it were otherwise.
 [@np]
 <<game-blue_key-farewell>>
 }}
@@ -283,31 +308,57 @@ Leave!!!.
 }}
 
 [[game-green_key-question]]{{
+The end is near.
+It is all your fault.
 [@np]
+What is it that you came here
+searching for???
 }}
 
 [[game-green_key-farewell]]{{
-...
+Everything is ruined now.
 [@np]
+We needed more time, don't you
+understand???
+[@np]
+In the end, when all is over...
+[@np]
+... it will be all your fault.
 }}
 
 #Who are you?
 [[game-green_key-answer_1]]{{
-...
+I was a the seal you should not
+have broken.
+[@np]
+Everything is breaking. I should
+never have trusted the others.
+[@np]
+Only I could have bore it.
 [@np]
 <<game-green_key-farewell>>
 }}
 
 #What is this place?
 [[game-green_key-answer_2]]{{
-...
+It was a fortress to hold a seal.
+Now it is just a space
+collapsing upon itself.
+[@np]
+Did you bring this collapse with
+you?
 [@np]
 <<game-green_key-farewell>>
 }}
 
 #What do I do???
 [[game-green_key-answer_3]]{{
-...
+You should have never come here!
+[@np]
+You should have left!
+[@np]
+What is it that you brought with
+you?
 [@np]
 <<game-green_key-farewell>>
 }}
