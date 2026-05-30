@@ -10,6 +10,7 @@ enum states {
 	state_controls,
 	state_options,
 	state_show_text,
+	state_question,
 	state_max
 };
 }

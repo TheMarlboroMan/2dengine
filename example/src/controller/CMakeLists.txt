@@ -6,6 +6,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/controls.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/options.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/show_text.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/question.cpp
 	PARENT_SCOPE
 )
 

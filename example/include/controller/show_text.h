@@ -16,6 +16,16 @@
 namespace controller
 {
 
+/**
+ * the relationship between main, this controller and the question controller 
+ * is easy to understand. This can only be accessed by pushing state from main.
+ * If main did not set any answers we will pop state when done and go back to
+ * main. If main set answers we will push into "question", which, when finished,
+ * will clear answers and set the next text to show, then pop. That pop will 
+ * awake this controller again, loading the next text. Then we pop and it's back
+ * to the game.
+ */
+
 class show_text:
 	public dfw::controller_interface
 {
@@ -34,6 +44,7 @@ class show_text:
 
 	void                        reload_buffer();
 	void                        redraw_text();
+	void                        finish();
 
 	//references...
 	lm::logger&                 log;

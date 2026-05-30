@@ -52,7 +52,7 @@ void show_text::loop(
 	}
 	else if(_input.is_input_down(app::input::escape)) {
 
-		pop_state();
+		finish();
 		return;
 	}
 
@@ -99,7 +99,7 @@ void show_text::loop(
 				text_buffer.erase(std::begin(text_buffer));
 				if(!text_buffer.size()) {
 
-					pop_state();
+					finish();
 					return;
 				}
 				else {
@@ -153,7 +153,6 @@ void show_text::reload_buffer() {
 
 	text_buffer=tools::explode(raw_text, "[@np]");
 	for(auto& str : text_buffer) {
-
 		str=tools::str_trim(str);
 	}
 
@@ -161,4 +160,18 @@ void show_text::reload_buffer() {
 	state=tstates::dictate;
 	timers.restart();
 	redraw_text();
+}
+
+void show_text::finish() {
+
+	//Return to the game controller if no question is to be asked...
+	if(!text_exchange.has_answers()) {
+
+		lm::log(log).info()<<"no answers popping state\n";
+		pop_state();
+		return;
+	}
+
+	lm::log(log).info()<<"there are answers, will enter the question state\n";
+	push_state(controller::state_question);
 }

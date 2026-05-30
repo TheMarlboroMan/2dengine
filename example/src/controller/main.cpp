@@ -2203,7 +2203,22 @@ void main::activate_tag(
 
 			//Add it to the persistence layer so it's never loaded again.
 			persistence.add(app::pergr_texts, node.event_id, 1);
-			sp.get_show_text_exchange().set(node.text_index);
+			auto& text_exchange=sp.get_show_text_exchange();
+
+			text_exchange.set(node.text_index).clear_answers();
+
+			if(""!=node.first_answer_index
+				&& "" !=node.second_answer_index
+				&& "" !=node.third_answer_index
+			) {
+
+				text_exchange.set_answers(
+					node.first_answer_index,
+					node.second_answer_index,
+					node.third_answer_index
+				);
+			}
+
 			push_state(controller::state_show_text);
 		}
 	}

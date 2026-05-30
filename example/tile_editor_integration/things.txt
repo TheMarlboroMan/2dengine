@@ -378,6 +378,27 @@ beginobject
 		comment text index in the i8n files
 		linkedto nothing
 	endproperty
+	beginproperty
+		name answer_1
+		type string
+		default -
+		comment text index in the i8n files, can be empty
+		linkedto nothing
+	endproperty
+	beginproperty
+		name answer_2
+		type string
+		default -
+		comment text index in the i8n files, can be empty
+		linkedto nothing
+	endproperty
+	beginproperty
+		name answer_3
+		type string
+		default -
+		comment text index in the i8n files, can be empty
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject

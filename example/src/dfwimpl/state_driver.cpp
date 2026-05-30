@@ -30,6 +30,7 @@
 #include "controller/controls.h"
 #include "controller/options.h"
 #include "controller/show_text.h"
+#include "controller/question.h"
 //[new-controller-header-mark]
 
 using namespace dfwimpl;
@@ -378,6 +379,12 @@ void state_driver::register_controllers(
 		c_show_text,
 		controller::state_show_text,
 		new controller::show_text(*service_provider)
+	);
+
+	reg(
+		c_question,
+		controller::state_question,
+		new controller::question(*service_provider)
 	);
 }
 

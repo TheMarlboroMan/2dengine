@@ -6,18 +6,28 @@ next steps:
 		 - check if ultimate and treasure get swapped in the savegame file.
 
 	IDEAS:
-
 		- blue key, afterglow of stars after thunder
 
-		maybe the player can ask one question per key
-			- who are you?
-			- what is this place?
-			- where am I?
-			- what do I do?
+	QUESTION-ANSWER CONTROLLER
+		- we can have a question_node object with
+			- greeting text
+			- answer texts -> because the questions will be the same?
+			- bye text
+		- This thing is triggered, filling the text controller with greeting
+		- the text controller executes... but it always POPS to the next
+		controller instead of pushing another!... We can instruct it to 
+		start another controller, pushing another state, right??? When
+		that state ends it pops and goes back to the text state, that is now
+		instructed to pop when done. A bit convoluted, but can work...
+		Why instructs the text controller? I guess the show_text_exchange,
+		right?. The question controller should be manipulated from main
+		with another exchange thing so that it knows: the answers and what
+		bye text to give. Quite a lot of shit. But it can (and will) work!
+		All I need for now is a proof of concept.
 
 	WISHLIST-BALANCING-POLISHING:
 		- delete test map
-		- after a full playthrough a room was undiscovered. I don't know why.
+		- after a full playthrough a room was left undiscovered. I don't know why.
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!
@@ -31,13 +41,15 @@ next steps:
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
 			- I don't know what I meant with this... Oh, maybe I meant DURING
-			the transition?????
+			the transition????? Just disallow exiting during the transition
+			so that the game does not break?????
 
 		- do a test run and SAVE IT...
 			- and review it xD... It has worked so far anyway.
 
 		- particles for facing and toggle blocks going away / coming in ??
 
+		- design the last dream level (the book one).
 		- design the last furnace level xD.
 
 		... Check all levels that begin with a ladder!. Use the "defeat"
@@ -48,7 +60,8 @@ next steps:
 		solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
 
 		redesign corners so the player does not clip the walls around. Boring,
-			but needed.
+			but needed... I guess we could have the corners always in the
+			middle layer.
 
 		make difficulty levels meaningful!
 
@@ -56,6 +69,8 @@ next steps:
 
 		show data on savegame loading!
 			add this shit in the "values" file, later in the executable.
+			or store it in a "levelset" file with the starting map, total of
+			stuff and so on.
 
 	for the final build: remove values file, put that stuff in the
 		executable...   or somewhere else, for modding purposes
@@ -65,82 +80,6 @@ next steps:
 		and game over screen
 			- does the game over screen FUCK UP your save file??? Oh yeah, 
 			it should xD
-
-============================
-
-story: 
-
-- what about the accounts of the story for each character? they should
-  contradict each other, for fun.
-	- the owl: court magician/seer/astrologer. Tried to convince the "book"
-		character to stay inside the place because the world outside is no
-		place for such power. 
-			> Feared the influence of the cat [the dog tells],
-			> thought the dog was too naive [tells itself], 
-			> maybe wanted to make itself powerful through the book [cat tells]
-
-	- the cat: trusted counselor. Tried to convince the "book" character to
-	  take it outside and use its power. 
-			> [????]
-			> [????]
-			> [????]
-
-	- the dog: personal guard. Tried to convince the "book" character to burn
-	  the book and go back to the world outside. It would have wanted to go
-	  back for selfish reasons some other characters would fill in, like 
-	  family or a confortable life.
-			> [????]
-			> [????]
-			> [????]
-
-	- the book: ruler of sorts. Maybe the one which could be telling mostly 
-		the truth.
-			> [????]
-
-	- The owl, cat and dog agreed to become seals because the book itself was
-	 going mad by the minute and wanted to find out a way to stall whatever
-	 that was going on.
-
-- each character should have a different agenda towards the book.
-	- owl 
-		- wanted to stay inside and study the book.
-		- wants wants to have the player keep the book into the game world as
-			some sort of guardian.
-		- neutral or good ending.
-			-> sure, where does the player have to go to get this ending?
-			I have this idea of some sort of library somewhere that would
-			lock itself in. It is just fitting.
-			[?????] Fitting or not, where is it
-	- cat
-		- wanted to take the book to the world outside, for power of course,
-			not necessarily for evil.
-		- wants: the player to take the book and itself to the world outside.
-			-> bad ending, likely??
-	- dog
-			- wanted: to destroy the book and go back to its life.
-			- wants the player to destroy the book.
-			- canonical ending -> throw the book to the furnace.
-	- book
-		- wanted: [????]
-		- wants: [????]
-		- got consumed by the book and now is a voice among many others in its
-		pages.
-
-	[????] And what is the power of the book???
-		- tell the future
-		- shape the future
-		- who cares? it just makes people mad and ends up assimilating them.
-
-	[????] The cat would not have agreed if there was not a secret plan in
-	 place. 
-		- Maybe the player is that secret plan. In which case it would be 
-		"glad to see you again" and "how many years has it been? you really
-		have grown up" implying that there was some sort of relation.
-		I like this explanation.
-	[????] Why would the cat want to take the book to the world outside?
-		- Because it is the book itself (wtf)
-		- Because it would grant quite a lot of power for himself.
-		- Because it plans to take the book for itself.
 
 ============================
 

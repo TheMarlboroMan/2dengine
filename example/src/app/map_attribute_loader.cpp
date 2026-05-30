@@ -52,6 +52,10 @@ void map_attribute_loader::load(
 			background_color=ldv::rgba8(0, 0, 0, 255);
 			background_effect=bg_suspension;
 		break;
+		//pure white,
+		case 7:
+			background_color=ldv::rgba8(255, 255, 255, 255);
+		break;
 
 		default: //default is black.
 		case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;

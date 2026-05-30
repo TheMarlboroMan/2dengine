@@ -36,6 +36,10 @@
 [[automap-tower]]{{Wizard's tower}}
 [[automap-nowhere]]{{???}}
 
+[[question-first]]{{Who are you?}}
+[[question-second]]{{What is this place?}}
+[[question-third]]{{What am I to do?}}
+
 #For text display, follow these
 #rules about witdth and max
 #height:
@@ -77,11 +81,67 @@ Share this dream with me.
 I stand down.
 My task and my dream are over.
 [@np]
+Dream with me. 
+Just a little longer.
+}}
+
+[[game-red_key-question]]{{
+My dream is fading, it won't be
+long now...
+[@np]
+I can still answer one question.
+[@np]
+What will it be?
+}}
+
+[[game-red_key-farewell]]{{
+...
+[@np]
+My time is over.
 This key is yours now,
 a third of a great secret.
 [@np]
 What will I awake to now?
-Will you remember me? 
+Will you remember me?
+}}
+
+#Who are you?
+[[game-red_key-answer_1]]{{
+I am one of three, a dreamer and
+a guardian.
+[@np]
+Perhaps you want to know that I
+once was a man too, long ago.
+[@np]
+<<game-red_key-farewell>>
+}}
+
+#What is this place?
+[[game-red_key-answer_2]]{{
+This is a fold of space. My dream
+from which I have watched and 
+protected.
+[@np]
+I dreamt it from memories of my
+life and hopes for the future.
+[@np]
+<<game-red_key-farewell>>
+}}
+
+#What do I do???
+[[game-red_key-answer_3]]{{
+That is not for me to answer.
+My dream and my part will be over
+soon.
+[@np]
+It took very long. I hope it was
+enough for the others to find 
+out what to do.
+[@np]
+Journey on, find the others,
+see it to the end.
+[@np]
+<<game-red_key-farewell>>
 }}
 
 #Blue key lines
@@ -144,6 +204,36 @@ I guard nothing anymore.
 My vigil has ended.
 }}
 
+[[game-blue_key-question]]{{
+[@np]
+}}
+
+[[game-blue_key-farewell]]{{
+...
+[@np]
+}}
+
+#Who are you?
+[[game-blue_key-answer_1]]{{
+...
+[@np]
+<<game-blue_key-farewell>>
+}}
+
+#What is this place?
+[[game-blue_key-answer_2]]{{
+...
+[@np]
+<<game-blue_key-farewell>>
+}}
+
+#What do I do???
+[[game-blue_key-answer_3]]{{
+...
+[@np]
+<<game-blue_key-farewell>>
+}}
+
 #Green key lines, sorted by map order.
 #The green key talks to itself, in first person.
 #It becomes aware of the player.
@@ -190,4 +280,34 @@ for so long.
 Are you not afraid?
 [@np]
 Leave!!!.
+}}
+
+[[game-green_key-question]]{{
+[@np]
+}}
+
+[[game-green_key-farewell]]{{
+...
+[@np]
+}}
+
+#Who are you?
+[[game-green_key-answer_1]]{{
+...
+[@np]
+<<game-green_key-farewell>>
+}}
+
+#What is this place?
+[[game-green_key-answer_2]]{{
+...
+[@np]
+<<game-green_key-farewell>>
+}}
+
+#What do I do???
+[[game-green_key-answer_3]]{{
+...
+[@np]
+<<game-green_key-farewell>>
 }}

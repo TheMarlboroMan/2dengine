@@ -688,7 +688,20 @@ void thing_loader::add_text_node(
 	int tag=_attributes.at("tag").get_int();
 	std::string key=_attributes.at("text_id").get_string();
 
+	//A dash means "no answer".
+	std::string first_answer="-"==_attributes.at("answer_1").get_string()
+		? ""
+		: _attributes.at("answer_1").get_string();
+
+	std::string second_answer="-"==_attributes.at("answer_2").get_string()
+		? ""
+		: _attributes.at("answer_2").get_string();
+
+	std::string third_answer="-"==_attributes.at("answer_3").get_string()
+		? ""
+		: _attributes.at("answer_3").get_string();
+
 	curmap.text_nodes.push_back(
-		{id, tag, key}
+		{id, tag, key, first_answer, second_answer, third_answer}
 	);
 }
