@@ -3,31 +3,16 @@ next steps:
 	make the first example game
 
 	BUGS:
-		 - check if ultimate and treasure get swapped in the savegame file.
+		- check if ultimate and treasure get swapped in the savegame file.
+		- review the test run: an hour and 10 minutes!!!
+		- double free or corruption when exiting the game after a full run???
 
 	IDEAS:
 		- blue key, afterglow of stars after thunder
 
-	QUESTION-ANSWER CONTROLLER
-		- we can have a question_node object with
-			- greeting text
-			- answer texts -> because the questions will be the same?
-			- bye text
-		- This thing is triggered, filling the text controller with greeting
-		- the text controller executes... but it always POPS to the next
-		controller instead of pushing another!... We can instruct it to 
-		start another controller, pushing another state, right??? When
-		that state ends it pops and goes back to the text state, that is now
-		instructed to pop when done. A bit convoluted, but can work...
-		Why instructs the text controller? I guess the show_text_exchange,
-		right?. The question controller should be manipulated from main
-		with another exchange thing so that it knows: the answers and what
-		bye text to give. Quite a lot of shit. But it can (and will) work!
-		All I need for now is a proof of concept.
-
 	WISHLIST-BALANCING-POLISHING:
+		- SOFTLOCK in volcano secret room with moving blocks that push you around!!
 		- delete test map
-		- after a full playthrough a room was left undiscovered. I don't know why.
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!
@@ -37,37 +22,28 @@ next steps:
 		- what is with the other switch sprite (369-370)? The repeatable ones?
 		  Are we using that??? prepare something with the repeatable buttons.
 		- volcano_011 fire jet patterns.
-
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
 			- I don't know what I meant with this... Oh, maybe I meant DURING
 			the transition????? Just disallow exiting during the transition
 			so that the game does not break?????
-
-		- do a test run and SAVE IT...
-			- and review it xD... It has worked so far anyway.
-
+		- rightmost challenge of river, needs special tile.
+		- top of fortress: pedestal for key!
+		- green key add treasure after last shortcut, so that it makes sense!
+		- do a full review of the automap and its connections
 		- particles for facing and toggle blocks going away / coming in ??
-
 		- design the last dream level (the book one).
 		- design the last furnace level xD.
-
-		... Check all levels that begin with a ladder!. Use the "defeat"
+		- Check all levels that begin with a ladder!. Use the "defeat"
 		command.
-
-		make death pits aesthetically the same (do not see player bounce!)
-
-		solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
-
-		redesign corners so the player does not clip the walls around. Boring,
+		- make death pits aesthetically the same (do not see player bounce!)
+		- solve player bounce doing weird foreground shit... maybe when defeated pull the player to the forefront??
+		- redesign corners so the player does not clip the walls around. Boring,
 			but needed... I guess we could have the corners always in the
 			middle layer.
-
-		make difficulty levels meaningful!
-
-		make ladder platforms the same (ladder goes UNDER platform view)
-
-		show data on savegame loading!
+		- make difficulty levels meaningful!
+		- make ladder platforms the same (ladder goes UNDER platform view)
+		- show data on savegame loading!
 			add this shit in the "values" file, later in the executable.
 			or store it in a "levelset" file with the starting map, total of
 			stuff and so on.
