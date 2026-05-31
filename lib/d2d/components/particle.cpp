@@ -1,4 +1,7 @@
 #include "d2d/components/particle.h"
+#include <stdexcept>
+
+#include <iostream>
 
 using namespace d2d::components;
 
@@ -7,6 +10,11 @@ particle_manager::particle_manager(
 )
 	:particles{_size, particle{}}
 {
+
+	if(0==_size) {
+
+		throw std::runtime_error("particle_manager must have at least one particle!");
+	}
 
 	for(std::size_t i=0; i<_size; ++i) {
 
@@ -19,7 +27,8 @@ bool particle_manager::add(
 	d2d::collision::point _pos
 ) {
 
-	if(particles.size()==(last_free_index-1)) {
+	//We can fill no more particles here.
+	if(last_free_index >= particles.size()) {
 
 		return false;
 	}

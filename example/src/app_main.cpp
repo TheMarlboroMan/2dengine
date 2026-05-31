@@ -76,7 +76,6 @@ int main(int argc, char ** argv)
 		//Finally enter the application space.
 		lm::log(app_log).info()<<"start state driver..."<<std::endl;
 		sd.start(kernel);
-
 	}
 	catch(std::exception& e) {
 

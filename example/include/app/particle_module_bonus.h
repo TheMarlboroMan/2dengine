@@ -19,7 +19,6 @@ class particle_module_bonus
 
 	public:
 
-
 	        particle_module_bonus(random&);
 	void    add(particle&, d2d::collision::point, particle_index);
 	void    tic(particle&, tdelta, particle_index);

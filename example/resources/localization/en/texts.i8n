@@ -25,7 +25,7 @@
 [[options-sound]]{{sound volume}}
 [[options-music]]{{music volume}}
 [[options-back]]{{back}}
-[[automap-start]]{{Mines}}
+[[automap-start]]{{Tower grounds}}
 [[automap-forest]]{{Forest}}
 [[automap-red_vault]]{{Red key vault}}
 [[automap-blue_vault]]{{Blue key vault}}
@@ -33,7 +33,7 @@
 [[automap-river]]{{River}}
 [[automap-volcano]]{{Volcano}}
 [[automap-fortress]]{{Fortress}}
-[[automap-tower]]{{Wizard's tower}}
+[[automap-tower]]{{Dreaming Tower}}
 [[automap-nowhere]]{{???}}
 
 [[question-first]]{{Who are you?}}

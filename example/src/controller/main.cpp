@@ -2797,6 +2797,8 @@ void main::boss_spawn_skull(
 			for(int i=0; i<4; i++) {
 				current_map.particle_manager.add(app::prt_smoke, spawn.point);
 			}
+
+			return;
 		}
 	}
 

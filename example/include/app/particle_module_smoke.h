@@ -18,7 +18,6 @@ class particle_module_smoke
 
 	public:
 
-
 	        particle_module_smoke(random&);
 	void    add(particle&, d2d::collision::point, particle_index);
 	void    tic(particle&, tdelta, particle_index);

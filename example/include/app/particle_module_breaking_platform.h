@@ -18,7 +18,6 @@ class particle_module_breaking_platform
 
 	public:
 
-
 	        particle_module_breaking_platform(random&);
 	void    add(particle&, d2d::collision::point, particle_index);
 	void    tic(particle&, tdelta, particle_index);
