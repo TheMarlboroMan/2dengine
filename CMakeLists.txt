@@ -159,9 +159,6 @@ if(${BUILD_EXAMPLES})
 	endif()
 
 	target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
-
-	add_custom_target(setup_files ALL)
-	add_custom_command(TARGET setup_files POST_BUILD COMMAND "../make_resources.sh")
 endif()
 
 if(${BUILD_TESTS}) 

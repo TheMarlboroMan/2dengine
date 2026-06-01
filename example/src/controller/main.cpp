@@ -1270,6 +1270,11 @@ void main::tic_world(
 
 	for(auto& bl : current_map.moving_blocks) {
 
+		if(bl.is_crouch_activated() && !player.is_crouched()) {
+
+			continue;
+		}
+
 		bl.tic(_delta, mover);
 
 		if(!bl.has_arrived()) {

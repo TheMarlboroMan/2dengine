@@ -13,7 +13,7 @@ class moving_block {
 
 	public:
 
-	                                        moving_block(const d2d::collision::box& , int, int, int, bool, bool);
+	                                        moving_block(const d2d::collision::box& , int, int, int, bool, bool, bool);
 
 	int                                     get_next_id() const {return next_id;}
 	int                                     get_tag() const {return tag;}
@@ -21,6 +21,7 @@ class moving_block {
 	int                                     get_type() const {return type;}
 	bool                                    has_arrived() const {return states::arrived==state;}
 	bool                                    is_solid() const {return solid;}
+	bool                                    is_crouch_activated() const {return crouch_activated;}
 
 	void                                    tic(ldtools::tdelta, const d2d::motion::mover&);
 	void                                    reset();
@@ -50,7 +51,8 @@ class moving_block {
 	                                        type;
 	bool                                    active,
 	                                        initial_active,
-											solid;
+	                                        solid,
+	                                        crouch_activated;
 	d2d::collision::point                   target,
 	                                        initial_position;
 	d2d::components::timeout                timeout;

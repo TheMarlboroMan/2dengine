@@ -707,6 +707,13 @@ beginobject
 		linkedto nothing
 	endproperty
 	beginproperty
+		name crouch_activated
+		type int
+		default 0
+		comment 1=only moves when the player is crouched
+		linkedto nothing
+	endproperty
+	beginproperty
 		name difficulty
 		type int
 		default 7

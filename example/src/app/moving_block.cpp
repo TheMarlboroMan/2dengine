@@ -10,7 +10,8 @@ moving_block::moving_block(
 	int _first_nodeid,
 	int _type,
 	bool _active,
-	bool _solid
+	bool _solid,
+	bool _crouch_activated
 ):
 	ent{_box},
 	state{states::receiving},
@@ -21,6 +22,7 @@ moving_block::moving_block(
 	active{_active}, 
 	initial_active{active},
 	solid{_solid},
+	crouch_activated{_crouch_activated},
 	target{0., 0.},
 	initial_position{ent.get_origin()},
 	timeout{0., 0, true}
