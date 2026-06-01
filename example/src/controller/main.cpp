@@ -2298,6 +2298,18 @@ void main::activate_tag(
 
 		push_state(controller::state_show_text);
 	}
+
+	//TODO: We are NOT protected from endless loops here!!!! Can we do
+	//something? I guess we can pass a third parameter and disallow more than 
+	//16 recursions... Which should be more than enough. We can also detect
+	//loops by having a vector of relay ids and blah blah.
+	for(auto& relay : current_map.tag_relays) {
+
+		if(relay.tag==_tag) {
+
+			activate_tag(relay.relay, _previously_activated);
+		}
+	}
 }
 
 /**

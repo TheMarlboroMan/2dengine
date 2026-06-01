@@ -911,24 +911,46 @@ beginobject
 endobject
 
 beginobject
+	id 62
+	name tag_relay
+	w 16
+	h 16
+	color 255 255 255 255
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment tag that activates this relay
+		linkedto nothing
+	endproperty
+	beginproperty
+		name relay
+		type int
+		default 0
+		comment tag that this relays to
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16
 	h 16
 	color 64 128 64 255
 	beginproperty
-		name width
+		name tag
 		type int
-		default 16
-		comment entry width.
-		linkedto w
+		default 0
+		comment tag which activates this relay
+		linkedto nothing
 	endproperty
 	beginproperty
-		name height
+		name relay
 		type int
-		default 16
-		comment entry height.
-		linkedto h
+		default 0
+		comment tag that this relays to
+		linkedto nothing
 	endproperty
 endobject
 

@@ -43,6 +43,7 @@ void thing_loader::setup() {
 	curmap.boss.reset(nullptr);
 	curmap.skull_spawns.clear();
 	curmap.text_nodes.clear();
+	curmap.tag_relays.clear();
 }
 
 void thing_loader::load(
@@ -81,6 +82,7 @@ void thing_loader::load(
 			case 59: return add_boss(pos);
 			case 60: return add_boss_skull_spawn(pos, _attributes);
 			case 61: return add_trap(pos, _attributes);
+			case 62: return add_tag_relay(_attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -742,5 +744,17 @@ void thing_loader::add_text_node(
 
 	curmap.text_nodes.push_back(
 		{id, tag, key, first_answer, second_answer, third_answer}
+	);
+}
+
+void thing_loader::add_tag_relay(
+	const thing_loader::attrmap& _attributes
+) {
+
+	int tag=_attributes.at("tag").get_int();
+	int relay=_attributes.at("relay").get_int();
+
+	curmap.tag_relays.push_back(
+		{tag, relay}
 	);
 }

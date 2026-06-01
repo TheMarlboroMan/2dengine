@@ -43,6 +43,7 @@ std::ostream& app::operator<<(
 	print_node("facing_blocks", _map.facing_blocks, _stream);
 	print_node("toggle_blocks", _map.toggle_blocks, _stream);
 	print_node("text_nodes", _map.text_nodes, _stream);
+	print_node("tag_relays", _map.tag_relays, _stream);
 
 	if(_map.boss) {
 
@@ -147,6 +148,7 @@ void map::clear() {
 	skull_spawns.clear();
 	particle_manager.clear();
 	text_nodes.clear();
+	tag_relays.clear();
 	this->boss.reset(nullptr);
 }
 

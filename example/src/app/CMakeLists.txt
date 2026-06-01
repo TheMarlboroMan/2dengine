@@ -56,6 +56,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/player_input.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/suspension.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/trap.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tag_relay.cpp
 	PARENT_SCOPE
 )
 
