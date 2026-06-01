@@ -134,9 +134,9 @@ bool moving_block::is_on_or_beyond_target() const {
 	return false;
 }
 
-void moving_block::activate() {
+void moving_block::toggle() {
 
-	active=true;
+	active=!active;
 }
 
 std::ostream& app::operator<<(

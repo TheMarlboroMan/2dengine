@@ -33,6 +33,7 @@ class collectible;
 class linear_monster;
 class leaping_monster;
 class timed_trap;
+class trap;
 class secret_cover;
 class button;
 class gate;
@@ -115,6 +116,7 @@ class game_draw:
 	void                        draw_linear_monster(ldv::screen&, const app::linear_monster&);
 	void                        draw_leaping_monster(ldv::screen&, const app::leaping_monster&);
 	void                        draw_timed_trap(ldv::screen&, const app::timed_trap&);
+	void                        draw_trap(ldv::screen&, const app::trap&);
 	void                        draw_secret_cover(ldv::screen&, const app::secret_cover&);
 	void                        draw_button(ldv::screen&, const app::button&);
 	void                        draw_one_use_button(ldv::screen&, const app::button&);

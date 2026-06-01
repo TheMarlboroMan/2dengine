@@ -30,7 +30,7 @@ class timed_trap {
  */
 	                    timed_trap(d2d::collision::point, types, bool, bool, int, int, int, int);
 
-	int                 tic(ldtools::tdelta);
+	void                tic(ldtools::tdelta);
 	bool                is_harmful() const {return active && state==states::harm;}
 	types               get_type() const {return type;}
 	bool                is_active() const {return active;}

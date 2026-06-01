@@ -362,6 +362,7 @@ void menu::ready_slot_select() {
 
 	set_visible_slot_select(true);
 	set_visible_main(false);
+	set_visible_skill_select(false);
 	view.set_visible("menu_start", true); //TODO: actually,. we could have another text...
 
 	refresh();

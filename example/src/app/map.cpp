@@ -36,6 +36,7 @@ std::ostream& app::operator<<(
 	print_node("projectile_generators", _map.projectile_generators, _stream);
 	print_node("breaking_platforms", _map.breaking_platforms, _stream);
 	print_node("timed_traps", _map.timed_traps, _stream);
+	print_node("traps", _map.traps, _stream);
 	print_node("push_triggers", _map.push_triggers, _stream);
 	print_node("moving_blocks", _map.moving_blocks, _stream);
 	print_node("moving_block_nodes", _map.moving_block_nodes, _stream);
@@ -64,6 +65,11 @@ void map::reset() {
 	}
 
 	for(auto& trap : timed_traps) {
+
+		trap.reset();
+	}
+
+	for(auto& trap : traps) {
 
 		trap.reset();
 	}
@@ -130,6 +136,7 @@ void map::clear() {
 	gates.clear();
 	breaking_platforms.clear();
 	timed_traps.clear();
+	traps.clear();
 	push_triggers.clear();
 	moving_blocks.clear();
 	moving_block_nodes.clear();

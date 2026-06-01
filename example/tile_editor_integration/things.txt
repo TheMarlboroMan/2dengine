@@ -868,6 +868,49 @@ beginobject
 endobject
 
 beginobject
+	id 61
+	name trap
+	w 16
+	h 16
+	color 255 32 0 255
+	beginproperty
+		name type
+		type int
+		default 1
+		comment 1=fire 2=spikes
+		linkedto nothing
+	endproperty
+	beginproperty
+		name active
+		type int
+		default 1
+		comment 1=active 0=inactive
+		linkedto nothing
+	endproperty
+	beginproperty
+		name keep_active_reset
+		type int 
+		default 1
+		comment 1=keeps active status between level resets
+		linkedto nothing
+	endproperty
+	beginproperty
+		name tag
+		type int
+		default 0
+		comment activation tag
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
+endobject
+
+beginobject
 	id 101
 	name solid_box
 	w 16

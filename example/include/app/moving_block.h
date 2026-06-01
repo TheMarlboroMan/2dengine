@@ -26,7 +26,7 @@ class moving_block {
 	void                                    reset();
 	void                                    set_target(const d2d::collision::point&, int, int, int);
 	void                                    invalidate();
-	void                                    activate();
+	void                                    toggle();
 
 	entity                                  ent;
 

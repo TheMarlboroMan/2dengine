@@ -2,21 +2,30 @@ next steps:
 
 	make the first example game
 
+	NEXT:
+		- add block that moves only when crouching
+		- add horizontal bat monster.
+
 	BUGS:
-		- check if ultimate and treasure get swapped in the savegame file.
-		- review the test run: an hour and 10 minutes!!!
-		- double free or corruption when exiting the game after a full run???
+		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 
 	IDEAS:
+		- timed traps as spikes in opposite walls, we have to climb syncing
+			jumps from side to side to the rythm.
+		- background with moon for last room
+		- background with moon and moving shapes for book dream.
 		- blue key, afterglow of stars after thunder
+		- play special sounds and particles when using one of the 3 special
+		  keys.
+		- pack whole levelset in a file that contains location of maps, 
+		of automap.txt, extra lan files and shit.
 
 	WISHLIST-BALANCING-POLISHING:
-		- SOFTLOCK in volcano secret room with moving blocks that push you around!!
+		. remove the solid block object, it makes no sense.
 		- delete test map
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!
-		- warning spawn skull not found, lies, on boss.
 		- game segfaulted a couple times... 
 			should do the ulimit -c 102400 thingy to dump core
 		- what is with the other switch sprite (369-370)? The repeatable ones?
@@ -27,10 +36,6 @@ next steps:
 			- I don't know what I meant with this... Oh, maybe I meant DURING
 			the transition????? Just disallow exiting during the transition
 			so that the game does not break?????
-		- rightmost challenge of river, needs special tile.
-		- top of fortress: pedestal for key!
-		- green key add treasure after last shortcut, so that it makes sense!
-		- do a full review of the automap and its connections
 		- particles for facing and toggle blocks going away / coming in ??
 		- design the last dream level (the book one).
 		- design the last furnace level xD.

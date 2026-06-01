@@ -48,55 +48,51 @@ void timed_trap::reset() {
 	timeout.target(pre_s).restart();
 }
 
-int timed_trap::tic(
+void timed_trap::tic(
 	ldtools::tdelta _delta
 ) {
 
 	if(!active) {
 
-		return 0;
+		return;
 	}
 
 	timeout.tic(_delta);
 	if(!timeout.is_finished()) {
 
-		return 0;
+		return;
 	}
 
 #ifdef IS_DEBUG_BUILD
 	int count=0;
 #endif
 
+	//TODO: This even needed anymore????
 	//Run this while the next state has no timeout, so we can skip empty times
 	//without another tic taking place.
 	while(true) {
-
-		int result=0;
 
 		switch(state) {
 
 			case states::pre:
 				state=states::harm;
 				timeout.target(harm_s).restart();
-				result=type==types::fire ? 1 : 0; //Will start sound if fire!
 			break;
 
 			case states::harm:
 				state=states::post;
 				timeout.target(post_s).restart();
-				result=type==types::fire ? -1 : 0; //will stop sound if fire!
 			break;
 			
 			case states::post:
 				state=states::pre;
 				timeout.target(pre_s).restart();
-				result=0; //will do nothing.
 			break;
 		}
 
 		if(0.!=timeout.get_max()) {
 
-			return result;
+			return;
 		}
 
 #ifdef IS_DEBUG_BUILD

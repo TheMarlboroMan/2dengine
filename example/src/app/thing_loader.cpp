@@ -35,6 +35,7 @@ void thing_loader::setup() {
 	curmap.leaping_monsters.clear();
 	curmap.breaking_platforms.clear();
 	curmap.timed_traps.clear();
+	curmap.traps.clear();
 	curmap.moving_blocks.clear();
 	curmap.moving_block_nodes.clear();
 	curmap.facing_blocks.clear();
@@ -79,6 +80,7 @@ void thing_loader::load(
 			case 58: return add_toggle_block(pos, _attributes);
 			case 59: return add_boss(pos);
 			case 60: return add_boss_skull_spawn(pos, _attributes);
+			case 61: return add_trap(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -312,11 +314,48 @@ void thing_loader::add_timed_trap(
 			//noop.
 		break;
 	}
-	
-
 
 	curmap.timed_traps.push_back(
 		{ {_pos.x, _pos.y}, type, active, keep_active, tag, pre_ms, active_ms, post_ms}
+	);
+}
+
+void thing_loader::add_trap(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
+	bool active=_attributes.at("active").get_int()==1;
+	bool keep_active=_attributes.at("keep_active_reset").get_int()==1;
+	int tag=_attributes.at("tag").get_int();
+	int int_type=_attributes.at("type").get_int();
+
+	app::trap::types type=app::trap::types::fire;
+	switch(int_type) {
+		case 2: 
+			type=app::trap::types::spikes;
+		break;
+	}
+
+	switch(type) {
+
+		case app::trap::types::fire:
+			//Spawn it aligned to the center of the grid.
+			_pos.x+=(app::tile_w / 2)- (app::trap::fire_w / 2);
+		break;
+		case app::trap::types::spikes:
+			//noop.
+		break;
+	}
+
+	curmap.traps.push_back(
+		{ {_pos.x, _pos.y}, type, active, keep_active, tag }
 	);
 }
 

@@ -379,7 +379,6 @@ void main::load_map(
 
 	d2d::storage::map_loader loader(map_path);
 
-	ctracker.restart();
 	current_map.clear();
 	clear_transient_state();
 
@@ -808,9 +807,8 @@ void main::take_player_to_entry(
 
 void main::restart_level() {
 
-	ctracker.reset();
-	clear_transient_state();
 	current_map.reset();
+	clear_transient_state();
 
 	take_player_to_entry(last_entry_id, true);
 }
@@ -837,6 +835,8 @@ void main::tic(
 
 	tic_world(_delta);
 
+	//TODO:
+	//Why is this outside tic_world or player_tic?
 	if(current_map.moving_blocks.size() && !player.is_defeated()) {
 
 		//Tic and correct any pushes...
@@ -1056,6 +1056,20 @@ void main::post_tic(
 	}
 
 	//Or a trap?
+	for(const auto& trap : current_map.traps) {
+
+		if(!trap.is_active()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, trap.ent)) {
+
+			defeat(player);
+			return;
+		}
+	}
+
 	for(const auto& trap : current_map.timed_traps) {
 
 		if(!trap.is_harmful()) {
@@ -1116,7 +1130,15 @@ void main::post_tic(
 
 		for(auto& block : current_map.breaking_platforms) {
 
+			//Already broken blocks can be skipped.
 			if(!block.is_solid()) {
+
+				continue;
+			}
+
+			//Blocks over the player can be skipped (think about transparent
+			//blocks!, we don't want them to break when we walk into them!)
+			if(!d2d::collision::is_above(player.ent, block)) {
 
 				continue;
 			}
@@ -1189,26 +1211,7 @@ void main::tic_world(
 
 	for(auto& trap : current_map.timed_traps) {
 
-		//We accumulate a count of active traps here. This can also
-		//decrement the counter...
-		trap_sound.active_count+=trap.tic(_delta);
-	}
-
-	//Do we have active traps now? Are we playing the sound? Must we stop?
-	//This is a bit low-level crappy stuff, but should work... We could
-	//pass an event handler to the timed_trap but hey...
-	if(0 < trap_sound.active_count) {
-
-		if(-1==trap_sound.channel_index) {
-
-			trap_sound.channel_index=sound_player.play_repeat(app::snd_fire);
-		}
-	}
-	//Active count must be zero... Must we stop the sound?
-	else if(-1!=trap_sound.channel_index) {
-
-		sound_player.stop(trap_sound.channel_index);
-		trap_sound.channel_index=-1;
+		trap.tic(_delta);
 	}
 
 	for(auto& button : current_map.buttons) {
@@ -1297,6 +1300,8 @@ void main::tic_world(
 
 		game_timeouts.restart(timeout_bonus_particles);
 	}
+
+	tic_repeat_sounds();
 }
 
 void main::tic_projectile(
@@ -1879,18 +1884,78 @@ void main::activate_button(
 			inventory.yellow_keys--;
 		break;
 		case app::button::types::blue_keyhole:
+			//TODO: particles and sound!
 			inventory.blue_keys--;
 		break;
 		case app::button::types::red_keyhole:
+			//TODO: particles and sound!
 			inventory.red_keys--;
 		break;
 		case app::button::types::green_keyhole:
+			//TODO: particles and sound!
 			inventory.green_keys--;
 		break;
 	}
 
 	activate_tag(_button.tag, false);
 	play_sound(app::snd_switch);
+}
+
+void main::tic_repeat_sounds() {
+
+	//Ok, this is easy... Count if there's any fire traps here
+	//that are active or whatever.
+
+	int active_count=0;
+
+	for(const auto& trap : current_map.traps) {
+
+		if(app::trap::types::fire!=trap.get_type()) {
+
+			continue;
+		}
+
+		if(!trap.is_active()) {
+
+			continue;
+		}
+
+		++active_count;
+	}
+
+	//TODO: No need if we already had an active count, right.
+	for(const auto& trap : current_map.timed_traps) {
+
+		if(app::timed_trap::types::fire!=trap.get_type()) {
+
+			continue;
+		}
+
+		if(!trap.is_harmful()) {
+
+			continue;
+		}
+
+		++active_count;
+	}
+
+	//Nothing active? was playing and must be stopped?
+	if(0==active_count) {
+
+		if(-1!=fire_trap_audio_channel_index) {
+
+			sound_player.stop(fire_trap_audio_channel_index);
+			fire_trap_audio_channel_index=-1;
+		}
+
+		return;
+	}
+
+	//Nothing playing? Please do play!
+	if(-1==fire_trap_audio_channel_index) {
+
+		fire_trap_audio_channel_index=sound_player.play_repeat(app::snd_fire);
+	}
 }
 
 void main::activate_touch_trigger(
@@ -2149,36 +2214,45 @@ void main::activate_tag(
 	//Gates can ONLY open and remain open until the end of the game.
 	for(auto& gate : current_map.gates) {
 
-		if(gate.tag==_tag) {
+		if(gate.tag!=_tag) {
 
-			bool was_closed=gate.is_closed();
+			continue;
+		}
 
-			//there is an "animation" here we might want to skip.
-			_previously_activated
-				? gate.open()
-				: gate.activate();
+		bool was_closed=gate.is_closed();
 
-			//Only make noise if the gate was closed beforehand. This comes
-			//in handy if two switches activate the same gate.
-			if(!_previously_activated && was_closed) {
+		//there is an "animation" here we might want to skip.
+		_previously_activated
+			? gate.open()
+			: gate.activate();
 
-				play_sound(app::snd_open_gate);
-			}
+		//Only make noise if the gate was closed beforehand. This comes
+		//in handy if two switches activate the same gate.
+		if(!_previously_activated && was_closed) {
+
+			play_sound(app::snd_open_gate);
 		}
 	}
 
 	//Toggle all traps by this tag...
+	for(auto& trap : current_map.traps) {
+
+		if(trap.get_tag()!=_tag) {
+
+			continue;
+		}
+
+		trap.toggle();
+	}
+
 	for(auto& trap : current_map.timed_traps) {
 
-		if(trap.get_tag()==_tag) {
+		if(trap.get_tag()!=_tag) {
 
-			bool was_active=trap.is_active();
-			trap.toggle();
-			if(was_active) {
-
-				--trap_sound.active_count;
-			}
+			continue;
 		}
+
+		trap.toggle();
 	}
 
 	for(auto& generator : current_map.projectile_generators) {
@@ -2193,34 +2267,36 @@ void main::activate_tag(
 
 		if(block.get_tag()==_tag) {
 
-			block.activate();
+			block.toggle();
 		}
 	}
 
 	for(auto& node : current_map.text_nodes) {
 
-		if(node.tag==_tag) {
+		if(node.tag!=_tag) {
 
-			//Add it to the persistence layer so it's never loaded again.
-			persistence.add(app::pergr_texts, node.event_id, 1);
-			auto& text_exchange=sp.get_show_text_exchange();
-
-			text_exchange.set(node.text_index).clear_answers();
-
-			if(""!=node.first_answer_index
-				&& "" !=node.second_answer_index
-				&& "" !=node.third_answer_index
-			) {
-
-				text_exchange.set_answers(
-					node.first_answer_index,
-					node.second_answer_index,
-					node.third_answer_index
-				);
-			}
-
-			push_state(controller::state_show_text);
+			continue;
 		}
+
+		//Add it to the persistence layer so it's never loaded again.
+		persistence.add(app::pergr_texts, node.event_id, 1);
+		auto& text_exchange=sp.get_show_text_exchange();
+
+		text_exchange.set(node.text_index).clear_answers();
+
+		if(""!=node.first_answer_index
+			&& "" !=node.second_answer_index
+			&& "" !=node.third_answer_index
+		) {
+
+			text_exchange.set_answers(
+				node.first_answer_index,
+				node.second_answer_index,
+				node.third_answer_index
+			);
+		}
+
+		push_state(controller::state_show_text);
 	}
 }
 
@@ -2280,15 +2356,13 @@ void main::setup_area_banner(
 
 void main::clear_transient_state() {
 
-	//active count is guaranteeed not to rise if no sound can be played,
-	//so this is safe.
-	if(trap_sound.active_count > 0) {
+	ctracker.restart();
 
-		sound_player.stop(trap_sound.channel_index);
+	if(-1!=fire_trap_audio_channel_index) {
+
+		sound_player.stop(fire_trap_audio_channel_index);
+		fire_trap_audio_channel_index=-1;
 	}
-
-	trap_sound.active_count=0;
-	trap_sound.channel_index=-1;
 }
 
 void main::player_motion(

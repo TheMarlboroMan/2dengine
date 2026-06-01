@@ -7,6 +7,7 @@
 #include "app/linear_monster.h"
 #include "app/leaping_monster.h"
 #include "app/timed_trap.h"
+#include "app/trap.h"
 #include "app/secret_cover.h"
 #include "app/button.h"
 #include "app/gate.h"
@@ -246,6 +247,11 @@ void game_draw::draw(
 	for(const auto& subject : _map.leaping_monsters) {
 
 		draw_leaping_monster(_screen, subject);
+	}
+
+	for(const auto& subject : _map.traps) {
+
+		draw_trap(_screen, subject);
 	}
 
 	for(const auto& subject : _map.timed_traps) {
@@ -551,6 +557,61 @@ void game_draw::draw_timed_trap(
 		}
 		break;
 		case app::timed_trap::types::spikes:
+
+			sprite_draw.draw(
+				_screen,
+				d2d::video::to_screen(_trap.ent.get_origin()),
+				app::spr_spike
+			);
+		break;
+	}
+}
+
+void game_draw::draw_trap(
+	ldv::screen& _screen,
+	const app::trap& _trap
+) {
+
+	//See draw_timed_trap, same thing.
+	
+	if(_trap.get_type()==app::trap::types::fire) {
+
+		auto origin=d2d::video::to_screen(_trap.ent.get_origin());
+
+		//The plaque is under the trap itself and must be centered on it.
+		origin.y-=app::tile_h;
+		origin.x-=(app::timed_trap::fire_w / 2) + 1;
+
+		int sprite_index=app::spr_fire_trap_plaque;
+
+		sprite_draw.draw(
+			_screen,
+			origin,
+			sprite_index
+		);
+	}
+
+	if(!_trap.is_active()) {
+
+		return;
+	}
+
+	switch(_trap.get_type()) {
+
+		case app::trap::types::fire: {
+
+			const auto& line=animation_sprite_finder.get(app::anim_timed_trap_fire);
+			auto mod=animation_sprite_finder.modifiers(line);
+
+			sprite_draw.draw(
+				_screen, 
+				d2d::video::to_screen(_trap.ent.get_origin()),
+				line.frame,
+				mod
+			);
+		}
+		break;
+		case app::trap::types::spikes:
 
 			sprite_draw.draw(
 				_screen,

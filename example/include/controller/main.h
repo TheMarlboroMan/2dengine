@@ -141,6 +141,7 @@ class main:
 	void                        mark_map_as_complete();
 	void                        discover_map(int, bool);
 	std::vector<std::string>    extract_green_key_text_nodes() const;
+	void                        tic_repeat_sounds();
 
 	//TODO: Move me to another entity... with all the properties too...
 	void                        create_projectile_end_particles(const app::projectile&);
@@ -183,10 +184,7 @@ class main:
 	std::unique_ptr<app::map_transition> transition{nullptr},
 	                            transition_out{nullptr};
 
-	struct {
-		int                     active_count{0},
-		                        channel_index{-1};
-	}                           trap_sound;
+	int                         fire_trap_audio_channel_index{-1};
 
 	//This will be used to store information of the next level after a transition
 	//when needed.

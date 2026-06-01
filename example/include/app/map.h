@@ -15,6 +15,7 @@
 #include "projectile.h"
 #include "breaking_platform.h"
 #include "timed_trap.h"
+#include "trap.h"
 #include "push_trigger.h"
 #include "moving_block.h"
 #include "moving_block_node.h"
@@ -61,6 +62,7 @@ class map {
 	std::vector<breaking_platform>          breaking_platforms;
 	std::vector<projectile_generator>       projectile_generators;
 	std::vector<timed_trap>                 timed_traps;
+	std::vector<trap>                       traps;
 	std::vector<push_trigger>               push_triggers;
 	std::vector<d2d::video::scenery_tile>   background_tiles;
 	std::vector<d2d::video::scenery_tile>   middle_tiles;

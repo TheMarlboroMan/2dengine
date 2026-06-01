@@ -35,6 +35,7 @@ class thing_loader
 	void                add_breaking_platform(d2d::collision::point, const attrmap&);
 	void                add_platform(d2d::collision::point, const attrmap&);
 	void                add_timed_trap(d2d::collision::point, const attrmap&);
+	void                add_trap(d2d::collision::point, const attrmap&);
 	void                add_push_trigger(d2d::collision::point, const attrmap&);
 	void                add_moving_block(d2d::collision::point, const attrmap&);
 	void                add_moving_block_node(d2d::collision::point, const attrmap&);

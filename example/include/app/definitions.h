@@ -173,7 +173,7 @@ enum sprites {
 	spr_green_keyhole_used=367,
 	spr_regular_button=360,
 	spr_regular_button_used=361,
-	spr_repeat_button=269,
+	spr_repeat_button=369,
 	spr_repeat_button_used=370,
 	spr_breaking_block=362,
 	spr_breaking_block_one_way=371,
