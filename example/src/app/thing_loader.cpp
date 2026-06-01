@@ -252,6 +252,11 @@ void thing_loader::add_linear_monster(
 			lower_bound=find_lower_y_bound(tile);
 			upper_bound=find_upper_y_bound(tile);
 		break;
+		case 4: 
+			type=app::linear_monster::types::horizontal_bat;
+			lower_bound=find_lower_x_bound(tile);
+			upper_bound=find_upper_x_bound(tile);
+		break;
 	}
 
 	bool faces_right=_attributes.at("facing_right").get_int()==1;

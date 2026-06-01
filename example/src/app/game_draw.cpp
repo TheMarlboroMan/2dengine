@@ -478,6 +478,7 @@ void game_draw::draw_linear_monster(
 			animation_index=app::anim_snake;
 		break;
 		case app::linear_monster::types::bat:
+		case app::linear_monster::types::horizontal_bat:
 
 			animation_index=app::anim_bat;
 		break;

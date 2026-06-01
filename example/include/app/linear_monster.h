@@ -30,7 +30,8 @@ class linear_monster {
 	enum class types {
 		scorpion,
 		snake,
-		bat
+		bat,
+		horizontal_bat
 	};
 /**
  * the second parameter is a "type". The boolean indicates wether or not

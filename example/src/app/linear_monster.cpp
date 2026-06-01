@@ -33,6 +33,7 @@ linear_monster::linear_monster(
 			ent.set_h(snake_h);
 		break;
 		case types::bat:
+		case types::horizontal_bat:
 
 			ent.set_w(bat_w);
 			ent.set_h(bat_h);
@@ -92,6 +93,7 @@ bool linear_monster::is_horizontal_movement() const {
 
 		case types::scorpion:
 		case types::snake:
+		case types::horizontal_bat:
 			return true;
 
 		case types::bat:
@@ -129,6 +131,13 @@ void linear_monster::reset_velocity() {
 		case types::bat:
 
 			ent.set_motion_vector_y(facing==app::faces::right 
+				? bat_velocity
+				: -bat_velocity
+			);
+		break;
+		case types::horizontal_bat:
+
+			ent.set_motion_vector_x(facing==app::faces::right 
 				? bat_velocity
 				: -bat_velocity
 			);

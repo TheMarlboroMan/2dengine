@@ -411,7 +411,7 @@ beginobject
 		name type
 		type int
 		default 1
-		comment 1=scorpion 2=snake 3=bat
+		comment 1=scorpion 2=snake 3=bat 4=horizontal bat
 		linkedto nothing
 	endproperty
 	beginproperty
