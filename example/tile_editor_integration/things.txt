@@ -932,32 +932,52 @@ beginobject
 	endproperty
 	beginproperty
 		name relay
-		type int
+		type string
 		default 0
-		comment tag that this relays to
+		comment space-separated list of tags that this relays to
 		linkedto nothing
 	endproperty
 endobject
 
 beginobject
-	id 101
-	name solid_box
+	id 63
+	name timer
 	w 16
 	h 16
-	color 64 128 64 255
+	color 210 210 210 255
+	beginproperty
+		name active
+		type int
+		default 1
+		comment 1=active 0=inactive
+		linkedto nothing
+	endproperty
+	beginproperty
+		name keep_active_reset
+		type int 
+		default 1
+		comment 1=keeps active status between level resets
+		linkedto nothing
+	endproperty
 	beginproperty
 		name tag
 		type int
 		default 0
-		comment tag which activates this relay
+		comment self-activation tag
 		linkedto nothing
 	endproperty
 	beginproperty
-		name relay
+		name target_tag
 		type int
 		default 0
-		comment tag that this relays to
+		comment external activation tag to activate when finished
+		linkedto nothing
+	endproperty
+	beginproperty
+		name pre_ms
+		type int
+		default 3000
+		comment milliseconds before activating
 		linkedto nothing
 	endproperty
 endobject
-

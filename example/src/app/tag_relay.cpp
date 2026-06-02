@@ -7,6 +7,6 @@ std::ostream& app::operator<<(
 	const tag_relay& _node
 ) {
 
-	_stream<<"tag_relay["<<_node.tag<<" => "<<_node.relay<<"]";
+	_stream<<"tag_relay["<<_node.tag<<"]";
 	return _stream;
 }

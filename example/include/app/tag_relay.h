@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 namespace app {
 
@@ -14,8 +15,8 @@ class tag_relay {
 
 	public:
 
-	int             tag,
-	                relay;
+	int             tag;
+	std::vector<int> relays;
 };
 
 std::ostream& operator<<(std::ostream&, const tag_relay&);

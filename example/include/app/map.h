@@ -26,6 +26,7 @@
 #include "boss_skull.h"
 #include "boss_skull_spawn.h"
 #include "tag_relay.h"
+#include "timer.h"
 #include <d2d/collision/tile.h>
 #include <d2d/collision/tile_limits.h>
 #include <d2d/collision/tile_finder_matrix.h>
@@ -78,6 +79,7 @@ class map {
 	std::vector<app::boss_skull>            skulls;
 	std::vector<app::boss_skull_spawn>      skull_spawns;
 	std::vector<tag_relay>                  tag_relays;
+	std::vector<timer>                      timers;
 	d2d::collision::tile_finder_matrix      tile_finder;
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};

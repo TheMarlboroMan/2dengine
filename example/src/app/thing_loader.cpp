@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <utility>
+#include <algorithm>
 
 using namespace app;
 
@@ -83,6 +84,7 @@ void thing_loader::load(
 			case 60: return add_boss_skull_spawn(pos, _attributes);
 			case 61: return add_trap(pos, _attributes);
 			case 62: return add_tag_relay(_attributes);
+			case 63: return add_timer(_attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -758,9 +760,52 @@ void thing_loader::add_tag_relay(
 ) {
 
 	int tag=_attributes.at("tag").get_int();
-	int relay=_attributes.at("relay").get_int();
+
+	//This is a space separated list of tags which we will need to convert
+	//to integers. Make sure there are no repeated nodes.
+	std::istringstream ss(_attributes.at("relay").get_string());
+	std::vector<int> relay_tags;
+
+	while(true) {
+
+		int relayed_tag;
+		ss>>relayed_tag;
+
+		if(ss.fail()) {
+
+			throw std::runtime_error("invalid tag in relay, must all be integers!");
+		}
+
+		//It is repeated?
+		if(std::end(relay_tags)!=std::find(std::begin(relay_tags), std::end(relay_tags), relayed_tag)) {
+
+			continue;
+		}
+
+		relay_tags.push_back(relayed_tag);
+
+		if(ss.eof()) {
+
+			break;
+		}
+	}
 
 	curmap.tag_relays.push_back(
-		{tag, relay}
+		{tag, relay_tags}
+	);
+}
+
+void thing_loader::add_timer(
+	const thing_loader::attrmap& _attributes
+) {
+
+	bool active=_attributes.at("active").get_int()==1;
+	bool keep_active=_attributes.at("keep_active_reset").get_int()==1;
+	int tag=_attributes.at("tag").get_int();
+	int target_tag=_attributes.at("target_tag").get_int();
+	int pre_ms=_attributes.at("pre_ms").get_int();
+
+	curmap.timers.push_back(
+		{active, keep_active, tag, target_tag, pre_ms}
 	);
 }

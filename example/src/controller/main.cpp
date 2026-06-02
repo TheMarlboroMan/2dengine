@@ -512,6 +512,16 @@ void main::load_map(
 		activate_tag(trigger.tag, true);
 	}
 
+	for(const auto& trigger : current_map.touch_triggers) {
+
+		if(!trigger.used) {
+
+			continue;
+		}
+
+		activate_tag(trigger.tag, true);
+	}
+
 	sync_facing_blocks();
 
 	//After loading the map, tell the camera where the limits are. We use
@@ -1291,6 +1301,15 @@ void main::tic_world(
 		}
 
 		write_moving_block(bl, next_id);
+	}
+
+	for(auto& timer : current_map.timers) {
+
+		if(timer.tic(_delta)) {
+
+			lm::log(logger).debug()<<"timer "<<timer.get_tag()<<" will activate target "<<timer.get_target_tag()<<"\n";
+			activate_tag(timer.get_target_tag(), false);
+		}
 	}
 
 	//collectibles produce particles each few tics.
@@ -2304,6 +2323,14 @@ void main::activate_tag(
 		push_state(controller::state_show_text);
 	}
 
+	for(auto& timer : current_map.timers) {
+
+		if(timer.get_tag()==_tag) {
+
+			timer.receive_signal();
+		}
+	}
+
 	//TODO: We are NOT protected from endless loops here!!!! Can we do
 	//something? I guess we can pass a third parameter and disallow more than 
 	//16 recursions... Which should be more than enough. We can also detect
@@ -2312,7 +2339,11 @@ void main::activate_tag(
 
 		if(relay.tag==_tag) {
 
-			activate_tag(relay.relay, _previously_activated);
+			for(auto relayed_tag : relay.relays) {
+
+				lm::log(logger).debug()<<"relay "<<relay.tag<<" will relay to "<<relayed_tag<<"\n";
+				activate_tag(relayed_tag, _previously_activated);
+			}
 		}
 	}
 }

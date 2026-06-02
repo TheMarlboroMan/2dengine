@@ -44,6 +44,7 @@ std::ostream& app::operator<<(
 	print_node("toggle_blocks", _map.toggle_blocks, _stream);
 	print_node("text_nodes", _map.text_nodes, _stream);
 	print_node("tag_relays", _map.tag_relays, _stream);
+	print_node("timers", _map.timers, _stream);
 
 	if(_map.boss) {
 
@@ -105,6 +106,11 @@ void map::reset() {
 		block.reset();
 	}
 
+	for(auto& timer : timers) {
+
+		timer.reset();
+	}
+
 	if(boss) {
 
 		if(!boss->is_defeated()) {
@@ -149,6 +155,7 @@ void map::clear() {
 	particle_manager.clear();
 	text_nodes.clear();
 	tag_relays.clear();
+	timers.clear();
 	this->boss.reset(nullptr);
 }
 
