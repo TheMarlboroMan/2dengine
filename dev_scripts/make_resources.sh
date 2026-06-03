@@ -1,5 +1,6 @@
 #!/bin/bash
 
 php set_unique_ids.php --quiet
-cp -r ../example/resources ../build
+mkdir ../build/resources
+cp -r -v ../example/resources/* ../build/resources
 

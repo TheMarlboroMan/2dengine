@@ -52,6 +52,8 @@ void pause::awake(
 
 	timeout.restart();
 
+	lm::log(logger).debug()<<"there are "<<view.size()<<" elements in the view\n";
+
 	//Hide or show stuff according to game mode.
 	view.set_visible("lives_icon", game_session.is_with_lives());
 	view.set_visible("lives_value", game_session.is_with_lives());
@@ -61,6 +63,8 @@ void pause::awake(
 	view.set_visible("blue_key_icon", inventory.blue_keys!=0);
 	view.set_visible("green_key_icon", inventory.green_keys!=0);
 	view.set_visible("ultimate_icon", inventory.ultimate!=0);
+	view.set_visible("white_keys_icon", inventory.white_keys!=0);
+	view.set_visible("white_keys_value", inventory.white_keys!=0);
 
 	//Update the values to be shown...
 	std::stringstream ss;
@@ -70,6 +74,13 @@ void pause::awake(
 	ss.str("");
 	ss<<" x "<<inventory.yellow_keys;
 	view.set_text("keys_value", ss.str());
+
+	if(0!=inventory.white_keys) {
+
+		ss.str("");
+		ss<<" x "<<inventory.white_keys;
+		view.set_text("white_keys_value", ss.str());
+	}
 
 	ss.str("");
 	ss<<" x "<<game_session.get_discovered_map_count();

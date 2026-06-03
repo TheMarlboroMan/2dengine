@@ -174,6 +174,9 @@ void main::load_game() {
 	inventory.blue_keys=save.blue_keys;
 	inventory.green_keys=save.green_keys;
 	inventory.yellow_keys=save.yellow_keys;
+	inventory.white_keys=save.white_keys;
+	inventory.ultimate=save.ultimate;
+	//TODO: Why EvEN SAVE IT THEN????
 	//Treasure actually comes from the persistence layer.
 	inventory.treasure=persistence.size(app::pergr_collectibles);
 
@@ -1841,6 +1844,10 @@ void main::pick_up_collectible(
 
 			inventory.green_keys++;
 		break;
+		case app::collectible::white_key:
+
+			inventory.white_keys++;
+		break;
 		case app::collectible::ultimate:
 
 			inventory.ultimate++;
@@ -1918,6 +1925,10 @@ void main::activate_button(
 		case app::button::types::green_keyhole:
 			//TODO: particles and sound!
 			inventory.green_keys--;
+		break;
+		case app::button::types::white_keyhole:
+			//TODO: particles and sound!
+			inventory.white_keys--;
 		break;
 	}
 
@@ -2204,6 +2215,9 @@ bool main::has_key(
 		case app::button::types::green_keyhole:
 
 			return inventory.green_keys > 0;
+		case app::button::types::white_keyhole:
+
+			return inventory.white_keys > 0;
 	}
 
 	return false;
@@ -2383,6 +2397,7 @@ void main::save_game(
 		inventory.blue_keys,
 		inventory.red_keys,
 		inventory.green_keys,
+		inventory.white_keys,
 		inventory.ultimate,
 		inventory.treasure
 	};

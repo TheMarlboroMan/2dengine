@@ -218,119 +218,118 @@
 		},
 		{
 			"type":"box",
+			"order":10,
 			"location":[8, 8, 272, 208],
 			"rgba":[0,0,0,255]
 		},
 		{
-			"type":"box",
+			"type":"box", "id":"automap_center_box",
 			"location":[8, 64, 272, 140],
-			"id":"automap_center_box",
 			"rgba":[0,255,0,64],
 			"visible":false
 		},
 		{
-			"id":"area_name",
-			"type":"ttf",
+			"id":"area_name", "type":"ttf", "font":"pause_font",
+			"order":20,
 			"location":[8, 64],
-			"text":"This would be the map name here",
-			"font":"pause_font",
+			"text":"This would be the zone name here",
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"treasure_icon",
-			"type":"bitmap",
-			"texture":"main",
+			"type":"bitmap", "texture":"main",
+			"order":30,
 			"clip":[0, 7, 16, 9],
 			"location":[16, 16, 16, 9]
 		},
 		{
-			"id":"treasure_value",
-			"type":"ttf",
+			"id":"treasure_value", "type":"ttf", "font":"pause_font",
+			"order":30,
 			"location":[32, 16],
 			"text":" x 99",
-			"font":"pause_font",
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"keys_icon",
-			"type":"bitmap",
-			"texture":"main",
+			"type":"bitmap", "texture":"main",
+			"order":30,
 			"clip":[48, 3, 16, 10],
 			"location":[16, 32, 16, 10]
 		},
 		{
-			"id":"keys_value",
-			"type":"ttf",
+			"id":"keys_value", "type":"ttf", "font":"pause_font",
+			"order":30,
 			"location":[32, 32],
 			"text":" x 99",
-			"font":"pause_font",
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"rooms_icon",
-			"type":"bitmap",
-			"texture":"main",
-			"clip":[18, 18, 12, 12],
-			"location":[16, 48, 12, 12]
+			"id":"white_keys_icon", "type":"bitmap", "texture":"main",
+			"order":30,
+			"clip":[0, 19, 16, 10],
+			"location":[16, 48, 16, 10]
 		},
 		{
-			"id":"rooms_value",
-			"type":"ttf",
+			"id":"white_keys_value", "type":"ttf", "font":"pause_font",
+			"order":30,
 			"location":[32, 48],
 			"text":" x 99",
-			"font":"pause_font",
 			"rgba":[255, 255, 255, 255]
 		},
 		{
-			"id":"lives_icon",
-			"type":"bitmap",
-			"texture":"main",
+			"type":"bitmap", "texture":"main",
+			"order":30,
+			"clip":[18, 18, 12, 12],
+			"location":[192, 16, 12, 12]
+		},
+		{
+			"id":"rooms_value", "type":"ttf", "font":"pause_font",
+			"order":30,
+			"location":[208, 16],
+			"text":" x 99",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"time_value", "type":"ttf", "font":"pause_font",
+			"order":30,
+			"location":[192, 32],
+			"text":"01:32:34",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"lives_icon", "type":"bitmap", "texture":"main",
+			"order":30,
 			"clip":[144, 8, 16, 10],
+			"location":[192, 48, 16, 10]
+		},
+		{
+			"id":"lives_value", "type":"ttf", "font":"pause_font",
+			"order":30,
+			"location":[208, 48],
+			"text":" x 99",
+			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"red_key_icon", "type":"bitmap", "texture":"main",
+			"order":30,
+			"clip":[80, 3, 16, 10],
+			"location":[96, 16, 16, 10]
+		},
+		{
+			"id":"blue_key_icon", "type":"bitmap", "texture":"main",
+			"order":30,
+			"clip":[64, 3, 16, 10],
+			"location":[96, 32, 16, 10]
+		},
+		{
+			"id":"green_key_icon", "type":"bitmap", "texture":"main",
+			"order":30,
+			"clip":[48, 19, 16, 10],
 			"location":[144, 16, 16, 10]
 		},
 		{
-			"id":"lives_value",
-			"type":"ttf",
-			"location":[160, 16],
-			"text":" x 99",
-			"font":"pause_font",
-			"rgba":[255, 255, 255, 255]
-		},
-		{
-			"id":"time_value",
-			"type":"ttf",
-			"location":[144, 32],
-			"text":"01:32:34",
-			"font":"pause_font",
-			"rgba":[255, 255, 255, 255]
-		},
-		{
-			"id":"red_key_icon",
-			"type":"bitmap",
-			"texture":"main",
-			"clip":[80, 3, 16, 10],
-			"location":[144, 48, 16, 10]
-		},
-		{
-			"id":"blue_key_icon",
-			"type":"bitmap",
-			"texture":"main",
-			"clip":[64, 3, 16, 10],
-			"location":[164, 48, 16, 10]
-		},
-		{
-			"id":"green_key_icon",
-			"type":"bitmap",
-			"texture":"main",
-			"clip":[48, 19, 16, 10],
-			"location":[184, 48, 16, 10]
-		},
-		{
-			"id":"ultimate_icon",
-			"type":"bitmap",
-			"texture":"main",
+			"id":"ultimate_icon", "type":"bitmap", "texture":"main",
+			"order":30,
 			"clip":[114, 49, 13, 14],
-			"location":[144, 48, 13, 14]
+			"location":[144, 32, 13, 14]
 		}
 	],
 	"lives_banner":[

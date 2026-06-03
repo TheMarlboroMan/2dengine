@@ -35,6 +35,7 @@ collectible::collectible(
 		case blue_key:
 		case red_key:
 		case green_key:
+		case white_key:
 			ent.set_w(key_w);
 			ent.set_h(key_h);
 		break;

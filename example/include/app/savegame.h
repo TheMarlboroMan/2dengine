@@ -17,6 +17,7 @@ struct savegame {
 						int, //keys b
 						int, //keys r
 						int, //keys g
+						int, //keys w
 						int, //treasure
 						int //ultimate
 					);
@@ -33,6 +34,7 @@ struct savegame {
 	    blue_keys,
 	    red_keys,
 	    green_keys,
+	    white_keys,
 	    treasure,
 	    ultimate;
 
@@ -49,6 +51,7 @@ struct savegame {
 			|| blue_keys==-1
 			|| red_keys==-1
 			|| green_keys==-1
+			|| white_keys==-1
 			|| treasure==-1
 			|| ultimate==-1;
 	}

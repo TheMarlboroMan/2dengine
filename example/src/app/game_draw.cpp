@@ -352,6 +352,7 @@ void game_draw::draw_one_use_button(
 		case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole; break;
 		case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole; break;
 		case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole; break;
+		case app::button::types::white_keyhole:     sprite_index=app::spr_white_keyhole; break;
 	}
 
 	if(_button.used) {
@@ -363,6 +364,7 @@ void game_draw::draw_one_use_button(
 			case app::button::types::blue_keyhole:      sprite_index=app::spr_blue_keyhole_used; break;
 			case app::button::types::red_keyhole:       sprite_index=app::spr_red_keyhole_used; break;
 			case app::button::types::green_keyhole:     sprite_index=app::spr_green_keyhole_used; break;
+			case app::button::types::white_keyhole:     sprite_index=app::spr_white_keyhole_used; break;
 		}
 	}
 
@@ -444,6 +446,7 @@ void game_draw::draw_collectible(
 		case app::collectible::red_key:     sprite_index=app::spr_key_red; break;
 		case app::collectible::green_key:   sprite_index=app::spr_key_green; break;
 		case app::collectible::ultimate:    sprite_index=app::spr_ultimate; break;
+		case app::collectible::white_key:    sprite_index=app::spr_key_white; break;
 	}
 
 	sprite_draw.draw(
