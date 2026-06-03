@@ -11,6 +11,7 @@ enum states {
 	state_options,
 	state_show_text,
 	state_question,
+	state_leave_ending,
 	state_max
 };
 }

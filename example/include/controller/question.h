@@ -2,7 +2,6 @@
 
 #include "controller_states.h"
 #include "app/service_provider.h"
-#include "app/env.h"
 #include "app/show_text_exchange.h"
 
 #include <dfw/controller_interface.h>

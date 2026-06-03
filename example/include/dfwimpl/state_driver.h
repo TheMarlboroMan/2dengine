@@ -80,6 +80,7 @@ class state_driver:
 	ptr_controller                  c_options;
 	ptr_controller                  c_show_text;
 	ptr_controller                  c_question;
+	ptr_controller                  c_leave_ending;
 	//[new-controller-property-mark]
 };
 

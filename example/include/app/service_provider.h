@@ -47,6 +47,7 @@ namespace d2d{
 		class sprite_fill_draw;
 		class animation_sprite_finder;
 		class scenery_tile_draw;
+		class scenery_tile_query;
 	}
 
 	namespace audio {
@@ -138,5 +139,6 @@ class service_provider {
 	std::unique_ptr<game_session> session{nullptr};
 	std::unique_ptr<random> rng{nullptr};
 	std::unique_ptr<show_text_exchange> text_exchange{nullptr};
+	std::unique_ptr<d2d::video::scenery_tile_query> scenery_tile_query_instance{nullptr};
 };
 }

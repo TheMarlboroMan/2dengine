@@ -3,15 +3,15 @@ next steps:
 	make the first example game
 
 	NEXT:
-		- add horizontal bat monster.
+		- ending sequence -> we can make a level, have a camera and stuff,
+			use the game's graphics... 
+		- credits roll
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 		- saving does weird shit once you have an ultimate, or something.
 
 	IDEAS:
-		- timed traps as spikes in opposite walls, we have to climb syncing
-			jumps from side to side to the rythm.
 		- background with moon for last room
 		- background with moon and moving shapes for book dream.
 		- blue key, afterglow of stars after thunder
@@ -21,8 +21,7 @@ next steps:
 		of automap.txt, extra lan files and shit.
 
 	WISHLIST-BALANCING-POLISHING:
-		. remove the solid block object, it makes no sense.
-		- delete test map
+		- delete test maps
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!

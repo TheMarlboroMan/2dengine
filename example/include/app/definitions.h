@@ -82,13 +82,6 @@ enum animation_groups{
 };
 
 enum animations{
-	//animated tiles
-	anim_water_surface=1,
-	anim_waterfall=2,
-	anim_lava_surface=3,
-	anim_wall_torch=4,
-	anim_water_surface_inverted=5,
-	anim_waterfall_inverted=6,
 
 	//player
 	anim_idle=110,
@@ -124,12 +117,6 @@ enum animations{
 };
 
 enum sprites { 
-	spr_water_surface=500, 
-	spr_waterfall=504,
-	spr_lava_surface=508,
-	spr_wall_torch=526,
-	spr_water_surface_inverted=512, 
-	spr_waterfall_inverted=515,
 
 	//Collectibles
 	spr_gold_ingot=300,

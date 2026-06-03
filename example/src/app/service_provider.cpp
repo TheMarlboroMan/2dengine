@@ -14,6 +14,7 @@
 #include <d2d/video/spritesheet_manager.h>
 #include <d2d/video/animation_manager.h>
 #include <d2d/video/scenery_tile_draw.h>
+#include <d2d/video/scenery_tile_query.h>
 #include <d2d/video/sprite_draw.h>
 #include <d2d/video/sprite_fill_draw.h>
 #include <d2d/video/animation_sprite_finder.h>
@@ -246,35 +247,12 @@ d2d::video::scenery_tile_draw& service_provider::get_game_scenery_tile_draw() {
 			false
 		));
 
-		//TODO: This kind of shit could come from any file and be a search
-		//into a vector.
-		game_scenery_tile_draw->set_is_animation_fn(
-			[](int _index) -> bool {
-				return _index==app::spr_water_surface
-				|| _index==app::spr_waterfall
-				|| _index==app::spr_lava_surface
-				|| _index==app::spr_wall_torch
-				|| _index==app::spr_water_surface_inverted
-				|| _index==app::spr_waterfall_inverted;
-			}
+		scenery_tile_query_instance.reset(
+			new d2d::video::scenery_tile_query(
+				env.build_app_path("resources/lists/tiles_to_animations.txt")
+			)
 		);
-
-		//TODO: Same, this should come from a file and map x to y
-		game_scenery_tile_draw->set_index_to_animation_fn(
-			[](int _index) -> int {
-
-				switch(_index) {
-					case app::spr_water_surface: return app::anim_water_surface;
-					case app::spr_waterfall: return app::anim_waterfall;
-					case app::spr_lava_surface: return app::anim_lava_surface;
-					case app::spr_wall_torch: return app::anim_wall_torch;
-					case app::spr_water_surface_inverted: return app::anim_water_surface_inverted;
-					case app::spr_waterfall_inverted: return app::anim_waterfall_inverted;
-				}
-
-				return 0;
-			}
-		);
+		game_scenery_tile_draw->set_scenery_tile_query_interface(scenery_tile_query_instance.get());
 	}
 
 	return *game_scenery_tile_draw;

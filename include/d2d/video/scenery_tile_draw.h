@@ -2,10 +2,10 @@
 
 #include "sprite_draw.h"
 #include "scenery_tile.h"
+#include "scenery_tile_query_interface.h"
 
 #include <ldtools/animation_table.h>
 #include <ldtools/time_definitions.h>
-#include <functional>
 
 namespace d2d { namespace video {
 
@@ -92,14 +92,10 @@ class scenery_tile_draw{
 	scenery_tile_draw&     reset_animation_table(const ldtools::animation_table&);
 
 /**
- * sets the method that matches a tile index to its animation
+ * sets the scenery tile query interface. This class is not supposed to own
+ * the memory, which must outlive this instance.
  */
-	scenery_tile_draw&     set_index_to_animation_fn(std::function<int(int)>);
-
-/**
- * sets the method that identifies a tile index as animated.
- */
-	scenery_tile_draw&     set_is_animation_fn(std::function<bool(int)>);
+	scenery_tile_draw&     set_scenery_tile_query_interface(scenery_tile_query_interface*);
 
 /**
  * sets if a camera will be used.
@@ -124,8 +120,8 @@ class scenery_tile_draw{
 	                                tile_h{0};
 
 	const ldtools::animation_table * animation_table{nullptr};
-	std::function<bool(int)>        index_is_animation{nullptr};
-	std::function<int(int)>         index_to_animation{nullptr};
+	//This class DOES NOT OWN this memory.
+	scenery_tile_query_interface *  query;
 	ldtools::tdelta                 internal_timer{0.};
 };
 }}

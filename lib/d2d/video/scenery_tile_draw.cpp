@@ -50,18 +50,13 @@ void scenery_tile_draw::draw_animation(
 	ldtools::tdelta _timer
 ) {
 
-	if(!index_is_animation || !index_is_animation(_tile.type)) {
+	if(nullptr==query || !query->is_animation(_tile.type)) {
 
 		draw(_screen, _tile);
 		return;
 	}
 
-	if(!index_to_animation) {
-
-		throw exception("cannot run scenery_tile_draw if the index_to_animation function is not defined");
-	}
-
-	auto index=index_to_animation(_tile.type);
+	auto index=query->get_animation(_tile.type);
 	const auto& animation=animation_table->get(index);
 	const auto& frame=animation.get_for_time(_timer);
 	int x=tile_w*_tile.x;
@@ -78,19 +73,11 @@ void scenery_tile_draw::tic(
 	internal_timer+=_delta;
 }
 
-scenery_tile_draw& scenery_tile_draw::set_index_to_animation_fn(
-	std::function<int(int)> _fn
+scenery_tile_draw& scenery_tile_draw::set_scenery_tile_query_interface(
+	scenery_tile_query_interface * _query
 ) {
 
-	index_to_animation=_fn;
-	return *this;
-}
-
-scenery_tile_draw& scenery_tile_draw::set_is_animation_fn(
-	std::function<bool(int)> _fn
-) {
-
-	index_is_animation=_fn;
+	query=_query;
 	return *this;
 }
 

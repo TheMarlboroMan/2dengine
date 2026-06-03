@@ -1,0 +1,12 @@
+#app::spr_water_surface: app::anim_water_surface;
+500 1
+#app::spr_waterfall: app::anim_waterfall; 
+504 2
+#app::spr_lava_surface: app::anim_lava_surface;
+508 3
+#app::spr_wall_torch: app::anim_wall_torch;
+526 4
+#app::spr_water_surface_inverted: app::anim_water_surface_inverted;
+512 5
+#app::spr_waterfall_inverted: app::anim_waterfall_inverted;
+515 6

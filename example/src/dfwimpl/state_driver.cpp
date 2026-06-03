@@ -31,6 +31,7 @@
 #include "controller/options.h"
 #include "controller/show_text.h"
 #include "controller/question.h"
+#include "controller/leave_ending.h"
 //[new-controller-header-mark]
 
 using namespace dfwimpl;
@@ -385,6 +386,12 @@ void state_driver::register_controllers(
 		c_question,
 		controller::state_question,
 		new controller::question(*service_provider)
+	);
+
+	reg(
+		c_leave_ending,
+		controller::state_leave_ending,
+		new controller::leave_ending(*service_provider)
 	);
 }
 
