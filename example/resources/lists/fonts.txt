@@ -7,3 +7,4 @@ lives_banner_font 8 resources/fonts/publicpixel.ttf
 exit_number_font 8 resources/fonts/publicpixel.ttf
 exit_number_font 8 resources/fonts/publicpixel.ttf
 show_text_font 8 resources/fonts/publicpixel.ttf
+credits_font 8 resources/fonts/publicpixel.ttf

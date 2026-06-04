@@ -8,7 +8,6 @@
 namespace controller
 {
 
-
 class leave_ending:
 	public dfw::controller_interface
 {

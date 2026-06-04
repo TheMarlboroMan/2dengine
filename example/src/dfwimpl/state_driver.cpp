@@ -32,6 +32,7 @@
 #include "controller/show_text.h"
 #include "controller/question.h"
 #include "controller/leave_ending.h"
+#include "controller/credits.h"
 //[new-controller-header-mark]
 
 using namespace dfwimpl;
@@ -242,6 +243,7 @@ void state_driver::ready_resources(
 
 	//Ready ttf fonts...
 	auto &ttf_manager=service_provider->get_ttf_manager();
+	//TODO: Maybe the service provider should do this!
 	load_fonts(ttf_manager);
 }
 
@@ -392,6 +394,12 @@ void state_driver::register_controllers(
 		c_leave_ending,
 		controller::state_leave_ending,
 		new controller::leave_ending(*service_provider)
+	);
+
+	reg(
+		c_credits,
+		controller::state_credits,
+		new controller::credits(*service_provider)
 	);
 }
 

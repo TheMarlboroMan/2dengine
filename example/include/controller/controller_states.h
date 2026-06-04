@@ -12,6 +12,7 @@ enum states {
 	state_show_text,
 	state_question,
 	state_leave_ending,
+	state_credits,
 	state_max
 };
 }

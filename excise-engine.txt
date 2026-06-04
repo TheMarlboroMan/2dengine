@@ -5,7 +5,6 @@ next steps:
 	NEXT:
 		- ending sequence -> we can make a level, have a camera and stuff,
 			use the game's graphics... 
-		- credits roll
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...

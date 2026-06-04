@@ -318,7 +318,7 @@ void main::loop_scene(
 
 	if(_input.is_input_down(app::input::pause)) {
 
-		push_state(controller::state_pause);
+		push_state(controller::state_credits);
 		return;
 	}
 
