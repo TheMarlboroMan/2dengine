@@ -45,6 +45,7 @@ void thing_loader::setup() {
 	curmap.skull_spawns.clear();
 	curmap.text_nodes.clear();
 	curmap.tag_relays.clear();
+	curmap.autopilot_nodes.clear();
 }
 
 void thing_loader::load(
@@ -85,6 +86,7 @@ void thing_loader::load(
 			case 61: return add_trap(pos, _attributes);
 			case 62: return add_tag_relay(_attributes);
 			case 63: return add_timer(_attributes);
+			case 64: return add_autopilot_node(pos, _attributes);
 
 			//Adding something here? clear it up in "setup!".
 			//and clear it up in the map object while you're at it!
@@ -810,3 +812,23 @@ void thing_loader::add_timer(
 		{active, keep_active, tag, target_tag, pre_ms}
 	);
 }
+
+void thing_loader::add_autopilot_node(
+	d2d::collision::point _pos,
+	const thing_loader::attrmap& _attributes
+) {
+
+	d2d::collision::box position{
+		_pos,
+		_attributes.at("width").get_int(),
+		_attributes.at("height").get_int()
+	};
+
+	curmap.autopilot_nodes.push_back(
+		{
+			position,
+			_attributes.at("input").get_int()
+		}
+	);
+}
+

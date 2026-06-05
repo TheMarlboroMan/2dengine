@@ -17,6 +17,7 @@
 #include "app/tile_impl.h"
 #include "app/player_input.h"
 #include "app/player.h"
+#include "app/autopilot.h"
 #include "app/types.h"
 #include "app/inventory.h"
 #include "app/game_session.h"
@@ -131,6 +132,7 @@ class main:
 	//Entrypoint for basic projectile generation from generators.
 	void                        generate_projectile(const app::projectile_generator&);
 	void                        activate_tag(int, bool);
+	void                        activate_autopilot_node(app::autopilot_node&);
 	void                        post_tic(int);
 	void                        setup_area_banner(const std::string&);
 	void                        setup_moving_blocks();
@@ -179,6 +181,7 @@ class main:
 	app::map                    current_map;
 	app::player                 player;
 	app::player_input           pli;
+	app::autopilot              autopilot;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 	std::unique_ptr<app::map_transition> transition{nullptr},
@@ -220,7 +223,6 @@ class main:
 
 	void                        reload_values();
 	void                        reload_map_debug();
-	void                        loop_debug(dfw::input&, const dfw::loop_iteration_data&);
 	void                        setup_console(app::service_provider&);
 	void                        draw_debug(ldv::screen&);
 	console::result             execute_cmd(const std::string&, const std::vector<console::argument>&);

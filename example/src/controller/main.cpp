@@ -106,6 +106,7 @@ main::main(
 	//The renderer for all particles will be the same, so we will register
 	//these in pairs and with the gd as renderer.
 	//TODO: This is UGLY AF. We don't need to own SO much shit here just because
+	//we want po paint a few pretty pixels!
 	current_map.particle_manager.register_module(particle_mod_flame);
 	current_map.particle_manager.register_renderer(gd);
 
@@ -239,6 +240,9 @@ void main::loop(
 	}
 
 	//Transitions override regular input, including going back to the menu.
+	//TODO: But I can still quit and be caught in a transition... which can
+	//fuck up my game if I am doing any of these special key exits!
+	//The easiest solution is to also eat the exit signal xD
 	if(transition || transition_out) {
 
 		if(loop_transition(_lid.delta)) {
@@ -246,7 +250,6 @@ void main::loop(
 			return;
 		}
 	}
-
 
 	if(_input.is_input_down(app::input::escape)) {
 
@@ -262,11 +265,7 @@ void main::loop(
 		return;
 	}
 
-#ifdef IS_DEBUG_BUILD
-	loop_debug(_input, _lid);
-#else
 	loop_scene(_input, _lid);
-#endif
 }
 
 bool main::loop_transition(
@@ -316,43 +315,79 @@ void main::loop_scene(
 
 	game_timeouts.tic(_lid.delta);
 
-	if(_input.is_input_down(app::input::pause)) {
+#ifdef IS_DEBUG_BUILD
 
-		push_state(controller::state_credits);
+	if(console_enabled) {
+
+		_input().start_text_input();
+		console_display->input(_input());
+		return;
+	}
+	else {
+
+		_input().stop_text_input();
+		_input().clear_text_input();
+	}
+
+	if(_input.is_input_down(app::input::tic)) {
+
+		console_enabled=true;
+		console_display->get_output()<<"dot to repeat last command\n";
 		return;
 	}
 
+	if(_input.is_input_down(app::input::reload_values)) {
+
+		reload_values();
+	}
+
+#endif
+
 	pli.reset();
-	if(_input.is_input_pressed(app::input::down)) {
+	if(autopilot.is_enabled()) {
 
-		pli.y=-1;
+		autopilot.produce(pli);
 	}
-	else if(_input.is_input_pressed(app::input::up)) {
+	else {
 
-		pli.y=1;
+		//We can only pause when NOT in autopilot.
+		if(_input.is_input_down(app::input::pause)) {
 
-		if(_input.is_input_down(app::input::up)) {
-
-			pli.activate=true;
+			push_state(controller::state_pause);
+			return;
 		}
-	}
 
-	if(_input.is_input_pressed(app::input::left)) {
+		if(_input.is_input_pressed(app::input::down)) {
 
-		pli.x=-1;
-	}
-	else if(_input.is_input_pressed(app::input::right)) {
+			pli.y=-1;
+		}
+		else if(_input.is_input_pressed(app::input::up)) {
 
-		pli.x=1;
-	}
+			pli.y=1;
 
-	if(_input.is_input_pressed(app::input::jump)) {
+			if(_input.is_input_down(app::input::up)) {
 
-		pli.hold_jump=true;
+				pli.activate=true;
+			}
+		}
 
-		if(_input.is_input_down(app::input::jump)) {
+		if(_input.is_input_pressed(app::input::left)) {
 
-			pli.jump=true;
+			pli.x=-1;
+		}
+		else if(_input.is_input_pressed(app::input::right)) {
+
+			pli.x=1;
+		}
+
+		if(_input.is_input_pressed(app::input::jump)) {
+
+			pli.hold_jump=true;
+
+			if(_input.is_input_down(app::input::jump)) {
+
+				pli.jump=true;
+			}
 		}
 	}
 
@@ -382,6 +417,7 @@ void main::load_map(
 
 	d2d::storage::map_loader loader(map_path);
 
+	autopilot.disable(); //just in case.
 	current_map.clear();
 	clear_transient_state();
 
@@ -1131,6 +1167,19 @@ void main::post_tic(
 		if(d2d::collision::collides_with(player.ent, _collectible.ent)) {
 
 			pick_up_collectible(player, _collectible);
+		}
+	}
+
+	for(auto& autopilot_node : current_map.autopilot_nodes) {
+
+		if(autopilot_node.is_used()) {
+
+			continue;
+		}
+
+		if(d2d::collision::collides_with(player.ent, autopilot_node.get_entity())) {
+
+			activate_autopilot_node(autopilot_node);
 		}
 	}
 
@@ -2004,6 +2053,23 @@ void main::activate_touch_trigger(
 
 	_trigger.used=true;
 	activate_tag(_trigger.tag, false);
+}
+
+void main::activate_autopilot_node(
+	app::autopilot_node& _node
+) {
+
+	_node.use();
+
+	auto val=_node.get_input();
+	lm::log(logger).debug()<<"got "<<val<<" from autopilot node\n";
+	if(-1==val) {
+
+		autopilot.disable();
+		return;
+	}
+
+	autopilot.receive(val);
 }
 
 void main::collide_with_wall(

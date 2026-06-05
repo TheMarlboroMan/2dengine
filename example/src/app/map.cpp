@@ -45,6 +45,7 @@ std::ostream& app::operator<<(
 	print_node("text_nodes", _map.text_nodes, _stream);
 	print_node("tag_relays", _map.tag_relays, _stream);
 	print_node("timers", _map.timers, _stream);
+	print_node("autopilot_nodes", _map.autopilot_nodes, _stream);
 
 	if(_map.boss) {
 
@@ -109,6 +110,11 @@ void map::reset() {
 	for(auto& timer : timers) {
 
 		timer.reset();
+	}
+
+	for(auto& autopilot_node : autopilot_nodes) {
+
+		autopilot_node.reset();
 	}
 
 	if(boss) {

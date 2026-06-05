@@ -981,3 +981,32 @@ beginobject
 		linkedto nothing
 	endproperty
 endobject
+
+beginobject
+	id 64
+	name autopilot
+	w 16
+	h 16
+	color 245 176 39 255
+	beginproperty
+		name width
+		type int
+		default 16
+		comment node width.
+		linkedto w
+	endproperty
+	beginproperty
+		name height
+		type int
+		default 16
+		comment node height.
+		linkedto h
+	endproperty
+	beginproperty
+		name input
+		type int
+		default -1
+		comment -1=disable 0=nothing 1=up 2=right 4=down 8=left 16=jump 32=press
+		linkedto nothing
+	endproperty
+endobject

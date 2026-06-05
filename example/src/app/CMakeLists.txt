@@ -58,6 +58,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/trap.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tag_relay.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/timer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/autopilot.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/autopilot_node.cpp
 	PARENT_SCOPE
 )
 

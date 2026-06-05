@@ -2,6 +2,7 @@
 
 #include "controller_states.h"
 #include "app/service_provider.h"
+#include <d2d/components/timeout.h>
 #include <dfw/controller_interface.h>
 #include <lm/logger.h>
 
@@ -24,6 +25,10 @@ class leave_ending:
 
 	//references...
 	lm::logger&                 log;
+
+	//properties.
+	d2d::components::timeout    timeout;
+
 };
 
 }
