@@ -40,6 +40,12 @@ foreach($files as $filename) {
 		$attr->bg_color=0;
 	}
 
+	if(!property_exists($attr, "in_game")) {
+
+		echo "setting in_game {$filename}".PHP_EOL;
+		$attr->in_game=1;
+	}
+
 	if(property_exists($attr, "save_point")) {
 
 		echo "removing save point for {$filename}".PHP_EOL;

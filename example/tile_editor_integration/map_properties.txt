@@ -11,3 +11,10 @@ beginproperty
 	default 0
 	comment 0=black 1=sky 2=orange 3=winter 4=starfield 5=storm 6=suspension 7=white
 endproperty
+
+beginproperty
+	name in_game
+	type int
+	default 1
+	comment 1=the map is in game, shows banner, counts towards completion 0=does not
+endproperty

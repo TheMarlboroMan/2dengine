@@ -23,9 +23,9 @@ class sprite_fill_draw {
 			flip_vertical=2
 		};
 
-		int     flags{0};
-		int     rotation_degrees{0};
-		int     alpha{255};
+		int     flags{0}; //<! any of the flags described above.
+		int     rotation_degrees{0}; //<! Degrees of rotation to be applied to the sprite.
+		int     alpha{255}; //<! Alpha to be applied to the sprite, 0-255 where 0 is fully transparent.
 	};
 
 
@@ -56,7 +56,7 @@ class sprite_fill_draw {
 	sprite_fill_draw&               set_with_camera(bool);
 
 /**
- * sets a camera. if not null a with_camera is true the camera will be used.
+ * sets a camera. if not null and with_camera is true the camera will be used.
  * the camera must outlive this instance.
  */
 	sprite_fill_draw&               set_camera(ldv::camera&);
@@ -79,9 +79,9 @@ class sprite_fill_draw {
 
 	private:
 
-	ldv::bitmap_representation      bmp;
-	const ldtools::sprite_table *   sprite_table{nullptr};
-	ldv::camera *                   camera{nullptr};
-	bool                            with_camera{false};
+	ldv::bitmap_representation      bmp; //<! Underlying representation.
+	const ldtools::sprite_table *   sprite_table{nullptr}; //<! Underlying sprite table.
+	ldv::camera *                   camera{nullptr}; //<! Optional camera
+	bool                            with_camera{false}; //<! Allows for camera not to be used even if a camera is specified.
 };
 }}

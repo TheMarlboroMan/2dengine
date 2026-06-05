@@ -203,7 +203,6 @@ ldv::rgba_color credits::get_color(
 		return ldv::rgba8(235, 137, 49, 255);
 	}
 
-	//gray...
 	return ldv::rgba8(49, 162, 242, 255);
 }
 

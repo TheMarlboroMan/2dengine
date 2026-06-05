@@ -13,11 +13,23 @@ class show_text_exchange {
 
 	public:
 
+	enum colours {
+		white=0,
+		orange=1,
+		red=2,
+		blue=3,
+		green=4
+	};
+
 	            show_text_exchange(const tools::i8n&);
 	//!Sets the current key.
 	show_text_exchange&     set(const std::string&);
 	//!Returns the text corresponding to the current key.
 	std::string             get() const;
+	//!Sets the colour using any of the colour enums.
+	show_text_exchange&     set_colour(int);
+	//!Gets the colour,
+	int                     get_colour() const {return colour;}
 	//!Sets the keys for the answers.
 	show_text_exchange&     set_answers(const std::string&, const std::string&, const std::string&);
 	//!Removes all answers.
@@ -36,5 +48,7 @@ class show_text_exchange {
 	std::string         second_answer;
 	std::string         third_answer;
 	const tools::i8n&   i8n;
+	int                 colour{0};
+
 };
 }

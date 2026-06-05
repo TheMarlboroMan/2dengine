@@ -7,11 +7,13 @@ using namespace app;
 map_attribute_loader::map_attribute_loader(
 	ldv::rgba_color& _background_color,
 	int& _music_id,
-	int& _background_effect
+	int& _background_effect,
+	bool& _in_game
 ):
 	background_color{_background_color},
 	music_id{_music_id},
-	background_effect{_background_effect}
+	background_effect{_background_effect},
+	in_game{_in_game}
 {}
 
 void map_attribute_loader::setup() {
@@ -19,6 +21,7 @@ void map_attribute_loader::setup() {
 	background_color={0,0,0, 255};
 	music_id=0;
 	background_effect=0;
+	in_game=true;
 }
 
 void map_attribute_loader::load(
@@ -62,29 +65,5 @@ void map_attribute_loader::load(
 	}
 
 	music_id=_attr_map.at("music_id").get_int();
-
-/*
-	struct pair {
-		const std::string name;
-		int     color{0};
-	};
-	
-
-	std::vector<pair> colors={{"bg_red", 0}, {"bg_green", 0}, {"bg_blue", 0}};
-
-	for(auto& color: colors) {
-
-		if(_attr_map.count(color.name)) {
-
-			color.color=_attr_map.at(color.name).get_int();
-		}
-	}
-
-	background_color=ldv::rgba8(
-		colors[0].color,
-		colors[1].color,
-		colors[2].color,
-		255
-	);
-*/
+	in_game=(bool)_attr_map.at("in_game").get_int();
 }

@@ -37,6 +37,8 @@ class menu:
 	const std::string&          get_slot_filename() const;
 	//make the "continue" option available.
 	void                        set_can_continue() {game_can_continue=true;}
+	//make the "continue" option unavailable.
+	void                        set_cannot_continue() {game_can_continue=false;}
 
 	private:
 

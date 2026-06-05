@@ -325,7 +325,7 @@ beginobject
 		name tag
 		type int
 		default 0
-		comment acts upon objects with the same tag.
+		comment acts upon objects with the same tag. -1 for ending. -2 for credits.
 		linkedto nothing
 	endproperty
 	beginproperty
@@ -376,6 +376,13 @@ beginobject
 		type string
 		default -
 		comment text index in the i8n files
+		linkedto nothing
+	endproperty
+	beginproperty
+		name colour
+		type int
+		default 0
+		comment 0=white 1=orange 2=red 3=blue 4=green
 		linkedto nothing
 	endproperty
 	beginproperty
@@ -1009,4 +1016,12 @@ beginobject
 		comment -1=disable 0=nothing 1=up 2=right 4=down 8=left 16=jump 32=press
 		linkedto nothing
 	endproperty
+	beginproperty
+		name pause_ms
+		type int
+		default 0
+		comment pause before the input is applied, in ms.
+		linkedto nothing
+	endproperty
 endobject
+

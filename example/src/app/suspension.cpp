@@ -245,7 +245,7 @@ void suspension::tic_text(
 			current_text.reset(
 				new ldv::ttf_representation(
 					text_font,
-					ldv::rgba8(255, 255, 255, 255),
+					ldv::rgba8(68, 137, 26, 255),
 					texts[current_text_index++]
 				)
 			);

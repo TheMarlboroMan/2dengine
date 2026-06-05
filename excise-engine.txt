@@ -3,8 +3,9 @@ next steps:
 	make the first example game
 
 	NEXT:
-		- ending sequence -> we can make a level, have a camera and stuff,
-			use the game's graphics... 
+
+		intro???: the player could, you know, talk a bit and play on its own
+		for a couple of maps xD.
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
@@ -44,6 +45,7 @@ next steps:
 		- redesign corners so the player does not clip the walls around. Boring,
 			but needed... I guess we could have the corners always in the
 			middle layer.
+		- review fade to black transitions between areas and in the shortcuts!
 		- make difficulty levels meaningful!
 		- make ladder platforms the same (ladder goes UNDER platform view)
 		- show data on savegame loading!

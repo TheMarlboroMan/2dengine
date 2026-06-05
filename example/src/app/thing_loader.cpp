@@ -740,6 +740,8 @@ void thing_loader::add_text_node(
 	int tag=_attributes.at("tag").get_int();
 	std::string key=_attributes.at("text_id").get_string();
 
+	int colour=_attributes.at("colour").get_int();
+
 	//A dash means "no answer".
 	std::string first_answer="-"==_attributes.at("answer_1").get_string()
 		? ""
@@ -754,7 +756,7 @@ void thing_loader::add_text_node(
 		: _attributes.at("answer_3").get_string();
 
 	curmap.text_nodes.push_back(
-		{id, tag, key, first_answer, second_answer, third_answer}
+		{id, tag, colour, key, first_answer, second_answer, third_answer}
 	);
 }
 
@@ -827,7 +829,8 @@ void thing_loader::add_autopilot_node(
 	curmap.autopilot_nodes.push_back(
 		{
 			position,
-			_attributes.at("input").get_int()
+			_attributes.at("input").get_int(),
+			_attributes.at("pause_ms").get_int()
 		}
 	);
 }

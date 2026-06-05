@@ -6,6 +6,7 @@
 #include <tools/string_utils.h>
 #include <tools/file_utils.h>
 #include <ldv/ttf_representation.h>
+#include <ldv/color.h>
 
 using namespace controller;
 
@@ -142,11 +143,30 @@ void show_text::request_draw(
 
 void show_text::redraw_text() {
 
-	static_cast<ldv::ttf_representation *>(
+	auto rep=static_cast<ldv::ttf_representation *>(
 		layout.get_by_id("main_text")
-	)->set_text(
-		std::begin(text_buffer)->substr(0, current_index)
 	);
+
+	rep->set_text(std::begin(text_buffer)->substr(0, current_index));
+
+	switch(text_exchange.get_colour()) {
+		case app::show_text_exchange::white:
+		default:
+			rep->set_color(ldv::rgba8(255, 255, 255, 255));
+		break;
+		case app::show_text_exchange::orange:
+			rep->set_color(ldv::rgba8(235, 137, 49, 255));
+		break;
+		case app::show_text_exchange::red:
+			rep->set_color(ldv::rgba8(190, 38, 51, 255));
+		break;
+		case app::show_text_exchange::blue:
+			rep->set_color(ldv::rgba8(49, 162, 242, 255));
+		break;
+		case app::show_text_exchange::green:
+			rep->set_color(ldv::rgba8(68, 137, 26, 255));
+		break;
+	}
 }
 
 void show_text::reload_buffer() {

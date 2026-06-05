@@ -114,10 +114,13 @@ class main:
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
+
+	//Other gameplay methods.
 	void                        pick_up_collectible(app::player&, app::collectible&);
 	void                        discover_secret(app::player&, app::secret_cover&);
 	void                        activate_button(app::button&);
 	void                        activate_touch_trigger(app::touch_trigger&);
+	void                        activate_special_touch_trigger(int);
 	int                         play_sound(int);
 	void                        save_game(const std::string&, int);
 	void                        reset_game(int, const std::string&);
@@ -125,6 +128,8 @@ class main:
 	void                        mount_player_in_blocks(app::player&);
 	void                        player_jump(app::player&);
 	void                        player_jump_out_of_ladder(app::player&, double);
+	void                        start_credits();
+	void                        start_ending();
 
 	//////
 	//world methods.
@@ -191,11 +196,18 @@ class main:
 
 	//This will be used to store information of the next level after a transition
 	//when needed.
-	struct {
+	struct transition_exit {
+
+		enum class types{
+			into_game, //starting game transition 
+			into_credits, //transitions into credits
+			into_new_map //transitions into gameplay
+		};
+
 		std::string             map_filename;
 		int                     next_entry_id{0};
-		bool                    hard_exit{false},
-		                        apply{false};
+		bool                    hard_exit{false};
+		types                   type{types::into_game};
 		d2d::collision::point   exit_origin{0., 0.};
 	}                           transition_exit_info;
 

@@ -2,9 +2,31 @@
 
 using namespace app;
 
-void autopilot::receive(
-	int _input
+autopilot::autopilot()
+	:timer{0., 0.}
+{}
+
+void autopilot::tic(
+	ldtools::tdelta _delta
 ) {
+
+	if(timer.is_finished()) {
+
+		return;
+	}
+
+	timer.tic(_delta);
+}
+
+void autopilot::receive(
+	int _input,
+	ldtools::tdelta _pause
+) {
+
+	if(0.!=_pause) {
+
+		timer.target(_pause).restart();
+	}
 
 	enabled=true;
 	current_produce=_input;
@@ -12,6 +34,7 @@ void autopilot::receive(
 
 void autopilot::disable() {
 
+	timer.target(0.);
 	enabled=false;
 	current_produce=0;
 }
@@ -19,6 +42,11 @@ void autopilot::disable() {
 void autopilot::produce(
 	player_input& _pli
 ) {
+
+	if(timer.is_running()) {
+
+		return;
+	}
 
 	//This duplicates the structure in the main controller, only changing the
 	//input... I guess we could refactor to prevent subtle bugs.

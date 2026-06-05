@@ -18,46 +18,39 @@ class timeout {
 
 	public:
 
-/**
- * maximum, current and paused.
-*/
+//! maximum, current and paused.
 	                timeout(tdelta, tdelta=0., bool=false);
 
+//! Returns true if the timeout has reached its limit.
 	bool            is_finished() const;
+
+//! Returns true if the timeout has not reached its limit and is still running.
 	bool            is_running() const;
+//! Returns true if the timer is paused (finished or not).
 	bool            is_paused() const;
-	//Returns the current value.
+//! Returns the current value.
 	tdelta get() const;
-	//Returns the max value.
+//! Returns the max value.
 	tdelta get_max() const;
-	//Tics 
+//! Tics this timer for the given delta value. If a timer does not tic, time does not pass for it.
 	timeout&        tic(tdelta);
-/**
- * sets the new maximum value.
- */
+//! sets the new maximum value.
 	timeout&        target(tdelta);
-/**
- * sets the current value.
- */
+//! sets the current value.
 	timeout&        set(tdelta);
-/**
- * resets the current value to zero, does not resume!
- */
+//! resets the current value to zero, does not resume!
 	timeout&        reset();
+//! Pauses the timeout. A paused timeout does nothing when it tics.
 	timeout&        pause();
-/**
- * resumes the counter after pausing.
- */
+//! resumes the counter after pausing.
 	timeout&        resume();
-/**
- * resets and resumes in a single step.
- */
+//! resets and resumes in a single step.
 	timeout&        restart();
 
 	private:
 
-	tdelta   timer{0.},
-	        max{0.};
+	tdelta   timer{0.}, //<! Internal timer.
+	        max{0.};    //<! Maximum value.
 	bool    paused{false};
 
 };
@@ -158,9 +151,6 @@ class timeouts {
 
 	bool            is_paused(int) const;
 
-/**
- * pauses the given timeout and returns it.
- */
 	timeout&       pause(int);
 
 /**

@@ -144,7 +144,8 @@ void main::start(
 		1, //from,
 		1.0 //one second.
 	));
-	transition_exit_info.apply=false; //Do not attempt to load any other map after the transition!
+
+	transition_exit_info.type=transition_exit::types::into_game;
 	load_map(_map);
 	take_player_to_entry(_entry_id, true);
 }
@@ -240,9 +241,6 @@ void main::loop(
 	}
 
 	//Transitions override regular input, including going back to the menu.
-	//TODO: But I can still quit and be caught in a transition... which can
-	//fuck up my game if I am doing any of these special key exits!
-	//The easiest solution is to also eat the exit signal xD
 	if(transition || transition_out) {
 
 		if(loop_transition(_lid.delta)) {
@@ -251,6 +249,7 @@ void main::loop(
 		}
 	}
 
+	//TODO: Can we check this thing with the autopilot, see if it flies??
 	if(_input.is_input_down(app::input::escape)) {
 
 		if(1!=state_size()) {
@@ -283,14 +282,23 @@ bool main::loop_transition(
 		transition.reset(nullptr);
 
 		//Load next map if need be.
-		if(transition_exit_info.apply) {
+		switch(transition_exit_info.type) {
 
-			exit_to(
-				transition_exit_info.map_filename,
-				transition_exit_info.next_entry_id,
-				transition_exit_info.exit_origin,
-				transition_exit_info.hard_exit
-			);
+			case transition_exit::types::into_new_map:
+				exit_to(
+					transition_exit_info.map_filename,
+					transition_exit_info.next_entry_id,
+					transition_exit_info.exit_origin,
+					transition_exit_info.hard_exit
+				);
+			break;
+			case transition_exit::types::into_credits:
+
+				set_state(controller::state_credits);
+			break;
+			case transition_exit::types::into_game:
+				//Noop.
+			break;
 		}
 	}
 
@@ -346,6 +354,7 @@ void main::loop_scene(
 	pli.reset();
 	if(autopilot.is_enabled()) {
 
+		autopilot.tic(_lid.delta);
 		autopilot.produce(pli);
 	}
 	else {
@@ -417,7 +426,8 @@ void main::load_map(
 
 	d2d::storage::map_loader loader(map_path);
 
-	autopilot.disable(); //just in case.
+	//TODO: Only for non autoplay maps???
+	autopilot.disable(); //just in case... 
 	current_map.clear();
 	clear_transient_state();
 
@@ -449,12 +459,12 @@ void main::load_map(
 	app::map_attribute_loader attrl{
 		current_map.background_color,
 		current_map.music_id,
-		current_map.background_effect
+		current_map.background_effect,
+		current_map.in_game
 	};
 
-
 	loader.load_properties(attrl);
-	lm::log(logger).info()<<"map musicid is "
+	lm::log(logger).debug()<<"map musicid is "
 		<<current_map.music_id
 		<<", backgroundcolor is "
 		<<current_map.background_color.r<<", "
@@ -507,26 +517,36 @@ void main::load_map(
 	//Now the music... pieces are loaded in real time so nothing to do here.
 	music_player.swap(current_map.music_id, 500);
 
-	//Setup the automap.
-	const auto& automap_srv=sp.get_automap();
-	app::automap_game automap{automap_srv};
-	int automap_id=automap.map_id_from_map(_map_name);
-	game_session.current_map_id=automap_id;
+	int automap_id=-1; //A stupid default...
+	if(current_map.in_game) { //Non in-game map have no banners, no automap, no nothing.
 
-	lm::log(logger).info()<<"automap id for "<<_map_name<<" = "<<automap_id<<"\n";
+		//Setup the automap.
+		const auto& automap_srv=sp.get_automap();
+		app::automap_game automap{automap_srv};
+		automap_id=automap.map_id_from_map(_map_name);
+		game_session.current_map_id=automap_id;
 
-	//Should we show a new area banner? We need first to infer the new
-	//area id... This will also make the banner show whenever a game is
-	//started or loaded.
-	const auto& area=automap_srv.find_area_by_map(_map_name);
+		lm::log(logger).debug()<<"automap id for "<<_map_name<<" = "<<automap_id<<"\n";
 
-	area_change_info.step(area.id);
-	if(area_change_info.has_changed_area()) {
+		//Should we show a new area banner? We need first to infer the new
+		//area id... This will also make the banner show whenever a game is
+		//started or loaded.
+		const auto& area=automap_srv.find_area_by_map(_map_name);
 
-		const auto& new_area_name=sp.get_localization().get(area.localization_key);
-		lm::log(logger).info()<<"will show area banner for '"<<new_area_name<<"'\n";
-		setup_area_banner(new_area_name);
-	}
+		area_change_info.step(area.id);
+		if(area_change_info.has_changed_area()) {
+
+			const auto& new_area_name=sp.get_localization().get(area.localization_key);
+			lm::log(logger).debug()<<"will show area banner for '"<<new_area_name<<"'\n";
+			setup_area_banner(new_area_name);
+		}
+
+		//Ok, discover this map... Remember, we only discover maps with in_game.
+		if(!persistence.has(app::pergr_automap, automap_id)) {
+
+			discover_map(automap_id, area.must_draw_map);
+		}
+	 }
 
 	//All activated switches should run their course now: all activated objects
 	//will not save their state but will be activated when the switches do
@@ -578,12 +598,6 @@ void main::load_map(
 #ifdef IS_DEBUG_BUILD
 	cml.limit_to_collision_tiles(dd.camera, tile_limits_view, shaper.get_tile_w(), shaper.get_tile_h(), &logger);
 #endif
-
-	//Ok, discover this map...
-	if(!persistence.has(app::pergr_automap, automap_id)) {
-
-		discover_map(automap_id, area.must_draw_map);
-	}
 
 	//More stuff... if there's a boss, inject this controller so we can interact
 	//with the world.
@@ -666,7 +680,7 @@ void main::attempt_exit(
 				_exit.map_filename,
 				_exit.next_entry_id,
 				false, 
-				true,
+				transition_exit::types::into_new_map,
 				_exit.ent.get_origin()
 			};
 
@@ -688,8 +702,8 @@ void main::attempt_exit(
 			transition_exit_info={
 				_exit.map_filename,
 				_exit.next_entry_id,
-				false, 
-				true,
+				false,
+				transition_exit::types::into_new_map,
 				_exit.ent.get_origin()
 			};
 
@@ -722,7 +736,10 @@ void main::exit_to(
 	take_player_to_entry(_next_entry_id, _hard_exit, _prev_exit_pos);
 
 	//game is saved at each map change xD
-	save_game(_map_filename, _next_entry_id);
+	if(current_map.in_game) {
+
+		save_game(_map_filename, _next_entry_id);
+	}
 }
 
 void main::take_player_to_entry(
@@ -1150,6 +1167,15 @@ void main::post_tic(
 	//Have we activated a touch trigger?
 	for(auto& trigger : current_map.touch_triggers) {
 
+		//These can be used ad infinitum and are not regular triggers... we
+		//could use separate objects, to be honest.
+		//Negative tags serve two purposes: enter the credits or enter the ending.
+		if(trigger.tag < 0 && d2d::collision::collides_with(player.ent, trigger.ent)) {
+
+			activate_special_touch_trigger(trigger.tag);
+		}
+
+		//Any other used triggers are not even considered.
 		if(trigger.used) {
 
 			continue;
@@ -2055,6 +2081,42 @@ void main::activate_touch_trigger(
 	activate_tag(_trigger.tag, false);
 }
 
+void main::activate_special_touch_trigger(
+	int _tag
+) {
+
+	switch(_tag) {
+
+		case -1:
+			start_ending();
+			return;
+
+		case -2:
+			start_credits();
+			return;
+	}
+
+}
+
+void main::start_ending() {
+
+	//TODO: Calculate the ending we get...
+	//... and traved to that map.
+}
+
+void main::start_credits() {
+
+	//Fade to black in one second...
+	transition.reset(new app::map_transition_fade(
+		app::map_transition_fade::colors::color_black,
+		0, //to,
+		1.0 //one second.
+	));
+
+	//Go to the credits when the transition is done.
+	transition_exit_info.type=transition_exit::types::into_credits;
+}
+
 void main::activate_autopilot_node(
 	app::autopilot_node& _node
 ) {
@@ -2069,7 +2131,7 @@ void main::activate_autopilot_node(
 		return;
 	}
 
-	autopilot.receive(val);
+	autopilot.receive(val, _node.get_pause());
 }
 
 void main::collide_with_wall(
@@ -2386,7 +2448,7 @@ void main::activate_tag(
 		persistence.add(app::pergr_texts, node.event_id, 1);
 		auto& text_exchange=sp.get_show_text_exchange();
 
-		text_exchange.set(node.text_index).clear_answers();
+		text_exchange.set(node.text_index).set_colour(node.colour).clear_answers();
 
 		if(""!=node.first_answer_index
 			&& "" !=node.second_answer_index
@@ -2923,6 +2985,9 @@ void main::discover_map(
 
 	lm::log(logger).debug()<<"total discovered: "<<game_session.get_discovered_map_count()<<std::endl;
 
+	//TODO: Sooo just make them as "non_game"? But the banner won´t show...
+	//we can always separate!
+	
 	//If the area is not "nowhere" we can discover this new room. Nowhere
 	//maps don't count for this tally.
 	if(_add_to_tally) {

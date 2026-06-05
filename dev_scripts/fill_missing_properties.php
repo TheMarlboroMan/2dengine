@@ -123,6 +123,11 @@ foreach($files as $filename) {
 
 						$thing->a->answer_3="-";
 					}
+
+					if(!property_exists($thing->a, "colour")) {
+
+						$thing->a->colour=0;
+					}
 				break;
 			}
 		}

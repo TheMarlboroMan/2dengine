@@ -122,17 +122,20 @@ void question::previous() {
 
 void question::update() {
 
+	auto chosen=ldv::rgba8(235, 137, 49, 255);
+	auto not_chosen=ldv::rgba8(102, 55, 8, 255);
+
 	auto color_first=current_index == 0
-		? ldv::rgba8(255, 255, 255, 255)
-		: ldv::rgba8(128, 128, 128, 255);
+		? chosen
+		: not_chosen;
 
 	auto color_second=current_index == 1
-		? ldv::rgba8(255, 255, 255, 255)
-		: ldv::rgba8(128, 128, 128, 255);
+		? chosen
+		: not_chosen;
 
 	auto color_third=current_index == 2
-		? ldv::rgba8(255, 255, 255, 255)
-		: ldv::rgba8(128, 128, 128, 255);
+		? chosen
+		: not_chosen;
 
 	static_cast<ldv::ttf_representation *>(layout.get_by_id("first_question"))
 		->set_color(color_first);

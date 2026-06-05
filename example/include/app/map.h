@@ -86,6 +86,7 @@ class map {
 	ldv::rgba_color                         background_color{0,0,0, 255};
 	int                                     music_id{0};
 	int                                     background_effect{0};
+	bool                                    in_game{true};
 	d2d::components::particle_manager       particle_manager;
 
 /**

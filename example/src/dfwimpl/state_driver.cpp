@@ -446,6 +446,13 @@ void state_driver::prepare_state(
 				return;
 		}
 	}
+
+	if(_current==controller::state_credits && _next==controller::state_menu) {
+
+		//The game is over. we cannot continue anymore!
+		auto& menuc=static_cast<controller::menu&>(*c_menu);
+		menuc.set_cannot_continue();
+	}
 }
 
 void state_driver::start_app(

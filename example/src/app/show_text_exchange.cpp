@@ -1,7 +1,5 @@
 #include "app/show_text_exchange.h"
 
-//#TODO
-#include <iostream>
 using namespace app;
 
 show_text_exchange::show_text_exchange(
@@ -67,3 +65,12 @@ show_text_exchange& show_text_exchange::answer_third() {
 	clear_answers();
 	return *this;
 }
+
+show_text_exchange& show_text_exchange::set_colour(
+	int _colour
+) {
+
+	colour=_colour;
+	return *this;
+}
+
