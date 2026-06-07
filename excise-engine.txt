@@ -4,8 +4,9 @@ next steps:
 
 	NEXT:
 
-		intro???: the player could, you know, talk a bit and play on its own
-		for a couple of maps xD.
+		- do the return path to the start. (the map should be physically
+			different from the intro!!)
+		- at least one ending!
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...

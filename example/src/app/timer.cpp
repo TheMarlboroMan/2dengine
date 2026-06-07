@@ -1,9 +1,6 @@
 #include "app/timer.h"
 #include <sstream>
 
-//TODO
-#include <iostream>
-
 using namespace app;
 
 timer::timer(
@@ -33,8 +30,6 @@ void timer::reset() {
 
 void timer::receive_signal() {
 
-std::cout<<"I AM "<<tag<<" AND I GET THE SIGNAL\n";
-
 	const auto finished=timeout.is_finished();
 	const auto was_active=active;
 
@@ -42,25 +37,10 @@ std::cout<<"I AM "<<tag<<" AND I GET THE SIGNAL\n";
 
 	if(was_active) {
 
-		if(finished) {
-			std::cout<<"I WAS ACTIVE, I WILL RESET\n";
-		}
-		else {
-			std::cout<<"I WAS ACTIVE, I WILL PAUSE\n";
-		}
-
 		finished 
 			? timeout.reset()
 			: timeout.pause();
 		return;
-	}
-
-	if(finished) {
-
-		std::cout<<"I WAS ACTIVE, I WILL RESTART\n";
-	}
-	else {
-		 std::cout<<"I WAS ACTIVE, I WILL RESUME\n";
 	}
 
 	finished 

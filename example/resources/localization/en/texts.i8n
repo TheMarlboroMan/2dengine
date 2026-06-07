@@ -1,4 +1,5 @@
-[[window-title]]{{The Dreaming Tower}}
+## Menu
+
 [[main_menu-start]]{{start/load}}
 [[main_menu-continue]]{{continue}}
 [[main_menu-controls]]{{controls}}
@@ -11,6 +12,9 @@
 [[main_menu-continue_game]]{{load game}}
 [[main_menu-delete_slot]]{{press pause to delete slot}}
 [[main_menu-delete_slot_confirm]]{{press pause again to delete}}
+
+## Controls
+
 [[controls-legend]]{{press any input for}}
 [[controls-cancel]]{{press escape key to cancel}}
 [[controls-up]]{{up / activate}}
@@ -25,6 +29,9 @@
 [[options-sound]]{{sound volume}}
 [[options-music]]{{music volume}}
 [[options-back]]{{back}}
+
+## Pause
+
 [[automap-start]]{{Tower grounds}}
 [[automap-forest]]{{Forest}}
 [[automap-red_vault]]{{Red key vault}}
@@ -35,6 +42,40 @@
 [[automap-fortress]]{{Fortress}}
 [[automap-tower]]{{Dreaming Tower}}
 [[automap-nowhere]]{{???}}
+
+# Game intro
+
+[[game-intro-001]]{{
+That cave ahead, I am certain
+it wasn't here before!
+}}
+
+[[game-intro-002]]{{
+This must be it...
+[@np]
+The passage to the tower only
+manifests for a few hours once 
+in two hundred years.
+[@np]
+I should hurry!
+}}
+
+[[game-intro-003]]{{
+Placeholder text
+Placeholder text
+Placeholder text
+[@np]
+Placeholder text
+Placeholder text
+}}
+
+[[game-intro-004]]{{
+There must be a way to open 
+this gate, somewhere,
+around here.
+}}
+
+# Game dialog
 
 [[question-first]]{{Who are you?}}
 [[question-second]]{{What is this place?}}
@@ -81,7 +122,7 @@ Share this dream with me.
 I stand down.
 My task and my dream are over.
 [@np]
-Dream with me. 
+Dream with me.
 Just a little longer.
 }}
 
@@ -363,7 +404,8 @@ you?
 <<game-green_key-farewell>>
 }}
 
-##Credits
+## Credits
+
 [[credits]]{{
 *A game by:
 
@@ -396,3 +438,4 @@ you?
 
 -... and YOU for playing!!!
 }}
+[[window-title]]{{The Dreaming Tower}}

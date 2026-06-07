@@ -157,7 +157,7 @@ void main::new_game(
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
 	reset_game(_skill, _slot_filename);
-	start("start_001", 1);
+	start("intro_001", 1);
 }
 
 void main::load_game() {
@@ -215,9 +215,10 @@ void main::awake(
 	dfw::input& /*input*/
 ) {
 
-	game_session.game_clock.is_paused()
-		? game_session.game_clock.resume()
-		: game_session.game_clock.start();
+	if(current_map.in_game) {
+
+		start_game_clock();
+	}
 }
 
 void main::slumber(
@@ -426,8 +427,6 @@ void main::load_map(
 
 	d2d::storage::map_loader loader(map_path);
 
-	//TODO: Only for non autoplay maps???
-	autopilot.disable(); //just in case... 
 	current_map.clear();
 	clear_transient_state();
 
@@ -518,7 +517,17 @@ void main::load_map(
 	music_player.swap(current_map.music_id, 500);
 
 	int automap_id=-1; //A stupid default...
-	if(current_map.in_game) { //Non in-game map have no banners, no automap, no nothing.
+
+	//Non in-game map have no banners, no automap, no nothing. They also 
+	//pause the game clock.
+	if(!current_map.in_game) { 
+
+		game_session.game_clock.pause();
+	}
+	else {
+
+		start_game_clock();
+		autopilot.disable(); //just in case...
 
 		//Setup the automap.
 		const auto& automap_srv=sp.get_automap();
@@ -885,6 +894,15 @@ void main::tic(
 ) {
 
 #ifdef IS_DEBUG_BUILD
+
+	if("true"==debug_session_get("log_game_seconds")) {
+
+		auto seconds_elapsed=game_session.elapsed_seconds+game_session.game_clock.get_seconds();
+		lm::log(logger).debug()<<"seconds="<<game_session.elapsed_seconds
+			<<" clock="<<game_session.game_clock.get_seconds()
+			<<" total="<<seconds_elapsed<<"\n";
+	}
+
 	if("true"==debug_session_get("log_tics")) {
 
 		lm::log(logger).debug()<<"tic="<<game_tics<<"\n";
@@ -1837,7 +1855,7 @@ void main::draw_scene(
 		active_transition
 	);
 
-	if(game_timeouts.is_running(timeout_area_banner)) {
+	if(current_map.in_game && game_timeouts.is_running(timeout_area_banner)) {
 
 		gd.draw_area_name_banner(_screen);
 	}
@@ -3207,4 +3225,24 @@ std::vector<std::string> main::extract_green_key_text_nodes() const {
 
 #endif
 
+void main::start_game_clock() {
+
+	//When the game is first started it will likely be to an intro map in which
+	//the clock does not count so when we start the clock after a map load
+	//we need to know if it was started or not.
+	if(!game_session.game_clock.is_running()) {
+
+		lm::log(logger).debug()<<"starting game clock\n";
+		game_session.game_clock.start();
+		return;
+	}
+
+	if(game_session.game_clock.is_paused()) {
+ 
+		lm::log(logger).debug()<<"resuming game clock\n";
+		game_session.game_clock.resume();
+		return;
+	}
+
+}
 
