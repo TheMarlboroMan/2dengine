@@ -2120,6 +2120,26 @@ void main::start_ending() {
 
 	//TODO: Calculate the ending we get...
 	//... and traved to that map.
+	//TODO: maybe the color determines the ending???
+	
+	//Fade to black in one second...
+	transition.reset(new app::map_transition_fade(
+		app::map_transition_fade::colors::color_black,
+		0, //to,
+		1.0 
+	));
+
+	transition_out.reset(new app::map_transition_fade(
+		app::map_transition_fade::colors::color_black,
+		1, //from,
+		1. //quarter of a second
+	));
+
+	transition_exit_info.map_filename="ending_001";
+	transition_exit_info.next_entry_id=1;
+	transition_exit_info.exit_origin={0., 0.};
+	transition_exit_info.hard_exit=true;
+	transition_exit_info.type=transition_exit::types::into_new_map;
 }
 
 void main::start_credits() {
@@ -2128,7 +2148,7 @@ void main::start_credits() {
 	transition.reset(new app::map_transition_fade(
 		app::map_transition_fade::colors::color_black,
 		0, //to,
-		1.0 //one second.
+		1.0 
 	));
 
 	//Go to the credits when the transition is done.

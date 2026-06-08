@@ -4,9 +4,6 @@ next steps:
 
 	NEXT:
 
-		- do the return path to the start. (the map should be physically
-			different from the intro!!)
-		- at least one ending!
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
@@ -22,6 +19,7 @@ next steps:
 		of automap.txt, extra lan files and shit.
 
 	WISHLIST-BALANCING-POLISHING:
+		- put the date somewhere, maybe on the credits and the main screen.
 		- delete test maps
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.

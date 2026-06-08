@@ -404,6 +404,32 @@ you?
 <<game-green_key-farewell>>
 }}
 
+[[game-before_ending_warning]]{{
+This is the way out of here.
+If I press on it will be the
+end of my adventure.
+[@np]
+I should turn back if I want
+to continue exploring.
+}}
+
+## Endings
+
+#Text width #####################
+[[game-end-001]]{{
+Well I guess this is the end.
+[@np]
+It has been fun, hasn't it?
+[@np]
+Oh, wait, you expected something
+more flashy, right?
+[@np]
+But this is just a first demo.
+Maybe next time?.
+[@np]
+Be seeing you!
+}}
+
 ## Credits
 
 [[credits]]{{
