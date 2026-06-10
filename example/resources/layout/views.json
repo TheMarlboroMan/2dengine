@@ -117,6 +117,14 @@
 			"text":"...",
 			"font":"main_menu_font",
 			"rgba":[255, 255, 255, 255]
+		},
+		{
+			"id":"menu_date",
+			"type":"ttf",
+			"location":[250, 210],
+			"text":"2026",
+			"font":"main_menu_small_font",
+			"rgba":[128, 128, 128, 255]
 		}
 	],
 	"controls":[

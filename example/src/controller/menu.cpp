@@ -378,6 +378,7 @@ void menu::set_visible_main(
 		"menu_controls",
 		"menu_options",
 		"menu_quit",
+		"menu_date"
 	}) {
 
 		view.set_visible(str, _val);

@@ -19,7 +19,6 @@ next steps:
 		of automap.txt, extra lan files and shit.
 
 	WISHLIST-BALANCING-POLISHING:
-		- put the date somewhere, maybe on the credits and the main screen.
 		- delete test maps
 		- breaking platforms last frame seems broken.
 		- crouch while a platform is moving up and the camera goes nuts.
