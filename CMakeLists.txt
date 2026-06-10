@@ -201,6 +201,8 @@ if(${BUILD_EXAMPLES})
 		include_directories(../appconsole/include)
 		include_directories(../console/include)
 
+		target_link_libraries(exlib lm dansdl2 ldtools tools SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
+
 		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
 		target_link_options(example-app PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
 	endif()
