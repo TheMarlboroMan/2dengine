@@ -210,14 +210,18 @@ if(${BUILD_EXAMPLES})
 	endif()
 
 	if(WIN32)
-		message("WINDOWS BUILD")
 
-		target_link_libraries(exlib d2d_shared lm dansdl2 ldtools tools SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
+		message("Doing windows build...")
 
-		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
+		#TODO: SHARED ALWAYS??? OR STATIC?
+		#In windows we must link libraries to each other too... We can have no unresolved symbols.
+		target_link_libraries(exlib d2d_shared lm dansdl2 ldtools tools dfw env appconsole console SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
+		target_link_libraries(example-app exlib d2d_shared dfw tools dansdl2 ldtools console appconsole env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
+
 		target_link_options(example-app PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
 	endif()
 
+		#TODO: SHARED ALWAYS??? OR STATIC?
 		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
 	else()
 
