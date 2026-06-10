@@ -11,7 +11,7 @@ ladder::ladder(
 	d2d::collision::motion_axis_limiter(
 		{_pt, app::tile_w, _h},
 		d2d::collision::motion_axis_limiter::axes::y,
-		d2d::collision::motion_axis_limiter::alignments::center
+		d2d::collision::motion_axis_limiter::alignments::align_center
 	),
 	type{_type}
 {}

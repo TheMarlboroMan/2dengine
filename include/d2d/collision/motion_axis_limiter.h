@@ -20,7 +20,7 @@ class motion_axis_limiter
  * how will a spatiable align along the blocked axis? near=left/bottom to 
  * left/bottom of target, nearer * zero, far=right/top to right/top of target.
 */
-	enum class alignments{near, center, far};
+	enum class alignments{align_near, align_center, align_far};
 
 	                        motion_axis_limiter(const d2d::collision::box&, axes, alignments);
 /**

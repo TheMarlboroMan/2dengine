@@ -36,15 +36,15 @@ void motion_axis_limiter::apply(
 
 			switch(alignment) {
 
-				case motion_axis_limiter::alignments::near:
+				case motion_axis_limiter::alignments::align_near:
 
 					match_bottom_of(_target, *this);
 				break;
-				case motion_axis_limiter::alignments::center:
+				case motion_axis_limiter::alignments::align_center:
 
 					center_vertically(_target, *this);
 				break;
-				case motion_axis_limiter::alignments::far:
+				case motion_axis_limiter::alignments::align_far:
 
 					match_top_of(_target, *this);
 				break;
@@ -63,15 +63,15 @@ void motion_axis_limiter::apply(
 
 			switch(alignment) {
 
-				case motion_axis_limiter::alignments::near:
+				case motion_axis_limiter::alignments::align_near:
 
 					match_left_of(_target, *this);
 				break;
-				case motion_axis_limiter::alignments::center:
+				case motion_axis_limiter::alignments::align_center:
 
 					center_horizontally(_target, *this);
 				break;
-				case motion_axis_limiter::alignments::far:
+				case motion_axis_limiter::alignments::align_far:
 
 					match_right_of(_target, *this);
 				break;
@@ -112,9 +112,9 @@ std::ostream& d2d::collision::operator<<(
 
 	switch(_alignment) {
 
-		case motion_axis_limiter::alignments::near: _stream<<"near"; break;
-		case motion_axis_limiter::alignments::center: _stream<<"center"; break;
-		case motion_axis_limiter::alignments::far: _stream<<"far"; break;
+		case motion_axis_limiter::alignments::align_near: _stream<<"near"; break;
+		case motion_axis_limiter::alignments::align_center: _stream<<"center"; break;
+		case motion_axis_limiter::alignments::align_far: _stream<<"far"; break;
 	}
 
 	return _stream;
