@@ -408,18 +408,7 @@ void main::load_map(
 	const std::string& _map_name
 ) {
 	std::stringstream ss;
-
-#ifdef IS_DEBUG_BUILD
-
-	current_map_name=_map_name;
-	//This will take us to the dev files in my dev env. Obviously it will not
-	//work anywhere else.
-	ss<<env.build_app_path("../example/resources/maps/")<<_map_name<<".json";
-
-#else
-
 	ss<<env.build_app_path("resources/maps/")<<_map_name<<".json";
-#endif
 
 	const std::string map_path{ss.str()};
 
