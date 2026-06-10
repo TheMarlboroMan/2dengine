@@ -119,14 +119,38 @@ if(${BUILD_EXAMPLES} OR ${BUILD_TESTS})
 
 	if(WIN32)
 
-		set_target_properties(lm PROPERTIES IMPORTED_LOCATION "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(tools PROPERTIES IMPORTED_LOCATION "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(ldtools PROPERTIES IMPORTED_LOCATION "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(dansdl2 PROPERTIES IMPORTED_LOCATION "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(dfw PROPERTIES IMPORTED_LOCATION "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(env PROPERTIES IMPORTED_LOCATION "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(console PROPERTIES IMPORTED_LOCATION "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.a")
-		set_target_properties(appconsole PROPERTIES IMPORTED_LOCATION "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.a")
+		set_target_properties(lm PROPERTIES 
+			IMPORTED_IMPLIB "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(tools PROPERTIES 
+			IMPORTED_IMPLIB "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(ldtools PROPERTIES 
+			IMPORTED_IMPLIB "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(dansdl2 PROPERTIES 
+			IMPORTED_IMPLIB "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(dfw PROPERTIES 
+			IMPORTED_IMPLIB "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(env PROPERTIES 
+			IMPORTED_IMPLIB "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(console PROPERTIES 
+			IMPORTED_IMPLIB "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(appconsole PROPERTIES 
+			IMPORTED_IMPLIB "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.a"
+		)
 
 	else()
 
