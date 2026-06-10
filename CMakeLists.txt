@@ -95,6 +95,75 @@ if(${BUILD_SHARED})
 	message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-shared")
 endif()
 
+if(WIN32) 
+
+	include_directories(../libdansdl2/include)
+	include_directories(../libdansdl2-tools/include)
+	include_directories(../log/include)
+	include_directories(../dfw/include)
+	include_directories(../tools/include)
+	include_directories(../appconsole/include)
+	include_directories(../console/include)
+
+	if(${BUILD_SHARED})
+		target_compile_definitions(d2d_shared PUBLIC -DWINBUILD)
+
+		set(IMPORTED_LIB_POSTFIX "")
+		if(${BUILD_DEBUG})
+
+			set(IMPORTED_LIB_POSTFIX "_debug")
+		endif()
+
+		add_library(lm SHARED IMPORTED)
+		add_library(tools SHARED IMPORTED)
+		add_library(ldtools SHARED IMPORTED)
+		add_library(dansdl2 SHARED IMPORTED)
+		add_library(dfw SHARED IMPORTED)
+		add_library(env SHARED IMPORTED)
+		add_library(console SHARED IMPORTED)
+		add_library(appconsole SHARED IMPORTED)
+
+		#in windows we cannot allow unresolved symbols...
+		set_target_properties(lm PROPERTIES 
+			IMPORTED_IMPLIB "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(tools PROPERTIES 
+			IMPORTED_IMPLIB "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(ldtools PROPERTIES 
+			IMPORTED_IMPLIB "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(dansdl2 PROPERTIES 
+			IMPORTED_IMPLIB "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(dfw PROPERTIES 
+			IMPORTED_IMPLIB "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(env PROPERTIES 
+			IMPORTED_IMPLIB "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(console PROPERTIES 
+			IMPORTED_IMPLIB "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.a"
+		)
+		set_target_properties(appconsole PROPERTIES 
+			IMPORTED_IMPLIB "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.a"
+		)
+	endif()
+
+	if(${BUILD_STATIC})
+		target_compile_definitions(d2d_static PUBLIC -DWINBUILD)
+	endif()
+
+endif()
+
 set(INSTALL_DIR "include/")
 install(DIRECTORY include/ DESTINATION ${INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
 
@@ -193,13 +262,6 @@ if(${BUILD_EXAMPLES})
 
 	if(WIN32)
 		message("WINDOWS BUILD")
-		include_directories(../libdansdl2/include)
-		include_directories(../libdansdl2-tools/include)
-		include_directories(../log/include)
-		include_directories(../dfw/include)
-		include_directories(../tools/include)
-		include_directories(../appconsole/include)
-		include_directories(../console/include)
 
 		target_link_libraries(exlib lm dansdl2 ldtools tools SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
 
