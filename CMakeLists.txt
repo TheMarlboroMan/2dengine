@@ -121,6 +121,7 @@ if(WIN32)
 	include_directories(../tools/include)
 	include_directories(../appconsole/include)
 	include_directories(../console/include)
+	include_directories(../appenv/include)
 
 	if(${BUILD_SHARED})
 
@@ -148,8 +149,8 @@ if(WIN32)
 			IMPORTED_LOCATION "../../dfw/build/libdfw${IMPORTED_LIB_POSTFIX}.a"
 		)
 		set_target_properties(env PROPERTIES 
-			IMPORTED_IMPLIB "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.dll.a"
-			IMPORTED_LOCATION "../../dfw/build/libappenv${IMPORTED_LIB_POSTFIX}.a"
+			IMPORTED_IMPLIB "../../appenv/build/libappenv${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../appenv/build/libappenv${IMPORTED_LIB_POSTFIX}.a"
 		)
 		set_target_properties(console PROPERTIES 
 			IMPORTED_IMPLIB "../../console/build/libconsole${IMPORTED_LIB_POSTFIX}.dll.a"
@@ -159,6 +160,8 @@ if(WIN32)
 			IMPORTED_IMPLIB "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.dll.a"
 			IMPORTED_LOCATION "../../appconsole/build/libappconsole${IMPORTED_LIB_POSTFIX}.a"
 		)
+
+		target_link_libraries(d2d_shared lm tools dansdl2 ldtools dfw env appconsole console)
 	endif()
 
 	if(${BUILD_STATIC})
@@ -179,6 +182,7 @@ endif()
 
 set(INSTALL_DIR "include/")
 install(DIRECTORY include/ DESTINATION ${INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
+
 
 if(${BUILD_EXAMPLES})
 
