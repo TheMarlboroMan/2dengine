@@ -221,7 +221,7 @@ if(${BUILD_EXAMPLES})
 	else()
 
 		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
-	else()
+	endif()
 
 endif()
 
