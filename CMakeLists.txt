@@ -115,7 +115,7 @@ endif()
 if(WIN32) 
 
 	include_directories(../libdansdl2/include)
-	include_directories(../libdansdl2-tools/include)
+	include_directories(../ldtools/include)
 	include_directories(../log/include)
 	include_directories(../dfw/include)
 	include_directories(../tools/include)
@@ -137,8 +137,8 @@ if(WIN32)
 			IMPORTED_LOCATION "../../tools/build/libtools${IMPORTED_LIB_POSTFIX}.a"
 		)
 		set_target_properties(ldtools PROPERTIES 
-			IMPORTED_IMPLIB "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.dll.a"
-			IMPORTED_LOCATION "../../libdansdl2-tools/build/libldtools${IMPORTED_LIB_POSTFIX}.a"
+			IMPORTED_IMPLIB "../../ldtools/build/libldtools${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../ldtools/build/libldtools${IMPORTED_LIB_POSTFIX}.a"
 		)
 		set_target_properties(dansdl2 PROPERTIES 
 			IMPORTED_IMPLIB "../../libdansdl2/build/libdansdl2${IMPORTED_LIB_POSTFIX}.dll.a"
