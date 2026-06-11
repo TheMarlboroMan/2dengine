@@ -10,9 +10,13 @@ class env:
 
 	public:
 
+
 	                        env(lm::logger& _logger):
-//TODO: This should have a name, right?
-		appenv::env(std::string{".d2d-example-app"}, &_logger) 
+#ifdef WINBUILD
+
+#else
+		appenv::env(std::string{".the_dreaming_tower"}, &_logger) 
+#endif
 	{}
 };
 

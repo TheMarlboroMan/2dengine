@@ -212,6 +212,7 @@ if(${BUILD_EXAMPLES})
 	if(WIN32)
 
 		message("Doing windows build...")
+		target_compile_definitions(d2d_shared PUBLIC -DWINBUILD)
 
 		#In windows we must link libraries to each other too... We can have no unresolved symbols.
 		target_link_libraries(exlib d2d_shared lm dansdl2 ldtools tools dfw env appconsole console SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)

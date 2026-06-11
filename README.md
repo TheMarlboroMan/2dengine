@@ -110,6 +110,12 @@ need floats, change, recompile and repackage.
 
     TODO:
 
+## building this on windows.
+
+- use msys2
+- pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb
+- for cmake, use cmake .. -G "MSYS Makefiles"
+
 ## resources
 
 - GGBotNet for the "public pixel" ttf font
