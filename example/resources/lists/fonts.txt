@@ -1,3 +1,4 @@
+splash_font 8 resources/fonts/publicpixel.ttf
 console_font 8 resources/fonts/publicpixel.ttf
 pause_font 8 resources/fonts/publicpixel.ttf
 menu_font 16 resources/fonts/publicpixel.ttf

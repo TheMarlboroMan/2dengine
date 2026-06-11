@@ -3,7 +3,6 @@ next steps:
 	make the first example game
 
 	NEXT:
-		- small logo controllers and stuff like that?
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...

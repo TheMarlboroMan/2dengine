@@ -4,6 +4,7 @@ namespace controller {
 
 enum states {
 	state_min=0,
+	state_splash,
 	state_menu,
 	state_main,
 	state_pause,

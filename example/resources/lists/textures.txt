@@ -1,1 +1,2 @@
 1	resources/bitmaps/bitmap.png
+2	resources/bitmaps/logo.png

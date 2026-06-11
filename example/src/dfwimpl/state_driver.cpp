@@ -25,6 +25,7 @@
 
 //Begin controllers
 #include "controller/main.h"
+#include "controller/splash.h"
 #include "controller/menu.h"
 #include "controller/pause.h"
 #include "controller/controls.h"
@@ -352,6 +353,12 @@ void state_driver::register_controllers(
 		c_main,
 		controller::state_main,
 		new controller::main(*service_provider)
+	);
+
+	reg(
+		c_splash,
+		controller::state_splash,
+		new controller::splash(*service_provider)
 	);
 
 	reg(

@@ -74,7 +74,8 @@ enum spritesheets {
 };
 
 enum textures{
-	tex_tiles=1
+	tex_tiles=1,
+	tex_logo=2
 };
 
 enum animation_groups{

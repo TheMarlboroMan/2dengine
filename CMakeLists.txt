@@ -213,15 +213,13 @@ if(${BUILD_EXAMPLES})
 
 		message("Doing windows build...")
 
-		#TODO: SHARED ALWAYS??? OR STATIC?
 		#In windows we must link libraries to each other too... We can have no unresolved symbols.
 		target_link_libraries(exlib d2d_shared lm dansdl2 ldtools tools dfw env appconsole console SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
-		target_link_libraries(example-app exlib d2d_shared dfw tools dansdl2 ldtools console appconsole env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
 
+		target_link_libraries(example-app exlib console appconsole d2d_shared env dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glew32 glu32 opengl32 stdc++fs)
 		target_link_options(example-app PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
-	endif()
+	else()
 
-		#TODO: SHARED ALWAYS??? OR STATIC?
 		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
 	else()
 
@@ -229,18 +227,24 @@ endif()
 
 if(${BUILD_TESTS}) 
 
-	message("Will build tests")
+	if(WIN32)
 
-	include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
-	set(EXAMPLE_SOURCE "")
-	add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
-	add_executable(persistence tests/persistence.cpp)
-	add_executable(particles tests/particles.cpp)
-	add_executable(aabb_static_checker tests/aabb_static_checker.cpp)
+		message("No tests for windows build")
+	else() 
 
-	target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
-	target_link_libraries(persistence d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
-	target_link_libraries(particles d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
-	target_link_libraries(aabb_static_checker d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+		message("Will build tests")
+
+		include_directories("${CMAKE_CURRENT_LIST_DIR}/example/include")
+		set(EXAMPLE_SOURCE "")
+		add_executable(tile_finder_matrix tests/tile_finder_matrix.cpp)
+		add_executable(persistence tests/persistence.cpp)
+		add_executable(particles tests/particles.cpp)
+		add_executable(aabb_static_checker tests/aabb_static_checker.cpp)
+
+		target_link_libraries(tile_finder_matrix d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+		target_link_libraries(persistence d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+		target_link_libraries(particles d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+		target_link_libraries(aabb_static_checker d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread)
+	endif()
 
 endif()

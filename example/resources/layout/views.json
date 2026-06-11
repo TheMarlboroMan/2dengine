@@ -1,4 +1,32 @@
 {
+	"splash_screen":[
+		{
+			"type":"screen",
+			"rgba":[0,0,0,0]
+		},
+		{
+			"type":"box", "id":"cover_box",
+			"location":[0, 0, 288, 224],
+			"rgba":[0,0,0,255],
+			"visible":true,
+			"order":100
+		},
+		{
+			"id":"a_game_by",
+			"type":"ttf",
+			"location":[0, 0],
+			"text":"...",
+			"font":"splash_font",
+			"rgba":[255, 255, 255, 255],
+			"order":10
+		},
+		{
+			"type":"bitmap", "texture":"splash", "id":"logo",
+			"order":10,
+			"clip":[0, 0, 39, 71],
+			"location":[0, 0, 39, 71]
+		}
+	],
 	"main_menu":[
 		{
 			"type":"screen",

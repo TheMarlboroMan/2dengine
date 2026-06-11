@@ -74,6 +74,7 @@ class state_driver:
 
 	typedef std::unique_ptr<dfw::controller_interface>	ptr_controller;
 	ptr_controller                  c_main;
+	ptr_controller                  c_splash;
 	ptr_controller                  c_menu;
 	ptr_controller                  c_pause;
 	ptr_controller                  c_controls;
