@@ -7,17 +7,6 @@ then
 	exit 1
 fi
 
-cd $1
-
-git clone https://github.com/themarlboroman/log
-git clone https://github.com/themarlboroman/tools
-git clone https://github.com/themarlboroman/appenv
-git clone https://github.com/themarlboroman/console
-git clone https://github.com/themarlboroman/libdansdl2
-git clone https://github.com/themarlboroman/ldtools
-git clone https://github.com/themarlboroman/appconsole
-git clone https://github.com/themarlboroman/dfw
-
 cat > "${1}/build_all.sh" << EOM
 #!/bin/bash
 
@@ -45,7 +34,17 @@ build_project appconsole
 build_project dfw
 EOM
 
-chmod +x ${1}/build_all.sh
+cd $1
 
+git clone https://github.com/themarlboroman/log
+git clone https://github.com/themarlboroman/tools
+git clone https://github.com/themarlboroman/appenv
+git clone https://github.com/themarlboroman/console
+git clone https://github.com/themarlboroman/libdansdl2
+git clone https://github.com/themarlboroman/ldtools
+git clone https://github.com/themarlboroman/appconsole
+git clone https://github.com/themarlboroman/dfw
+
+chmod +x ${1}/build_all.sh
 echo "now you can go into ${1} and run ./build_all.sh to make all libs"
 
