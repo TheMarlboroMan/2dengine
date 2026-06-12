@@ -184,16 +184,20 @@ void state_driver::load_resources(
 
 	//Textures.
 	r_loader.generate_textures(tools::explode_lines_from_file(build_resource_path("lists", "textures.txt")));
+	lm::log(log).info()<<"loaded "<<_kernel.get_video_resource_manager().size_texture()<<" textures entries\n";
 
 	//Ssurfaces that may need to be loaded, for later manipulation into composite backgrounds.
 	//r_loader.generate_surfaces(tools::explode_lines_from_file(build_resource_path("lists", "surfaces.txt")));
-	
+	//lm::log(log).info()<<"loaded "<<_kernel.get_video_resource_manager().size_surface()<<" surface entries\n";
+
 	//Sounds.
 	r_loader.generate_sounds(tools::explode_lines_from_file(build_resource_path("lists", "sounds.txt")));
-	
+	lm::log(log).info()<<"loaded "<<_kernel.get_audio_resource_manager().size_sound()<<" sound entries\n";
+
 	//Music, unless it will be loaded and unloaded dynamically.
 	//r_loader.generate_music(tools::explode_lines_from_file(build_resource_path("lists", "music.txt")));
 }
+
 
 void state_driver::common_pre_loop_input(
 	dfw::input& input, 
@@ -267,6 +271,8 @@ void state_driver::load_fonts(
 
 		_ttf_manager.insert(font_id, font_size, env.build_app_path(font_path));
 	}
+
+	lm::log(log).info()<<"loaded "<<_ttf_manager.size()<<" font entries\n";
 }
 
 std::vector<dfw::input_pair> state_driver::get_input_pairs() const {

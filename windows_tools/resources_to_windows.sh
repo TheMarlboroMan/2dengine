@@ -9,6 +9,6 @@ then
 	exit 1
 fi
 
-cp -r ../resources ${1}/resources
+cp -r ../example/resources ${1}/resources
 cd ${1}/resources
 unix2dos localization/en/*

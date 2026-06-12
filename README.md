@@ -130,6 +130,11 @@ need floats, change, recompile and repackage.
     - i did ldd executable | awk '{print $1}' > libs.txt and then looped that txt file.
 - To debug it, you can use gdb, I found it works if you break main.cpp:linenum and take it from there.
 
+### errors
+
+- compiling it with -lmingw32 -lSDL2main -lSDL2 -mconsole causes it not to do anything in msys2
+- compiling it with -lmingw32 -lSDL2main -lSDL2 -mwindows causes it to complain about missing libs
+
 ## resources
 
 - GGBotNet for the "public pixel" ttf font
