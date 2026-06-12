@@ -26,6 +26,8 @@ function build_project {
 	cd build
 	cmake .. -G "MSYS Makefiles" -DBUILD_STATIC=ON -DBUILD_SHARED=ON -DBUILD_DEBUG=ON
 	make
+
+	cd ../..
 }
 
 build_project log
