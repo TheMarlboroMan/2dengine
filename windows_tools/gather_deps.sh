@@ -7,8 +7,6 @@ then
 	exit 1
 fi
 
-cp build_all.sh $1/build_all.sh
-
 cd $1
 
 git clone https://github.com/themarlboroman/log
@@ -20,16 +18,16 @@ git clone https://github.com/themarlboroman/ldtools
 git clone https://github.com/themarlboroman/appconsole
 git clone https://github.com/themarlboroman/dfw
 
-cat > "${1}/build_all.sh" <<- EOM
+cat > "${1}/build_all.sh" << EOM
 #!/bin/bash
 
 function build_project {
 
-	cd $1
+	cd \$1
 
 	branch=$(git branch --show-current)
 	git reset --hard HEAD
-	git pull origin $branch
+	git pull origin \$branch
 	rm -rf build
 	mkdir build
 	cd build
