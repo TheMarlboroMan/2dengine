@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ $# -ne 1 ]
+then 
+
+	echo "usage ${0} relative/build/path"
+	exit 1
+fi
+
+cd $1
+
 echo "copying all libs from local builds..."
 cp ../../*/build/*.dll ./
 
