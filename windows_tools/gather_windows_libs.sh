@@ -13,7 +13,7 @@ echo "copying all libs from local builds..."
 cp ../../*/build/*.dll ./
 
 echo "running ldd to find the rest..."
-ldd the-dreaming-tower.exe | awk {print $1} > libs.txt
+ldd the-dreaming-tower.exe | awk {'print $1'} > libs.txt
 for file in $(cat libs.txt)
 do
 
