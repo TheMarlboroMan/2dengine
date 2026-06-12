@@ -20,7 +20,7 @@ function build_project {
 	if [ -d build ]
 	then 
 		rm -rf build
-	endif
+	fi
 
 	mkdir build
 	cd build
