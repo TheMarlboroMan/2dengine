@@ -14,13 +14,17 @@ function build_project {
 
 	cd \$1
 
-	branch=$(git branch --show-current)
+	branch=\$(git branch --show-current)
 	git reset --hard HEAD
 	git pull origin \$branch
-	rm -rf build
+	if [ -d build ]
+	then 
+		rm -rf build
+	endif
+
 	mkdir build
 	cd build
-	cmake .. -G "MSYS Makefile" -DBUILD_STATIC=ON -DBUILD_SHARED=ON -DBUILD_DEBUG=ON
+	cmake .. -G "MSYS Makefiles" -DBUILD_STATIC=ON -DBUILD_SHARED=ON -DBUILD_DEBUG=ON
 	make
 }
 
