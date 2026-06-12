@@ -1,3 +1,5 @@
+#define SDL_MAIN_HANDLED
+
 #include "app/env.h" 
 #include "app/debug.h"
 #include "controller/controller_states.h"
@@ -6,6 +8,7 @@
 #include <lm/ostream_logger.h>
 #include <ldt/sdl_tools.h>
 #include <iostream>
+
 
 std::unique_ptr<appenv::env> make_env(lm::logger&);
 

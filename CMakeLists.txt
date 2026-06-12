@@ -219,7 +219,14 @@ if(${BUILD_EXAMPLES})
 		target_link_libraries(exlib d2d_shared lm dansdl2 ldtools tools dfw env appconsole console SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
 
 		target_link_libraries(example-app exlib console appconsole d2d_shared env dfw tools dansdl2 ldtools lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glew32 glu32 opengl32 stdc++fs)
-		target_link_options(example-app PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
+
+		if(${BUILD_DEBUG}) 
+
+			target_link_options(example-app PRIVATE -lSDL2)
+		else()
+
+			target_link_options(example-app PRIVATE -lSDL2 -mwindows)
+		endif()
 	else()
 
 		target_link_libraries(example-app exlib d2d_static dfw tools dansdl2 ldtools env lm SDL2 SDL2_ttf SDL2_mixer SDL2_image GL stdc++fs pthread console appconsole)
