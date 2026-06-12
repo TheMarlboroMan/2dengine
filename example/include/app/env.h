@@ -13,7 +13,7 @@ class env:
 
 	                        env(lm::logger& _logger):
 #ifdef WINBUILD
-
+		appenv::env(std::string{"user_data"}, &_logger) 
 #else
 		appenv::env(std::string{".the_dreaming_tower"}, &_logger) 
 #endif

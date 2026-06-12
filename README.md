@@ -113,8 +113,22 @@ need floats, change, recompile and repackage.
 ## building this on windows.
 
 - use msys2
-- pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb
+- pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb vim
 - for cmake, use cmake .. -G "MSYS Makefiles"
+    - actually I didn't try anything else.
+- order of dependencies:
+    - log
+    - tools
+    - appenv
+    - console
+    - libdansdl2
+    - ldtools
+    - appconsole
+    - dfw
+- To devise dependencies of an executable ldd  executable
+    - then grab them from C:/mysy64/mingw64/bin and put them besides the executable.
+    - i did ldd executable | awk '{print $1}' > libs.txt and then looped that txt file.
+- To debug it, you can use gdb, I found it works if you break main.cpp:linenum and take it from there.
 
 ## resources
 

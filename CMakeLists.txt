@@ -99,11 +99,11 @@ endif()
 
 add_library(lm SHARED IMPORTED)
 add_library(tools SHARED IMPORTED)
-add_library(ldtools SHARED IMPORTED)
-add_library(dansdl2 SHARED IMPORTED)
-add_library(dfw SHARED IMPORTED)
 add_library(env SHARED IMPORTED)
 add_library(console SHARED IMPORTED)
+add_library(dansdl2 SHARED IMPORTED)
+add_library(ldtools SHARED IMPORTED)
+add_library(dfw SHARED IMPORTED)
 add_library(appconsole SHARED IMPORTED)
 
 set(IMPORTED_LIB_POSTFIX "")
@@ -195,6 +195,7 @@ if(${BUILD_EXAMPLES})
 	set_target_properties(exlib PROPERTIES OUTPUT_NAME exlib)
 
 	add_executable(example-app example/src/app_main.cpp)
+	set_target_properties(example-app PROPERTIES OUTPUT_NAME the-dreaming-tower)
 
 	if(${BUILD_DEBUG})
 
