@@ -63,7 +63,7 @@ cp ../../log/build/*.dll ./
 cp ../../tools/build/*.dll ./
 cp ../../appenv/build/*.dll ./
 cp ../../console/build/*.dll ./
-cp ../../libdansd2l/build/*.dll ./
+cp ../../libdansdl2/build/*.dll ./
 cp ../../ldtools/build/*.dll ./
 cp ../../appconsole/build/*.dll ./
 cp ../../dfw/build/*.dll ./
