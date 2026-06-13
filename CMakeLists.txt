@@ -222,7 +222,7 @@ if(${BUILD_EXAMPLES})
 
 		if(${BUILD_DEBUG}) 
 
-			target_link_options(example-app PRIVATE -lSDL2)
+			target_link_options(example-app PRIVATE -lSDL2 -mwindows)
 		else()
 
 			target_link_options(example-app PRIVATE -lSDL2 -mwindows)
