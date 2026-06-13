@@ -114,7 +114,7 @@ need floats, change, recompile and repackage.
 
 It has taken a few hours to be able to do reproducible windows builds but I think I got it now.
 
-This process takes me around an hour or so once you a windows install and msys2 are ready. Most of it is automated, but there is tedious final step that I don't know how to. Sure it can be done, mind you, but I just don't know enough about windows for that.
+This process takes around 15 minutes windows on a virtual machine with 3 cores and 3GB of RAM provided that the msys2 and its dependencies are ready. Most of it is automated, but there is tedious final step that I don't know how to. Sure it can be done, mind you, but I just don't know enough about windows for that.
 
 - setup a windows 10 (a virtual machine will do!)
 - grab msys2 and install it.

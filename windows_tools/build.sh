@@ -48,8 +48,9 @@ build_dependency appconsole
 build_dependency dfw
 
 echo "building the project"
-mkdir ../build
-cd ../build
+cd 2dengine
+mkdir build
+cd build
 cmake .. -G "MSYS Makefiles"
 make -j2
 
