@@ -5,11 +5,11 @@ sleep 3
 
 function build_dependency {
 
-	cd \$1
+	cd $1
 
-	branch=\$(git branch --show-current)
+	branch=$(git branch --show-current)
 	git reset --hard HEAD
-	git pull origin \$branch
+	git pull origin $branch
 	if [ -d build ]
 	then 
 		rm -rf build
@@ -48,8 +48,8 @@ build_dependency appconsole
 build_dependency dfw
 
 echo "building the project"
-mkdir build
-cd build
+mkdir ../build
+cd ../build
 cmake .. -G "MSYS Makefiles"
 make -j2
 

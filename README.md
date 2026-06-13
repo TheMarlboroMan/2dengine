@@ -59,7 +59,7 @@ need floats, change, recompile and repackage.
 
     particle (particle managers and particles, mostly particle pools, the rest must be implemented!).
     persistence
-    timeouts
+    timeout
 
 ### motion
 
@@ -114,34 +114,21 @@ need floats, change, recompile and repackage.
 
 It has taken a few hours to be able to do reproducible windows builds but I think I got it now.
 
-This process takes me around an hour or so once you a windows install and msys2 are ready. Most of it can be automated, but there is tedious final step that I don't know how to automate. Sure it can be done, mind you, but I just don't know enough about windows for that.
+This process takes me around an hour or so once you a windows install and msys2 are ready. Most of it is automated, but there is tedious final step that I don't know how to. Sure it can be done, mind you, but I just don't know enough about windows for that.
 
 - setup a windows 10 (a virtual machine will do!)
 - grab msys2 and install it.
 - on the msys2 console (the one called msys2!!) run pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb vim mingw64/mingw64-w64-x86_64-ntldd
 - from now on, close the msys2 console and open the one called mingw64
 - checkout this repository and enter the windows_tools directory.
-- run gather_deps.sh first (something like gather_deps.sh ../../), this will download all dependencies at the same level of this repo.
-- go to the place where all repos are, a new file "build_all.sh" will have been created. Run it, it will build all dependencies.
-- once all dependencies are ready go back to this repository and setup a build directory, then make it:
-    - mkdir build
-    - cd build
-    - cmake .. -G "MSYS Makefiles"
-    - make
-- This will build the project.
-- Setup the resources it needs to run: just go into windows_tools and run ./resources_to_windows.sh ../build, it will copy and convert files.
-- Now we will gather dependencies:
-    - first the ones we just built: go into windows_tools and run ./gather_windows_libs.sh ../build
-    - next go into build and find the dependencies we are still missing with:
-        - ntldd -R executable-name.exe | grep -v "ms-ext" | grep "not found". 
-        - For each "not found", copy the dll from /c/msys64/ming64/bin into build.
+- run build.sh... Be patient, this is doing a lot of work. It will gather and build dependencies, build the project, gather the dlls it needs to run and prepare the resources.
 - It should be able to run now under the ming64 console.
-- To debug it, you can use gdb, I found it works if you break main.cpp:linenum and take it from there.
-- To run in under windows or its cmd you need to repeat this a lot of times:
+    - To debug it, you can use gdb, I found it works if you break main.cpp:linenum and take it from there.
+- To run in under windows or its cmd you need to do the tedious part.
     - run it on windows or windows cmd
     - take note of the dll it says it's missing... And copy it from the /msys64/mingw64/bin directory.
     - repeat until it runs... It will take a lot, like 150mb of stuff.
-    - DO NOT copy everything willy-nilly! It will cause the program to fail!
+    - DO NOT copy everything from the bin directory willy-nilly! It will cause the program to fail! Just repeat until it works.
 
 Once built you may want to get rid of cmake stuff to package into a zip file or something.
 
