@@ -70,7 +70,7 @@ cp ../../dfw/build/*.dll ./
 
 echo "gathering system dlls"
 
-for file in `ntldd -R the-dreaming-tower.exe | grep -v "ext-ms" | grep -v "PdmUtil" | grep -v "HvsiFile" | grep "not found | awk '{print $1}'`
+for file in `ntldd -R the-dreaming-tower.exe | grep -v "ext-ms" | grep -v "PdmUtil" | grep -v "HvsiFile" | grep "not found" | awk '{print $1}'`
 do
 	cp /c/msys64/mingw64/bin/$file ./
 done
