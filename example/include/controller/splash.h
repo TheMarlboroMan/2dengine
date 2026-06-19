@@ -7,6 +7,7 @@
 #include <lm/logger.h>
 #include <ldtools/view_composer.h>
 #include <d2d/components/timeout.h>
+#include <d2d/audio/music_player.h>
 
 namespace controller
 {
@@ -23,11 +24,14 @@ class splash:
 	                            splash(app::service_provider&);
 	virtual void                loop(dfw::input&, const dfw::loop_iteration_data&);
 	virtual void                draw(ldv::screen& screen, int);
-	virtual void                awake(dfw::input&) {}
+	virtual void                awake(dfw::input&);
 	virtual void                slumber(dfw::input&) {}
 	virtual bool                can_leave_state() const {return true;}
 
 	private:
+
+	//references
+	d2d::audio::music_player&   music_player;
 
 	//properties.
 	ldtools::view_composer      layout;

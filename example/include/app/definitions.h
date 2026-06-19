@@ -13,7 +13,8 @@ static const std::size_t particle_manager_size=100;
 enum music {
 	music_start=1,
 	music_out,
-	music_dungeon
+	music_dungeon,
+	music_title
 };
 
 enum sound {

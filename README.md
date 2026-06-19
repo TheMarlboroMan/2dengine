@@ -114,11 +114,16 @@ need floats, change, recompile and repackage.
 
 It has taken a few hours to be able to do reproducible windows builds but I think I got it now.
 
-This process takes around 15 minutes windows on a virtual machine with 3 cores and 3GB of RAM provided that the msys2 and its dependencies are ready. Most of it is automated, but there is tedious final step that I don't know how to. Sure it can be done, mind you, but I just don't know enough about windows for that.
+The setup can take up to an hour (including setting up a windows vm, plus the msys2 stuff and its packages).
+This build process itself takes around 15 minutes windows on a virtual machine with 3 cores and 3GB of RAM provided that the msys2 and its dependencies are ready. Most of it is automated, but there is tedious final step that I don't know how to. Sure it can be done, mind you, but I just don't know enough about windows for that.
 
 - setup a windows 10 (a virtual machine will do!)
 - grab msys2 and install it.
-- on the msys2 console (the one called msys2!!) run pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb vim mingw64/mingw64-w64-x86_64-ntldd
+- on the msys2 console (the one called msys2!!):
+    - pacman -Syu
+    - repeat previous step until it says that all is good. Even if the console has to be restarted.
+    - pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-rapidjson git mingw-w64-x86_64-mesa msys2-runtime-devel mingw64/mingw-w64-x86_64-freeglut mingw64/mingw-w64-x86_64-glew mingw64/mingw-w64-x86_64-gdb vim mingw64/mingw64-w64-x86_64-ntldd
+    - be patient, this one takes quite a lot.
 - from now on, close the msys2 console and open the one called mingw64
 - checkout this repository and enter the windows_tools directory.
 - run build.sh... Be patient, this is doing a lot of work. It will gather and build dependencies, build the project, gather the dlls it needs to run and prepare the resources.
@@ -127,7 +132,7 @@ This process takes around 15 minutes windows on a virtual machine with 3 cores a
 - To run in under windows or its cmd you need to do the tedious part.
     - run it on windows or windows cmd
     - take note of the dll it says it's missing... And copy it from the /msys64/mingw64/bin directory.
-    - repeat until it runs... It will take a lot, like 150mb of stuff.
+    - repeat until it runs... It will take a lot, like 150mb of stuff. It seems like forever but trust me, eventually it stops complaining.
     - DO NOT copy everything from the bin directory willy-nilly! It will cause the program to fail! Just repeat until it works.
 
 Once built you may want to get rid of cmake stuff to package into a zip file or something.

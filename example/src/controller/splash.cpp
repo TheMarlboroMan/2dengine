@@ -15,6 +15,7 @@ using namespace controller;
 splash::splash(
 	app::service_provider& _sp
 ):
+	music_player{_sp.get_music_player()},
 	timer{1., 0.} //1 second for the first state.
 {
 
@@ -55,6 +56,13 @@ splash::splash(
 			16
 		}
 	);
+}
+
+void splash::awake(
+	dfw::input&
+) {
+
+	music_player.play(app::music_title, 100);
 }
 
 void splash::loop(

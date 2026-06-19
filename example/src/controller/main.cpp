@@ -1266,6 +1266,8 @@ void main::post_tic(
 	const app::exit * exitptr{nullptr};
 	if(is_on_exit(player, exitptr, true)) {
 
+		//TODO: Bug, we should fix the collisions before attempting to leave!:
+
 		attempt_exit(*exitptr);
 		return;
 	}

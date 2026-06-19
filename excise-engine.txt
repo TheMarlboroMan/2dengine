@@ -4,6 +4,15 @@ next steps:
 
 	NEXT:
 
+		title screen. how does the title screen interact with the menu???
+			- furthermore, what is the title screen?
+			- I think it should have the title xD
+			- I think it should also have something about the game. Key or
+			  shit.
+			- Maybe the menu moves with the camera and shit? I dont know, like
+			it points somewhere for the title and then points somewhere else
+			for the menu itself????
+
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 		- saving does weird shit once you have an ultimate, or something.
