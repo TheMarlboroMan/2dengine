@@ -14,7 +14,9 @@ enum music {
 	music_start=1,
 	music_out,
 	music_dungeon,
-	music_title
+	music_title,
+	music_onwards,
+	music_earth_gale
 };
 
 enum sound {
