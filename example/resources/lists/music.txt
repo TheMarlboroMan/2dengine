@@ -5,3 +5,4 @@
 5	resources/music/onwards-always.ogg
 6	resources/music/earth-gale.ogg
 7	resources/music/cascade.ogg
+8	resources/music/red-ash.ogg
