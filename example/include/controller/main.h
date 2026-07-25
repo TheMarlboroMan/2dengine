@@ -141,6 +141,7 @@ class main:
 	void                        post_tic(int);
 	void                        setup_area_banner(const std::string&);
 	void                        setup_moving_blocks();
+	void                        setup_moving_trackers();
 	void                        write_moving_block(app::moving_block&, int);
 	void                        sync_facing_blocks();
 	void                        toggle_blocks(app::player&);

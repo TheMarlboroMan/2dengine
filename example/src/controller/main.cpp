@@ -442,6 +442,7 @@ void main::load_map(
 
 	//Setup moving stuff...
 	setup_moving_blocks();
+	setup_moving_trackers();
 
 	//The loader takes references to the map data.
 	app::map_attribute_loader attrl{
@@ -873,6 +874,7 @@ void main::restart_level() {
 
 	current_map.reset();
 	clear_transient_state();
+	setup_moving_trackers();
 
 	take_player_to_entry(last_entry_id, true);
 }
@@ -2721,6 +2723,8 @@ bool main::is_in_legal_position(
 	d2d::collision::aabb_static_checker sc(_position);
 	sc.detect_all(current_tiles);
 
+	bool with_host_collision=false;
+
 	if(_with_moving) {
 
 		//Am I riding a block? Am I being crushed by it because of engine 
@@ -2732,12 +2736,34 @@ bool main::is_in_legal_position(
 		//With lower precisions there comes a problem in which the player
 		//enters the elevator when it goes up... 
 		//Just check for any previous collisions with other edges to know if 
-		//there was a previous collision
-		//and if we are into the platform, we are crushed.
+		//there was a previous collision and if we are into the platform, we are crushed.
+		//Because of a bug due to double precision checks, we may detect 
+		//a collision with a block we are riding and walk to a wall on the
+		//right at the same time, which would be instantly illegal (an edge
+		//plus collision). To fix this, we check the block movement vector
+		//and see if it makes sense with the edge.
 
 		if(ctracker.is_attached(player.ent) && 0!=_edges) {
 
-			sc.detect_one(*ctracker.get_host(player.ent));
+			using namespace d2d::collision;
+
+			const auto& plat=*ctracker.get_host(player.ent);
+			if(collides_with(plat, _position)) {
+				
+				if(0.!=plat.get_motion_vector_y()
+					&& _edges & (aabb_edges::top | aabb_edges::bottom)
+				) {
+
+					with_host_collision=true;
+				}
+
+				if(0.!=plat.get_motion_vector_x()
+					&& _edges & (aabb_edges::left | aabb_edges::right)
+				) {
+
+					with_host_collision=true;
+				}
+			}
 		}
 
 		//Check against other moving blocks... This is mostly to know if we
@@ -2754,10 +2780,16 @@ bool main::is_in_legal_position(
 
 			lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
 		}
+
+		if(with_host_collision) {
+
+			lm::log(logger).debug()<<"collision with host at: "<<ctracker.get_host(player.ent)->get_box()<<"\n";
+		}
 	}
 #endif
 
-	return !sc.has_collision();
+	return !sc.has_collision() && !with_host_collision;
+
 }
 
 void main::mount_player_in_blocks(
@@ -2835,6 +2867,19 @@ void main::setup_moving_blocks() {
 		return;
 	}
 
+	for(auto& block : current_map.moving_blocks) {
+
+		write_moving_block(block, block.get_next_id());
+	}
+}
+
+void main::setup_moving_trackers() {
+
+	if(!current_map.moving_blocks.size()) {
+
+		return;
+	}
+
 	using namespace d2d::collision;
 
 	struct moving_blocks_can_push_policy 
@@ -2858,8 +2903,8 @@ void main::setup_moving_blocks() {
 	ctracker.target(player.ent);
 	for(auto& block : current_map.moving_blocks) {
 
+//TODO: A leak???? Likely yes.
 		ctracker.watch(block.ent, new moving_blocks_can_push_policy(block));
-		write_moving_block(block, block.get_next_id());
 	}
 }
 

@@ -4,8 +4,6 @@ next steps:
 
 	NEXT:
 
-		bug in tower_024, stand on the elevator and walk to the wall, die.
-
 		mising music:
 			- boss
 			- fortress
