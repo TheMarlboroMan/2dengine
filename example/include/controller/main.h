@@ -282,6 +282,8 @@ class main:
 	void boss_spawn_particle(d2d::collision::point, int);
 	void boss_defeat();
 	void boss_remove();
+	void boss_control_music(int);
+	void boss_play_sound(int);
 	d2d::collision::point boss_get_target() const;
 	//End implementation of boss_map_interface
 };

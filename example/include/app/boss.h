@@ -132,7 +132,7 @@ class boss {
 	};
 	static const int w{16};
 	static const int h{24};
-	static const int first_appear_y_speed{14};
+	static const int first_appear_y_speed{34};
 	static const int subsequent_appear_y_speed{44};
 	static const int x_left_limit{42};
 	static const int x_right_limit{250};

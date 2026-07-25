@@ -1045,7 +1045,7 @@ void main::post_tic(
 	//Are we crushesd?
 	if(!is_in_legal_position(player.ent, true, _sides)) {
 
-		lm::log(logger).info()<<"illegal position, assumed crushing\n";
+		lm::log(logger).info()<<"illegal position, assumed crushing, sides="<<_sides<<"\n";
 		defeat(player);
 		return;
 	}
@@ -2720,10 +2720,6 @@ bool main::is_in_legal_position(
 
 	d2d::collision::aabb_static_checker sc(_position);
 	sc.detect_all(current_tiles);
-if(sc.has_collision()) {
-
-	lm::log(logger).debug()<<"with tiles\n";
-}
 
 	if(_with_moving) {
 
@@ -2733,9 +2729,10 @@ if(sc.has_collision()) {
 		//does not correct it as snaps but rather produces the passive 
 		//vector that is applied to the player and corrected. At the end of
 		//the tic we are INTO the elevator, thus this check.
-		//With lower precisions there comes a problem in whicch the player
-		//enters the elevator with it goes up... Just check for any previous
-		//collisions with other edges to know if there was a previous collision
+		//With lower precisions there comes a problem in which the player
+		//enters the elevator when it goes up... 
+		//Just check for any previous collisions with other edges to know if 
+		//there was a previous collision
 		//and if we are into the platform, we are crushed.
 
 		if(ctracker.is_attached(player.ent) && 0!=_edges) {
@@ -2749,6 +2746,7 @@ if(sc.has_collision()) {
 		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
 	}
 
+#ifdef IS_DEBUG_BUILD
 	if(sc.has_collision()) {
 
 		lm::log(logger).debug()<<"illegal position for box "<<_position<<" against... \n";
@@ -2757,6 +2755,7 @@ if(sc.has_collision()) {
 			lm::log(logger).debug()<<" >> "<<s->get_box()<<"\n";
 		}
 	}
+#endif
 
 	return !sc.has_collision();
 }
@@ -3046,6 +3045,8 @@ void main::boss_create_targeted_projectile(
 			_extra_angle
 		)
 	);
+
+	play_sound(app::snd_projectile);
 }
 
 void main::boss_create_directed_projectile(
@@ -3063,6 +3064,8 @@ void main::boss_create_directed_projectile(
 			_angle
 		)
 	);
+
+	play_sound(app::snd_projectile);
 }
 
 void main::boss_create_linear_projectile(
@@ -3078,6 +3081,8 @@ void main::boss_create_linear_projectile(
 			_velocity
 		)
 	);
+
+	play_sound(app::snd_projectile);
 }
 
 void main::boss_spawn_skull(
@@ -3095,6 +3100,7 @@ void main::boss_spawn_skull(
 				current_map.particle_manager.add(app::prt_smoke, spawn.point);
 			}
 
+			play_sound(app::snd_thunder);
 			return;
 		}
 	}
@@ -3199,6 +3205,20 @@ void main::boss_remove() {
 
 	//Remove the boss instance from the game.
 	current_map.boss.reset(nullptr);
+}
+
+void main::boss_control_music(
+	int _music_id
+) {
+
+	music_player.swap(_music_id, 500);
+}
+
+void main::boss_play_sound(
+	int _sound_id
+) {
+
+	play_sound(_sound_id);
 }
 
 std::vector<std::string> main::extract_green_key_text_nodes() const {

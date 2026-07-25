@@ -340,6 +340,7 @@ void boss::stage_appear(
 		first_appears=false;
 		ent.set_y(appear_y_target);
 		ready_pause(stages::setup_stage_1, 2.);
+		bmi->boss_control_music(music::music_boss);
 		return;
 	}
 }
@@ -786,6 +787,7 @@ void boss::stage_defeat(
 		return;
 	}
 
+	bmi->boss_control_music(0);
 	bmi->boss_remove();
 	stage=stages::defeated;
 }

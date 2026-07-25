@@ -11,7 +11,9 @@ static const int logic_screen_h=224; //and these are 14 per screen.
 static const std::size_t particle_manager_size=100;
 
 enum music {
-	music_title=4
+	music_silence=0,
+	music_boss=0,
+	music_title=4,
 };
 
 enum sound {

@@ -37,6 +37,12 @@ class boss_map_interface {
 	//Must do whatever must be done when the boss must be removed from play.
 	virtual void boss_remove()=0;
 
+	//Must play the given music. Zero means "stop music".
+	virtual void boss_control_music(int)=0;
+
+	//Must play the given sound.
+	virtual void boss_play_sound(int)=0;
+
 	//Must return the center of the player.
 	virtual d2d::collision::point boss_get_target() const=0;
 };
