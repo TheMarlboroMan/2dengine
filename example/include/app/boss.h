@@ -118,7 +118,8 @@ class boss {
 	                volley_angle{0},
 	                skull_count{0};
 	bool            uses_left_hand{true},
-	                first_appears{true};
+	                first_appears{true},
+	                music_started{false};
 	double          distance_total{0},
 	                distance_moved{0};
 

@@ -1,4 +1,5 @@
 1	resources/music/dust.ogg
+2	resources/music/dream-paralysis.ogg
 4	resources/music/the-dreaming-tower.ogg
 5	resources/music/onwards-always.ogg
 6	resources/music/earth-gale.ogg

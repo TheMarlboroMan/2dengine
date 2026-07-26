@@ -2903,7 +2903,7 @@ void main::setup_moving_trackers() {
 	ctracker.target(player.ent);
 	for(auto& block : current_map.moving_blocks) {
 
-//TODO: A leak???? Likely yes.
+		//Not a leak, this is put into an unique ptr.
 		ctracker.watch(block.ent, new moving_blocks_can_push_policy(block));
 	}
 }

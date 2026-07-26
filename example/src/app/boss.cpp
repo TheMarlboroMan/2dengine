@@ -340,8 +340,18 @@ void boss::stage_appear(
 		first_appears=false;
 		ent.set_y(appear_y_target);
 		ready_pause(stages::setup_stage_1, 2.);
-		bmi->boss_control_music(music::music_boss);
 		return;
+	}
+
+	//Start the music in the middle of its appearance!
+	if(!music_started) {
+
+		bool through_threshold=distance_moved >= (distance_total / 2);
+		if(through_threshold) {
+
+			music_started=true;
+			bmi->boss_control_music(music::music_boss);
+		}
 	}
 }
 

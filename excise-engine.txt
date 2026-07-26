@@ -4,9 +4,12 @@ next steps:
 
 	NEXT:
 
+		sound for:
+			- boss exploding
+			- boss skull exploding
+
 		mising music:
-			- boss
-			- fortress
+			- dungeons
 
 		title screen. how does the title screen interact with the menu???
 			- furthermore, what is the title screen?
