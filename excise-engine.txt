@@ -5,8 +5,7 @@ next steps:
 	NEXT:
 
 		check screenshots in the desktop too, for extra annoyances.
-		- red_004, skill medium or hard, the fire traps don´t activate after
-		  reentering the room!
+		- red_004, press escape when fire is activated, sound does not stop!
 
 		sound for:
 			- boss exploding

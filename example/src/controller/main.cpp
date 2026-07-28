@@ -557,6 +557,7 @@ void main::load_map(
 			continue;
 		}
 
+		lm::log(logger).debug()<<"triggering tag "<<button.tag<<" for used button\n";
 		activate_tag(button.tag, true);
 	}
 
@@ -567,16 +568,7 @@ void main::load_map(
 			continue;
 		}
 
-		activate_tag(trigger.tag, true);
-	}
-
-	for(const auto& trigger : current_map.touch_triggers) {
-
-		if(!trigger.used) {
-
-			continue;
-		}
-
+		lm::log(logger).debug()<<"triggering tag "<<trigger.tag<<" for touch trigger\n";
 		activate_tag(trigger.tag, true);
 	}
 
