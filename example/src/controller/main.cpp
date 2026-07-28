@@ -3090,8 +3090,6 @@ void main::boss_create_targeted_projectile(
 			_extra_angle
 		)
 	);
-
-	play_sound(app::snd_projectile);
 }
 
 void main::boss_create_directed_projectile(
@@ -3109,8 +3107,6 @@ void main::boss_create_directed_projectile(
 			_angle
 		)
 	);
-
-	play_sound(app::snd_projectile);
 }
 
 void main::boss_create_linear_projectile(
@@ -3126,8 +3122,6 @@ void main::boss_create_linear_projectile(
 			_velocity
 		)
 	);
-
-	play_sound(app::snd_projectile);
 }
 
 void main::boss_spawn_skull(

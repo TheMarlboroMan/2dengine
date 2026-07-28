@@ -129,6 +129,7 @@ void boss::do_directed_projectile(
 	}
 
 	bmi->boss_create_directed_projectile(origin, volley_angle, _velocity);
+	bmi->boss_play_sound(app::snd_projectile);
 
 	//Volley done? Change the delay and hand.
 	if(++volley_count >= volley_total) {
@@ -385,6 +386,7 @@ void boss::stage_one(
 			: right_hand_offset;
 
 		bmi->boss_create_targeted_projectile(origin, 100.);
+		bmi->boss_play_sound(app::snd_projectile);
 		timeouts.restart(timeout_fire);
 	}
 }
@@ -410,6 +412,8 @@ void boss::stage_two(
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 0);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., 30);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 120., -30);
+		bmi->boss_play_sound(app::snd_projectile); //One single sound for all projectiles suffices.
+
 		timeouts.restart(timeout_fire);
 
 		if(++volley_count >= volley_total) {
@@ -471,6 +475,7 @@ void boss::stage_four() {
 	bmi->boss_create_directed_projectile(origin, volley_angle, 100.);
 	bmi->boss_create_directed_projectile(origin, volley_angle+120, 100.);
 	bmi->boss_create_directed_projectile(origin, volley_angle+240, 100.);
+	bmi->boss_play_sound(app::snd_projectile); //One sound for all projectiles.
 
 	volley_angle+=6;
 
@@ -569,6 +574,7 @@ void boss::stage_six(
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 140., 0);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 100., 20);
 		bmi->boss_create_targeted_projectile(ent.get_origin(), 100., -20);
+		bmi->boss_play_sound(app::snd_projectile);
 		timeouts.restart(timeout_fire);
 
 		if(++volley_count >= volley_total) {
@@ -654,6 +660,9 @@ void boss::stage_eight(
 			}
 		}
 
+		//Just one sound for all projectiles
+		bmi->boss_play_sound(app::snd_projectile);
+
 		timeouts.restart(timeout_fire);
 		if(++volley_count >= volley_total) {
 
@@ -725,6 +734,7 @@ void boss::stage_nine(
 		d2d::collision::point origin=ldt::get_center(ent.get_box());
 		bmi->boss_create_linear_projectile(origin, -125.);
 		bmi->boss_create_linear_projectile(origin, 125.);
+		bmi->boss_play_sound(app::snd_projectile);
 		timeouts.restart(timeout_secondary_fire);
 	}
 
