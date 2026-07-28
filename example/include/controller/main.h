@@ -150,6 +150,8 @@ class main:
 	void                        discover_map(int, bool);
 	std::vector<std::string>    extract_green_key_text_nodes() const;
 	void                        tic_repeat_sounds();
+	bool                        has_looped_sounds() const;
+	void                        stop_looped_sounds();
 	void                        start_game_clock();
 
 	//TODO: Move me to another entity... with all the properties too...

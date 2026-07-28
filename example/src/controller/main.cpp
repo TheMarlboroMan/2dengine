@@ -253,6 +253,11 @@ void main::loop(
 	//TODO: Can we check this thing with the autopilot, see if it flies??
 	if(_input.is_input_down(app::input::escape)) {
 
+		if(has_looped_sounds()) {
+
+			stop_looped_sounds();
+		}
+
 		if(1!=state_size()) {
 
 			lm::log(logger).info()<<"will go back to main menu\n";
@@ -362,6 +367,11 @@ void main::loop_scene(
 
 		//We can only pause when NOT in autopilot.
 		if(_input.is_input_down(app::input::pause)) {
+
+			if(has_looped_sounds()) {
+
+				stop_looped_sounds();
+			}
 
 			push_state(controller::state_pause);
 			return;
@@ -2055,20 +2065,30 @@ void main::tic_repeat_sounds() {
 	//Nothing active? was playing and must be stopped?
 	if(0==active_count) {
 
-		if(-1!=fire_trap_audio_channel_index) {
+		if(has_looped_sounds()) {
 
-			sound_player.stop(fire_trap_audio_channel_index);
-			fire_trap_audio_channel_index=-1;
+			stop_looped_sounds();
 		}
 
 		return;
 	}
 
 	//Nothing playing? Please do play!
-	if(-1==fire_trap_audio_channel_index) {
+	if(!has_looped_sounds()) {
 
 		fire_trap_audio_channel_index=sound_player.play_repeat(app::snd_fire);
 	}
+}
+
+bool main::has_looped_sounds() const {
+
+	return -1!=fire_trap_audio_channel_index;
+}
+
+void main::stop_looped_sounds() {
+
+	sound_player.stop(fire_trap_audio_channel_index);
+	fire_trap_audio_channel_index=-1;
 }
 
 void main::activate_touch_trigger(
@@ -2587,10 +2607,9 @@ void main::clear_transient_state() {
 
 	ctracker.restart();
 
-	if(-1!=fire_trap_audio_channel_index) {
+	if(has_looped_sounds()) {
 
-		sound_player.stop(fire_trap_audio_channel_index);
-		fire_trap_audio_channel_index=-1;
+		stop_looped_sounds();
 	}
 }
 
