@@ -88,7 +88,6 @@ class main:
 	int                         player_collision(app::player&, d2d::motion::motion_vector, tdelta);
 	bool                        is_in_legal_position(const d2d::collision::spatiable&, bool, int=0);
 	bool                        is_in_legal_position(const d2d::collision::box&, bool, int=0);
-
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
 	void                        attempt_exit(const app::exit&);
@@ -105,6 +104,7 @@ class main:
 	bool                        is_into_harm(const app::player&) const;
 	bool                        can_activate_button(const app::player&, app::button *&);
 	bool                        has_key(const app::player&, const app::button&) const;
+	bool                        can_stand_up(const app::player&) const;
 
 	//act on player methods...
 	void                        start_falling(app::player&);

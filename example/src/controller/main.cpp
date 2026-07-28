@@ -1047,7 +1047,7 @@ void main::post_tic(
 	//Are we crushesd?
 	if(!is_in_legal_position(player.ent, true, _sides)) {
 
-		lm::log(logger).info()<<"illegal position, assumed crushing, sides="<<_sides<<"\n";
+		lm::log(logger).info()<<"illegal position, assumed crushing\n";
 		defeat(player);
 		return;
 	}
@@ -1584,7 +1584,7 @@ int main::tic_ground(
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
 
-		if(!is_in_legal_position(player.ent, true)) {
+		if(!can_stand_up(player)) {
 
 			_player.crouch();
 		}
@@ -2333,6 +2333,21 @@ bool main::can_activate_button(
 	return false;
 }
 
+bool main::can_stand_up(
+	const app::player& _player
+) const {
+
+	const auto pos=_player.ent.get_box();
+
+	//Check against other moving blocks... This is mostly to know if we
+	//can stand up when under a moving block.
+	d2d::collision::aabb_static_checker sc(pos);
+	app::thing_filter_moving_block moving_block_filter{pos, false};
+	sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
+
+	return !sc.has_collision();
+}
+
 bool main::is_into_harm(
 	const app::player& _player
 ) const {
@@ -2687,6 +2702,7 @@ int main::player_collision(
 	return result.edges;
 }
 
+
 bool main::is_in_legal_position(
 	const d2d::collision::spatiable& _spatiable,
 	bool _with_moving,
@@ -2749,7 +2765,9 @@ bool main::is_in_legal_position(
 
 			const auto& plat=*ctracker.get_host(player.ent);
 			if(collides_with(plat, _position)) {
-				
+
+				lm::log(logger).debug()<<"collision with host detected, will fine tune...\n";
+
 				if(0.!=plat.get_motion_vector_y()
 					&& _edges & (aabb_edges::top | aabb_edges::bottom)
 				) {
@@ -2765,11 +2783,6 @@ bool main::is_in_legal_position(
 				}
 			}
 		}
-
-		//Check against other moving blocks... This is mostly to know if we
-		//can stand up when under a moving block.
-		app::thing_filter_moving_block moving_block_filter{_position, false};
-		sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
 	}
 
 #ifdef IS_DEBUG_BUILD
@@ -2788,8 +2801,22 @@ bool main::is_in_legal_position(
 	}
 #endif
 
-	return !sc.has_collision() && !with_host_collision;
+	auto result=!sc.has_collision() && !with_host_collision;
 
+#ifdef IS_DEBUG_BUILD
+	if(!result) {
+
+		if(ctracker.is_attached(player.ent)) {
+
+			const auto& host=*ctracker.get_host(player.ent);
+			lm::log(logger).debug()<<"host at "<<host.get_box()<<"\n";
+		}
+
+		lm::log(logger).debug()<<"illegal position, edges="<<_edges<<" with_moving="<<_with_moving<<" with_host="<<with_host_collision<<"\n";
+	}
+#endif
+
+	return result;
 }
 
 void main::mount_player_in_blocks(

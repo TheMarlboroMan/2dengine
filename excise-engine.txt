@@ -4,12 +4,17 @@ next steps:
 
 	NEXT:
 
+		check screenshots in the desktop too, for extra annoyances.
+		- red_004, skill medium or hard, the fire traps don´t activate after
+		  reentering the room!
+
 		sound for:
 			- boss exploding
 			- boss skull exploding
 
 		mising music:
-			- dungeons
+			- tower
+			- credits (or reuse "onwards").
 
 		title screen. how does the title screen interact with the menu???
 			- furthermore, what is the title screen?
