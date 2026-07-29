@@ -66,6 +66,7 @@ class linear_monster {
 	static const int        bat_w{11};
 	static const int        bat_h{10};
 	static const double     bat_velocity;
+	static const double     bat_horizontal_velocity;
 
 	void                    reverse();
 	bool                    is_horizontal_movement() const;
