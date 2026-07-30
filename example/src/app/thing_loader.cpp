@@ -612,6 +612,11 @@ void thing_loader::add_touch_trigger(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	if(!is_in_skill(_attributes)) {
+
+		return;
+	}
+
 	int id=_attributes.at("id").get_int();
 	int tag=_attributes.at("tag").get_int();
 	int width=_attributes.at("width").get_int();

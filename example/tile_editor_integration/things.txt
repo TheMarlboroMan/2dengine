@@ -346,15 +346,22 @@ beginobject
 		name width
 		type int
 		default 16
-		comment entry width.
+		comment trigger width.
 		linkedto w
 	endproperty
 	beginproperty
 		name height
 		type int
 		default 16
-		comment entry height.
+		comment trigger height.
 		linkedto h
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 1
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
 	endproperty
 endobject
 
