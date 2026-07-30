@@ -155,7 +155,7 @@ enum sprites {
 	spr_yellow_keyhole=354,
 	spr_yellow_keyhole_used=357,
 	spr_red_keyhole=356,
-	spr_red_keyhole_used=375,
+	spr_red_keyhole_used=359,
 	spr_green_keyhole=366,
 	spr_green_keyhole_used=367,
 	spr_blue_keyhole=355,

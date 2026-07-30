@@ -20,6 +20,8 @@ define("exit_item", 2);
 define("button", 7);
 define("breaking_block", 9);
 define("text_node", 12);
+define("timer", 63);
+define("relay", 62);
 
 $dir=new DirectoryIterator("../example/resources/maps");
 $files=[];
@@ -132,6 +134,14 @@ foreach($files as $filename) {
 					if(!property_exists($thing->a, "colour")) {
 
 						$thing->a->colour=0;
+					}
+				break;
+				case timer:
+				case relay:
+
+					if(!property_exists($thing->a, "difficulty")) {
+
+						$thing->a->difficulty=7;
 					}
 				break;
 			}

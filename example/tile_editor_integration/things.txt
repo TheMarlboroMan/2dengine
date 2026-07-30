@@ -951,6 +951,13 @@ beginobject
 		comment space-separated list of tags that this relays to
 		linkedto nothing
 	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject
@@ -992,6 +999,13 @@ beginobject
 		type int
 		default 3000
 		comment milliseconds before activating
+		linkedto nothing
+	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 7
+		comment flag, 1=easy, 2=medium 4=hard
 		linkedto nothing
 	endproperty
 endobject

@@ -778,6 +778,12 @@ void thing_loader::add_tag_relay(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
 	int tag=_attributes.at("tag").get_int();
 
 	//This is a space separated list of tags which we will need to convert
@@ -817,6 +823,12 @@ void thing_loader::add_tag_relay(
 void thing_loader::add_timer(
 	const thing_loader::attrmap& _attributes
 ) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
 
 	bool active=_attributes.at("active").get_int()==1;
 	bool keep_active=_attributes.at("keep_active_reset").get_int()==1;
