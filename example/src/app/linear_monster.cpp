@@ -4,8 +4,8 @@ using namespace app;
 
 const double linear_monster::scorpion_velocity{20.};
 const double linear_monster::snake_velocity{30.};
-const double linear_monster::bat_velocity{15.};
-const double linear_monster::bat_horizontal_velocity{25.};
+const double linear_monster::bat_velocity{20.};
+const double linear_monster::bat_horizontal_velocity{32.};
 
 linear_monster::linear_monster(
 	d2d::collision::point _pt,

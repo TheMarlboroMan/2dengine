@@ -53,6 +53,8 @@ class thing_loader
 	double              find_lower_y_bound(d2d::collision::tile_coords) const;
 	double              find_upper_y_bound(d2d::collision::tile_coords) const;
 
+	bool                is_in_skill(const attrmap&) const;
+
 	map&                curmap;
 	d2d::collision::tile_limits tile_limits;
 	tpersistence&       persistence;

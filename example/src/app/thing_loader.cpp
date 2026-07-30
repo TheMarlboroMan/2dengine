@@ -161,8 +161,7 @@ void thing_loader::add_ladder(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -180,8 +179,7 @@ void thing_loader::add_collectible(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -227,8 +225,7 @@ void thing_loader::add_linear_monster(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -275,8 +272,7 @@ void thing_loader::add_leaping_monster(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -294,8 +290,7 @@ void thing_loader::add_timed_trap(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -336,8 +331,7 @@ void thing_loader::add_trap(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -375,8 +369,7 @@ void thing_loader::add_push_trigger(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -439,8 +432,7 @@ void thing_loader::add_projectile_generator(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -499,8 +491,7 @@ void thing_loader::add_breaking_platform(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -526,8 +517,7 @@ void thing_loader::add_platform(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -642,6 +632,11 @@ void thing_loader::add_moving_block(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	if(!is_in_skill(_attributes)) {
+
+		return;
+	}
+
 	int tag=_attributes.at("tag").get_int();
 	int node_id=_attributes.at("nodeid").get_int();
 	int type=_attributes.at("type").get_int();
@@ -660,6 +655,11 @@ void thing_loader::add_moving_block_node(
 	d2d::collision::point _pos,
 	const thing_loader::attrmap& _attributes
 ) {
+
+	if(!is_in_skill(_attributes)) {
+
+		return;
+	}
 
 	int id=_attributes.at("nodeid").get_int();
 	int nextid=_attributes.at("nextid").get_int();
@@ -778,8 +778,7 @@ void thing_loader::add_tag_relay(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -824,8 +823,7 @@ void thing_loader::add_timer(
 	const thing_loader::attrmap& _attributes
 ) {
 
-	int difficulty_flags=_attributes.at("difficulty").get_int();
-	if(!(difficulty_flags & difficulty_setting)) {
+	if(!is_in_skill(_attributes)) {
 
 		return;
 	}
@@ -861,3 +859,10 @@ void thing_loader::add_autopilot_node(
 	);
 }
 
+bool thing_loader::is_in_skill(
+	const thing_loader::attrmap& _attributes
+) const {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	return difficulty_flags & difficulty_setting;
+}
