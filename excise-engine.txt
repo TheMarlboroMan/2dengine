@@ -5,7 +5,8 @@ next steps:
 	NEXT:
 
 		check screenshots in the desktop too, for extra annoyances.
-		- red_004, press escape when fire is activated, sound does not stop!
+		- review geometry... there can be bad stuff.
+
 
 		sound for:
 			- boss exploding

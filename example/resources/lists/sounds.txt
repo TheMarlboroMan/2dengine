@@ -1,4 +1,4 @@
-1	resources/sounds/Collect_Point_00.ogg
+1	resources/sounds/bonus.ogg
 2	resources/sounds/jump.ogg
 3	resources/sounds/open_gate.ogg
 4	resources/sounds/projectile.ogg

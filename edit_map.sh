@@ -2,8 +2,14 @@
 
 if [ "$1" == "" ]
 then
-	echo "specify a map name, e.g ./edit_map.sh forest_001"
+	echo "specify a map name, e.g ./edit_map.sh forest_001 [--debug]"
 	exit 1
+fi
+
+debug="off"
+if [ "$2" == "--debug" ]
+then
+	debug="on"
 fi
 
 mapname="/home/daniel/devel/2dengine/example/resources/maps/$1.json";
@@ -30,4 +36,17 @@ cd ..
 
 #easy map browsing...
 cd example/resources/maps 
-tile_editor -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
+
+if [ "on" == "$debug" ]
+then 
+	/home/daniel/devel/tile_editor/build/build/tile_editor --version | head -1 | grep bin
+	if [ 0 -ne $? ]
+	then
+		echo "tile editor must be built as binary"
+		exit 1
+	fi
+	gdb -ex "catch throw" -ex "run" --args /home/daniel/devel/tile_editor/build/build/tile_editor -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
+else
+	tile_editor -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
+fi
+

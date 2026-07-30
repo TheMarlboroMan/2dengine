@@ -284,6 +284,13 @@ beginobject
 		comment 1=fully solid 0=solid only from above
 		linkedto nothing
 	endproperty
+	beginproperty
+		name difficulty
+		type int
+		default 1
+		comment flag, 1=easy, 2=medium 4=hard
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject

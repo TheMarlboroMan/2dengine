@@ -439,6 +439,12 @@ void thing_loader::add_projectile_generator(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
+
 	app::projectile_generator::types type{app::projectile_generator::types::horizontal};
 	switch(_attributes.at("type").get_int()) {
 
@@ -455,6 +461,8 @@ void thing_loader::add_projectile_generator(
 			type=app::projectile_generator::types::vertical;
 		break;
 	}
+
+
 
 	int velocity=_attributes.at("velocity").get_int();
 	int tag=_attributes.at("tag").get_int();
@@ -490,6 +498,12 @@ void thing_loader::add_breaking_platform(
 	d2d::collision::point _pos, 
 	const thing_loader::attrmap& _attributes
 ) {
+
+	int difficulty_flags=_attributes.at("difficulty").get_int();
+	if(!(difficulty_flags & difficulty_setting)) {
+
+		return;
+	}
 
 	int ms_breaking=_attributes.at("ms_breaking").get_int();
 	int ms_gone=_attributes.at("ms_gone").get_int();

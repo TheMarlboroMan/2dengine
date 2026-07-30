@@ -106,6 +106,11 @@ foreach($files as $filename) {
 
 						$thing->a->type=1;
 					}
+
+					if(!property_exists($thing->a, "difficulty")) {
+
+						$thing->a->difficulty=7;
+					}
 				break;
 				case text_node:
 
