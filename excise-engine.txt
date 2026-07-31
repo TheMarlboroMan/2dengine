@@ -5,6 +5,8 @@ next steps:
 	NEXT:
 
 		check screenshots in the desktop too, for extra annoyances.
+		- try and stand when a block pushes you under a low pass. See if the
+		  problem is only in volcano_020
 		- review geometry... there can be bad stuff.
 		- sounds for spike traps!
 

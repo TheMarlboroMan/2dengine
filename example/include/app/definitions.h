@@ -172,6 +172,7 @@ enum sprites {
 	spr_fire_trap_plaque=188,
 	spr_platform_rock=189,
 	spr_platform_light_block=248,
+	spr_platform_blue_block=203,
 
 	spr_block_arrow=255,
 

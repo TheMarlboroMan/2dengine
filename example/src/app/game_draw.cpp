@@ -702,6 +702,9 @@ void game_draw::draw_platform(
 		case app::platform_block::types::light_block:
 			index=app::spr_platform_light_block;
 		break;
+		case app::platform_block::types::blue_block:
+			index=app::spr_platform_blue_block;
+		break;
 	}
 
 	sprite_draw.draw(

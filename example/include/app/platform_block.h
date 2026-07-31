@@ -19,7 +19,8 @@ class platform_block:
 	enum class types {
 		branch,
 		rock,
-		light_block
+		light_block, //thin white block
+		blue_block //thin blue line
 	};
 
 	                                        platform_block(d2d::collision::point, types);

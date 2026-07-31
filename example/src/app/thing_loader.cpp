@@ -529,6 +529,7 @@ void thing_loader::add_platform(
 		case 0: type=app::platform_block::types::branch; break;
 		case 1: type=app::platform_block::types::rock; break;
 		case 2: type=app::platform_block::types::light_block; break;
+		case 3: type=app::platform_block::types::blue_block; break;
 		default: break;
 	}
 
@@ -692,6 +693,11 @@ void thing_loader::add_facing_block(
 	const thing_loader::attrmap& _attributes
 ) {
 
+	if(!is_in_skill(_attributes)) {
+
+		return;
+	}
+
 	int type=_attributes.at("type").get_int();
 	int width=_attributes.at("width").get_int()*app::tile_w;
 	int height=_attributes.at("height").get_int()*app::tile_h;
@@ -708,6 +714,11 @@ void thing_loader::add_toggle_block(
 	d2d::collision::point _pos,
 	const thing_loader::attrmap& _attributes
 ) {
+
+	if(!is_in_skill(_attributes)) {
+
+		return;
+	}
 
 	int type=_attributes.at("type").get_int();
 	int width=_attributes.at("width").get_int()*app::tile_w;
