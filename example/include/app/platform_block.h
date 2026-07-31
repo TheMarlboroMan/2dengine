@@ -18,7 +18,8 @@ class platform_block:
 	//describes visual attributes.
 	enum class types {
 		branch,
-		rock
+		rock,
+		light_block
 	};
 
 	                                        platform_block(d2d::collision::point, types);

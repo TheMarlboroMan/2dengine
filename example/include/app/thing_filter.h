@@ -4,6 +4,7 @@
 #include "breaking_platform.h"
 #include "facing_block.h"
 #include "toggle_block.h"
+#include "platform_block.h"
 
 namespace app {
 
@@ -53,5 +54,18 @@ struct thing_filter_moving_block {
 	private:
 	const d2d::collision::box& ref_box;
 	bool positive_y_vector; //meaning the _ref box (the player in this game) has a positive y vector.
+};
+
+/**
+ * Platform blocks behave as one-way blocks, only solid from above!
+ */
+struct thing_filter_platform_block {
+
+	thing_filter_platform_block(const d2d::collision::box&);
+
+	bool operator()(const app::platform_block& _block) const;
+
+	private:
+	const d2d::collision::box& ref_box;
 };
 }

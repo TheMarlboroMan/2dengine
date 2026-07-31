@@ -67,6 +67,10 @@ foreach($files as $filename) {
 					}
 				break;
 				case touch_trigger:
+					if(!property_exists($thing->a, "difficulty")) {
+
+						$thing->a->difficulty=7;
+					}
 				case button:
 
 					if(!property_exists($thing->a, "keep_used_reset")) {
@@ -80,6 +84,7 @@ foreach($files as $filename) {
 
 						$thing->a->repeatable=0;
 					}
+
 				break;
 				case exit_item:
 					if(!property_exists($thing->a, "min_rooms")) {

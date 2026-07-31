@@ -6,6 +6,7 @@ next steps:
 
 		check screenshots in the desktop too, for extra annoyances.
 		- review geometry... there can be bad stuff.
+		- sounds for spike traps!
 
 
 		sound for:

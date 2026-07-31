@@ -2262,9 +2262,10 @@ bool main::is_on_air(
 	d2d::collision::aabb_static_checker cc(player_box_copy, true);
 	app::thing_filter_moving_block moving_block_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
 	app::thing_filter_breaking_platorms breaking_platform_filter{_player.ent.get_previous_box(), _player.ent.get_motion_vector_y() > 0.};
+	app::thing_filter_platform_block platform_block_filter{_player.ent.get_previous_box()};
 
 	if(cc.detect_all(contacting_tiles)
-		.detect_all(current_map.platform_blocks)
+		.detect_if(current_map.platform_blocks, platform_block_filter)
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
 		.detect_if(current_map.breaking_platforms, breaking_platform_filter)
 		.detect_if(current_map.facing_blocks, app::thing_filter_facing_blocks{}, spatiable_dereferencer<app::facing_block>{})
@@ -2658,6 +2659,8 @@ int main::player_collision(
 	d2d::collision::ray_builder rb;
 	auto player_ray=rb.get_previous(_player.ent, _mv)*_delta;
 	d2d::collision::ray_aabb_phase cph(_player.ent, player_ray);
+	app::thing_filter_platform_block platform_block_filter{_player.ent.get_previous_box()};
+
 
 	cph.flags(d2d::collision::ray_aabb_phase::flag_skip_passable_side_check)
 		.detect_all(current_tiles)
@@ -2666,7 +2669,7 @@ int main::player_collision(
 		.detect_if(current_map.toggle_blocks, app::thing_filter_toggle_blocks{}, spatiable_dereferencer<app::toggle_block>{})
 		.detect_all(current_map.gates, spatiable_dereferencer<app::gate>{})
 		.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{})
-		.detect_all(current_map.platform_blocks);
+		.detect_if(current_map.platform_blocks, platform_block_filter);
 
 	//One more thing... we are riding a plataform, it may be moving down
 	//and apply a downwards vector to us so we enter the platform. Detect_if

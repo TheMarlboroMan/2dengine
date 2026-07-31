@@ -66,3 +66,18 @@ bool thing_filter_moving_block::operator()(
 	return d2d::collision::is_above(_block.ent, ref_box);
 }
 
+
+////
+// platform blocks...
+thing_filter_platform_block::thing_filter_platform_block(
+	const d2d::collision::box& _ref
+):ref_box(_ref)
+{}
+
+bool thing_filter_platform_block::operator()(
+	const app::platform_block& _block
+) const {
+
+	//Count only those below the reference box.
+	return d2d::collision::is_below(_block, ref_box);
+}

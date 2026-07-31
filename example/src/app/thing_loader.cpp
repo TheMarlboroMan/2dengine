@@ -528,6 +528,7 @@ void thing_loader::add_platform(
 
 		case 0: type=app::platform_block::types::branch; break;
 		case 1: type=app::platform_block::types::rock; break;
+		case 2: type=app::platform_block::types::light_block; break;
 		default: break;
 	}
 

@@ -519,26 +519,27 @@ void game_draw::draw_timed_trap(
 	const app::timed_trap& _trap
 ) {
 
-	//If fire, There is always a plaque under this trap... We could fake it with a 
+	//There is always a plaque under these traps... We could fake it with a 
 	//decoration object or with foreground tiles but those would be meh and
 	//a nuisance in skill levels, respectively.
-	
+
+	auto origin=d2d::video::to_screen(_trap.ent.get_origin());
+
+	//The plaque is under the trap itself and must be centered on it.
+	origin.y-=app::tile_h;
+
 	if(_trap.get_type()==app::timed_trap::types::fire) {
 
-		auto origin=d2d::video::to_screen(_trap.ent.get_origin());
-
-		//The plaque is under the trap itself and must be centered on it.
-		origin.y-=app::tile_h;
 		origin.x-=(app::timed_trap::fire_w / 2) + 1;
-
-		int sprite_index=app::spr_fire_trap_plaque;
-
-		sprite_draw.draw(
-			_screen,
-			origin,
-			sprite_index
-		);
 	}
+
+	int sprite_index=app::spr_fire_trap_plaque;
+
+	sprite_draw.draw(
+		_screen,
+		origin,
+		sprite_index
+	);
 
 	if(!_trap.is_harmful()) {
 
@@ -697,6 +698,9 @@ void game_draw::draw_platform(
 		break;
 		case app::platform_block::types::rock:
 			index=app::spr_platform_rock;
+		break;
+		case app::platform_block::types::light_block:
+			index=app::spr_platform_light_block;
 		break;
 	}
 

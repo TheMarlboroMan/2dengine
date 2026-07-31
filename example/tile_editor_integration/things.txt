@@ -303,7 +303,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment 0=branch 1=rock
+		comment 0=branch 1=rock 2=light block
 		linkedto nothing
 	endproperty
 	beginproperty
