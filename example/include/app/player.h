@@ -49,7 +49,7 @@ class player {
 	bool                                        is_ladder_timeout_done() const;
 	bool                                        has_jump_buffered() const;
 
-//	d2d::collision::box                         get_standing_box() const;
+	d2d::collision::box                         get_standing_box() const;
 
 	enum class states {
 		ground,

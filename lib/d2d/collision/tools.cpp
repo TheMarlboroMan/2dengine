@@ -439,4 +439,128 @@ bool d2d::collision::is_compromised_edge(
 		|| ((_edges & left) && (_edges & right));
 }
 
+bool d2d::collision::is_edge_above(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
 
+	return is_edge_above(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_edge_above(
+	const spatiable& _a, 
+	const box& _b) {
+
+	return is_edge_above(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_edge_above(
+	const box& _a, 
+	const spatiable& _b) {
+
+	return is_edge_above(_a, _b.get_box());
+}
+
+bool d2d::collision::is_edge_above(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.y >= _b.origin.y;
+}
+
+bool d2d::collision::is_edge_below(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
+
+	return is_edge_below(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_edge_below(
+	const spatiable& _a, 
+	const box& _b
+) {
+	
+	return is_edge_below(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_edge_below(
+	const box& _a, 
+	const spatiable& _b
+) {
+	
+	return is_edge_below(_a, _b.get_box());
+}
+
+bool d2d::collision::is_edge_below(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.y <= _b.origin.y;
+}
+
+bool d2d::collision::is_edge_left_of(
+	const spatiable& _a,
+	const spatiable& _b
+) {
+
+	return is_edge_left_of(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_edge_left_of(
+	const spatiable& _a, 
+	const box& _b
+) {
+
+	return is_edge_left_of(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_edge_left_of(
+	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_edge_left_of(_a, _b.get_box());
+}
+
+bool d2d::collision::is_edge_left_of(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.x <= _b.origin.x;
+}
+
+bool d2d::collision::is_edge_right_of(
+	const spatiable& _a, 
+	const spatiable& _b
+) {
+
+	return is_edge_right_of(_a.get_box(), _b.get_box());
+}
+
+bool d2d::collision::is_edge_right_of(
+	const spatiable& _a, 
+	const box& _b
+) {
+
+	return is_edge_right_of(_a.get_box(), _b);
+}
+
+bool d2d::collision::is_edge_right_of(
+	const box& _a, 
+	const spatiable& _b
+) {
+
+	return is_edge_right_of(_a, _b.get_box());
+}
+
+bool d2d::collision::is_edge_right_of(
+	const box& _a, 
+	const box& _b
+) {
+
+	return _a.origin.x >= _b.origin.x;
+}

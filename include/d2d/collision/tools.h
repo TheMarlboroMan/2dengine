@@ -59,6 +59,26 @@ bool            is_partially_right_of(const spatiable&, const spatiable&);
 bool            is_partially_right_of(const spatiable&, const box&);
 bool            is_partially_right_of(const box&, const spatiable&);
 bool            is_partially_right_of(const box&, const box&);
+//!Is edge above means the bottom edge of A is above the bottom edge of B.
+bool            is_edge_above(const spatiable&, const spatiable&);
+bool            is_edge_above(const spatiable&, const box&);
+bool            is_edge_above(const box&, const spatiable&);
+bool            is_edge_above(const box&, const box&);
+//!Is edge below means the bottom edge of A is below the bottom edge of B.
+bool            is_edge_below(const spatiable&, const spatiable&);
+bool            is_edge_below(const spatiable&, const box&);
+bool            is_edge_below(const box&, const spatiable&);
+bool            is_edge_below(const box&, const box&);
+//!Is edge left of means the left edge of A is left of the left edge of B
+bool            is_edge_left_of(const spatiable&, const spatiable&);
+bool            is_edge_left_of(const spatiable&, const box&);
+bool            is_edge_left_of(const box&, const spatiable&);
+bool            is_edge_left_of(const box&, const box&);
+//!Is edge right of means the left edge of A is right of the left edge of B
+bool            is_edge_right_of(const spatiable&, const spatiable&);
+bool            is_edge_right_of(const spatiable&, const box&);
+bool            is_edge_right_of(const box&, const spatiable&);
+bool            is_edge_right_of(const box&, const box&);
 
 //These should be read as do_funcname to first arg using second arg as reference.
 //When a double is present it is meant to be a "padding", so if we say 

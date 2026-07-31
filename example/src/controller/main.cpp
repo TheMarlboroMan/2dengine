@@ -956,7 +956,9 @@ void main::tic(
 		sync_facing_blocks();
 	}
 
-	const auto player_moved=player.ent.has_moved();
+	//TODO: Or has been pushed... This is a complete lie and a failure of
+	//the engine. If a box pushes us along, we don't get "moved"
+	//const auto player_moved=player.ent.has_moved();
 	const auto player_defeated=player.is_defeated();
 
 	if(!player_defeated) {
@@ -972,7 +974,7 @@ void main::tic(
 	}
 
 	//Attempt to save a bit on camera calculations...
-	if(player_moved && ! player_defeated) {
+	if(/**player_moved && */ ! player_defeated) {
 
 		camera.center_on(
 			d2d::video::to_screen(player.ent)
@@ -1582,11 +1584,14 @@ int main::tic_ground(
 	}
 	else if(is_crouched) {
 
-		_player.stand_up();
 		//The only case in which this can happen is when a moving platform
 		//is above us. The rest of blocking stuff is static.
 
-		if(!can_stand_up(player)) {
+		if(can_stand_up(player)) {
+
+			_player.stand_up();
+		}
+		else {
 
 			_player.crouch();
 		}
@@ -2350,11 +2355,20 @@ bool main::can_stand_up(
 	const app::player& _player
 ) const {
 
-	const auto pos=_player.ent.get_box();
+	const auto& pos=_player.get_standing_box();
 
 	//Check against other moving blocks... This is mostly to know if we
 	//can stand up when under a moving block.
 	d2d::collision::aabb_static_checker sc(pos);
+
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	auto current_tiles=adapter.find(
+		pos,
+		current_map.tile_finder
+	);
+
+	sc.detect_all(current_tiles);
+
 	app::thing_filter_moving_block moving_block_filter{pos, false};
 	sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
 

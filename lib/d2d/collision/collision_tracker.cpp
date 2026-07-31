@@ -1,6 +1,7 @@
 #include "d2d/collision/collision_tracker.h"
 #include "d2d/collision/tools.h"
 #include <stdexcept>
+#include <sstream>
 
 using namespace d2d::collision;
 
@@ -118,27 +119,35 @@ collision_tracker& collision_tracker::tic() {
 				continue;
 			}
 
-			//TODO TODO TODO
 			//all we know now is that the box moved but we don't know where
 			//the collision originates from... So we will just use a SHIT
 			//approximation and will change it because this will not work
 			//reliably when movement happens in both axes at once.
+			//We check "edges" because loss of precision can suddenly decide
+			//that two things colliding are actually not left_of|right_of|above|below
+			//one another because these account for position AND dimension.
 
-			if(is_left_of(*target, previous)) {
+			if(is_edge_left_of(*target, previous)) {
 
 				corrections.push_back({watched_entity.body, target, box_edge::left});
 			}
-			else if(is_right_of(*target, previous)) {
+			else if(is_edge_right_of(*target, previous)) {
 
 				corrections.push_back({watched_entity.body, target, box_edge::right});
 			}
-			else if(is_above(*target, previous)) {
+			else if(is_edge_above(*target, previous)) {
 
 				corrections.push_back({watched_entity.body, target, box_edge::top});
 			}
-			else if(is_below(*target, previous)) {
+			else if(is_edge_below(*target, previous)) {
 
 				corrections.push_back({watched_entity.body, target, box_edge::bottom});
+			}
+			else {
+
+				std::stringstream ss;
+				ss<<"found collision between target:"<<target->get_box()<<" previous:"<<previous<<" current:"<<current<<" but could not decide the edge!";
+				throw std::runtime_error(ss.str());
 			}
 		}
 	}
