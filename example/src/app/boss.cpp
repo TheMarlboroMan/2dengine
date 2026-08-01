@@ -778,6 +778,8 @@ void boss::setup_stage_defeat() {
 
 	bmi->boss_defeat();
 	stage=stages::defeat;
+
+	bmi->boss_play_sound(app::snd_thunder);
 }
 
 void boss::stage_defeat(

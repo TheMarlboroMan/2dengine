@@ -179,9 +179,7 @@ void main::load_game() {
 	inventory.yellow_keys=save.yellow_keys;
 	inventory.white_keys=save.white_keys;
 	inventory.ultimate=save.ultimate;
-	//TODO: Why EvEN SAVE IT THEN????
-	//Treasure actually comes from the persistence layer.
-	inventory.treasure=persistence.size(app::pergr_collectibles);
+	inventory.treasure=save.treasure;
 
 	game_session.skill_level=save.difficulty_setting;
 	game_session.elapsed_seconds=save.elapsed_seconds;
@@ -1125,6 +1123,7 @@ void main::post_tic(
 				create_skull_break_particles(skull);
 				projectile.finish();
 				skull.desintegrate();
+				play_sound(app::snd_defeat);
 
 				//and the boss must know about this...
 				//Assume there is a boss, because the boss spanws the skulls.
@@ -1920,6 +1919,12 @@ void main::pick_up_collectible(
 		case app::collectible::diamond:
 
 			++inventory.treasure;
+			//Five bonuses nets you an extra life.
+			if(game_session.is_with_lives() && 0==inventory.treasure % 5) {
+
+				//TODO: Play some fanfare!
+				++game_session.lives;
+			}
 		break;
 		case app::collectible::yellow_key:
 
@@ -2609,8 +2614,8 @@ void main::save_game(
 		inventory.red_keys,
 		inventory.green_keys,
 		inventory.white_keys,
-		inventory.ultimate,
-		inventory.treasure
+		inventory.treasure,
+		inventory.ultimate
 	};
 
 	app::savegame_io sio{};

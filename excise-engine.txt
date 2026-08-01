@@ -7,12 +7,8 @@ next steps:
 		check screenshots in the desktop too, for extra annoyances.
 		review geometry... there can be bad stuff.
 
-		sound for:
-			- boss exploding
-			- boss skull exploding
-			- moving block start / end / arrive at point
-
 		mising music:
+			- extra life could be music.
 			- tower
 			- credits (or reuse "onwards").
 
@@ -27,7 +23,6 @@ next steps:
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
-		- saving does weird shit once you have an ultimate, or something.
 		- after toggle block (jump or side), if player is inside block, die.
 
 	IDEAS:
