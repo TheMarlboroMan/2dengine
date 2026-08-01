@@ -15,6 +15,7 @@ credits::credits(
 :
 	log{_sp.get_logger()},
 	font{_sp.get_ttf_manager().get("credits_font", 8)},
+	music_player{_sp.get_music_player()},
 	line_size{16},
 	first_y{app::logic_screen_h+2}
 {
@@ -45,6 +46,8 @@ credits::credits(
 void credits::awake(
 	dfw::input&
 ) {
+
+	music_player.swap(app::music_credits, 100);
 
 	//When rolling we will not use a camera, just move stuff up from their
 	//out-of screen position. So we reset everything by knowing how much the

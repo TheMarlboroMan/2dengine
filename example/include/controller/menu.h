@@ -77,6 +77,7 @@ class menu:
 	const appenv::env&          env;
 	lm::logger&                 logger;
 	d2d::audio::sound_player&   sound_player;
+	d2d::audio::music_player&   music_player;
 
 	app::savegame_manager       savegame_manager;
 	app::automap_game           automap_interface;

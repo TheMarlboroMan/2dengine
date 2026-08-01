@@ -3,6 +3,7 @@
 #include "controller_states.h"
 #include "app/service_provider.h"
 #include <dfw/controller_interface.h>
+#include <d2d/audio/music_player.h>
 #include <lm/logger.h>
 #include <ldv/ttf_representation.h>
 #include <ldv/ttf_font.h>
@@ -48,6 +49,7 @@ class credits:
 	//references...
 	lm::logger&                 log;
 	const ldv::ttf_font&        font;
+	d2d::audio::music_player&   music_player;
 
 	//properties.
 	std::vector<line>           lines;

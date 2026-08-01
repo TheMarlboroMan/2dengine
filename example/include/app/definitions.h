@@ -14,6 +14,7 @@ enum music {
 	music_silence=0,
 	music_boss=2,
 	music_title=4,
+	music_credits=5
 };
 
 enum sound {

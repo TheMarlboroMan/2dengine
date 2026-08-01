@@ -13,6 +13,7 @@
 #include <ldv/ttf_representation.h>
 
 #include <d2d/storage/map_loader.h>
+#include <d2d/audio/music_player.h>
 
 #include <iostream>
 #include <map>
@@ -28,6 +29,7 @@ menu::menu(
 	env{_sp.get_env()},
 	logger{_sp.get_logger()},
 	sound_player{_sp.get_sound_player()},
+	music_player{_sp.get_music_player()},
 	savegame_manager{env},
 	automap_interface{sp.get_automap()}
 {
@@ -75,6 +77,7 @@ void menu::awake(
 	dfw::input& /*input*/
 ) {
 
+	music_player.play(app::music_title, 100);
 	savegame_manager.load();
 	refresh();
 	refresh_save_slots();

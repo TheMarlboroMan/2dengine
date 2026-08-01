@@ -214,9 +214,15 @@ void main::awake(
 	dfw::input& /*input*/
 ) {
 
-	if(current_map.in_game) {
+	//Do not attempt to do anything if we are awaking with no map.
+	if(current_map.loaded) {
 
-		start_game_clock();
+		music_player.swap(current_map.music_id, 500);
+
+		if(current_map.in_game) {
+
+			start_game_clock();
+		}
 	}
 }
 
@@ -605,6 +611,8 @@ void main::load_map(
 
 		current_map.boss->set_boss_map_interface(*this);
 	}
+
+	current_map.loaded=true;
 }
 
 void main::attempt_exit(

@@ -62,7 +62,7 @@ void splash::awake(
 	dfw::input&
 ) {
 
-	music_player.play(app::music_title, 100);
+	music_player.swap(app::music_title, 100);
 }
 
 void splash::loop(

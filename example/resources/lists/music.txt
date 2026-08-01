@@ -2,7 +2,7 @@
 2	resources/music/dream-paralysis.ogg
 3	resources/music/recurrence.ogg
 4	resources/music/the-dreaming-tower.ogg
-5	resources/music/onwards-always.ogg
+5	resources/music/onwards.ogg
 6	resources/music/earth-gale.ogg
 7	resources/music/cascade.ogg
 8	resources/music/red-ash.ogg
