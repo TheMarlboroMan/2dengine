@@ -784,6 +784,20 @@ beginobject
 		comment flag, 1=easy, 2=medium 4=hard
 		linkedto nothing
 	endproperty
+	beginproperty
+		name sound_depart
+		type int
+		default 0
+		comment sound index to play when departing from this node
+		linkedto nothing
+	endproperty
+	beginproperty
+		name sound_arrive
+		type int
+		default 0
+		comment sound index to play when arriving at this node
+		linkedto nothing
+	endproperty
 endobject
 
 beginobject

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "tic_sound_manager.h"
 #include <d2d/motion/definitions.h>
 #include <d2d/motion/mover.h>
 #include <d2d/components/timeout.h>
@@ -23,9 +24,9 @@ class moving_block {
 	bool                                    is_solid() const {return solid;}
 	bool                                    is_crouch_activated() const {return crouch_activated;}
 
-	void                                    tic(ldtools::tdelta, const d2d::motion::mover&);
+	void                                    tic(ldtools::tdelta, const d2d::motion::mover&, tic_sound_manager&);
 	void                                    reset();
-	void                                    set_target(const d2d::collision::point&, int, int, int);
+	void                                    set_target(const d2d::collision::point&, int, int, int, int, int);
 	void                                    invalidate();
 	void                                    toggle();
 
@@ -48,7 +49,9 @@ class moving_block {
 	int                                     tag,
 	                                        first_nodeid,
 	                                        next_id,
-	                                        type;
+	                                        type,
+	                                        depart_sound_index,
+	                                        arrive_sound_index;
 	bool                                    active,
 	                                        initial_active,
 	                                        solid,

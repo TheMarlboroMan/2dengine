@@ -15,6 +15,7 @@ $quiet=array_key_exists("quiet", $args);
 define("projectile_generator", 51);
 define("timed_trap", 53);
 define("moving_block", 55);
+define("moving_block_node", 56);
 define("touch_trigger", 11);
 define("exit_item", 2);
 define("button", 7);
@@ -102,10 +103,17 @@ foreach($files as $filename) {
 
 						$thing->a->solid=1;
 					}
+				break;
+				case moving_block_node:
 
-					if(!property_exists($thing->a, "crouch_activated")) {
+					if(!property_exists($thing->a, "sound_depart")) {
 
-						$thing->a->crouch_activated=0;
+						$thing->a->sound_depart=0;
+					}
+
+					if(!property_exists($thing->a, "sound_arrive")) {
+
+						$thing->a->sound_arrive=0;
 					}
 				break;
 				case breaking_block:

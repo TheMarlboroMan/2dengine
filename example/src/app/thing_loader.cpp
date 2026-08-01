@@ -672,6 +672,8 @@ void thing_loader::add_moving_block_node(
 	int nextid=_attributes.at("nextid").get_int();
 	int velocity=_attributes.at("velocity").get_int();
 	int wait_ms=_attributes.at("wait_ms").get_int();
+	int sound_depart=_attributes.at("sound_depart").get_int();
+	int sound_arrive=_attributes.at("sound_arrive").get_int();
 
 	if(curmap.moving_block_nodes.count(id)) {
 
@@ -683,7 +685,7 @@ void thing_loader::add_moving_block_node(
 	curmap.moving_block_nodes.insert(
 		std::make_pair(
 			id,
-			app::moving_block_node{_pos, id, nextid, velocity, wait_ms}
+			app::moving_block_node{_pos, id, nextid, velocity, wait_ms, sound_depart, sound_arrive}
 		)
 	);
 }

@@ -60,6 +60,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/timer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/autopilot.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/autopilot_node.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tic_sound_manager.cpp
 	PARENT_SCOPE
 )
 

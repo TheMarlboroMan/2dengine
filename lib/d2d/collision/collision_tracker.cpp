@@ -92,22 +92,19 @@ collision_tracker& collision_tracker::tic() {
 		const auto& previous=watched_entity.body->get_previous_box();
 		for(auto& target : targets) {
 
-			//Maybe we have to run some application-specific checks... This is
-			//the point to do so.
-			if(watched_entity.can_push_policy) {
-
-				if(!(*watched_entity.can_push_policy)(*watched_entity.body, *target)) {
-
-					continue;
-				}
-			}
-
 			if(!collides_with(current, *target)) {
 
 				continue;
 			}
 
-			//If attached, just ignore it!... 
+			//Maybe we have to run some application-specific checks... This is
+			//the point to do so.
+			if(watched_entity.can_push_policy && !(*watched_entity.can_push_policy)(*watched_entity.body, *target)) {
+
+				continue;
+			}
+
+			//If attached, just ignore it!...
 			if(std::any_of(
 				std::begin(watched_entity.attached),
 				std::end(watched_entity.attached),
@@ -119,15 +116,32 @@ collision_tracker& collision_tracker::tic() {
 				continue;
 			}
 
+			//TODO:
 			//all we know now is that the box moved but we don't know where
 			//the collision originates from... So we will just use a SHIT
-			//approximation and will change it because this will not work
+			//approximation and SHOULD change it because this will not work
 			//reliably when movement happens in both axes at once.
+
+			if(is_left_of(*target, previous)) {
+
+				corrections.push_back({watched_entity.body, target, box_edge::left});
+			}
+			else if(is_right_of(*target, previous)) {
+
+				corrections.push_back({watched_entity.body, target, box_edge::right});
+			}
+			else if(is_above(*target, previous)) {
+
+				corrections.push_back({watched_entity.body, target, box_edge::top});
+			}
+			else if(is_below(*target, previous)) {
+
+				corrections.push_back({watched_entity.body, target, box_edge::bottom});
+			}
 			//We check "edges" because loss of precision can suddenly decide
 			//that two things colliding are actually not left_of|right_of|above|below
 			//one another because these account for position AND dimension.
-
-			if(is_edge_left_of(*target, previous)) {
+			else if(is_edge_left_of(*target, previous)) {
 
 				corrections.push_back({watched_entity.body, target, box_edge::left});
 			}

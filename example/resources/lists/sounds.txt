@@ -10,3 +10,6 @@
 10	resources/sounds/block_break.ogg
 11	resources/sounds/forbidden.ogg
 12	resources/sounds/thunder.ogg
+13	resources/sounds/spike_start.ogg
+14	resources/sounds/spike_end.ogg
+15	resources/sounds/block_hit.ogg

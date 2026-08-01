@@ -31,6 +31,7 @@
 #include "app/particle_module_bonus.h"
 #include "app/particle_module_smoke.h"
 #include "app/particle_module_pickup.h"
+#include "app/tic_sound_manager.h"
 
 #include <dfw/controller_interface.h>
 #include <d2d/collision/shaper.h>
@@ -149,7 +150,7 @@ class main:
 	void                        mark_map_as_complete();
 	void                        discover_map(int, bool);
 	std::vector<std::string>    extract_green_key_text_nodes() const;
-	void                        tic_repeat_sounds();
+	void                        tic_sounds();
 	bool                        has_looped_sounds() const;
 	void                        stop_looped_sounds();
 	void                        start_game_clock();
@@ -191,6 +192,7 @@ class main:
 	app::player                 player;
 	app::player_input           pli;
 	app::autopilot              autopilot;
+	app::tic_sound_manager      tic_sound_manager;
 	int                         last_entry_id{0};
 	int                         difficulty_setting{app::skill_normal};
 	std::unique_ptr<app::map_transition> transition{nullptr},

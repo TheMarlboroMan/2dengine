@@ -105,8 +105,9 @@ main::main(
 
 	//The renderer for all particles will be the same, so we will register
 	//these in pairs and with the gd as renderer.
+	
 	//TODO: This is UGLY AF. We don't need to own SO much shit here just because
-	//we want po paint a few pretty pixels!
+	//we want to paint a few pretty pixels!
 	current_map.particle_manager.register_module(particle_mod_flame);
 	current_map.particle_manager.register_renderer(gd);
 
@@ -199,7 +200,7 @@ void main::reset_game(
 	//I don't know, I don't remember... where is this called from? Who
 	//owns these things?
 	persistence.reset();
-
+	tic_sound_manager.reset();
 	player.reset();
 	inventory.reset();
 	game_session.reset(_skill, _savegame_file);
@@ -643,7 +644,6 @@ void main::attempt_exit(
 		//finish the game anymore.
 
 		switch(_exit.type) {
-
 			case app::exit::types::redkey:
 				persistence.add(app::pergr_events, app::perev_red_key_teleport, 1);
 			break;
@@ -1314,7 +1314,7 @@ void main::tic_world(
 
 	for(auto& trap : current_map.timed_traps) {
 
-		trap.tic(_delta);
+		trap.tic(_delta, tic_sound_manager);
 	}
 
 	for(auto& button : current_map.buttons) {
@@ -1378,7 +1378,7 @@ void main::tic_world(
 			continue;
 		}
 
-		bl.tic(_delta, mover);
+		bl.tic(_delta, mover, tic_sound_manager);
 
 		if(!bl.has_arrived()) {
 
@@ -1418,7 +1418,7 @@ void main::tic_world(
 		game_timeouts.restart(timeout_bonus_particles);
 	}
 
-	tic_repeat_sounds();
+	tic_sounds();
 }
 
 void main::tic_projectile(
@@ -2029,10 +2029,16 @@ void main::activate_button(
 	play_sound(app::snd_switch);
 }
 
-void main::tic_repeat_sounds() {
+void main::tic_sounds() {
 
+	for(const auto& snd : tic_sound_manager.get_indexes()) {
+
+		play_sound(snd);
+	}
+
+	//TODO: Is this bad like very very bad???
 	//Ok, this is easy... Count if there's any fire traps here
-	//that are active or whatever.
+	//that are active
 
 	int active_count=0;
 
@@ -2051,20 +2057,22 @@ void main::tic_repeat_sounds() {
 		++active_count;
 	}
 
-	//TODO: No need if we already had an active count, right.
-	for(const auto& trap : current_map.timed_traps) {
+	if(0==active_count) {
 
-		if(app::timed_trap::types::fire!=trap.get_type()) {
+		for(const auto& trap : current_map.timed_traps) {
 
-			continue;
+			if(app::timed_trap::types::fire!=trap.get_type()) {
+
+				continue;
+			}
+
+			if(!trap.is_harmful()) {
+
+				continue;
+			}
+
+			++active_count;
 		}
-
-		if(!trap.is_harmful()) {
-
-			continue;
-		}
-
-		++active_count;
 	}
 
 	//Nothing active? was playing and must be stopped?
@@ -2074,15 +2082,17 @@ void main::tic_repeat_sounds() {
 
 			stop_looped_sounds();
 		}
-
-		return;
 	}
-
 	//Nothing playing? Please do play!
-	if(!has_looped_sounds()) {
+	else {
 
-		fire_trap_audio_channel_index=sound_player.play_repeat(app::snd_fire);
+		if(!has_looped_sounds()) {
+
+			fire_trap_audio_channel_index=sound_player.play_repeat(app::snd_fire);
+		}
 	}
+
+	tic_sound_manager.reset();
 }
 
 bool main::has_looped_sounds() const {
@@ -2481,7 +2491,7 @@ void main::activate_tag(
 			continue;
 		}
 
-		trap.toggle();
+		trap.toggle(tic_sound_manager);
 	}
 
 	for(auto& trap : current_map.timed_traps) {
@@ -2986,8 +2996,16 @@ void main::write_moving_block(
 	//loads. Whenever a new waypoint is reached we call this again with the
 	//new waypoint's next id.
 	const auto& waypoint=current_map.moving_block_nodes.at(_target_id);
-	lm::log(logger).info()<<"moving block is set towards "<<waypoint.point<<"\n";
-	_block.set_target(waypoint.point, waypoint.velocity, waypoint.wait_ms, waypoint.nextid);
+	lm::log(logger).info()<<"moving block is set towards "<<waypoint.point<<" arrive_sound:"<<waypoint.arrive_sound_index<<" depart_sound:"<<waypoint.depart_sound_index<<"\n";
+
+	_block.set_target(
+		waypoint.point, 
+		waypoint.velocity, 
+		waypoint.wait_ms, 
+		waypoint.nextid,
+		waypoint.depart_sound_index,
+		waypoint.arrive_sound_index
+	);
 }
 
 void main::player_jump(
@@ -3312,6 +3330,7 @@ void main::boss_play_sound(
 	int _sound_id
 ) {
 
+	//TODO: This is absurd when we can just use the new tic_sound_manager
 	play_sound(_sound_id);
 }
 

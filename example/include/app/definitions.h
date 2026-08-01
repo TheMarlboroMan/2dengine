@@ -28,7 +28,10 @@ enum sound {
 	snd_launch_player=9,
 	snd_block_break=10,
 	snd_forbidden=11,
-	snd_thunder=12
+	snd_thunder=12,
+	snd_spike_activate=13,
+	snd_spike_deactivate=14,
+	snd_block_hit=15,
 };
 
 enum special_backgrounds {

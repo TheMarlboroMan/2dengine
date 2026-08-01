@@ -7,13 +7,17 @@ moving_block_node::moving_block_node(
 	int _id,
 	int _next_id,
 	int _velocity_to_next,
-	int _wait_here_ms
+	int _wait_here_ms,
+	int _depart_sound_index,
+	int _arrive_sound_index
 ):
 	point{_pt},
 	id{_id},
 	nextid{_next_id},
 	velocity{_velocity_to_next},
-	wait_ms{_wait_here_ms}
+	wait_ms{_wait_here_ms},
+	depart_sound_index{_depart_sound_index},
+	arrive_sound_index{_arrive_sound_index}
 {}
 
 std::ostream& app::operator<<(

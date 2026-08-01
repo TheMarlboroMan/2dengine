@@ -1,4 +1,5 @@
 #include "app/moving_block.h"
+#include "app/definitions.h"
 #include <d2d/motion/mover.h>
 #include <ldt/vector_2d.h>
 
@@ -42,7 +43,9 @@ void moving_block::set_target(
 	const d2d::collision::point& _target,
 	int _velocity,
 	int _ms_waiting,
-	int _next_id //the id of the next waypoint after the current one is done!
+	int _next_id, //the id of the next waypoint after the current one is done!
+	int _depart_sound_index,
+	int _arrive_sound_index
 ) {
 
 	target=_target;
@@ -52,12 +55,16 @@ void moving_block::set_target(
 	auto vec=ldt::vector_from_points(ent.get_origin(), target).normalize();
 	ent.set_motion_vector(vec*(double)_velocity);
 
+	arrive_sound_index=_arrive_sound_index;
+	depart_sound_index=_depart_sound_index;
+
 	state=states::waiting;
 }
 
 void moving_block::tic(
 	ldtools::tdelta _delta,
-	const d2d::motion::mover& _mover
+	const d2d::motion::mover& _mover,
+	tic_sound_manager& _snd
 ) {
 
 	if(!active) {
@@ -74,6 +81,10 @@ void moving_block::tic(
 			timeout.tic(_delta);
 			if(timeout.is_finished()) {
 
+				if(depart_sound_index) {
+
+					_snd.add(depart_sound_index);
+				}
 				state=states::in_route;
 			}
 			return;
@@ -84,6 +95,10 @@ void moving_block::tic(
 
 				ent.set_origin(target);
 				state=states::arrived;
+				if(arrive_sound_index) {
+
+					_snd.add(arrive_sound_index);
+				}
 			}
 			return;
 		case states::arrived:

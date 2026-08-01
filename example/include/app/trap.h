@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "tic_sound_manager.h"
 #include <iostream>
 #include <ldtools/time_definitions.h>
 
@@ -27,7 +28,7 @@ class trap {
 	types               get_type() const {return type;}
 	bool                is_active() const {return active;}
 	int                 get_tag() const {return tag;}
-	void                toggle() {active=!active;}
+	void                toggle(tic_sound_manager&);
 	void                reset();
 
 	entity              ent;

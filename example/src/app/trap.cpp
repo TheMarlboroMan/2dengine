@@ -1,4 +1,5 @@
 #include "app/trap.h"
+#include "app/definitions.h"
 #include <sstream>
 
 using namespace app;
@@ -36,7 +37,25 @@ void trap::reset() {
 
 		active=starting_active;
 	}
+}
 
+void trap::toggle(
+	tic_sound_manager& _tsm
+) {
+
+	active=!active;
+
+	if(type==types::spikes) {
+
+		if(active) {
+
+			_tsm.add(snd_spike_activate);
+		}
+		else {
+
+			_tsm.add(snd_spike_deactivate);
+		}
+	}
 }
 
 std::ostream& app::operator<<(

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "tic_sound_manager.h"
 #include <d2d/components/timeout.h>
 #include <iostream>
 #include <ldtools/time_definitions.h>
@@ -30,7 +31,7 @@ class timed_trap {
  */
 	                    timed_trap(d2d::collision::point, types, bool, bool, int, int, int, int);
 
-	void                tic(ldtools::tdelta);
+	void                tic(ldtools::tdelta, tic_sound_manager&);
 	bool                is_harmful() const {return active && state==states::harm;}
 	types               get_type() const {return type;}
 	bool                is_active() const {return active;}
@@ -41,6 +42,8 @@ class timed_trap {
 	entity              ent;
 
 	private:
+
+	void                do_sound(tic_sound_manager&);
 
 	enum class states {
 		pre,

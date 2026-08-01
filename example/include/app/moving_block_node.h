@@ -16,14 +16,16 @@ class moving_block_node {
 
 	public:
 
-	                        moving_block_node(d2d::collision::point, int, int, int, int);
+	                        moving_block_node(d2d::collision::point, int, int, int, int, int, int);
 
 	//I'll just take the easy way and make these public.
 	d2d::collision::point   point;
 	int                     id,
 	                        nextid,
 	                        velocity, //velocity a block will travel to "nextid".
-	                        wait_ms; //ms to wait at this node. 
+	                        wait_ms,//ms to wait at this node. 
+	                        depart_sound_index, //sound to play when departing from this node
+	                        arrive_sound_index; //sound to play when arriving at this node
 };
 
 std::ostream& operator<<(std::ostream&, const moving_block_node&);
