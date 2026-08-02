@@ -217,7 +217,15 @@ void main::awake(
 	//Do not attempt to do anything if we are awaking with no map.
 	if(current_map.loaded) {
 
-		music_player.swap(current_map.music_id, 500);
+		//Special case, coming from inventory / menu in the boss room, with the boss there.
+		if(current_map.boss && !current_map.boss->is_defeated()) {
+
+			music_player.swap(app::music_boss, 500);
+		}
+		else {
+
+			music_player.swap(current_map.music_id, 500);
+		}
 
 		if(current_map.in_game) {
 
@@ -3062,6 +3070,20 @@ void main::sync_facing_blocks() {
 	for(auto& block : current_map.facing_blocks) {
 
 		block.sync(player.facing);
+	}
+
+	//See if any newly active blocks are colliding with the player. We do this
+	//in another loop so as not to return early if the player is defeated.
+
+	for(const auto& block : current_map.facing_blocks) {
+
+		if(block.is_active()
+			&& d2d::collision::collides_with(player.ent, block.ent)
+		) {
+
+			defeat(player);
+			return;
+		}
 	}
 }
 

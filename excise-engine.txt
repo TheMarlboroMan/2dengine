@@ -4,7 +4,6 @@ next steps:
 
 	NEXT:
 
-		check screenshots in the desktop too, for extra annoyances.
 		review geometry... there can be bad stuff.
 
 		mising music:
@@ -23,7 +22,6 @@ next steps:
 
 	BUGS:
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
-		- after toggle block (jump or side), if player is inside block, die.
 
 	IDEAS:
 		- background with moon for last room
@@ -42,8 +40,7 @@ next steps:
 		- game segfaulted a couple times... 
 			should do the ulimit -c 102400 thingy to dump core
 		- what is with the other switch sprite (369-370)? The repeatable ones?
-		  Are we using that??? prepare something with the repeatable buttons.
-		- volcano_011 fire jet patterns.
+			  Are we using that??? prepare something with the repeatable buttons.
 		- a conundrum, what if we EXIT when attempt_exit with a special exit
 		type?? Would we still be safe while the game is NOT SAVED?
 			- I don't know what I meant with this... Oh, maybe I meant DURING
@@ -60,7 +57,6 @@ next steps:
 			but needed... I guess we could have the corners always in the
 			middle layer.
 		- review fade to black transitions between areas and in the shortcuts!
-		- make difficulty levels meaningful!
 		- make ladder platforms the same (ladder goes UNDER platform view)
 		- show data on savegame loading!
 			add this shit in the "values" file, later in the executable.
@@ -71,7 +67,6 @@ next steps:
 		executable...   or somewhere else, for modding purposes
 
 	add lives
-		and gain a life each N bonuses
 		and game over screen
 			- does the game over screen FUCK UP your save file??? Oh yeah, 
 			it should xD

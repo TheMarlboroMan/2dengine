@@ -21,6 +21,13 @@ foreach($dir as $fileinfo) {
 	if(!$fileinfo->isDot()) {
 
 		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+
+		if(0===strpos($fileinfo->getFilename(), "test")) {
+
+			echo "skipping {$filename}".PHP_EOL;
+			continue;
+		}
+
 		$json=json_decode(file_get_contents($filename));
 
 		$attr=$json->attributes;
