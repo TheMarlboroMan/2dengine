@@ -2054,6 +2054,8 @@ void main::tic_sounds() {
 
 	for(const auto& snd : tic_sound_manager.get_indexes()) {
 
+
+		lm::log(logger).debug()<<"tic sound manager will play "<<snd<<"\n";
 		play_sound(snd);
 	}
 
