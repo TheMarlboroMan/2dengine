@@ -35,7 +35,6 @@ next steps:
 	WISHLIST-BALANCING-POLISHING:
 		- delete test maps
 		- breaking platforms last frame seems broken.
-		- crouch while a platform is moving up and the camera goes nuts.
 		- particles when the player eats a projectile!
 		- game segfaulted a couple times... 
 			should do the ulimit -c 102400 thingy to dump core

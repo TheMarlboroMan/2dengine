@@ -35,6 +35,7 @@ class debug_display {
  *centers the debug camera on a given point. 
  */
 	void						center_on(const d2d::collision::spatiable&);
+	void						center_on(const d2d::collision::box&);
 
 /**
  * sets up the camera margin.

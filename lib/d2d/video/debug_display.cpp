@@ -57,8 +57,19 @@ void debug_display::draw(
 void debug_display::center_on(
 	const d2d::collision::spatiable& _spatiable
 ) {
+
 	int x=_spatiable.get_x()+(_spatiable.get_w() / 2);
 	int y=_spatiable.get_y()-(_spatiable.get_h() / 2);
+
+	camera.center_on({x, y});
+}
+
+void debug_display::center_on(
+	const d2d::collision::box& _box
+) {
+
+	int x=_box.origin.x+(_box.w / 2);
+	int y=_box.origin.y-(_box.h / 2);
 
 	camera.center_on({x, y});
 }

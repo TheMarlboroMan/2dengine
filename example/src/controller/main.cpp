@@ -878,11 +878,11 @@ void main::take_player_to_entry(
 
 	//Center camera on map now..
 	camera.center_on(
-		d2d::video::to_screen(player.ent)
+		d2d::video::to_screen(player.get_standing_box())
 	);
 
 #ifdef IS_DEBUG_BUILD
-	dd.center_on(player.ent);
+	dd.center_on(player.get_standing_box());
 #endif
 }
 
@@ -991,12 +991,12 @@ void main::tic(
 	if(/**player_moved && */ ! player_defeated) {
 
 		camera.center_on(
-			d2d::video::to_screen(player.ent)
+			d2d::video::to_screen(player.get_standing_box())
 		);
 
 
 #ifdef IS_DEBUG_BUILD
-		dd.center_on(player.ent);
+		dd.center_on(player.get_standing_box());
 #endif
 	}
 
