@@ -180,6 +180,10 @@ enum sprites {
 
 	spr_block_arrow=255,
 
+	spr_falling_fire_trap=225,
+	spr_horizontal_fire_trap_face_right=219,
+	spr_horizontal_fire_trap_face_left=218,
+
 	spr_boss_center=420,
 	spr_boss_side=421,
 	spr_boss_skull=422

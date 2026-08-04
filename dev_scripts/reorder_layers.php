@@ -9,34 +9,36 @@ $switch_type=7;
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$json=json_decode(file_get_contents($filename));
+		continue;
+	}
 
-		$things=null;
-		$background=null;
-		$middle=null;
-		$foreground=null;
-		$logic=null;
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$json=json_decode(file_get_contents($filename));
 
-		echo $filename.PHP_EOL;
+	$things=null;
+	$background=null;
+	$middle=null;
+	$foreground=null;
+	$logic=null;
 
-		foreach($json->layers as $layer) {
-	
-			switch($layer->meta->id) {
+	echo $filename.PHP_EOL;
 
-					case "things": $things=$layer; break;
-					case "background": $background=$layer; break;
-					case "middle": $middle=$layer; break;
-					case "foreground": $foreground=$layer; break;
-					case "logic": $logic=$layer; break;
-			}
+	foreach($json->layers as $layer) {
+
+		switch($layer->meta->id) {
+
+				case "things": $things=$layer; break;
+				case "background": $background=$layer; break;
+				case "middle": $middle=$layer; break;
+				case "foreground": $foreground=$layer; break;
+				case "logic": $logic=$layer; break;
 		}
+	}
 
-		$json->layers=[$things, $foreground, $middle, $background, $logic];
-		file_put_contents($filename, json_encode($json));
-    }
+	$json->layers=[$things, $foreground, $middle, $background, $logic];
+	file_put_contents($filename, json_encode($json));
 }
 
 echo "maps redone".PHP_EOL;

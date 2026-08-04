@@ -264,6 +264,11 @@ void game_draw::draw(
 		draw_projectile(_screen, subject);
 	}
 
+	for(const auto& subject : _map.projectile_generators) {
+
+		draw_projectile_generator(_screen, subject);
+	}
+
 	for(const auto& subject : _map.moving_blocks) {
 
 		draw_moving_block(_screen, subject);
@@ -710,6 +715,49 @@ void game_draw::draw_platform(
 	sprite_draw.draw(
 		_screen,
 		d2d::video::to_screen(_block.get_origin()),
+		index
+	);
+}
+
+void game_draw::draw_projectile_generator(
+	ldv::screen& _screen,
+	const app::projectile_generator& _generator
+) {
+
+	//Drawing the generator may seem insane when we can put the tiles on
+	//the map, but tile layers won't scale to different difficulty settings
+	//while this other method will, so that we don´t have a gargoyle on 
+	//easy that does not really shoot at all.
+
+	auto pos=_generator.get_spawn_point();
+	auto index=0;
+
+	switch(_generator.get_type()) {
+
+		case app::projectile_generator::types::falling:
+
+			//Draw this little tile above... The origin is adjusted
+			//to be at the middle of the tile, so just calculate.
+			index=app::spr_falling_fire_trap;
+			pos.x-=app::tile_w / 2;
+			pos.y+=app::tile_h / 2;
+		break;
+		case app::projectile_generator::types::horizontal:
+
+			index=_generator.get_velocity() < 0.
+				? app::spr_horizontal_fire_trap_face_left
+				: app::spr_horizontal_fire_trap_face_right;
+			pos.x-=app::tile_w / 2;
+			pos.y-=app::tile_h / 2;
+		break;
+		default:
+			return;
+	}
+
+
+	sprite_draw.draw(
+		_screen,
+		d2d::video::to_screen(pos),
 		index
 	);
 }

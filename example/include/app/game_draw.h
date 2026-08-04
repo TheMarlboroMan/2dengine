@@ -38,6 +38,7 @@ class secret_cover;
 class button;
 class gate;
 class projectile;
+class projectile_generator;
 class breaking_platform;
 class platform_block;
 class moving_block;
@@ -122,6 +123,7 @@ class game_draw:
 	void                        draw_one_use_button(ldv::screen&, const app::button&);
 	void                        draw_repeatable_button(ldv::screen&, const app::button&);
 	void                        draw_gate(ldv::screen&, const app::gate&);
+	void                        draw_projectile_generator(ldv::screen&, const app::projectile_generator&);
 	void                        draw_projectile(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_linear(ldv::screen&, const app::projectile&);
 	void                        draw_projectile_vertical(ldv::screen&, const app::projectile&);

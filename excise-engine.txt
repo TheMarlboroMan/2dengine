@@ -4,6 +4,8 @@ next steps:
 
 	NEXT:
 
+		fire falling traps, put the "texture" above it instead of having them
+			on the levels???
 		review geometry... there can be bad stuff.
 
 		mising music:

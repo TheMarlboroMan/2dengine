@@ -13,12 +13,14 @@ $mapname_len=strlen($mapname);
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		if(substr($fileinfo->getFilename(), 0, $mapname_len)==$mapname) {
+		continue;
+	}
 
-			$files[]="../example/resources/maps/{$fileinfo->getFilename()}";
-		}
+	if(substr($fileinfo->getFilename(), 0, $mapname_len)==$mapname) {
+
+		$files[]="../example/resources/maps/{$fileinfo->getFilename()}";
 	}
 }
 

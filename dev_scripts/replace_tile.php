@@ -32,37 +32,39 @@ $decoration_layers=["foreground", "background", "middle"];
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$must_rewrite=false;
+		continue;
+	}
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$json=json_decode(file_get_contents($filename));
+	$must_rewrite=false;
 
-		$attr=$json->attributes;
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$json=json_decode(file_get_contents($filename));
 
-		foreach($json->layers as &$layer) {
+	$attr=$json->attributes;
 
-			if(!in_array($layer->meta->id, $decoration_layers)) {
+	foreach($json->layers as &$layer) {
 
-				continue;
-			}
+		if(!in_array($layer->meta->id, $decoration_layers)) {
 
-			foreach($layer->data as $tile) {
-
-				if($tile->t===$from) {
-
-					$tile->t=$to;
-					$must_rewrite=true;
-				}
-			}
+			continue;
 		}
 
-		if($must_rewrite) {
+		foreach($layer->data as $tile) {
 
-			file_put_contents($filename, json_encode($json));
+			if($tile->t===$from) {
+
+				$tile->t=$to;
+				$must_rewrite=true;
+			}
 		}
-    }
+	}
+
+	if($must_rewrite) {
+
+		file_put_contents($filename, json_encode($json));
+	}
 }
 
 exit(0);

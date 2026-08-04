@@ -18,42 +18,44 @@ $valid_treasure=[0, 1, 2, 3];
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+		continue;
+	}
 
-		if(0===strpos($fileinfo->getFilename(), "test")) {
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
 
-			echo "skipping {$filename}".PHP_EOL;
+	if(0===strpos($fileinfo->getFilename(), "test")) {
+
+		echo "skipping {$filename}".PHP_EOL;
+		continue;
+	}
+
+	$json=json_decode(file_get_contents($filename));
+
+	$attr=$json->attributes;
+
+	foreach($json->layers as &$layer) {
+
+		if($layer->meta->id!=="things") {
+
 			continue;
 		}
 
-		$json=json_decode(file_get_contents($filename));
+		foreach($layer->data as &$thing) {
 
-		$attr=$json->attributes;
+			switch($thing->t) {
 
-		foreach($json->layers as &$layer) {
+				case $collectible_type:
 
-			if($layer->meta->id!=="things") {
+					if(in_array($thing->a->type, $valid_treasure)) {
 
-				continue;
-			}
-
-			foreach($layer->data as &$thing) {
-
-				switch($thing->t) {
-
-					case $collectible_type:
-
-						if(in_array($thing->a->type, $valid_treasure)) {
-
-							++$total_count;
-						}
-					break;
-				}
+						++$total_count;
+					}
+				break;
 			}
 		}
-    }
+	}
 }
 echo $total_count.PHP_EOL;
 exit(0);

@@ -27,11 +27,19 @@ $dir=new DirectoryIterator("../example/resources/maps");
 $files=[];
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$files[]=$filename;
+		continue;
 	}
+
+	if(0===strpos($fileinfo->getFilename(), "test")) {
+
+		echo "skipping {$filename}".PHP_EOL;
+		continue;
+	}
+
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$files[]=$filename;
 }
 
 sort($files);

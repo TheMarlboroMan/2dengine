@@ -77,7 +77,7 @@ void menu::awake(
 	dfw::input& /*input*/
 ) {
 
-	music_player.play(app::music_title, 100);
+	music_player.swap(app::music_title, 100);
 	savegame_manager.load();
 	refresh();
 	refresh_save_slots();

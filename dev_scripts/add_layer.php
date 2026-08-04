@@ -20,13 +20,15 @@ foreach($dir as $fileinfo) {
 		"data" => []
 	];
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$json=json_decode(file_get_contents($filename));
-		$json->layers[]=$new_layer;
-		file_put_contents($filename, json_encode($json));
-    }
+		continue;
+	}
+
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$json=json_decode(file_get_contents($filename));
+	$json->layers[]=$new_layer;
+	file_put_contents($filename, json_encode($json));
 }
 
 echo "maps redone".PHP_EOL;

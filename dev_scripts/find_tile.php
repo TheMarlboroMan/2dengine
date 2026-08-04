@@ -30,31 +30,33 @@ $decoration_layers=["foreground", "background", "middle"];
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$json=json_decode(file_get_contents($filename));
+		continue;
+	}
 
-		$attr=$json->attributes;
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$json=json_decode(file_get_contents($filename));
 
-		foreach($json->layers as &$layer) {
+	$attr=$json->attributes;
 
-			if(!in_array($layer->meta->id, $decoration_layers)) {
+	foreach($json->layers as &$layer) {
 
-				continue;
-			}
+		if(!in_array($layer->meta->id, $decoration_layers)) {
 
-			foreach($layer->data as $tile) {
+			continue;
+		}
 
-				$type=$tile->t;
-				if($type===$id) {
+		foreach($layer->data as $tile) {
 
-					echo $filename.PHP_EOL;
-					break 2;
-				}
+			$type=$tile->t;
+			if($type===$id) {
+
+				echo $filename.PHP_EOL;
+				break 2;
 			}
 		}
-    }
+	}
 }
 
 exit(0);

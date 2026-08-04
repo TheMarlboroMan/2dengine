@@ -16,34 +16,42 @@ $collectible_type=5;
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
-	if(!$fileinfo->isDot()) {
+	if($fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
-		$json=json_decode(file_get_contents($filename));
+		continue;
+	}
 
-		$attr=$json->attributes;
+	if(0===strpos($fileinfo->getFilename(), "test")) {
 
-		foreach($json->layers as &$layer) {
+		echo "skipping {$filename}".PHP_EOL;
+		continue;
+	}
 
-			if($layer->meta->id!=="things") {
+	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$json=json_decode(file_get_contents($filename));
 
-				continue;
-			}
+	$attr=$json->attributes;
 
-			foreach($layer->data as &$thing) {
+	foreach($json->layers as &$layer) {
 
-				switch($thing->t) {
+		if($layer->meta->id!=="things") {
 
-					case $collectible_type:
+			continue;
+		}
 
-						if($thing->a->type==10) {
+		foreach($layer->data as &$thing) {
 
-							say("found thing with id {$thing->a->id} in $filename", $quiet);
-						}
-					break;
-				}
+			switch($thing->t) {
+
+				case $collectible_type:
+
+					if($thing->a->type==10) {
+
+						say("found thing with id {$thing->a->id} in $filename", $quiet);
+					}
+				break;
 			}
 		}
-    }
+	}
 }
 exit(0);
