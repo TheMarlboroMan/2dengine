@@ -2397,7 +2397,8 @@ bool main::can_stand_up(
 	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
 	auto current_tiles=adapter.find(
 		pos,
-		current_map.tile_finder
+		current_map.tile_finder,
+		app::filter_stand_up{}
 	);
 
 	sc.detect_all(current_tiles);

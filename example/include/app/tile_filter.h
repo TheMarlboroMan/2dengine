@@ -148,4 +148,20 @@ struct filter_remove_harm_tiles {
 			&& _tile.type!=app::tile_harm_half_right;
 	}
 };
+
+struct filter_stand_up {
+
+	bool operator()(
+		const d2d::collision::box&,
+		const d2d::collision::tile& _tile
+	) const {
+
+		if(_tile.type==app::tile_monster_block || _tile.type==app::tile_camera_stop) {
+
+			return false;
+		}
+
+		return true;
+	}
+};
 }

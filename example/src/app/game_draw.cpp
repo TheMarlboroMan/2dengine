@@ -710,6 +710,9 @@ void game_draw::draw_platform(
 		case app::platform_block::types::blue_block:
 			index=app::spr_platform_blue_block;
 		break;
+		case app::platform_block::types::wooden_bridge:
+			index=app::spr_platform_wooden_bridge;
+		break;
 	}
 
 	sprite_draw.draw(

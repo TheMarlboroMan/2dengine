@@ -20,7 +20,8 @@ class platform_block:
 		branch,
 		rock,
 		light_block, //thin white block
-		blue_block //thin blue line
+		blue_block, //thin blue line
+		wooden_bridge
 	};
 
 	                                        platform_block(d2d::collision::point, types);

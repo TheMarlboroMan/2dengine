@@ -303,7 +303,7 @@ beginobject
 		name type
 		type int
 		default 0
-		comment 0=branch 1=rock 2=light line 3=blue line
+		comment 0=branch 1=rock 2=light line 3=blue line 4=wooden bridge
 		linkedto nothing
 	endproperty
 	beginproperty
@@ -788,7 +788,7 @@ beginobject
 		name sound_depart
 		type int
 		default 0
-		comment sound index to play when departing from this node
+		comment sound index to play when departing towards this node from the previous
 		linkedto nothing
 	endproperty
 	beginproperty
