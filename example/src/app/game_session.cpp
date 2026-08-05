@@ -9,9 +9,8 @@ void game_session::reset(
 	const std::string& _savegame_file
 ) {
 
-	set_skill_level(_value);
+	set_skill_level(_value); //this also sets lives!
 	savegame_file=_savegame_file;
-	lives=0;
 	elapsed_seconds=0;
 	current_map_id=0;
 	discovered_rooms=0;
@@ -26,10 +25,12 @@ void game_session::set_skill_level(
 
 		case app::skill_easy:
 			skill_level=_value;
+			lives=0;
 			return;
 
 		case app::skill_normal:
 			skill_level=_value;
+			lives=0;
 			return;
 
 		case app::skill_hard:

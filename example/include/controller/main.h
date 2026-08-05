@@ -115,6 +115,7 @@ class main:
 	void                        grab_ladder(app::player&, const app::ladder&);
 	void                        defeat(app::player&);
 	void                        walk_out_of_ladder(app::player&, const d2d::collision::tile&, int);
+	void                        give_extra_life();
 
 	//Other gameplay methods.
 	void                        pick_up_collectible(app::player&, app::collectible&);

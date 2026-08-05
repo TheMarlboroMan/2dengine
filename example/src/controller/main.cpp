@@ -1927,6 +1927,9 @@ void main::pick_up_collectible(
 		);
 	}
 
+	//Five bonuses nets you an extra life. The rest of the collectibles
+	//give an extra life directly.
+
 	switch(_collectible.type) {
 
 		case app::collectible::gold_ingot:
@@ -1935,36 +1938,40 @@ void main::pick_up_collectible(
 		case app::collectible::diamond:
 
 			++inventory.treasure;
-			//Five bonuses nets you an extra life.
-			if(game_session.is_with_lives() && 0==inventory.treasure % 5) {
+			if(0==inventory.treasure % 5) {
 
-				//TODO: Play some fanfare!
-				++game_session.lives;
+				give_extra_life();
 			}
 		break;
 		case app::collectible::yellow_key:
 
 			inventory.yellow_keys++;
+			give_extra_life();
 		break;
 		case app::collectible::blue_key:
 
 			inventory.blue_keys++;
+			give_extra_life();
 		break;
 		case app::collectible::red_key:
 
 			inventory.red_keys++;
+			give_extra_life();
 		break;
 		case app::collectible::green_key:
 
 			inventory.green_keys++;
+			give_extra_life();
 		break;
 		case app::collectible::white_key:
 
 			inventory.white_keys++;
+			give_extra_life();
 		break;
 		case app::collectible::ultimate:
 
 			inventory.ultimate++;
+			give_extra_life();
 		break;
 	}
 }
@@ -3426,5 +3433,16 @@ void main::start_game_clock() {
 		return;
 	}
 
+}
+
+void main::give_extra_life() {
+
+	if(!game_session.is_with_lives()) {
+
+		return;
+	}
+
+	//TODO: Play some fanfare!
+	++game_session.lives;
 }
 
