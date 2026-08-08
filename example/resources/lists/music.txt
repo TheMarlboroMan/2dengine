@@ -7,3 +7,4 @@
 7	resources/music/cascade.ogg
 8	resources/music/red-ash.ogg
 9	resources/music/of-ice-and-stone.ogg
+10  resources/music/upwards.ogg

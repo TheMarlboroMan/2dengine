@@ -9,12 +9,14 @@ $mapname=$argv[1];
 $musicid=(int)$argv[2];
 
 $mapname_len=strlen($mapname);
+$files=[];
 
 $dir=new DirectoryIterator("../example/resources/maps");
 foreach($dir as $fileinfo) {
 
 	if($fileinfo->isDot()) {
 
+		echo "skipping {$fileinfo->getFilename()}".PHP_EOL;
 		continue;
 	}
 
