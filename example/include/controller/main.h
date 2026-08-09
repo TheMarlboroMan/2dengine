@@ -126,7 +126,7 @@ class main:
 	int                         play_sound(int);
 	void                        save_game(const std::string&, int);
 	void                        reset_game(int, const std::string&);
-	void                        game_over();
+	void                        start_game_over();
 	void                        mount_player_in_blocks(app::player&);
 	void                        player_jump(app::player&);
 	void                        player_jump_out_of_ladder(app::player&, double);
@@ -198,7 +198,6 @@ class main:
 	int                         difficulty_setting{app::skill_normal};
 	std::unique_ptr<app::map_transition> transition{nullptr},
 	                            transition_out{nullptr};
-
 	int                         fire_trap_audio_channel_index{-1};
 
 	//This will be used to store information of the next level after a transition
@@ -208,7 +207,8 @@ class main:
 		enum class types{
 			into_game, //starting game transition 
 			into_credits, //transitions into credits
-			into_new_map //transitions into gameplay
+			into_new_map, //transitions into gameplay
+			into_game_over //transitions into game over.
 		};
 
 		std::string             map_filename;

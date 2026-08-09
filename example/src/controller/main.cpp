@@ -204,10 +204,18 @@ void main::reset_game(
 	game_session.reset(_skill, _savegame_file);
 }
 
-void main::game_over() {
+void main::start_game_over() {
 
-	//TODO: TRANSITION???
-	set_state(controller::state_game_over);
+	transition.reset(
+		new app::map_transition_fade(
+			app::map_transition_fade::colors::color_black,
+			0, //to,
+			5. //five seconds
+		)
+	);
+
+	//Go into game over when we are done.
+	transition_exit_info.type=transition_exit::types::into_game_over;
 }
 
 void main::awake(
@@ -314,6 +322,10 @@ bool main::loop_transition(
 			case transition_exit::types::into_credits:
 
 				set_state(controller::state_credits);
+			break;
+			case transition_exit::types::into_game_over:
+
+				set_state(controller::state_game_over);
 			break;
 			case transition_exit::types::into_game:
 				//Noop.
@@ -2255,13 +2267,13 @@ void main::defeat(
 
 	if(game_session.is_with_lives()) {
 
-		if(0==game_session.lives) {
+		--game_session.lives;
+		if(0>=game_session.lives) {
 
-			game_over();
+			start_game_over();
 			return;
 		}
 
-		--game_session.lives;
 		gd.setup_lives_banner(game_session.lives);
 		//TODO: save game at our current map and entry id!
 		//TODO: What is the name of our map xD????
