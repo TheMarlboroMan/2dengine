@@ -6,6 +6,8 @@ next steps:
 
 		review geometry... there can be bad stuff.
 
+		add some treasure to the tower?
+
 		mising music:
 			- extra life could be music.
 			- credits (or reuse "onwards").

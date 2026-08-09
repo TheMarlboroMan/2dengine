@@ -433,6 +433,10 @@ void main::load_map(
 	std::stringstream ss;
 	ss<<env.build_app_path("resources/maps/")<<_map_name<<".json";
 
+#ifdef IS_DEBUG_BUILD
+	current_map_name=_map_name;
+#endif
+
 	const std::string map_path{ss.str()};
 
 	lm::log(logger).info()<<"will attempt to load map "<<map_path<<"\n";
