@@ -34,7 +34,7 @@ foreach($dir as $fileinfo) {
 
 	if(0===strpos($fileinfo->getFilename(), "test")) {
 
-		echo "skipping {$filename}".PHP_EOL;
+		say("skipping {$fileinfo->getFilename()}, test map", $quiet);
 		continue;
 	}
 
@@ -48,7 +48,7 @@ foreach($files as $filename) {
 
 	$json=json_decode(file_get_contents($filename));
 
-	say($filename, $quiet);
+	say("setting ids on {$filename}...", $quiet);
 
 	$attr=$json->attributes;
 

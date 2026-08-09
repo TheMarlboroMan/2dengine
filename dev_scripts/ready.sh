@@ -13,7 +13,7 @@ else
 	exit 1
 fi
 
-if [ "on" == "${with_ids}"] 
+if [ "on" == "${with_ids}" ]
 then
 	php set_unique_ids.php
 fi
