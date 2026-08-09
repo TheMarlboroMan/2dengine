@@ -99,7 +99,7 @@ class menu:
 		skill_option_normal,
 		skill_option_hard
 	};
-	int                         skill_option=skill_option_easy;
+	int                         skill_option=skill_option_normal;
 
 	enum slot_options {
 		slot_one,

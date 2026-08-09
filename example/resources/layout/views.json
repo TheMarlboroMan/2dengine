@@ -147,6 +147,15 @@
 			"rgba":[255, 255, 255, 255]
 		},
 		{
+			"id":"menu_skill_description",
+			"type":"ttf",
+			"location":[16, 160],
+			"text":"description of the skill level",
+			"font":"main_menu_small_font",
+			"line_height_ratio":1.5,
+			"rgba":[128, 128, 128, 255]
+		},
+		{
 			"id":"menu_date",
 			"type":"ttf",
 			"location":[250, 210],

@@ -56,7 +56,6 @@ menu::menu(
 	auto document=tools::parse_json_string(tools::dump_file(layout_path));
 	view.parse(document["main_menu"]);
 
-
 	const auto& i8n=sp.get_localization();
 
 	view.set_text("menu_start", i8n.get("main_menu-start"));
@@ -67,6 +66,8 @@ menu::menu(
 	view.set_text("menu_skill_easy", i8n.get("main_menu-skill_easy"));
 	view.set_text("menu_skill_normal", i8n.get("main_menu-skill_normal"));
 	view.set_text("menu_skill_hard", i8n.get("main_menu-skill_hard"));
+	//normal is the default
+	view.set_text("menu_skill_description", i8n.get("main_menu-skill_normal_description"));
 	view.set_text("menu_savegame_delete_hint", i8n.get("main_menu-delete_slot"));
 	view.set_text("menu_savegame_delete_confirm", i8n.get("main_menu-delete_slot_confirm"));
 
@@ -409,9 +410,10 @@ void menu::set_visible_skill_select(
 ) {
 
 	for(const auto str : {
-		"menu_skill_easy", 
+		"menu_skill_easy",
 		"menu_skill_normal",
-		"menu_skill_hard"
+		"menu_skill_hard",
+		"menu_skill_description"
 	}) {
 
 		view.set_visible(str, _val);
@@ -467,6 +469,7 @@ void menu::refresh() {
 		"menu_skill_easy",
 		"menu_skill_normal",
 		"menu_skill_hard",
+		"menu_skill_description",
 		"menu_start",
 		"menu_continue",
 		"menu_controls",
@@ -537,24 +540,29 @@ void menu::refresh() {
 					return;
 			}
 
-		case levels::skill:
+		case levels::skill: {
 
+			const auto& i8n=sp.get_localization();
 			toggle("menu_start", true);
 
 			switch(skill_option) {
 
 				case skill_option_easy:
 					toggle("menu_skill_easy", true);
+					view.set_text("menu_skill_description", i8n.get("main_menu-skill_easy_description"));
 					return;
 				case skill_option_normal:
 					toggle("menu_skill_normal", true);
+					view.set_text("menu_skill_description", i8n.get("main_menu-skill_normal_description"));
 					return;
 				case skill_option_hard:
 					toggle("menu_skill_hard", true);
+					view.set_text("menu_skill_description", i8n.get("main_menu-skill_hard_description"));
 					return;
 				default:
 					return;
 			}
+		}
 
 		case levels::confirm_delete:
 			return;

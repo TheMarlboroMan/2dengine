@@ -12,6 +12,25 @@
 [[main_menu-skill_easy]]{{easy}}
 [[main_menu-skill_normal]]{{normal}}
 [[main_menu-skill_hard]]{{hard}}
+
+## length of description #######
+[[main_menu-skill_easy_description]]{{
+Easy mode with infinite lives.
+Focus on exploration and become 
+familiar with the game world.
+}}
+## length of description #######
+[[main_menu-skill_normal_description]]{{
+Normal difficulty with infinite
+lives and tighter challenges.
+}}
+## length of description #######
+[[main_menu-skill_hard_description]]{{
+Hardest challenge. Lives are
+limited and the savegame is
+deleted on game over!.
+}}
+
 [[main_menu-new_game]]{{new game}}
 [[main_menu-continue_game]]{{load game}}
 [[main_menu-delete_slot]]{{press pause to delete slot}}
