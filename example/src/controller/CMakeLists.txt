@@ -8,8 +8,8 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/options.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/show_text.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/question.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/leave_ending.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/credits.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_over.cpp
 	PARENT_SCOPE
 )
 

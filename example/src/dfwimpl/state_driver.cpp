@@ -32,8 +32,8 @@
 #include "controller/options.h"
 #include "controller/show_text.h"
 #include "controller/question.h"
-#include "controller/leave_ending.h"
 #include "controller/credits.h"
+#include "controller/game_over.h"
 //[new-controller-header-mark]
 
 using namespace dfwimpl;
@@ -404,15 +404,15 @@ void state_driver::register_controllers(
 	);
 
 	reg(
-		c_leave_ending,
-		controller::state_leave_ending,
-		new controller::leave_ending(*service_provider)
-	);
-
-	reg(
 		c_credits,
 		controller::state_credits,
 		new controller::credits(*service_provider)
+	);
+
+	reg(
+		c_game_over,
+		controller::state_game_over,
+		new controller::game_over(*service_provider)
 	);
 }
 
@@ -422,6 +422,12 @@ void state_driver::prepare_state(
 ) {
 
 	lm::log(log).info()<<"prepare state from "<<_current<<" to "<<_next<<std::endl;
+
+	if(_current==controller::state_game_over && _next==controller::state_menu) {
+
+		auto& menuc=static_cast<controller::menu&>(*c_menu);
+		menuc.set_cannot_continue();
+	}
 
 	if(_current==controller::state_menu && _next==controller::state_main) {
 

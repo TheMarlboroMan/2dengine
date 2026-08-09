@@ -6,7 +6,12 @@ next steps:
 
 		review geometry... there can be bad stuff.
 
-		add some treasure to the tower?
+		ceiling on boss can still show sparks coming down when projectiles collide!
+		game over transition to game over screen
+		decorate game over screen
+			show info on game over screen, how long did you play? how many rooms?
+		actually, we have 4 lives! that's bad!!
+		after game over we should reset the menu to "start" and not to "continue"
 
 		mising music:
 			- extra life could be music.
@@ -65,11 +70,6 @@ next steps:
 
 	for the final build: remove values file, put that stuff in the
 		executable...   or somewhere else, for modding purposes
-
-	add lives
-		and game over screen
-			- does the game over screen FUCK UP your save file??? Oh yeah, 
-			it should xD
 
 ============================
 

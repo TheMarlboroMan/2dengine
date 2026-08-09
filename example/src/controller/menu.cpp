@@ -30,7 +30,7 @@ menu::menu(
 	logger{_sp.get_logger()},
 	sound_player{_sp.get_sound_player()},
 	music_player{_sp.get_music_player()},
-	savegame_manager{env},
+	savegame_manager{_sp.get_savegame_manager()},
 	automap_interface{sp.get_automap()}
 {
 

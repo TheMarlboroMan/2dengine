@@ -81,8 +81,8 @@ class state_driver:
 	ptr_controller                  c_options;
 	ptr_controller                  c_show_text;
 	ptr_controller                  c_question;
-	ptr_controller                  c_leave_ending;
 	ptr_controller                  c_credits;
+	ptr_controller                  c_game_over;
 	//[new-controller-property-mark]
 };
 

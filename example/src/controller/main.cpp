@@ -206,8 +206,8 @@ void main::reset_game(
 
 void main::game_over() {
 
-	//TODO: This is only hard mode and it should remove the save xD
-	throw std::runtime_error("game over is not implemented!");
+	//TODO: TRANSITION???
+	set_state(controller::state_game_over);
 }
 
 void main::awake(

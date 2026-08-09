@@ -7,6 +7,7 @@
 #include "app/game_session.h"
 #include "app/random.h"
 #include "app/show_text_exchange.h"
+#include "app/savegame_manager.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -333,6 +334,22 @@ app::show_text_exchange& service_provider::get_show_text_exchange() {
 	return *text_exchange;
 }
 
+app::savegame_manager& service_provider::get_savegame_manager() {
+
+	if(nullptr==savegame_manager_instance) {
+
+		savegame_manager_instance.reset(
+			new app::savegame_manager(
+				get_env()
+			)
+		);
+	}
+
+	savegame_manager_instance->load();
+
+	return *savegame_manager_instance;
+}
+
 void service_provider::reset_game_properties(
 	int _skill,
 	const std::string& _savegame_file
@@ -341,3 +358,4 @@ void service_provider::reset_game_properties(
 	get_inventory().reset();
 	get_game_session().reset(_skill, _savegame_file);
 }
+
