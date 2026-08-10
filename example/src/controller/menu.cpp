@@ -75,8 +75,21 @@ menu::menu(
 }
 
 void menu::awake(
-	dfw::input& /*input*/
+	dfw::input& /*input*/,
+	int _previous
 ) {
+
+	//The game is over. we cannot continue anymore!
+	if(_previous==state_game_over || _previous==state_credits) {
+
+		game_can_continue=false;
+
+		//Set the option at "new game/load"
+		if(_previous==state_game_over) {
+
+			main_option=main_option_choose_slot;
+		}
+	}
 
 	music_player.swap(app::music_title, 100);
 	savegame_manager.load();
@@ -85,9 +98,14 @@ void menu::awake(
 }
 
 void menu::slumber(
-	dfw::input& /*input*/
+	dfw::input& /*input*/,
+	int _next
 ) {
 
+	if(state_main==_next) {
+
+		game_can_continue=true;
+	}
 }
 
 void menu::loop(

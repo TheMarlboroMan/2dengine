@@ -76,3 +76,4 @@ void savegame_manager::erase(
 	std::filesystem::remove(slot.filename);
 	load();
 }
+

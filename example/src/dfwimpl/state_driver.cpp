@@ -423,12 +423,6 @@ void state_driver::prepare_state(
 
 	lm::log(log).info()<<"prepare state from "<<_current<<" to "<<_next<<std::endl;
 
-	if(_current==controller::state_game_over && _next==controller::state_menu) {
-
-		auto& menuc=static_cast<controller::menu&>(*c_menu);
-		menuc.set_cannot_continue();
-	}
-
 	if(_current==controller::state_menu && _next==controller::state_main) {
 
 		//Are we starting a new game?
@@ -445,7 +439,6 @@ void state_driver::prepare_state(
 					menuc.get_selected_skill(),
 					menuc.get_slot_filename()
 				);
-				menuc.set_can_continue();
 				return;
 
 			case controller::menu::signals::continue_game:
@@ -461,16 +454,8 @@ void state_driver::prepare_state(
 					menuc.get_slot_filename()
 				);
 				mainc.load_game();
-				menuc.set_can_continue();
 				return;
 		}
-	}
-
-	if(_current==controller::state_credits && _next==controller::state_menu) {
-
-		//The game is over. we cannot continue anymore!
-		auto& menuc=static_cast<controller::menu&>(*c_menu);
-		menuc.set_cannot_continue();
 	}
 }
 

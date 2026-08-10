@@ -49,7 +49,8 @@ options::options(
 }
 
 void options::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	index=0;
@@ -60,7 +61,8 @@ void options::awake(
 }
 
 void options::slumber(
-	dfw::input& 
+	dfw::input&,
+	int
 ) {
 
 	lm::log(logger).info()<<"will save new values to config file"<<std::endl;

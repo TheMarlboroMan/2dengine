@@ -59,7 +59,8 @@ splash::splash(
 }
 
 void splash::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	music_player.swap(app::music_title, 100);

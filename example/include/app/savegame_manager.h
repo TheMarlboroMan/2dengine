@@ -31,6 +31,7 @@ class savegame_manager {
  * game or we will throw. 
  */
 	void                    erase(std::size_t);
+
 /**
  * returns all game slots
  */

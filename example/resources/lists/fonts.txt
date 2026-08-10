@@ -9,3 +9,5 @@ exit_number_font 8 resources/fonts/publicpixel.ttf
 exit_number_font 8 resources/fonts/publicpixel.ttf
 show_text_font 8 resources/fonts/publicpixel.ttf
 credits_font 8 resources/fonts/publicpixel.ttf
+game_over_big_font 24 resources/fonts/publicpixel.ttf
+game_over_font 8 resources/fonts/publicpixel.ttf

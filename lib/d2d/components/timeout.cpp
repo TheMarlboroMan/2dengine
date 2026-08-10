@@ -89,6 +89,11 @@ tdelta timeout::get_max() const {
 	return max;
 }
 
+double timeout::get_linear() const {
+
+	return timer / max;
+}
+
 timeout& timeout::set(
 	tdelta _val
 ) {
@@ -140,6 +145,13 @@ tdelta timeouts::get_max(
 ) const {
 
 	return data.at(_id).get_max();
+}
+
+double timeouts::get_linear(
+	int _id
+) const {
+
+	return data.at(_id).get_linear();
 }
 
 bool timeouts::is_finished(

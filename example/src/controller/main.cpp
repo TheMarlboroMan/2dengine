@@ -219,7 +219,8 @@ void main::start_game_over() {
 }
 
 void main::awake(
-	dfw::input& /*input*/
+	dfw::input& /*input*/,
+	int
 ) {
 
 	//Do not attempt to do anything if we are awaking with no map.
@@ -243,7 +244,8 @@ void main::awake(
 }
 
 void main::slumber(
-	dfw::input& /*input*/
+	dfw::input& /*input*/,
+	int
 ) {
 
 	game_session.game_clock.pause();
@@ -322,10 +324,12 @@ bool main::loop_transition(
 			case transition_exit::types::into_credits:
 
 				set_state(controller::state_credits);
+				return true; //Stop this controller already.
 			break;
 			case transition_exit::types::into_game_over:
 
 				set_state(controller::state_game_over);
+				return true; //Stop this controller already.
 			break;
 			case transition_exit::types::into_game:
 				//Noop.
@@ -2265,6 +2269,7 @@ void main::defeat(
 		return;
 	}
 
+	play_sound(app::snd_defeat);
 	if(game_session.is_with_lives()) {
 
 		--game_session.lives;
@@ -2280,7 +2285,6 @@ void main::defeat(
 		//save_game(, last_entry_id);
 	}
 
-	play_sound(app::snd_defeat);
 	_player.defeat(simulation.defeat_y_velocity);
 }
 

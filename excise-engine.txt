@@ -6,9 +6,22 @@ next steps:
 
 		review geometry... there can be bad stuff.
 
-		decorate game over screen
-			show info on game over screen, how long did you play? how many rooms?
-		after game over we should reset the menu to "start" and not to "continue"
+		- game module file:
+			- should have
+				- where are saves? -> this makes sense, I guess... or
+					  savegames would fucking break xD. Saves could be like
+					tdt-savegame_0.dat
+				- where are maps? a path, I mean.
+				- what about texts? could we have "extra i8n stuffs?" 
+					this would have to be loaded at runtime!
+				- how many treasures?
+				- how many rooms?
+				- where is the "automap" file?
+				- what is the "first entry level when starting out"
+				- what are the "ending levels"?
+			- show data on savegame loading
+			- show progress on load screen based on rooms instead of treasure?
+				- should have a game file with this info.
 
 		mising music:
 			- extra life could be music.
@@ -32,8 +45,6 @@ next steps:
 		- blue key, afterglow of stars after thunder
 		- play special sounds and particles when using one of the 3 special
 		  keys.
-		- pack whole levelset in a file that contains location of maps, 
-		of automap.txt, extra lan files and shit.
 
 	WISHLIST-BALANCING-POLISHING:
 		- delete test maps
@@ -60,10 +71,6 @@ next steps:
 			middle layer.
 		- review fade to black transitions between areas and in the shortcuts!
 		- make ladder platforms the same (ladder goes UNDER platform view)
-		- show data on savegame loading!
-			add this shit in the "values" file, later in the executable.
-			or store it in a "levelset" file with the starting map, total of
-			stuff and so on.
 
 	for the final build: remove values file, put that stuff in the
 		executable...   or somewhere else, for modding purposes

@@ -34,8 +34,8 @@ class show_text:
 	                            show_text(app::service_provider&);
 	virtual void                loop(dfw::input&, const dfw::loop_iteration_data&);
 	virtual void                draw(ldv::screen& screen, int);
-	virtual void                awake(dfw::input&);
-	virtual void                slumber(dfw::input&) {}
+	virtual void                awake(dfw::input&, int);
+	virtual void                slumber(dfw::input&, int) {}
 	virtual bool                can_leave_state() const {return true;}
 
 	virtual void                request_draw(dfw::controller_view_manager&);

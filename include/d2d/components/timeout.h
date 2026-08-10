@@ -32,6 +32,8 @@ class timeout {
 	tdelta get() const;
 //! Returns the max value.
 	tdelta get_max() const;
+//! Returns the value as a floating point between 0 (beginning) and 1 (end)
+	double get_linear() const;
 //! Tics this timer for the given delta value. If a timer does not tic, time does not pass for it.
 	timeout&        tic(tdelta);
 //! sets the new maximum value.
@@ -91,6 +93,11 @@ class timeouts {
  * returns the given timeout max
  */
 	tdelta get_max(int) const;
+
+/**
+ * returns the given timeout as a linear value between 0 and 1
+ */
+	double get_linear(int) const;
 
 /**
  * adds a new timeout to the list with an identifier and its max value. If

@@ -28,17 +28,13 @@ class menu:
 
 	virtual void                loop(dfw::input&, const dfw::loop_iteration_data&);
 	virtual void                draw(ldv::screen&, int);
-	virtual void                awake(dfw::input& /*input*/);
-	virtual void                slumber(dfw::input& /*input*/);
+	virtual void                awake(dfw::input& /*input*/, int);
+	virtual void                slumber(dfw::input& /*input*/, int);
 	virtual bool                can_leave_state() const {return true;}
 
 	signals                     get_action_signal() const {return action_signal;}
 	int                         get_selected_skill() const;
 	const std::string&          get_slot_filename() const;
-	//make the "continue" option available.
-	void                        set_can_continue() {game_can_continue=true;}
-	//make the "continue" option unavailable.
-	void                        set_cannot_continue() {game_can_continue=false;}
 
 	private:
 

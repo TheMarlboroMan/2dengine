@@ -53,7 +53,8 @@ controls::controls(
 }
 
 void controls::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	//reset the question array, inputs, flags...
@@ -65,12 +66,6 @@ void controls::awake(
 	}
 
 	view.set_text("target_input", i8n.get(entries.at(index).i8n_key));
-}
-
-void controls::slumber(
-	dfw::input& 
-) {
-
 }
 
 void controls::loop(

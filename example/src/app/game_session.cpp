@@ -34,7 +34,7 @@ void game_session::set_skill_level(
 			return;
 
 		case app::skill_hard:
-			lives=3;
+			lives=1; //TODO: 3;
 			skill_level=_value;
 			return;
 	}

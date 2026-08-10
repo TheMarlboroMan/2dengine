@@ -498,5 +498,37 @@
 			"order": 30,
 			"visible": true
 		}
+	],
+	"game_over":[
+		{
+			"type":"screen",
+			"rgba":[0,0,0,0]
+		},
+		{
+			"type":"box", "id":"cover_box",
+			"location":[0, 0, 288, 224],
+			"rgba":[0,0,0, 255],
+			"visible":true,
+			"order":100
+		},
+		{
+			"id":"game_over",
+			"type":"ttf",
+			"location":[32, 32],
+			"text":"...",
+			"font":"game_over_big_font",
+			"rgba":[255, 255, 255, 255],
+			"order":10
+		},
+		{
+			"id":"progress_text",
+			"type":"ttf",
+			"location":[16, 120],
+			"text":"...",
+			"font":"game_over_font",
+			"rgba":[255, 255, 255, 255],
+			"order":10,
+			"line_height_ratio":1.5
+		}
 	]
 }

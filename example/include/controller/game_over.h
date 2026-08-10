@@ -8,7 +8,7 @@
 #include <d2d/audio/music_player.h> // we need to create silence.
 #include <dfw/controller_interface.h>
 #include <lm/logger.h>
-#include <ldv/ttf_font.h>
+#include <ldtools/view_composer.h>
 
 namespace controller
 {
@@ -26,18 +26,21 @@ class game_over:
 	                            game_over(app::service_provider&);
 	virtual void                loop(dfw::input&, const dfw::loop_iteration_data&);
 	virtual void                draw(ldv::screen& screen, int);
-	virtual void                awake(dfw::input&);
-	virtual void                slumber(dfw::input&) {}
+	virtual void                awake(dfw::input&, int);
+	virtual void                slumber(dfw::input&, int) {}
 	virtual bool                can_leave_state() const {return true;}
 
 	private:
 
 	//references...
 	lm::logger&                 logger;
-	const ldv::ttf_font&        font;
+	ldtools::view_composer      layout;
 	d2d::audio::music_player&   music_player;
 	app::savegame_manager&      savegame_manager;
 	const app::game_session&    game_session;
+
+	//properties
+	d2d::components::timeout    timer;
 };
 
 }

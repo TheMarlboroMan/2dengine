@@ -35,7 +35,8 @@ question::question(
 }
 
 void question::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	current_index=0;

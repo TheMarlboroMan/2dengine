@@ -32,7 +32,8 @@ show_text::show_text(
 }
 
 void show_text::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	raw_text=text_exchange.get();

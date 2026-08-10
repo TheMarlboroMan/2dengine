@@ -44,7 +44,8 @@ credits::credits(
 }
 
 void credits::awake(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	music_player.swap(app::music_credits, 100);
@@ -63,7 +64,8 @@ void credits::awake(
 }
 
 void credits::slumber(
-	dfw::input&
+	dfw::input&,
+	int
 ) {
 
 	//Remove every single representation that still may remain.

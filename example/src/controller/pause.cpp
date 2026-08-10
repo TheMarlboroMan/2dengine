@@ -47,7 +47,8 @@ pause::pause(
 }
 
 void pause::awake(
-	dfw::input& /*input*/
+	dfw::input& /*input*/,
+	int
 ) {
 
 	timeout.restart();
@@ -134,12 +135,6 @@ void pause::awake(
 	//Disallow map changing when in "nowhere" zones.
 	can_change_area=automap_interface.get().must_draw_map;
 	ready_view();
-}
-
-void pause::slumber(
-	dfw::input& /*input*/
-) {
-
 }
 
 bool pause::can_leave_state() const {
