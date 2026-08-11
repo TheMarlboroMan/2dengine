@@ -9,9 +9,11 @@
 using namespace app;
 
 savegame_manager::savegame_manager(
-	const appenv::env& _env
+	const appenv::env& _env,
+	const std::string& _affix
 ):
-	env{_env}
+	env{_env},
+	savegame_affix{_affix}
 { }
 
 const save_slot& savegame_manager::get(
@@ -30,7 +32,14 @@ void savegame_manager::load() {
 
 	slots.clear();
 
-	for(const auto& filename : {"savegame_1.dat", "savegame_2.dat", "savegame_3.dat"}) {
+
+	std::vector<std::string> filenames={
+		"savegame_"+savegame_affix+"_1.dat",
+		"savegame_"+savegame_affix+"_2.dat",
+		"savegame_"+savegame_affix+"_3.dat"
+	};
+
+	for(const auto& filename : filenames) {
 
 		const std::string path=env.build_user_path(filename);
 

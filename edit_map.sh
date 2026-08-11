@@ -12,7 +12,7 @@ then
 	debug="on"
 fi
 
-mapname="/home/daniel/devel/2dengine/example/resources/maps/$1.json";
+mapname="/home/daniel/devel/2dengine/example/resources/thedreamingtower/maps/$1.json";
 if [ ! -f $mapname ]
 then
 

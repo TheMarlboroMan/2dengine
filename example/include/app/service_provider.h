@@ -69,6 +69,7 @@ class game_session;
 class random;
 class show_text_exchange;
 class savegame_manager;
+class game_module;
 
 class service_provider {
 
@@ -106,6 +107,7 @@ class service_provider {
 	random&                 get_random();
 	show_text_exchange&     get_show_text_exchange();
 	savegame_manager&       get_savegame_manager();
+	const game_module&      get_game_module();
 
 	//Resets stuff related to the game but shared between controllers.
 	void                    reset_game_properties(int, const std::string&);
@@ -143,5 +145,6 @@ class service_provider {
 	std::unique_ptr<show_text_exchange> text_exchange{nullptr};
 	std::unique_ptr<d2d::video::scenery_tile_query> scenery_tile_query_instance{nullptr};
 	std::unique_ptr<app::savegame_manager> savegame_manager_instance{nullptr};
+	std::unique_ptr<app::game_module> game_module_instance{nullptr};
 };
 }

@@ -21,7 +21,7 @@ class savegame_manager {
 
 	public:
 
-	                        savegame_manager(const appenv::env&);
+	                        savegame_manager(const appenv::env&, const std::string&);
 /**
  * loads game slots with info.
  */
@@ -50,6 +50,7 @@ class savegame_manager {
 
 	const appenv::env&      env;
 	std::vector<save_slot>  slots;
+	std::string             savegame_affix;
 };
 
 }

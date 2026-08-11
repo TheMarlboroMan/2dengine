@@ -8,6 +8,7 @@
 #include "app/random.h"
 #include "app/show_text_exchange.h"
 #include "app/savegame_manager.h"
+#include "app/game_module.h"
 
 #include <d2d/collision/shaper_default.h>
 #include <d2d/audio/music_player.h>
@@ -267,10 +268,20 @@ tools::i8n& service_provider::get_localization() {
 		localization.reset(
 			new tools::i8n(
 				env.build_app_path("resources/localization"),
-				"en",
-				{"texts.i8n"}
+				"en"
 			)
 		);
+
+		//Default game texts...
+		localization->add_file("texts.i8n", false);
+		//Module texts!
+		localization->add_user_file(
+			"module.i8n", 
+			get_game_module().get_localization_path(),
+			false
+		);
+
+		localization->build();
 	}
 
 	return *localization;
@@ -282,9 +293,9 @@ app::automap& service_provider::get_automap() {
 
 		automap_reader ar;
 
-		auto am=ar.read_map(get_env().build_app_path("resources/lists/automap.txt"));
+		const auto& automap_path=get_game_module().get_automap_file();
+		auto am=ar.read_map(automap_path);
 		game_automap.reset(new automap(am)); //default copy constructor.
-
 	}
 
 	return *game_automap;
@@ -340,7 +351,8 @@ app::savegame_manager& service_provider::get_savegame_manager() {
 
 		savegame_manager_instance.reset(
 			new app::savegame_manager(
-				get_env()
+				get_env(),
+				get_game_module().get_savefile_affix()
 			)
 		);
 	}
@@ -348,6 +360,18 @@ app::savegame_manager& service_provider::get_savegame_manager() {
 	savegame_manager_instance->load();
 
 	return *savegame_manager_instance;
+}
+
+const app::game_module& service_provider::get_game_module() {
+
+	if(nullptr==game_module_instance) {
+
+		game_module_instance.reset(
+			new app::game_module()
+		);
+	}
+
+	return *game_module_instance;
 }
 
 void service_provider::reset_game_properties(

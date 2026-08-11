@@ -48,12 +48,12 @@ foreach($tilefile as $data) {
 	$tiles[$id]=0;
 }
 
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	if(!$fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+		$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 		$json=json_decode(file_get_contents($filename));
 
 		$attr=$json->attributes;

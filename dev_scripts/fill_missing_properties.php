@@ -24,13 +24,13 @@ define("text_node", 12);
 define("timer", 63);
 define("relay", 62);
 
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 $files=[];
 foreach($dir as $fileinfo) {
 
 	if(!$fileinfo->isDot()) {
 
-		$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+		$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 		$files[]=$filename;
 	}
 }

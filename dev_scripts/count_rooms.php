@@ -7,7 +7,7 @@ $per_area=[];
 
 $nowhere_areas=["red_key", "blue_key", "green_key"];
 
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	if($fileinfo->isDot()) {
@@ -15,7 +15,7 @@ foreach($dir as $fileinfo) {
 		continue;
 	}
 
-	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 
 	if(0===strpos($fileinfo->getFilename(), "test")) {
 

@@ -8,7 +8,7 @@ $collectible_type=5;
 $cover_type=6;
 $switch_type=7;
 $trigger_type=11;
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 
 $files=[
 	"../example/tile_editor_integration/default-map.json"
@@ -18,7 +18,7 @@ foreach($dir as $fileinfo) {
 
 	if(!$fileinfo->isDot()) {
 
-		$files[]="../example/resources/maps/{$fileinfo->getFilename()}";
+		$files[]="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 	}
 }
 

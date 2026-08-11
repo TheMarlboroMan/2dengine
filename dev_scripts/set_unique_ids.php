@@ -23,7 +23,7 @@ $cover_type=6;
 $switch_type=7;
 $trigger_type=11;
 $text_type=12;
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 $files=[];
 foreach($dir as $fileinfo) {
 
@@ -38,7 +38,7 @@ foreach($dir as $fileinfo) {
 		continue;
 	}
 
-	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 	$files[]=$filename;
 }
 

@@ -22,7 +22,7 @@ define("hard", 4);
 
 $collectible_type=5;
 $valid_treasure=[0, 1, 2, 3];
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	if($fileinfo->isDot()) {
@@ -30,7 +30,7 @@ foreach($dir as $fileinfo) {
 		continue;
 	}
 
-	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 
 	if(0===strpos($fileinfo->getFilename(), "test")) {
 

@@ -6,7 +6,7 @@ $button_id=0;
 $collectible_type=5;
 $cover_type=6;
 $switch_type=7;
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	$new_layer=(object)[
@@ -25,7 +25,7 @@ foreach($dir as $fileinfo) {
 		continue;
 	}
 
-	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 	$json=json_decode(file_get_contents($filename));
 	$json->layers[]=$new_layer;
 	file_put_contents($filename, json_encode($json));

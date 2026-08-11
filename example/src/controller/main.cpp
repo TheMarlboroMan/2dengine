@@ -64,6 +64,7 @@ main::main(
 	sound_player{_sp.get_sound_player()},
 	inventory{_sp.get_inventory()},
 	game_session{_sp.get_game_session()},
+	game_module{_sp.get_game_module()},
 	camera{ {0,0,app::logic_screen_w, app::logic_screen_h}, {0,0}},
 	gd{
 		camera,
@@ -158,7 +159,7 @@ void main::new_game(
 
 	lm::log(logger).info()<<"starting new game..."<<std::endl;
 	reset_game(_skill, _slot_filename);
-	start("intro_001", 1);
+	start(game_module.get_start_mapname(), 1);
 }
 
 void main::load_game() {
@@ -447,7 +448,8 @@ void main::load_map(
 	const std::string& _map_name
 ) {
 	std::stringstream ss;
-	ss<<env.build_app_path("resources/maps/")<<_map_name<<".json";
+	const auto& maps_path=game_module.get_map_path();
+	ss<<maps_path<<_map_name<<".json";
 
 #ifdef IS_DEBUG_BUILD
 	current_map_name=_map_name;
@@ -2205,7 +2207,7 @@ void main::start_ending() {
 		1. //quarter of a second
 	));
 
-	transition_exit_info.map_filename="ending_001";
+	transition_exit_info.map_filename=game_module.get_end_mapname();
 	transition_exit_info.next_entry_id=1;
 	transition_exit_info.exit_origin={0., 0.};
 	transition_exit_info.hard_exit=true;

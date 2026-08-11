@@ -21,6 +21,7 @@
 #include "app/types.h"
 #include "app/inventory.h"
 #include "app/game_session.h"
+#include "app/game_module.h"
 #include "app/game_draw.h"
 #include "app/map_transition.h"
 #include "app/boss_map_interface.h"
@@ -171,6 +172,7 @@ class main:
 	d2d::audio::sound_player&   sound_player;
 	app::inventory&             inventory;
 	app::game_session&          game_session;
+	const app::game_module&     game_module;
 
 	//visual stuff.
 	ldv::camera                 camera;

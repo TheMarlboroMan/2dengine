@@ -31,6 +31,7 @@ menu::menu(
 	sound_player{_sp.get_sound_player()},
 	music_player{_sp.get_music_player()},
 	savegame_manager{_sp.get_savegame_manager()},
+	game_module{_sp.get_game_module()},
 	automap_interface{sp.get_automap()}
 {
 
@@ -690,9 +691,8 @@ void menu::set_savegame_description(
 	}
 
 	//we always draw the amount of stuff collected.
-	
-	//TODO: Count the real items!!...
-	const int total_stuff=100;
+	//TODO: Maybe dreaw the amount of rooms???
+	const int total_stuff=game_module.get_total_treasure();
 	int stuff_collected=tools::percent(slot.collectibles, total_stuff);
 
 	ss<<", "<<stuff_collected<<"%";

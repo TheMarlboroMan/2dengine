@@ -11,7 +11,7 @@ $musicid=(int)$argv[2];
 $mapname_len=strlen($mapname);
 $files=[];
 
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	if($fileinfo->isDot()) {
@@ -22,7 +22,7 @@ foreach($dir as $fileinfo) {
 
 	if(substr($fileinfo->getFilename(), 0, $mapname_len)==$mapname) {
 
-		$files[]="../example/resources/maps/{$fileinfo->getFilename()}";
+		$files[]="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 	}
 }
 

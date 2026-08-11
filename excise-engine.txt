@@ -7,21 +7,7 @@ next steps:
 		review geometry... there can be bad stuff.
 
 		- game module file:
-			- should have
-				- where are saves? -> this makes sense, I guess... or
-					  savegames would fucking break xD. Saves could be like
-					tdt-savegame_0.dat
-				- where are maps? a path, I mean.
-				- what about texts? could we have "extra i8n stuffs?" 
-					this would have to be loaded at runtime!
-				- how many treasures?
-				- how many rooms?
-				- where is the "automap" file?
-				- what is the "first entry level when starting out"
-				- what are the "ending levels"?
-			- show data on savegame loading
 			- show progress on load screen based on rooms instead of treasure?
-				- should have a game file with this info.
 
 		mising music:
 			- extra life could be music.

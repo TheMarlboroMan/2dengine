@@ -5,6 +5,7 @@
 #include "app/env.h"
 #include "app/automap_game.h"
 #include "app/savegame_manager.h"
+#include "app/game_module.h"
 #include <dfw/controller_interface.h>
 #include <d2d/audio/sound_player.h>
 #include <lm/logger.h>
@@ -75,6 +76,7 @@ class menu:
 	d2d::audio::sound_player&   sound_player;
 	d2d::audio::music_player&   music_player;
 	app::savegame_manager&      savegame_manager;
+	const app::game_module&     game_module;
 
 	app::automap_game           automap_interface;
 	ldtools::view_composer      view;

@@ -29,7 +29,7 @@ $to=(int)$args["to"];
 
 $decoration_layers=["foreground", "background", "middle"];
 
-$dir=new DirectoryIterator("../example/resources/maps");
+$dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 foreach($dir as $fileinfo) {
 
 	if($fileinfo->isDot()) {
@@ -39,7 +39,7 @@ foreach($dir as $fileinfo) {
 
 	$must_rewrite=false;
 
-	$filename="../example/resources/maps/{$fileinfo->getFilename()}";
+	$filename="../example/resources/thedreamingtower/maps/{$fileinfo->getFilename()}";
 	$json=json_decode(file_get_contents($filename));
 
 	$attr=$json->attributes;
