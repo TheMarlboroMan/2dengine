@@ -49,21 +49,10 @@ void savegame_manager::load() {
 			continue;
 		}
 
-		//Read the savefile to be able to extract the collectibles...
 		savegame_io sio{};
 		auto save=sio.load_from_file(path);
 
-		tpersistence persistence_temp;
-		persistence_temp.load_from_string(save.persistence_string);
-
-		//Filter the stuff in the collectible group that has 1 as a its value,
-		//meaning it has been seen and picked up.
-		int pickups=persistence_temp.size(
-			app::pergr_collectibles,
-			[](int _val) -> bool {return 1==_val;}
-		);
-
-		slots.push_back({false, path, save.map_filename, pickups, save.difficulty_setting, save.elapsed_seconds});
+		slots.push_back({false, path, save.map_filename, save.discovered_rooms, save.difficulty_setting, save.elapsed_seconds});
 	}
 }
 

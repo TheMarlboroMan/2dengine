@@ -690,12 +690,19 @@ void menu::set_savegame_description(
 		case app::skill_hard: ss<<i8n.get("main_menu-skill_hard"); break;
 	}
 
-	//we always draw the amount of stuff collected.
-	//TODO: Maybe dreaw the amount of rooms???
-	const int total_stuff=game_module.get_total_treasure();
-	int stuff_collected=tools::percent(slot.collectibles, total_stuff);
+	int total_rooms=game_module.get_total_rooms();
 
-	ss<<", "<<stuff_collected<<"%";
+	//Draw the percent completion...
+	int completion_percent=tools::percent(
+		slot.discovered_rooms, 
+		total_rooms
+	);
+
+	//I don't know if this ever happens because of rounding, but if we have 
+	//at least one room we won't show 0%
+	lm::log(logger).debug()<<slot.discovered_rooms<<" out of "<<total_rooms<<" will show as "<<completion_percent<<"%\n";
+
+	ss<<", "<<completion_percent<<"%";
 
 	//Also, on hard and normal there is a time limit!
 	if(slot.skill_setting != app::skill_easy) {

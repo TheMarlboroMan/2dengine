@@ -3198,9 +3198,6 @@ void main::discover_map(
 
 	lm::log(logger).debug()<<"total discovered: "<<game_session.get_discovered_map_count()<<std::endl;
 
-	//TODO: Sooo just make them as "non_game"? But the banner won´t show...
-	//we can always separate!
-	
 	//If the area is not "nowhere" we can discover this new room. Nowhere
 	//maps don't count for this tally.
 	if(_add_to_tally) {

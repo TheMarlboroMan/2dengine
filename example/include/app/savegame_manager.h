@@ -12,7 +12,7 @@ struct save_slot {
 	bool                    new_game{false};
 	std::string             filename{},
 							levelname{};
-	int                     collectibles{0},
+	int                     discovered_rooms{0},
 	                        skill_setting{0}, //expressed in flags!
 	                        elapsed_seconds{0};
 };
