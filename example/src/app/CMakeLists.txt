@@ -61,6 +61,7 @@ set(EXAMPLE_SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/autopilot.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/autopilot_node.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tic_sound_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_module.cpp
 	PARENT_SCOPE
 )
 

@@ -41,7 +41,8 @@ service_provider::service_provider(
 	const appenv::env& _env, 
 	dfwimpl::config& _config,
 	lm::logger& _logger,
-	dfw::kernel& _kernel
+	dfw::kernel& _kernel,
+	const std::string& _module_file
 ):
 	env{_env},
 	config{_config},
@@ -52,6 +53,9 @@ service_provider::service_provider(
 	screen{_kernel.get_screen()}
 {
 
+	game_module_instance.reset(
+		new app::game_module(_module_file, _logger)
+	);
 }
 
 service_provider::~service_provider() {
@@ -363,13 +367,6 @@ app::savegame_manager& service_provider::get_savegame_manager() {
 }
 
 const app::game_module& service_provider::get_game_module() {
-
-	if(nullptr==game_module_instance) {
-
-		game_module_instance.reset(
-			new app::game_module()
-		);
-	}
 
 	return *game_module_instance;
 }

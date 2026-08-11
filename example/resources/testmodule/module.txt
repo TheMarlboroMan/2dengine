@@ -1,0 +1,5 @@
+startmap test
+endmap_partial nothing
+savegame_name test
+total_rooms 5
+total_treasure 10

@@ -5,9 +5,7 @@ next steps:
 	NEXT:
 
 		review geometry... there can be bad stuff.
-
-		- game module file:
-			- show progress on load screen based on rooms instead of treasure?
+		show progress on load screen based on rooms instead of treasure?
 
 		mising music:
 			- extra life could be music.

@@ -226,9 +226,25 @@ void state_driver::common_loop_step(ldtools::tdelta /*delta*/) {
 void state_driver::ready_resources(
 	dfw::kernel& _kernel
 ) {
+
+	//Decide if we are playing a custom module or the default one..
+	const auto& argman=_kernel.get_arg_manager();
+
+	std::string module_file=env.build_app_path("resources/thedreamingtower/module.txt");
+	if(argman.exists("--module")) {
+
+		if(!argman.arg_follows("--module")) {
+
+			throw std::runtime_error("an argument must follow --module indicating the path to the module.txt file!");
+		}
+
+		module_file=argman.get_following("--module");
+	}
+
+
 	//The service provider is a resource.
 	service_provider.reset(
-		new app::service_provider{env, config, log, _kernel}
+		new app::service_provider{env, config, log, _kernel, module_file}
 	);
 
 	std::string window_title=service_provider->get_localization().get("window-title");

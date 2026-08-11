@@ -75,7 +75,7 @@ class service_provider {
 
 	public:
 
-	service_provider(const appenv::env&, dfwimpl::config&, lm::logger&, dfw::kernel&);
+	service_provider(const appenv::env&, dfwimpl::config&, lm::logger&, dfw::kernel&, const std::string&);
 	~service_provider();
 
 //TODO: Review, some of these might just be private.
