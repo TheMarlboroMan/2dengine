@@ -522,18 +522,7 @@ void thing_loader::add_platform(
 		return;
 	}
 
-	app::platform_block::types type{app::platform_block::types::branch};
-
-	switch(_attributes.at("type").get_int()) {
-
-		case 0: type=app::platform_block::types::branch; break;
-		case 1: type=app::platform_block::types::rock; break;
-		case 2: type=app::platform_block::types::light_block; break;
-		case 3: type=app::platform_block::types::blue_block; break;
-		case 4: type=app::platform_block::types::wooden_bridge; break;
-		default: break;
-	}
-
+	int type=_attributes.at("type").get_int();
 	curmap.platform_blocks.push_back({_pos, type });
 }
 

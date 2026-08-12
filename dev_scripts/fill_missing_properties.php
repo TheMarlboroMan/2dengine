@@ -23,6 +23,7 @@ define("breaking_block", 9);
 define("text_node", 12);
 define("timer", 63);
 define("relay", 62);
+define("platform_block", 10);
 
 $dir=new DirectoryIterator("../example/resources/thedreamingtower/maps");
 $files=[];
@@ -156,6 +157,22 @@ foreach($files as $filename) {
 
 						$thing->a->difficulty=7;
 					}
+				break;
+				case platform_block:
+
+					//Convert "type" to "tile".
+					if($thing->a->type <= 4) {
+
+						switch($thing->a->type) {
+
+							case 0: $thing->a->type=155; break;
+							case 1: $thing->a->type=189; break;
+							case 2: $thing->a->type=248; break;
+							case 3: $thing->a->type=203; break;
+							case 4: $thing->a->type=187; break;
+						}
+					}
+
 				break;
 			}
 		}

@@ -172,12 +172,7 @@ enum sprites {
 	spr_repeat_button_used=370,
 	spr_breaking_block=362,
 	spr_breaking_block_one_way=371,
-	spr_platform_branch=155,
 	spr_fire_trap_plaque=188,
-	spr_platform_rock=189,
-	spr_platform_light_block=248,
-	spr_platform_blue_block=203,
-	spr_platform_wooden_bridge=187,
 
 	spr_block_arrow=255,
 

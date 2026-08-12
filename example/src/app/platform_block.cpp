@@ -4,7 +4,7 @@ using namespace app;
 
 platform_block::platform_block(
 	d2d::collision::point _pt,
-	types _type
+	int _type
 ):
 	collision_box{_pt, w, h},
 	type{_type}

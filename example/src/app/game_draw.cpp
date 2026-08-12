@@ -695,25 +695,7 @@ void game_draw::draw_platform(
 	const app::platform_block& _block
 ) {
 
-	int index=app::spr_platform_branch;
-	switch(_block.get_type()) {
-
-		case app::platform_block::types::branch:
-			index=app::spr_platform_branch;
-		break;
-		case app::platform_block::types::rock:
-			index=app::spr_platform_rock;
-		break;
-		case app::platform_block::types::light_block:
-			index=app::spr_platform_light_block;
-		break;
-		case app::platform_block::types::blue_block:
-			index=app::spr_platform_blue_block;
-		break;
-		case app::platform_block::types::wooden_bridge:
-			index=app::spr_platform_wooden_bridge;
-		break;
-	}
+	int index=_block.get_type();
 
 	sprite_draw.draw(
 		_screen,
@@ -921,24 +903,11 @@ void game_draw::draw_moving_block(
 	const app::moving_block& _block
 ) {
 
-	switch(_block.get_type()) {
-
-		case 0:
-			sprite_fill_draw.fill(
-				_screen, 
-				d2d::video::to_screen(_block.ent.get_box()),
-				1
-			);
-			return;
-		case 1:
-			sprite_draw.draw(
-				_screen, 
-				d2d::video::to_screen(_block.ent.get_box()),
-				16,
-				{4, 0}
-			);
-			return;
-	}
+	sprite_fill_draw.fill(
+		_screen, 
+		d2d::video::to_screen(_block.ent.get_box()),
+		_block.get_type()
+	);
 }
 
 void game_draw::draw_facing_block(

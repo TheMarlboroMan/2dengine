@@ -15,17 +15,8 @@ class platform_block:
 
 	public:
 
-	//describes visual attributes.
-	enum class types {
-		branch,
-		rock,
-		light_block, //thin white block
-		blue_block, //thin blue line
-		wooden_bridge
-	};
-
-	                                        platform_block(d2d::collision::point, types);
-	types                                   get_type() const {return type;}
+	                                        platform_block(d2d::collision::point, int);
+	int                                     get_type() const {return type;}
 
 //Begin implementation of spatiable
 
@@ -55,7 +46,7 @@ class platform_block:
 	static const int                        h{16};
 
 	d2d::collision::box                 collision_box;
-	types                               type;
+	int                                 type;
 };
 
 std::ostream& operator<<(std::ostream&, const platform_block&);
