@@ -35,7 +35,7 @@ cd dev_scripts
 cd ..
 
 #easy map browsing...
-cd example/resources/maps 
+cd example/resources/thedreamingtower/maps 
 
 if [ "on" == "$debug" ]
 then 
