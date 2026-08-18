@@ -1,5 +1,5 @@
 startmap intro_001
 endmap_partial ending_001
 savegame_name tdt
-total_rooms 200
-total_treasure 100
+total_rooms 174
+total_treasure 110

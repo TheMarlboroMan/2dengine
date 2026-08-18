@@ -890,7 +890,8 @@ void game_draw::draw_secret_cover(
 
 	if(_secret_cover.is_dissapearing()) {
 
-		int alpha=255 - (_secret_cover.get_timer() * 100);
+		//for the timer, 0. is start, 1. is finish. We just tween here.
+		int alpha=255 - (_secret_cover.get_timer() * 255);
 		box.set_alpha(alpha);
 	}
 

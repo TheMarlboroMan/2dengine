@@ -28,7 +28,7 @@ class secret_cover {
 
 	void                        tic(ldtools::tdelta);
 	void                        discover();
-	ldtools::tdelta             get_timer() const {return timeout.get();}
+	double                      get_timer() const {return timeout.get_linear();}
 
 	private:
 

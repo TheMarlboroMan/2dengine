@@ -8,6 +8,7 @@
 #include <tools/i8n.h>
 #include <lm/logger.h>
 #include <lda/audio_controller.h>
+#include <d2d/audio/sound_player.h>
 #include <ldv/screen.h>
 #include <string>
 #include <vector>
@@ -50,6 +51,7 @@ class options:
 	dfwimpl::config&            config;
 	const tools::i8n&           i8n;
 	lda::audio_controller&      audio_c;
+	d2d::audio::sound_player&   sound_player;
 	ldv::screen&                screen;
 	d2d::components::timeout    enter_timeout;
 	ldtools::view_composer      view;

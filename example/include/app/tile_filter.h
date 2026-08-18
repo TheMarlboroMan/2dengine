@@ -156,7 +156,11 @@ struct filter_stand_up {
 		const d2d::collision::tile& _tile
 	) const {
 
-		if(_tile.type==app::tile_monster_block || _tile.type==app::tile_camera_stop) {
+		if(_tile.type==app::tile_monster_block 
+			|| _tile.type==app::tile_camera_stop
+			|| _tile.type==app::tile_half_top_passable
+			|| _tile.type==app::tile_half_bottom_passable
+		) {
 
 			return false;
 		}

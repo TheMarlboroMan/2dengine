@@ -699,7 +699,17 @@ void menu::set_savegame_description(
 	);
 
 	//I don't know if this ever happens because of rounding, but if we have 
-	//at least one room we won't show 0%
+	//at least one room we won't show 0% and all rooms will always show 100%...
+	
+	if(slot.discovered_rooms==total_rooms) {
+
+		completion_percent=100;
+	}
+	else if(0==completion_percent && 0!=slot.discovered_rooms) {
+
+		completion_percent=1;
+	}
+	
 	lm::log(logger).debug()<<slot.discovered_rooms<<" out of "<<total_rooms<<" will show as "<<completion_percent<<"%\n";
 
 	ss<<", "<<completion_percent<<"%";

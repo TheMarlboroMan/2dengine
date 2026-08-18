@@ -230,11 +230,11 @@ void main::awake(
 		//Special case, coming from inventory / menu in the boss room, with the boss there.
 		if(current_map.boss && !current_map.boss->is_defeated()) {
 
-			music_player.swap(app::music_boss, 500);
+			music_player.swap(app::music_boss, 100);
 		}
 		else {
 
-			music_player.swap(current_map.music_id, 500);
+			music_player.swap(current_map.music_id, 100);
 		}
 
 		if(current_map.in_game) {
@@ -549,7 +549,7 @@ void main::load_map(
 	gd.set_background(background.get());
 
 	//Now the music... pieces are loaded in real time so nothing to do here.
-	music_player.swap(current_map.music_id, 500);
+	music_player.swap(current_map.music_id, 100);
 
 	int automap_id=-1; //A stupid default...
 
@@ -1844,6 +1844,17 @@ void main::tic_defeat(
 
 		if(game_session.is_with_lives()) {
 
+			if(0>=game_session.lives) {
+
+				if(has_looped_sounds()) {
+
+					stop_looped_sounds();
+				}
+
+				start_game_over();
+				return;
+			}
+
 			game_timeouts.restart(timeout_lives_banner);
 		}
 
@@ -2275,11 +2286,6 @@ void main::defeat(
 	if(game_session.is_with_lives()) {
 
 		--game_session.lives;
-		if(0>=game_session.lives) {
-
-			start_game_over();
-			return;
-		}
 
 		gd.setup_lives_banner(game_session.lives);
 		//TODO: save game at our current map and entry id!
@@ -3387,7 +3393,7 @@ void main::boss_control_music(
 	int _music_id
 ) {
 
-	music_player.swap(_music_id, 500);
+	music_player.swap(_music_id, 100);
 }
 
 void main::boss_play_sound(

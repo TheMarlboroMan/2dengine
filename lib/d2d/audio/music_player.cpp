@@ -43,7 +43,7 @@ void music_player::play(
 	}
 
 	load_attempt();
-	audio().play_music({audio_resource_manager.get_music(playing_id), fade});
+	audio().play_music({audio_resource_manager.get_music(playing_id)}, fade);
 }
 
 void music_player::stop(

@@ -123,6 +123,13 @@ void state_driver::prepare_video(
 void state_driver::prepare_audio(dfw::kernel& kernel) {
 
 	kernel.init_audio_system(get_audio_init_data());
+
+	auto& audio=kernel.get_audio()();
+
+	//Sets the main mixer volume for the application. This is terrible, too
+	//loud on headphones, too soft on integrated speakers.
+	audio.set_main_music_volume(64); 
+
 }
 
 void state_driver::prepare_input(dfw::kernel& kernel) {

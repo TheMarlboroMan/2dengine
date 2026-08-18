@@ -1,6 +1,7 @@
 #include "controller/options.h"
 #include "app/input.h"
 #include "app/env.h"
+#include "app/definitions.h"
 #include <ldtools/ttf_manager.h>
 #include <tools/file_utils.h>
 #include <tools/json.h>
@@ -17,6 +18,7 @@ options::options(
 	config{sp.get_config()},
 	i8n{sp.get_localization()},
 	audio_c{sp.get_audio_controller()},
+	sound_player{_sp.get_sound_player()},
 	screen{sp.get_screen()},
 	enter_timeout{0.5, 0., false}
 {
@@ -145,6 +147,7 @@ void options::loop(
 	switch(choice) {
 
 		case menu_input::up:
+			sound_player.play_once(app::snd_switch);
 			index==0
 				? index=3
 				: --index;
@@ -152,6 +155,7 @@ void options::loop(
 			return;
 
 		case menu_input::down:
+			sound_player.play_once(app::snd_switch);
 			index==3
 				? index=0
 				: ++index;
@@ -296,6 +300,7 @@ void options::select_music(
 	int _direction
 ) {
 
+	//TODO: BAD DEAL.
 	int current=config.get_music_volume();
 
 	//Cancel movement when pressing before N tics.
@@ -315,7 +320,7 @@ void options::select_music(
 	}
 
 	config.set_music_volume(current);
-	audio_c.set_main_music_volume(current);
+	audio_c.set_music_volume(current);
 	update_values();
 }
 

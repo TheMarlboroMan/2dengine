@@ -8,7 +8,7 @@ secret_cover::secret_cover(
 ):
 	ent{_box},
 	id{_id},
-	timeout{2.5, 0., true}
+	timeout{1.0, 0., true}
 {}
 
 bool secret_cover::is_discovered() const {

@@ -4,6 +4,9 @@ next steps:
 
 	NEXT:
 
+		in tower shortcuts, falling slightly left or right of ladder causes
+			instant death
+		review treasure types in tower
 		text on book room, whatever it was that was calling me blah blah.
 		review geometry... there can be bad stuff.
 
@@ -20,10 +23,8 @@ next steps:
 			it points somewhere for the title and then points somewhere else
 			for the menu itself????
 
-	BUGS:
-		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
-
 	IDEAS:
+		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 		- background with moon for last room
 		- background with moon and moving shapes for book dream.
 		- blue key, afterglow of stars after thunder
