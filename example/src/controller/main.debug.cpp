@@ -132,6 +132,7 @@ console::result main::execute_cmd(
 		inventory.blue_keys+=how_many;
 		inventory.red_keys+=how_many;
 		inventory.green_keys+=how_many;
+		inventory.white_keys+=how_many;
 
 		std::stringstream ss;
 		ss<<"keys given";
