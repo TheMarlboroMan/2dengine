@@ -4,9 +4,6 @@ next steps:
 
 	NEXT:
 
-		in tower shortcuts, falling slightly left or right of ladder causes
-			instant death
-		review treasure types in tower
 		text on book room, whatever it was that was calling me blah blah.
 		review geometry... there can be bad stuff.
 
@@ -24,6 +21,7 @@ next steps:
 			for the menu itself????
 
 	IDEAS:
+		- intro: first a fully black room, with just text.
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 		- background with moon for last room
 		- background with moon and moving shapes for book dream.
