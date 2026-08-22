@@ -30,6 +30,8 @@ automap automap_reader::read_map(
 	automap result{};
 	std::string map_filename{};
 
+	int line_number=0;
+
 	while(true) {
 
 		char next=infile.get();
@@ -39,46 +41,55 @@ automap automap_reader::read_map(
 			break;
 		}
 
-		switch(next) {
-			case '>':
-				parse_area(result);
-			break;
-			case '*': {
-				if(!result.areas.size()) {
+		try {
+			switch(next) {
+				case '>':
+					parse_area(result);
+				break;
+				case '*': {
+					if(!result.areas.size()) {
 
-					throw std::runtime_error("unexpected cell definition");
+						throw std::runtime_error("unexpected cell definition");
+					}
+
+					parse_cell(result.areas.back(), map_filename);
+					auto id=result.areas.back().cells.back().id;
+					result.file_to_id.insert(std::make_pair(map_filename, id));
+					result.id_to_file.insert(std::make_pair(id, map_filename));
 				}
+				break;
+				case ';':
+					if(!result.areas.size()) {
 
-				parse_cell(result.areas.back(), map_filename);
-				auto id=result.areas.back().cells.back().id;
-				result.file_to_id.insert(std::make_pair(map_filename, id));
-				result.id_to_file.insert(std::make_pair(id, map_filename));
+						throw std::runtime_error("unexpected cell definition");
+					}
+
+					if(!result.areas.back().cells.size()) {
+
+						throw std::runtime_error("unexpected cell definition");
+					}
+
+					parse_feature(result.areas.back().cells.back());
+				break;
+				case ' ':
+				case '\n':
+					++line_number;
+				case '\r':
+					//Noop, ignore these, we are mixing << and get(), which is a bit
+					//dangerous.
+				break;
+				default: {
+					std::stringstream ss;
+					ss<<"unexpected character in automap '"<<(char)next<<"' ["<<(int)next<<"] in "<<_filename;
+					throw std::runtime_error(ss.str());
+				}
 			}
-			break;
-			case ';':
-				if(!result.areas.size()) {
+		}
+		catch(std::exception& e) {
 
-					throw std::runtime_error("unexpected cell definition");
-				}
-
-				if(!result.areas.back().cells.size()) {
-
-					throw std::runtime_error("unexpected cell definition");
-				}
-
-				parse_feature(result.areas.back().cells.back());
-			break;
-			case ' ':
-			case '\n':
-			case '\r':
-				//Noop, ignore these, we are mixing << and get(), which is a bit
-				//dangerous.
-			break;
-			default: {
-				std::stringstream ss;
-				ss<<"unexpected character in automap '"<<(char)next<<"' ["<<(int)next<<"] in "<<_filename;
-				throw std::runtime_error(ss.str());
-			}
+			std::stringstream ss;
+			ss<<e.what()<<" near line "<<line_number;
+			throw std::runtime_error(ss.str());
 		}
 	}
 

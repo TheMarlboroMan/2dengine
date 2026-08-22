@@ -92,6 +92,7 @@ class main:
 	bool                        is_in_legal_position(const d2d::collision::box&, bool, int=0);
 	void                        setup_camera(int, int);
 	void                        load_map(const std::string&);
+	void                        trigger_tags_on_map_reload();
 	void                        attempt_exit(const app::exit&);
 	void                        exit_to(const app::exit&);
 	void                        exit_to(const std::string, int, d2d::collision::point, bool);

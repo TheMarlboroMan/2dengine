@@ -555,7 +555,7 @@ void main::load_map(
 
 	//Non in-game map have no banners, no automap, no nothing. They also 
 	//pause the game clock.
-	if(!current_map.in_game) { 
+	if(!current_map.in_game) {
 
 		game_session.game_clock.pause();
 	}
@@ -592,31 +592,7 @@ void main::load_map(
 		}
 	 }
 
-	//All activated switches should run their course now: all activated objects
-	//will not save their state but will be activated when the switches do
-	//their thing.
-	for(const auto& button : current_map.buttons) {
-
-		if(!button.used) {
-
-			continue;
-		}
-
-		lm::log(logger).debug()<<"triggering tag "<<button.tag<<" for used button\n";
-		activate_tag(button.tag, true);
-	}
-
-	for(const auto& trigger : current_map.touch_triggers) {
-
-		if(!trigger.used) {
-
-			continue;
-		}
-
-		lm::log(logger).debug()<<"triggering tag "<<trigger.tag<<" for touch trigger\n";
-		activate_tag(trigger.tag, true);
-	}
-
+	trigger_tags_on_map_reload();
 	sync_facing_blocks();
 
 	//After loading the map, tell the camera where the limits are. We use
@@ -913,6 +889,8 @@ void main::restart_level() {
 	current_map.reset();
 	clear_transient_state();
 	setup_moving_trackers();
+	trigger_tags_on_map_reload();
+	sync_facing_blocks();
 
 	take_player_to_entry(last_entry_id, true);
 }
@@ -3471,3 +3449,31 @@ void main::give_extra_life() {
 	++game_session.lives;
 }
 
+
+void main::trigger_tags_on_map_reload() {
+
+	//All activated switches should run their course now: all activated objects
+	//will not save their state but will be activated when the switches do
+	//their thing.
+	for(const auto& button : current_map.buttons) {
+
+		if(!button.used) {
+
+			continue;
+		}
+
+		lm::log(logger).debug()<<"triggering tag "<<button.tag<<" for used button\n";
+		activate_tag(button.tag, true);
+	}
+
+	for(const auto& trigger : current_map.touch_triggers) {
+
+		if(!trigger.used) {
+
+			continue;
+		}
+
+		lm::log(logger).debug()<<"triggering tag "<<trigger.tag<<" for touch trigger\n";
+		activate_tag(trigger.tag, true);
+	}
+}
