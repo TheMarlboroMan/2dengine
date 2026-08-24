@@ -35,18 +35,28 @@ cd dev_scripts
 cd ..
 
 #easy map browsing...
-cd example/resources/thedreamingtower/maps 
+cd example/resources/thedreamingtower/maps
 
 if [ "on" == "$debug" ]
 then 
-	/home/daniel/devel/tile_editor/build/build/tile_editor --version | head -1 | grep bin
+
+	editor_path="/home/daniel/devel/tile_editor/build/build/tile_editor_debug"
+
+	if [ ! -f "$editor_path" ]
+	then 
+		echo "the editor must be at ${editor_path}"
+		exit 1
+	fi
+
+	$editor_path --version | head -1 | grep bin
 	if [ 0 -ne $? ]
 	then
 		echo "tile editor must be built as binary"
 		exit 1
 	fi
-	gdb -ex "catch throw" -ex "run" --args /home/daniel/devel/tile_editor/build/build/tile_editor -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
+	gdb -ex "catch throw" -ex "run" --args $editor_path -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
 else
+
 	tile_editor -w 1200x800 -c /home/daniel/devel/2dengine/example/tile_editor_integration/config.txt -f $mapname
 fi
 
