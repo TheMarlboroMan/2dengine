@@ -5,6 +5,10 @@ next steps:
 	NEXT:
 
 		text on book room, whatever it was that was calling me blah blah.
+		mount a platform, move horizontally into a solid tile block, the
+			player is still being mounted. Beware of easy fixes, if we are
+			going to dismount we should check also vertically moving ones, see
+			if the player dismounts into the ground.
 
 		mising music:
 			- extra life could be music.
