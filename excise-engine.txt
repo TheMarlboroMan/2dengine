@@ -5,7 +5,8 @@ next steps:
 	CURRENT TIME:   1:21 
 
 	NEXT:
-		text on book room, whatever it was that was calling me blah blah.
+		fix the screenshot problems on the desktop.
+
 		mount a platform, move horizontally into a solid tile block, the
 			player is still being mounted. Beware of easy fixes, if we are
 			going to dismount we should check also vertically moving ones, see
@@ -25,16 +26,16 @@ next steps:
 			for the menu itself????
 
 	IDEAS:
+		- text on three keyhole color room, whatever it was that was calling me blah blah.
 		- intro: first a fully black room, with just text.
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
-		- background with moon for last room
 		- background with moon and moving shapes for book dream.
+			maybe the moon moves and does shit... Or follows an orbit. Or something.
 		- blue key, afterglow of stars after thunder
 		- play special sounds and particles when using one of the 3 special
 		  keys.
 
 	WISHLIST-BALANCING-POLISHING:
-		- delete test maps
 		- breaking platforms last frame seems broken.
 		- particles when the player eats a projectile!
 		- game segfaulted a couple times... 
