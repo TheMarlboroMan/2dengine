@@ -2,8 +2,9 @@ next steps:
 
 	make the first example game
 
-	NEXT:
+	CURRENT TIME:   1:21 
 
+	NEXT:
 		text on book room, whatever it was that was calling me blah blah.
 		mount a platform, move horizontally into a solid tile block, the
 			player is still being mounted. Beware of easy fixes, if we are
