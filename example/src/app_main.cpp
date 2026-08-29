@@ -125,6 +125,7 @@ void show_help(
 
 	std::cout<<_app_name<<" [--map #mapname [--skill 1|2|3] [--eid #entry_id]] [--record #filename | --replay #filename]\n"
 	"\n"
+	"--module pathtomodulefile.txt\n"
 	"--map map_name, no file extension\n"
 	"--skill: 1=easy, 2=normal, 3=hard, only with --map, defaults to normal\n"
 	"--eid #entry_id, to choose the starting point on the map\n"

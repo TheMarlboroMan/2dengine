@@ -2903,18 +2903,43 @@ void main::mount_player_in_blocks(
 		return;
 	}
 
-	//This value can be tweaked so faster boxes catch the player too! 
+	//TODO: There is quite a lot of jank here. Sure there is a better way, by
+	//this point both the player and the world have ticked. Can we think of
+	//something? It should cover the block moving towards the player and vice-versa.
+
+	//This value can be tweaked so faster boxes catch the player too!.
 	//6 catches a box moving downwards at 100u/s (meaning the player cannot
 	//actually detach, mind you!).
+	//This also causes the player to attach to a block moving upwards from below,
+	//which will add an additional guard clause later. 
+	//Finally, related to the above, if a block is coming up to the player
+	//from below and can be attached to, the player will end up in a lower
+	//position, causing visual stuttering for a moment.
 	const auto margin=2.0;
+	auto player_box_copy=_player.ent.get_box();
+	player_box_copy.origin.y-=margin;
+
+	//We need to know if the player is on a solid tile for some checks below.
+	d2d::collision::tiles_in_box adapter(shaper.get_tile_w(), shaper.get_tile_h());
+	const auto tiles_to_check=adapter.find(player_box_copy, current_map.tile_finder);
+	d2d::collision::aabb_static_checker static_check(player_box_copy, true);
+	static_check.detect_all(tiles_to_check);
+	const auto player_on_ground=static_check.has_collision();
 
 	//First we need to see if the player has detached from any block it was
 	//riding.
-	auto player_box_copy=_player.ent.get_box();
-	player_box_copy.origin.y-=margin;
 	if(ctracker.is_attached(_player.ent)) {
 
-		auto  host=ctracker.get_host(_player.ent);
+		//There's still the case of "forced detachment": an horizontally moving
+		//block has deposited the player on a solid tile.
+		auto host=ctracker.get_host(_player.ent);
+		if(player_on_ground && 0.==host->get_motion_vector_y()) {
+
+			lm::log(logger).debug()<<"should detach!\n";
+			ctracker.detach_from_all(_player.ent);
+			return; //Maybe we'll attach to something in the next tic.
+		}
+
 		//If we are still over the attached block, everything is fine.
 		if(d2d::collision::collides_with(player_box_copy, *host)) {
 
@@ -2934,6 +2959,7 @@ void main::mount_player_in_blocks(
 		return;
 	}
 
+
 	for(const auto& plat : current_map.moving_blocks) {
 
 		if(d2d::collision::collides_with(plat.ent, player_box_copy)) {
@@ -2947,17 +2973,33 @@ void main::mount_player_in_blocks(
 				continue;
 			}
 
-			//TODO: Is this even needed??? the is_in_legal_position thingy. I 
-			//am sure this is here because of some reason.
-			if(is_in_legal_position(player_box_copy, false)) {
+			//Also... If the moving block moves horizontally and the player is
+			//already above a solid tile we should not catch on... We check for
+			//lack of vertical movement, just in case we add diagonals. 
+			//What this catches is the player standing on a tile from which
+			//a vertically moving platform comes (say, the platform actually
+			//comes from inside the tile, as happens on the level start_022.
+			if(player_on_ground && 0.==plat.ent.get_motion_vector_y()) {
 
-				ctracker.attach(plat.ent, _player.ent);
-				//Alternatively, we could attempt to apply a vector that makes us attach to it.
-				snap_to_top_of(_player.ent, plat.ent);
-				land_on_ground(_player);
-				lm::log(logger).debug()<<"attached to moving platform!"<<std::endl;
-				break;
+				lm::log(logger).debug()<<"rejected moving platform: player on ground, platform has no vertical movement"<<std::endl;
+				continue;
 			}
+
+			//This is a guard against a block coming up to the player from 
+			//below while the player is standing on a solid tile: the player
+			//would catch on and end on an invalid position inside the tile!
+			if(!is_in_legal_position(player_box_copy, false)) {
+
+				lm::log(logger).debug()<<"rejected moving platform: would end up in illegal position"<<std::endl;
+				continue;
+			}
+
+			ctracker.attach(plat.ent, _player.ent);
+			//Alternatively, we could attempt to apply a vector that makes us attach to it.
+			snap_to_top_of(_player.ent, plat.ent);
+			land_on_ground(_player);
+			lm::log(logger).debug()<<"attached to moving platform!"<<std::endl;
+			return;
 		}
 	}
 }

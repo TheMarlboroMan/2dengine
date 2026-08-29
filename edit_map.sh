@@ -2,17 +2,25 @@
 
 if [ "$1" == "" ]
 then
-	echo "specify a map name, e.g ./edit_map.sh forest_001 [--debug]"
+	echo "specify a map name, e.g ./edit_map.sh forest_001 [--debug|--nodebug] [modulename]"
+	echo "arguments must appear in the order specified above"
 	exit 1
 fi
 
+module="thedreamingtower";
 debug="off"
+
 if [ "$2" == "--debug" ]
 then
 	debug="on"
 fi
 
-mapname="/home/daniel/devel/2dengine/example/resources/thedreamingtower/maps/$1.json";
+if [ "" != "$3" ]
+then
+	module=$3
+fi
+
+mapname="/home/daniel/devel/2dengine/example/resources/${module}/maps/$1.json";
 if [ ! -f $mapname ]
 then
 
@@ -35,7 +43,7 @@ cd dev_scripts
 cd ..
 
 #easy map browsing...
-cd example/resources/thedreamingtower/maps
+cd example/resources/${module}/maps
 
 if [ "on" == "$debug" ]
 then 

@@ -5,12 +5,6 @@ next steps:
 	CURRENT TIME:   1:21 
 
 	NEXT:
-		fix the screenshot problems on the desktop.
-
-		mount a platform, move horizontally into a solid tile block, the
-			player is still being mounted. Beware of easy fixes, if we are
-			going to dismount we should check also vertically moving ones, see
-			if the player dismounts into the ground.
 
 		mising music:
 			- extra life could be music.
