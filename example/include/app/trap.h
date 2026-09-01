@@ -16,7 +16,9 @@ class trap {
 
 	enum class types {
 		fire,
-		spikes
+		spikes, //on the floor.
+		spikes_point_left,
+		spikes_point_right
 	};
 
 	//Public, so the thing loader can align it to a grid.

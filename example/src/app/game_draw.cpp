@@ -583,7 +583,6 @@ void game_draw::draw_trap(
 ) {
 
 	//See draw_timed_trap, same thing.
-	
 	if(_trap.get_type()==app::trap::types::fire) {
 
 		auto origin=d2d::video::to_screen(_trap.ent.get_origin());
@@ -606,30 +605,34 @@ void game_draw::draw_trap(
 		return;
 	}
 
-	switch(_trap.get_type()) {
+	if(app::trap::types::fire==_trap.get_type()) {
 
-		case app::trap::types::fire: {
+		const auto& line=animation_sprite_finder.get(app::anim_timed_trap_fire);
+		auto mod=animation_sprite_finder.modifiers(line);
 
-			const auto& line=animation_sprite_finder.get(app::anim_timed_trap_fire);
-			auto mod=animation_sprite_finder.modifiers(line);
+		sprite_draw.draw(
+			_screen, 
+			d2d::video::to_screen(_trap.ent.get_origin()),
+			line.frame,
+			mod
+		);
 
-			sprite_draw.draw(
-				_screen, 
-				d2d::video::to_screen(_trap.ent.get_origin()),
-				line.frame,
-				mod
-			);
-		}
-		break;
-		case app::trap::types::spikes:
-
-			sprite_draw.draw(
-				_screen,
-				d2d::video::to_screen(_trap.ent.get_origin()),
-				app::spr_spike
-			);
-		break;
+		return;
 	}
+
+	int index=0;
+	switch(_trap.get_type()) {
+		case app::trap::types::fire: /**Noop will never happen */break;
+		case app::trap::types::spikes: index=app::spr_spike; break;
+		case app::trap::types::spikes_point_left: index=app::spr_spike_point_left; break;
+		case app::trap::types::spikes_point_right: index=app::spr_spike_point_right; break;
+	}
+
+	sprite_draw.draw(
+		_screen,
+		d2d::video::to_screen(_trap.ent.get_origin()),
+		index
+	);
 }
 
 void game_draw::draw_breaking_platform(

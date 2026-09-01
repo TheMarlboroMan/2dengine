@@ -343,9 +343,9 @@ void thing_loader::add_trap(
 
 	app::trap::types type=app::trap::types::fire;
 	switch(int_type) {
-		case 2: 
-			type=app::trap::types::spikes;
-		break;
+		case 2: type=app::trap::types::spikes; break;
+		case 3: type=app::trap::types::spikes_point_left; break;
+		case 4: type=app::trap::types::spikes_point_right; break;
 	}
 
 	switch(type) {
@@ -355,6 +355,8 @@ void thing_loader::add_trap(
 			_pos.x+=(app::tile_w / 2)- (app::trap::fire_w / 2);
 		break;
 		case app::trap::types::spikes:
+		case app::trap::types::spikes_point_left:
+		case app::trap::types::spikes_point_right:
 			//noop.
 		break;
 	}

@@ -28,6 +28,11 @@ trap::trap(
 			ent.set_w(spikes_w);
 			ent.set_h(spikes_h);
 		break;
+		case types::spikes_point_left:
+		case types::spikes_point_right:
+			ent.set_w(spikes_h);
+			ent.set_h(spikes_w); //Actually, rotated.
+		break;
 	}
 }
 
