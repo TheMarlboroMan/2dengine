@@ -18,12 +18,12 @@ class trap {
 		fire,
 		spikes, //on the floor.
 		spikes_point_left,
-		spikes_point_right
+		spikes_point_right,
+		spikes_ceiling
 	};
 
 	//Public, so the thing loader can align it to a grid.
 	static const int    fire_w{6};
-	static const int    spikes_w{16};
 
 	                    trap(d2d::collision::point, types, bool, bool, int);
 
@@ -45,7 +45,7 @@ class trap {
 	                            keep_active_when_reset{true};
 
 	static const int    fire_h{14};
-	static const int    spikes_h{8};
+	static const int    spikes_size{16};
 	friend std::ostream& operator<<(std::ostream&, const trap&);
 
 };

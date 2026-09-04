@@ -25,13 +25,13 @@ trap::trap(
 			ent.set_h(fire_h);
 		break;
 		case types::spikes:
-			ent.set_w(spikes_w);
-			ent.set_h(spikes_h);
-		break;
 		case types::spikes_point_left:
 		case types::spikes_point_right:
-			ent.set_w(spikes_h);
-			ent.set_h(spikes_w); //Actually, rotated.
+		case types::spikes_ceiling:
+			ent.set_w(spikes_size);
+			ent.set_h(spikes_size);
+			ent.set_w(spikes_size);
+			ent.set_h(spikes_size); 
 		break;
 	}
 }

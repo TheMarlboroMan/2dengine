@@ -919,7 +919,7 @@ beginobject
 		name type
 		type int
 		default 1
-		comment 1=fire 2=spikes (floor) 3=spikes (right wall) 4=spikes (left wall)
+		comment 1=fire 2=spikes (floor) 3=spikes (right wall) 4=spikes (left wall) 5=spikes ceiling
 		linkedto nothing
 	endproperty
 	beginproperty

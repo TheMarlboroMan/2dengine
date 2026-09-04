@@ -533,6 +533,11 @@ void main::draw_debug(
 		dd.draw(_screen, node.ent);
 	}
 
+	for(const auto& node : current_map.traps) {
+
+		dd.draw(_screen, node.ent);
+	}
+
 	if(current_map.boss) {
 
 		dd.draw(_screen, current_map.boss->ent);

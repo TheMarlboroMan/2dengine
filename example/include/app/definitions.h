@@ -150,6 +150,7 @@ enum sprites {
 	spr_particle_smoke_4=321,
 
 	//Special world elements
+	spr_spike_ceiling=168, //spike on the floor,
 	spr_spike=169, //spike on the floor,
 	spr_spike_point_left=249,
 	spr_spike_point_right=250,

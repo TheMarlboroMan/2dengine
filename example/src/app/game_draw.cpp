@@ -626,6 +626,7 @@ void game_draw::draw_trap(
 		case app::trap::types::spikes: index=app::spr_spike; break;
 		case app::trap::types::spikes_point_left: index=app::spr_spike_point_left; break;
 		case app::trap::types::spikes_point_right: index=app::spr_spike_point_right; break;
+		case app::trap::types::spikes_ceiling: index=app::spr_spike_ceiling; break;
 	}
 
 	sprite_draw.draw(
