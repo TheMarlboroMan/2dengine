@@ -6,6 +6,8 @@ next steps:
 
 	NEXT:
 
+		toggle_blocks should have their own unique appearance.
+
 		mising music:
 			- extra life could be music.
 			- credits (or reuse "onwards").
