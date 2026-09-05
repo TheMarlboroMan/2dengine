@@ -6,7 +6,11 @@ next steps:
 
 	NEXT:
 
-		toggle_blocks should have their own unique appearance.
+		toggle_blocks should have their own unique appearance, it is confusing right now.
+		bug: crouch on rising moving block, player gets stuck crouched and cannot stand!
+			confirmed this is "false" in the call to can_stand_up, reproduce
+			first on the test module
+
 
 		mising music:
 			- extra life could be music.
