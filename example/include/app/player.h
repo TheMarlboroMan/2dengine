@@ -18,7 +18,8 @@ class player {
 		timeout_ladder=0,
 		timeout_last_jump_chance=1,
 		timeout_defeat=2,
-		timeout_jump_buffer=3
+		timeout_jump_buffer=3,
+		timeout_launch_x=4 //control of the X axis after horizontal launch is limited.
 	};
 
 	                                            player();
@@ -45,6 +46,7 @@ class player {
 	bool                                        is_defeated() const;
 	bool                                        is_defeat_timeout_done() const;
 	bool                                        has_jump_last_chance() const;
+	bool                                        has_x_air_control() const;
 	//When this timeout is done, ladders can be grabbed again. It resets each time a ladder is grabbed.
 	bool                                        is_ladder_timeout_done() const;
 	bool                                        has_jump_buffered() const;

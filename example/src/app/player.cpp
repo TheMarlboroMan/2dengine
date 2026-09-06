@@ -12,6 +12,7 @@ player::player():
 	timeouts.add(timeout_last_jump_chance, 0.1);
 	timeouts.add(timeout_defeat, 2.);
 	timeouts.add(timeout_jump_buffer, 0.1, 0.1);
+	timeouts.add(timeout_launch_x, 1.0, 1.0);
 }
 
 void player::tic(
@@ -100,6 +101,7 @@ void player::launch(
 
 		ent.set_motion_vector_x(_vec.x);
 		state=states::air;
+		timeouts.restart(timeout_launch_x); 
 	}
 }
 
@@ -167,6 +169,12 @@ bool player::has_jump_last_chance() const {
 
 	return timeouts.is_running(timeout_last_jump_chance);
 }
+
+bool player::has_x_air_control() const {
+
+	return !timeouts.is_running(timeout_launch_x);
+}
+
 
 bool player::has_jump_buffered() const {
 

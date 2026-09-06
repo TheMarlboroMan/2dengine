@@ -1755,9 +1755,8 @@ int main::tic_air(
 		}
 	}
 
-
 	//Some controls apply here: Air control is limited, but one can attempt to do it.
-	if(_pli.x) {
+	if(_pli.x && _player.has_x_air_control()) {
 
 		tools::ranged_value<double> velocity{-simulation.walk_max_velocity, simulation.walk_max_velocity, player.ent.get_motion_vector_x()};
 
