@@ -10,9 +10,6 @@ next steps:
 		bug: crouch on rising moving block, player gets stuck crouched and cannot stand!
 			confirmed this is "false" in the call to can_stand_up, reproduce
 			first on the test module
-		push blocks are finicky if any horizontal input exists, should
-			temporarily disable it!
-
 
 		mising music:
 			- extra life could be music.
