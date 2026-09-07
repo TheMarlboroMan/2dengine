@@ -194,7 +194,11 @@ bool player::is_ladder_timeout_done() const {
 
 d2d::collision::box player::get_standing_box() const {
 
+	//What we want here is the "top" half of the player, so to say, what is 
+	//left when we "substract" the crouched player.
 	auto box=ent.get_box();
-	box.h=player_h;
+
+	box.origin.y+=player_h_crouch;
+	box.h=player_h-player_h_crouch;
 	return box;
 }
