@@ -2364,6 +2364,23 @@ bool main::can_grab_ladder(
 		return false;
 	}
 
+	//Ok, let's tighten that up... The player must at least be in contact with
+	//the middle X of the ladder...
+
+	const auto ladder_box=ladders[0]->get_box();
+	const auto ladder_middle_x=ladder_box.origin.x + (ladder_box.w / 2);
+
+	const auto player_x=_player.ent.get_x();
+	const auto player_endx=_player.ent.get_w()+player_x;
+
+	const bool is_in=player_x <= ladder_middle_x
+		&& ladder_middle_x <= player_endx;
+
+	if(!is_in) {
+
+		return false;
+	}
+
 	_ladderptr=ladders[0];
 	return true;
 }
