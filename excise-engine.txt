@@ -6,6 +6,8 @@ next steps:
 
 	NEXT:
 
+		maybe players can only grab ladders when they "touch" or "pass" the
+			center.
 		well_008 horizontal blocks prevent standing up... Might interfere
 			with the vertical thing, do it on test maps.
 		well_008 spikes make no sound... why?
