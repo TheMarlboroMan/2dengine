@@ -930,7 +930,7 @@ void main::tic(
 	//Why is this outside tic_world or player_tic?
 	if(current_map.moving_blocks.size() && !player.is_defeated()) {
 
-		//Tic and correct any pushes...
+		//Tic and correct any pushes, does not apply passive movement (block riding!)
 		if(ctracker.tic().correct_snaps(player.ent)) {
 
 			//Should only commit if the player was snapped in the previous tic!
@@ -1062,8 +1062,10 @@ void main::post_tic(
 	int _sides
 ) {
 
-	//Are we crushesd?
-	if(!is_in_legal_position(player.ent, true, _sides)) {
+	//Are we crushesd? Check only when there are moving blocks around, which
+	//are the only things than can leave us in an illegal position.
+	if(current_map.moving_blocks.size()
+		&& !is_in_legal_position(player.ent, true, _sides)) {
 
 		lm::log(logger).info()<<"illegal position, assumed crushing\n";
 		defeat(player);
@@ -1588,6 +1590,13 @@ int main::tic_ground(
 
 		passive_mv+=ctracker.attached_vector_for(_player.ent);
 		player_motion(_player, passive_mv, _delta);
+
+		//after riding a block, specially an horizontal one, we can end up
+		//inside a wall, so...
+		if(!is_in_legal_position(_player.ent, false)) {
+
+			_player.ent.rollback_box();
+		}
 	}
 
 	//Crouching stuff...
@@ -2435,6 +2444,18 @@ bool main::can_stand_up(
 	app::thing_filter_moving_block moving_block_filter{pos, false};
 	sc.detect_if(current_map.moving_blocks, moving_block_filter, spatiable_dereferencer<app::moving_block>{});
 
+/**
+	if(sc.has_collision()) {
+
+		lm::log(logger).debug()<<"will not stand up at all\n";
+		lm::log(logger).debug()<<"player: "<<player.ent.get_box()<<"\n";
+		for(const auto& obstacle : sc.get_results()) {
+
+			lm::log(logger).debug()<<"obstacle: "<<obstacle->get_box()<<"\n";
+		}
+	}
+*/
+
 	return !sc.has_collision();
 }
 
@@ -2809,6 +2830,15 @@ bool main::is_in_legal_position(
 	int _edges
 ) {
 
+	/** this is not, by any measure, a complete check. Stuff like toggle blocks
+	or facing blocks, along with breaking platforms or even gates that can
+	block the player are absent here... The main idea here is that this is only
+	called when there are moving blocks involved, which are the only things that
+	can leave the player in an illegal position.
+	To be honest, the whole think is kind of a mess and patched to hell. I am
+	sure I could write something better but I am trying to finish a game here.
+	*/
+
 	struct {
 		bool operator() (
 			const d2d::collision::box& _box,
@@ -2919,9 +2949,28 @@ void main::mount_player_in_blocks(
 		return;
 	}
 
+	//TODO: Will this be still needed???
+	//This method takes place AFTER the player tic... if a block is under the player,
+	//we can mount it. But not if we are upwards bound so that we do not snap
+	//to the floor when we have still upwards momentum.
+
+	const auto player_is_attached=ctracker.is_attached(_player.ent);
+	if(_player.ent.get_motion_vector_y() > 0.) {
+
+		if(player_is_attached) {
+
+			lm::log(logger).debug()<<"detached from moving platform through upwards momentum\n";
+			ctracker.detach_from_all(_player.ent);
+		}
+
+		return;
+	}
+
 	//TODO: There is quite a lot of jank here. Sure there is a better way, by
 	//this point both the player and the world have ticked. Can we think of
 	//something? It should cover the block moving towards the player and vice-versa.
+	//The whole thing is kind of a mess... Maybe we should attach when we 
+	//"enter" the top of the block.
 
 	//This value can be tweaked so faster boxes catch the player too!.
 	//6 catches a box moving downwards at 100u/s (meaning the player cannot
@@ -2931,6 +2980,7 @@ void main::mount_player_in_blocks(
 	//Finally, related to the above, if a block is coming up to the player
 	//from below and can be attached to, the player will end up in a lower
 	//position, causing visual stuttering for a moment.
+
 	const auto margin=2.0;
 	auto player_box_copy=_player.ent.get_box();
 	player_box_copy.origin.y-=margin;
@@ -2944,9 +2994,9 @@ void main::mount_player_in_blocks(
 
 	//First we need to see if the player has detached from any block it was
 	//riding.
-	if(ctracker.is_attached(_player.ent)) {
+	if(player_is_attached) {
 
-		//There's still the case of "forced detachment": an horizontally moving
+		//This is the case of "forced detachment": an horizontally moving
 		//block has deposited the player on a solid tile.
 		auto host=ctracker.get_host(_player.ent);
 		if(player_on_ground && 0.==host->get_motion_vector_y()) {
@@ -2956,25 +3006,18 @@ void main::mount_player_in_blocks(
 			return; //Maybe we'll attach to something in the next tic.
 		}
 
-		//If we are still over the attached block, everything is fine.
+		//If we are still over the attached block, everything is fine, 
+		//we are not mounthing anything!
 		if(d2d::collision::collides_with(player_box_copy, *host)) {
 
 			return;
 		}
 
-		//Or we can detach and see if we get attached to something later.
+		//We are no longer over the block, we detach. Maybe we'll attach to 
+		//something else later.
 		lm::log(logger).debug()<<"detached from moving platform player:"<<_player.ent.get_box()<<" check_box:"<<player_box_copy<<" host:"<<host->get_box()<<std::endl;
 		ctracker.detach_from_all(_player.ent);
 	}
-
-	//This takes place AFTER the player tic... if a block is under the player,
-	//we can mount it. But not if we are upwards bound so that we do not snap
-	//to the floor when we have still upwards momentum.
-	if(_player.ent.get_motion_vector_y() > 0.) {
-
-		return;
-	}
-
 
 	for(const auto& plat : current_map.moving_blocks) {
 
@@ -3004,6 +3047,9 @@ void main::mount_player_in_blocks(
 			//This is a guard against a block coming up to the player from 
 			//below while the player is standing on a solid tile: the player
 			//would catch on and end on an invalid position inside the tile!
+			//TODO: This wins worse use of this method... The only time it is
+			//called with "false" and should not even exist because we are 
+			//entering a block that is below us!
 			if(!is_in_legal_position(player_box_copy, false)) {
 
 				lm::log(logger).debug()<<"rejected moving platform: would end up in illegal position"<<std::endl;

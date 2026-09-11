@@ -87,6 +87,9 @@ class collision_tracker {
  * performs all needed calculations to push targets around. Does not perform
  * movement of the watched spatiable list, that falls under the application's
  * responsibility. Returns a list of corrections to apply.
+ * This also causes passive movements to be calculated but not applied. 
+ * Passive movements are applied by responsibility of the application through
+ * attached_vector_for.
  */
 	collision_tracker&              tic();
 
