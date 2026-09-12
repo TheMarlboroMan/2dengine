@@ -1588,14 +1588,19 @@ int main::tic_ground(
 	d2d::motion::motion_vector passive_mv{0., 0.};
 	if(current_map.moving_blocks.size()) {
 
-		passive_mv+=ctracker.attached_vector_for(_player.ent);
-		player_motion(_player, passive_mv, _delta);
+		if(ctracker.is_attached(player.ent)) {
 
-		//after riding a block, specially an horizontal one, we can end up
-		//inside a wall, so...
-		if(!is_in_legal_position(_player.ent, false)) {
+			passive_mv+=ctracker.attached_vector_for(_player.ent);
+			player_motion(_player, passive_mv, _delta);
 
-			_player.ent.rollback_box();
+			//after riding an horizontal block we can end inside a wall, so we
+			//should rollback. This does not affect vertical moving blocks, these
+			//would crush the player.
+			const auto& plat=*ctracker.get_host(player.ent);
+			if(0.!=plat.get_motion_vector_x() && !is_in_legal_position(_player.ent, false)) {
+
+				_player.ent.rollback_box();
+			}
 		}
 	}
 
