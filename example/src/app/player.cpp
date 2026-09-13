@@ -57,6 +57,7 @@ void player::jump(
 	ent.set_motion_vector_y(_force);
 	state=states::air;
 	jump_shortened=false;
+	ent.get_box().h=player_h;
 }
 
 void player::buffer_jump() {
@@ -81,6 +82,7 @@ void player::reset() {
 	timeouts.pause(timeout_jump_buffer); //avoid automatic jumping because of has_jump_buffered!
 	current_ladder=nullptr;
 	jump_shortened=false;
+	ent.get_box().h=player_h;
 }
 
 /**
@@ -103,6 +105,8 @@ void player::launch(
 		state=states::air;
 		timeouts.restart(timeout_launch_x); 
 	}
+
+	//TODO: No height setting here.
 }
 
 void player::defeat(
@@ -112,6 +116,7 @@ void player::defeat(
 	timeouts.restart(timeout_defeat);
 	state=player::states::defeat;
 	ent.set_motion_vector_y(_velocity);
+	ent.get_box().h=player_h;
 }
 
 void player::walk_out_of_ladder(
@@ -126,6 +131,7 @@ void player::walk_out_of_ladder(
 		: app::faces::left;
 
 	current_ladder=nullptr;
+	ent.get_box().h=player_h;
 }
 
 void player::jump_out_of_ladder(
@@ -142,7 +148,7 @@ void player::jump_out_of_ladder(
 	timeouts.target(app::player::timeout_ladder, 0.3)
 		.restart();
 
-	jump(_jump_force);
+	jump(_jump_force); //This will take care of height setting.
 }
 
 void player::drop_out_of_ladder() {
@@ -154,6 +160,8 @@ void player::drop_out_of_ladder() {
 	timeouts.target(app::player::timeout_ladder, 0.5)
 		.restart();
 	//there is no last chance jump here.
+
+	ent.get_box().h=player_h;
 }
 
 void player::start_falling() {
@@ -163,6 +171,7 @@ void player::start_falling() {
 
 	auto velocity=ent.get_motion_vector();
 	ent.set_motion_vector_x(velocity.x/2.);
+	ent.get_box().h=player_h;
 }
 
 bool player::has_jump_last_chance() const {

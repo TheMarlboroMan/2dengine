@@ -6,11 +6,7 @@ next steps:
 
 	NEXT:
 
-		bug: crouch in a moving box, then fall, your height keeps on being
-			half!. This happens on the main branch too! Either: check every state change
-				check height every tip?
-				may also work with ladders somehow?
-
+		weird wiggling when blocks come from below???
 		well_008 spikes make no sound... why?
 		toggle_blocks should have their own unique appearance, it is confusing right now.
 

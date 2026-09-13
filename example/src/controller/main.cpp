@@ -2986,7 +2986,7 @@ void main::mount_player_in_blocks(
 	//from below and can be attached to, the player will end up in a lower
 	//position, causing visual stuttering for a moment.
 
-	const auto margin=2.0;
+	const auto margin=1.0;
 	auto player_box_copy=_player.ent.get_box();
 	player_box_copy.origin.y-=margin;
 
