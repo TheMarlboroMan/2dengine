@@ -5,163 +5,231 @@ using namespace d2d::collision;
 
 bool d2d::collision::is_above(
 	const spatiable& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 
-	return is_above(_a.get_box(), _b.get_box());
+	return is_above(_a.get_box(), _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_above(
 	const spatiable& _a, 
-	const box& _b) {
+	const box& _b,
+	t_position _epsilon
+) {
 
-	return is_above(_a.get_box(), _b);
+	return is_above(_a.get_box(), _b, _epsilon);
 }
 
 bool d2d::collision::is_above(
 	const box& _a, 
-	const spatiable& _b) {
+	const spatiable& _b,
+	t_position _epsilon
+) {
 
-	return is_above(_a, _b.get_box());
+	return is_above(_a, _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_above(
 	const box& _a, 
-	const box& _b) {
-
-	return _a.origin.y >= _b.origin.y+_b.h;
-}
-
-bool d2d::collision::is_below(
-	const spatiable& _a, 
-	const spatiable& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return is_below(_a.get_box(), _b.get_box());
+	return _a.origin.y >= _b.origin.y+_b.h - _epsilon;
+}
+
+bool d2d::collision::is_just_above(
+	const spatiable& _a, 
+	const spatiable& _b,
+	t_position _epsilon
+) {
+
+	return is_just_above(_a.get_box(), _b.get_box(), _epsilon);
+}
+
+bool d2d::collision::is_just_above(
+	const spatiable& _a, 
+	const box& _b,
+	t_position _epsilon
+) {
+
+	return is_just_above(_a.get_box(), _b, _epsilon);
+}
+
+bool d2d::collision::is_just_above(
+	const box& _a, 
+	const spatiable& _b,
+	t_position _epsilon
+) {
+
+	return is_just_above(_a, _b.get_box(), _epsilon);
+}
+
+bool d2d::collision::is_just_above(
+	const box& _a, 
+	const box& _b,
+	t_position _epsilon
+) {
+
+	auto diff=_a.origin.y - (_b.origin.y+_b.h);
+	return diff >= 0. && diff <= _epsilon;
 }
 
 bool d2d::collision::is_below(
 	const spatiable& _a, 
-	const box& _b
+	const spatiable& _b,
+	t_position _epsilon
+) {
+
+	return is_below(_a.get_box(), _b.get_box(), _epsilon);
+}
+
+bool d2d::collision::is_below(
+	const spatiable& _a, 
+	const box& _b,
+	t_position _epsilon
 ) {
 	
-	return is_below(_a.get_box(), _b);
+	return is_below(_a.get_box(), _b, _epsilon);
 }
 
 bool d2d::collision::is_below(
 	const box& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 	
-	return is_below(_a, _b.get_box());
+	return is_below(_a, _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_below(
 	const box& _a, 
-	const box& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return _a.origin.y+_a.h <= _b.origin.y;
+	return _a.origin.y+_a.h <= _b.origin.y + _epsilon;
 }
 
 bool d2d::collision::is_left_of(
 	const spatiable& _a,
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 
-	return is_left_of(_a.get_box(), _b.get_box());
+	return is_left_of(_a.get_box(), _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_left_of(
 	const spatiable& _a, 
-	const box& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return is_left_of(_a.get_box(), _b);
+	return is_left_of(_a.get_box(), _b, _epsilon);
 }
 
 bool d2d::collision::is_left_of(
 	const box& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 
-	return is_left_of(_a, _b.get_box());
+	return is_left_of(_a, _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_left_of(
 	const box& _a, 
-	const box& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return _a.origin.x+_a.w <= _b.origin.x;
+	return _a.origin.x+_a.w <= _b.origin.x + _epsilon;
 }
 
 bool d2d::collision::is_right_of(
 	const spatiable& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 
-	return is_right_of(_a.get_box(), _b.get_box());
+	return is_right_of(_a.get_box(), _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_right_of(
 	const spatiable& _a, 
-	const box& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return is_right_of(_a.get_box(), _b);
+	return is_right_of(_a.get_box(), _b, _epsilon);
 }
 
 bool d2d::collision::is_right_of(
 	const box& _a, 
-	const spatiable& _b
+	const spatiable& _b,
+	t_position _epsilon
 ) {
 
-	return is_right_of(_a, _b.get_box());
+	return is_right_of(_a, _b.get_box(), _epsilon);
 }
 
 bool d2d::collision::is_right_of(
 	const box& _a, 
-	const box& _b
+	const box& _b,
+	t_position _epsilon
 ) {
 
-	return _a.origin.x >= _b.origin.x + _b.w;
+	return _a.origin.x >= _b.origin.x + _b.w - _epsilon;
 }
 
 bool d2d::collision::collides_with(
 	const spatiable& _a, 
 	const spatiable& _b,
-	bool _touch_is_collision
+	t_position _epsilon
 ) {
 
-	return _a.get_box().collides_with(_b.get_box(), _touch_is_collision);
+	return _a.get_box().collides_with(
+		_b.get_box(), 
+		_epsilon
+	);
 }
 
 bool d2d::collision::collides_with(
 	const spatiable& _a, 
 	const box& _b,
-	bool _touch_is_collision
+	t_position _epsilon
 ) {
 
-	return _a.get_box().collides_with(_b, _touch_is_collision);
+	return _a.get_box().collides_with(
+		_b, 
+		_epsilon
+	);
 }
 
 bool d2d::collision::collides_with(
 	const box& _a, 
 	const spatiable& _b,
-	bool _touch_is_collision
+	t_position _epsilon
 ) {
 
-	return _a.collides_with(_b.get_box(), _touch_is_collision);
+	return _a.collides_with(
+		_b.get_box(), 
+		_epsilon
+	);
 }
 
 bool d2d::collision::collides_with(
 	const box& _a, 
 	const box& _b,
-	bool _touch_is_collision
+	t_position _epsilon
 ) {
 
-	return _a.collides_with(_b, _touch_is_collision);
+	return _a.collides_with(
+		_b, 
+		_epsilon
+	);
 }
 
 void d2d::collision::snap_to_right_of(
@@ -199,7 +267,7 @@ void d2d::collision::snap_to_bottom_of(
 void d2d::collision::match_right_of(
 	spatiable& _a, 
 	const spatiable& _b,
-	double _margin
+	t_position _margin
 ) {
 
 
@@ -213,7 +281,7 @@ void d2d::collision::match_right_of(
 void d2d::collision::match_left_of(
 	spatiable& _a,
 	const spatiable& _b,
-	double _margin
+	t_position _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::left);
@@ -226,7 +294,7 @@ void d2d::collision::match_left_of(
 void d2d::collision::match_top_of(
 	spatiable& _a, 
 	const spatiable& _b,
-	double _margin
+	t_position _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::top);
@@ -239,7 +307,7 @@ void d2d::collision::match_top_of(
 void d2d::collision::match_bottom_of(
 	spatiable& _a, 
 	const spatiable& _b,
-	double _margin
+	t_position _margin
 ) {
 
 	_a.get_box().match_edge(_b.get_box(), ldt::box_edges::bottom);

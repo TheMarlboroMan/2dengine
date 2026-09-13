@@ -5,6 +5,12 @@
 #include <ldt/segment_2d.h>
 
 namespace d2d { namespace collision {
+
+/**
+ * default tolerance to collisions: a collision with an overlap
+ * smaller than this is not a collision.
+ */
+inline constexpr double default_epsilon=1e-9;
  
 /**
  * the simplest structure to represent tile coordinates.
