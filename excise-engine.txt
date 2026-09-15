@@ -6,6 +6,8 @@ next steps:
 
 	NEXT:
 
+		well 024 and 025 are inverted in automap. Same 16 and 18, I think.
+		automap well 22 is missing top exit.
 		weird wiggling when blocks come from below???
 		well_008 spikes make no sound... why?
 		toggle_blocks should have their own unique appearance, it is confusing right now.
