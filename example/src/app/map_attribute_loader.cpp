@@ -59,6 +59,11 @@ void map_attribute_loader::load(
 		case 7:
 			background_color=ldv::rgba8(255, 255, 255, 255);
 		break;
+		//pulsating color changes...
+		case 8:
+			background_color=ldv::rgba8(255, 255, 255, 255);
+			background_effect=bg_color_pulse;
+		break;
 
 		default: //default is black.
 		case 0: background_color=ldv::rgba8(0, 0, 0, 255); break;

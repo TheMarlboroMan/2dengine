@@ -38,7 +38,8 @@ enum sound {
 enum special_backgrounds {
 	bg_starfield=1,
 	bg_storm=2,
-	bg_suspension=3
+	bg_suspension=3,
+	bg_color_pulse=4
 };
 
 /**

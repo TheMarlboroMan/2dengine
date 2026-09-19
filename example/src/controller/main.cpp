@@ -14,6 +14,7 @@
 #include "app/starfield.h"
 #include "app/storm.h"
 #include "app/suspension.h"
+#include "app/pulse_background.h"
 
 #include "dfwimpl/config.h"
 
@@ -542,7 +543,12 @@ void main::load_map(
 					inventory.treasure //same, stars.
 				)
 			);
-			}
+		}
+		break;
+		case app::bg_color_pulse:
+			background.reset(
+				new app::pulse_background()
+			);
 		break;
 	}
 

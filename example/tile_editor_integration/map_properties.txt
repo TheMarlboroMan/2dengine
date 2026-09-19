@@ -9,7 +9,7 @@ beginproperty
 	name bg_color
 	type int
 	default 0
-	comment 0=black 1=sky 2=orange 3=winter 4=starfield 5=storm 6=suspension 7=white
+	comment 0=black 1=sky 2=orange 3=winter 4=starfield 5=storm 6=suspension 7=white 8=color pulse
 endproperty
 
 beginproperty
