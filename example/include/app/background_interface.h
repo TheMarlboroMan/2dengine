@@ -14,6 +14,7 @@ class background_interface {
 
 	public:
 
+	virtual      ~background_interface() {} //just so that the pulse background can do its static hack thing.
 	//!Must draw the background.
 	virtual void draw_background(ldv::screen&)=0;
 	//!Must draw the foreground.

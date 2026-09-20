@@ -2,16 +2,22 @@
 
 using namespace app;
 
+constexpr double duration{10.};
+
 std::size_t pulse_background::current_colour_index{0};
-ldv::rgba_color pulse_background::colour{0., 0., 0, 1.};
+float pulse_background::r{0.f};
+float pulse_background::g{0.f};
+float pulse_background::b{0.f};
+double pulse_background::timer_remains{duration};
 
 pulse_background::pulse_background()
-	:tweener_r{0., 0., 10.},
-	tweener_g{0., 0., 10.},
-	tweener_b{0., 0., 10.},
-	counter{10.0, 0., false}
+	:tweener_r{0., 0., timer_remains},
+	tweener_g{0., 0., timer_remains},
+	tweener_b{0., 0., timer_remains},
+	counter{duration, 0., false}
 {
 
+	counter.set(duration-timer_remains);
 	tweener_r.set_interpolator(interpolator);
 	tweener_g.set_interpolator(interpolator);
 	tweener_b.set_interpolator(interpolator);
@@ -33,11 +39,18 @@ pulse_background::pulse_background()
 	ready_tweeners();
 }
 
+pulse_background::~pulse_background() {
+
+	timer_remains=counter.get_max() - counter.get();
+}
+
 void pulse_background::draw_background(
 	ldv::screen& _screen
 ) {
 
-	_screen.clear(colour);
+	_screen.clear(
+		ldv::rgba_color(r, g, b, 255)
+	);
 }
 
 void pulse_background::draw_foreground(
@@ -51,6 +64,7 @@ void pulse_background::tic(
 ) {
 
 	counter.tic(_delta);
+
 	if(counter.is_finished()) {
 
 		counter.restart();
@@ -65,11 +79,9 @@ void pulse_background::tic(
 
 	}
 
-	int r=tweener_r.tic(_delta);
-	int g=tweener_g.tic(_delta);
-	int b=tweener_b.tic(_delta);
-
-	colour=ldv::rgba8(r, g, b, 255);
+	r=tweener_r.tic(_delta);
+	g=tweener_g.tic(_delta);
+	b=tweener_b.tic(_delta);
 }
 
 void pulse_background::ready_tweeners() {
@@ -83,7 +95,7 @@ void pulse_background::ready_tweeners() {
 	const auto& next=colours[next_index];
 
 	//Setups the tweener from the current colour
-	tweener_r.reset(ldv::colorif(colour.r), ldv::colorif(next.r), counter.get_max());
-	tweener_g.reset(ldv::colorif(colour.g), ldv::colorif(next.g), counter.get_max());
-	tweener_b.reset(ldv::colorif(colour.b), ldv::colorif(next.b), counter.get_max());
+	tweener_r.reset(r, next.r, counter.get_max());
+	tweener_g.reset(g, next.g, counter.get_max());
+	tweener_b.reset(b, next.b, counter.get_max());
 }

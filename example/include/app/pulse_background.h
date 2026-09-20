@@ -18,6 +18,7 @@ class pulse_background
 
 	public:
 	                        pulse_background();
+	virtual                 ~pulse_background();
 
 	//Implementation of background_interface
 	void                    draw_background(ldv::screen&);
@@ -30,14 +31,14 @@ class pulse_background
 	void                    ready_tweeners();
 
 	//This needs to persist between level changes and I am going to take the 
-	//easy route, so there, a static property. This is the current index for
-	//colours;
-	static std::size_t      current_colour_index;
-	static ldv::rgba_color  colour;
+	//easy route, so there, static properties.
+	static std::size_t      current_colour_index; //This is the current index for colours;
+	static float            r,g,b; //components for a rbga_color.
+	static double           timer_remains; //remainder of the clock when this gets destroyed
 	//List of colours this will go through.
 	std::vector             <ldv::rgba_color> colours;
 
-	tools::tween::tweener<double>    tweener_r,
+	tools::tween::tweener<float>    tweener_r,
 	                        tweener_g,
 	                        tweener_b;
 	tools::tween::interpolators::ease_in_out_sine interpolator;
