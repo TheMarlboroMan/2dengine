@@ -74,3 +74,11 @@ show_text_exchange& show_text_exchange::set_colour(
 	return *this;
 }
 
+show_text_exchange& show_text_exchange::set_with_background(
+	bool _with_background
+) {
+
+	with_background=_with_background;
+	return *this;
+}
+

@@ -149,6 +149,11 @@ foreach($files as $filename) {
 
 						$thing->a->colour=0;
 					}
+
+					if(!property_exists($thing->a, "background")) {
+
+						$thing->a->background=0;
+					}
 				break;
 				case timer:
 				case relay:

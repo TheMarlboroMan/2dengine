@@ -418,18 +418,19 @@
 	],
 	"text_display": [
 		{
-			"__":"background",
+			"id":"background",
 			"type":"box",
 			"location":[0, 0, 288, 224],
 			"rgba":[0,0,128,64],
 			"order": 10
 		},
 		{
-			"__":"text_background",
+			"id":"text_background",
 			"type":"box",
 			"location":[0, 164, 288, 224],
 			"rgba":[0,0,0,220],
-			"order": 20
+			"order": 20,
+			"visible":true
 		},
 		{
 			"id":"main_text",

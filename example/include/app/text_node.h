@@ -16,6 +16,7 @@ class text_node {
 	int             event_id,
 	                tag,
 	                colour;
+	bool            background;
 	std::string     text_index,
 	                first_answer_index,
 	                second_answer_index,

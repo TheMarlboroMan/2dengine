@@ -37,6 +37,9 @@ void show_text::awake(
 ) {
 
 	raw_text=text_exchange.get();
+	layout.get_by_id("text_background")->set_visible(text_exchange.has_background());
+	layout.get_by_id("background")->set_visible(text_exchange.has_background());
+
 	reload_buffer();
 }
 

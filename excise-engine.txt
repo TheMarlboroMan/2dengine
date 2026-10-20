@@ -6,18 +6,13 @@ next steps:
 
 	NEXT:
 
-		pulse background should actually keep its state 100% when restarted.
-			tweeners
-			counter
-			color
-			the interpolator should be reassigned in every construction.
-			I guess we can ... store just the value of the timer or
-			something??? Think about it.
+		starting game should ramp down the music and shit?
 		weird wiggling when blocks come from below???
 		well_008 spikes make no sound... why?
 		toggle_blocks should have their own unique appearance, it is confusing right now.
 
 		mising music:
+			- intro music
 			- extra life could be music.
 			- credits (or reuse "onwards").
 

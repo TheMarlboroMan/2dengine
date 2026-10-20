@@ -768,6 +768,7 @@ void thing_loader::add_text_node(
 	std::string key=_attributes.at("text_id").get_string();
 
 	int colour=_attributes.at("colour").get_int();
+	bool background=(bool)_attributes.at("background").get_int();
 
 	//A dash means "no answer".
 	std::string first_answer="-"==_attributes.at("answer_1").get_string()
@@ -783,7 +784,7 @@ void thing_loader::add_text_node(
 		: _attributes.at("answer_3").get_string();
 
 	curmap.text_nodes.push_back(
-		{id, tag, colour, key, first_answer, second_answer, third_answer}
+		{id, tag, colour, background, key, first_answer, second_answer, third_answer}
 	);
 }
 

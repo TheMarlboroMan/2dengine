@@ -105,32 +105,41 @@
 # Game intro, the player appears.
 
 [[game-intro-001]]{{
-Placeholder text
-Placeholder text
+I must have travelled here from
+afar, consumed by obsession
+guided by a will not of my own.
 }}
 
 [[game-intro-002]]{{
-Placeholder text
-[@np]
-Placeholder text
-Placeholder text
-Placeholder text
-[@np]
-Placeholder text
-Placeholder text
-Placeholder text
+My life before this moment is all
+confused recollections, shards,
+a mere memory of a dream.
 }}
 
+#Text width #####################
 [[game-intro-003]]{{
-Placeholder text
-Placeholder text
-Placeholder text
-[@np]
-Placeholder text
-Placeholder text
+How long have been dreaming
+all of these drifting fragments?
+Or did I simply remember them?
 }}
 
 [[game-intro-004]]{{
+These images, too clear in the
+mind to be just imaginations, too
+far to be my own rememberances.
+}}
+
+[[game-intro-103]]{{
+Placeholder text
+[@np]
+Placeholder text
+Placeholder text
+[@np]
+Placeholder text
+Placeholder text
+}}
+
+[[game-intro-104]]{{
 Placeholder text
 Placeholder text
 }}

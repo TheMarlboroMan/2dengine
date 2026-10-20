@@ -28,6 +28,8 @@ class show_text_exchange {
 	std::string             get() const;
 	//!Sets the colour using any of the colour enums.
 	show_text_exchange&     set_colour(int);
+	//!Sets the "with background"
+	show_text_exchange&     set_with_background(bool);
 	//!Gets the colour,
 	int                     get_colour() const {return colour;}
 	//!Sets the keys for the answers.
@@ -36,6 +38,8 @@ class show_text_exchange {
 	show_text_exchange&     clear_answers();
 	//!Returns true if answers have been set.
 	bool                    has_answers() const;
+	//!Returns true if it must draw a background...
+	bool                    has_background() const {return with_background;}
 	//!Set "key" as any of the third answers and clear them.
 	show_text_exchange&     answer_first();
 	show_text_exchange&     answer_second();
@@ -49,6 +53,7 @@ class show_text_exchange {
 	std::string         third_answer;
 	const tools::i8n&   i8n;
 	int                 colour{0};
+	bool                with_background{true};
 
 };
 }

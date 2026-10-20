@@ -2616,7 +2616,10 @@ void main::activate_tag(
 		persistence.add(app::pergr_texts, node.event_id, 1);
 		auto& text_exchange=sp.get_show_text_exchange();
 
-		text_exchange.set(node.text_index).set_colour(node.colour).clear_answers();
+		text_exchange.set(node.text_index)
+			.set_colour(node.colour)
+			.set_with_background(node.background)
+			.clear_answers();
 
 		if(""!=node.first_answer_index
 			&& "" !=node.second_answer_index
