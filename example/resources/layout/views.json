@@ -435,7 +435,7 @@
 		{
 			"id":"main_text",
 			"type":"ttf",
-			"location":[16, 180],
+			"location":[12, 180],
 			"text":"-",
 			"font":"text_font",
 			"rgba":[255, 255, 255, 255],
