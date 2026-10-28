@@ -12,6 +12,14 @@
 [[automap-well]]{{Dreaming Well}}
 [[automap-nowhere]]{{???}}
 
+
+#For text display, follow these
+#rules about witdth and max
+#height:
+#Text width #####################
+#Three lines max#################
+#	Tabs work####################
+
 #[BOOK TEXT] This should take place during the book dream. There is history
 #but there must be also the hints that the book and the player are one and
 #the same, made of the very same thing.
@@ -104,34 +112,32 @@ there I could see the tower.
 Ever nearer. Was I there yet?
 }}
 
+[[game-intro-013]]{{
+It is like stone needle to the
+ground, a sole constant, a pulse,
+a lighthouse, a call. Always.
+[@np]
+Calling.
+[@np]
+Calling.
+[@np]
+Calling me.
+}}
 
-#It is like needle in a secluded
-#land, sole constant, a pulse,
-#a lighthouse, a call, always.
-#
-#Calling.
-#
-#Calling.
-#
-#Calling me.
-#
-#[black]
-#But none of that, of my memories
-#and my thoughts, of these dreams
-#and reveries matters now.
-#
-#I must have travelled here from
-#afar, but I am finally here,
-#where I belong.
-#
-#Now, at the steps of the tower
-#I can no longer hear the call
-#but there has to be a reason.
-#
-#Call.
-#
-#Call me.
-#
+[[game-intro-014]]{{
+But none of that, of my memories
+and my thoughts, of these dreams
+and reveries matters now.
+[@np]
+I must have travelled here from
+afar, but I am finally here,
+where I belong.
+[@np]
+Now, that I can almost touch it
+I can no longer hear the call.
+[@np]
+But there has to be a reason.
+}}
 
 [[game-intro-103]]{{
 Placeholder text
@@ -148,18 +154,21 @@ Placeholder text
 Placeholder text
 }}
 
+[[game-intro-105]]{{
+Placeholder text
+Placeholder text
+}}
+
+[[game-intro-106]]{{
+Placeholder text
+Placeholder text
+}}
+
 # Game dialog
 
 [[question-first]]{{Who are you?}}
 [[question-second]]{{What is this place?}}
 [[question-third]]{{What am I to do?}}
-
-#For text display, follow these
-#rules about witdth and max
-#height:
-#Text width #####################
-#Three lines max#################
-#	Tabs work####################
 
 #Red key lines
 #The red key talks directly to the player, using the second person. It is
