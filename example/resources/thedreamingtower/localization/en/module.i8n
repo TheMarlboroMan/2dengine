@@ -12,6 +12,18 @@
 [[automap-well]]{{Dreaming Well}}
 [[automap-nowhere]]{{???}}
 
+#Adjectives: OSASCOMP
+#           I found a
+#Opinion    lonely
+#Size       small
+#Age        old
+#Shape      round
+#Color      black
+#Origin     Irish
+#Material   wooden
+#Purpose    for reading
+#           chair
+
 
 #For text display, follow these
 #rules about witdth and max
@@ -143,17 +155,17 @@ I can no longer hear the call.
 But there has to be a reason.
 }}
 
+#Text width #####################
 [[game-intro-103]]{{
-I feel lighter, stronger, more
-aware than I have ever been since
-I started on this path.
+Under the light of this day I
+feel lighter, stronger, more 
+nimble than before.
 }}
 
-[[game-intro-104]]{{
 #Text width #####################
-I have never been here... However
-I know that my feet will take me
-to the tower soon.
+[[game-intro-104]]{{
+Just after dawn I had a strong
+certainty. I am almost arrived.
 [@np]
 It is not a dream this time, not
 a vision, not a memory, not my
@@ -162,23 +174,15 @@ imagination.
 Onwards.
 }}
 
-#something about feet moving
 [[game-intro-105]]{{
-Placeholder text
-Placeholder text
-}}
-
-[[game-intro-106]]{{
-But pray, what is this? Why did
-my steps stop carrying me of
-their own accord?
+I should have been afraid to 
+enter this passage...
+Shouldn't I?
 [@np]
-Placeholder text
-Placeholder text
+Have I come this far, 
+marching night and day just
+to give in to fear?
 }}
-
-#I GUESS WE CAN HAVE A FINAL INTRO SCREEN, JUST BLACK, NOT A LOT, BEFORE THE
-#GAME STARTS.
 
 # Game dialog
 
@@ -515,6 +519,10 @@ to continue exploring.
 ## Endings
 
 #Text width #####################
+
+#An ending for when the player has just quit... 
+#The keyword would be "to give up"...m However,
+#what does that exactly mean in the game's terms?
 [[game-end-001]]{{
 Well I guess this is the end.
 [@np]
