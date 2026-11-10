@@ -6,6 +6,7 @@
 #include "app/automap_game.h"
 #include "app/savegame_manager.h"
 #include "app/game_module.h"
+#include <d2d/components/timeout.h>
 #include <dfw/controller_interface.h>
 #include <d2d/audio/sound_player.h>
 #include <lm/logger.h>
@@ -56,6 +57,7 @@ class menu:
 	void                        ready_main();
 	void                        ready_slot_select();
 	void                        ready_skill_select();
+	void                        ready_new_game_transition();
 	void                        set_visible_main(bool);
 	void                        set_visible_slot_select(bool);
 	void                        set_visible_skill_select(bool);
@@ -77,10 +79,11 @@ class menu:
 	d2d::audio::music_player&   music_player;
 	app::savegame_manager&      savegame_manager;
 	const app::game_module&     game_module;
+	d2d::components::timeout    transition_timeout;
 
 	app::automap_game           automap_interface;
 	ldtools::view_composer      view;
-	enum class levels{main, slot, skill, confirm_delete}
+	enum class levels{main, slot, skill, confirm_delete, new_game_transition} 
 	                            curlevel{levels::main};
 
 	enum main_options{

@@ -32,6 +32,7 @@ menu::menu(
 	music_player{_sp.get_music_player()},
 	savegame_manager{_sp.get_savegame_manager()},
 	game_module{_sp.get_game_module()},
+	transition_timeout{5.0, 0, true},
 	automap_interface{sp.get_automap()}
 {
 
@@ -111,11 +112,24 @@ void menu::slumber(
 
 void menu::loop(
 	dfw::input& _input,
-	const dfw::loop_iteration_data& /*_lid*/
+	const dfw::loop_iteration_data& _lid
 ) {
 
 	if(_input().is_exit_signal()) {
 		set_leave(true);
+		return;
+	}
+
+	//While the transition is active no other output is accepted.
+	if(levels::new_game_transition==curlevel) {
+
+		transition_timeout.tic(_lid.delta);
+		if(transition_timeout.is_finished()) {
+
+			transition_timeout.reset();
+			start_new_game();
+		}
+
 		return;
 	}
 
@@ -227,6 +241,8 @@ void menu::next() {
 		case levels::confirm_delete:
 			exit_confirm_delete();
 			return;
+		case levels::new_game_transition:
+			return;
 	}
 
 	if(*curoption == max) {
@@ -254,6 +270,8 @@ void menu::prev() {
 		break;
 		case levels::confirm_delete:
 			exit_confirm_delete();
+			return;
+		case levels::new_game_transition:
 			return;
 	}
 
@@ -314,6 +332,9 @@ void menu::select() {
 		case levels::confirm_delete:
 			exit_confirm_delete();
 			return;
+
+		case levels::new_game_transition:
+			return;
 	}
 }
 
@@ -339,6 +360,9 @@ void menu::back() {
 
 		case levels::confirm_delete:
 			exit_confirm_delete();
+			return;
+
+		case levels::new_game_transition:
 			return;
 	}
 }
@@ -388,6 +412,14 @@ void menu::ready_slot_select() {
 	set_visible_skill_select(false);
 	view.set_visible("menu_start", true); //TODO: actually,. we could have another text...
 
+	refresh();
+}
+
+void menu::ready_new_game_transition() {
+
+	set_visible_slot_select(false);
+	set_visible_main(false);
+	set_visible_skill_select(false);
 	refresh();
 }
 
@@ -584,6 +616,7 @@ void menu::refresh() {
 		}
 
 		case levels::confirm_delete:
+		case levels::new_game_transition:
 			return;
 	}
 }
@@ -622,7 +655,20 @@ void menu::choose_slot() {
 
 void menu::choose_skill() {
 
-	//Do something extra, next time we are here we will be on "continue".
+	//After the skill is chosen we enter a new transition... play a sound,
+	//ramp down the music for a second, show nothing and start a timer.
+	curlevel=levels::new_game_transition;
+	sound_player.play_once(app::snd_thunder);
+	music_player.stop(1000);
+	ready_new_game_transition();
+	transition_timeout.restart();
+
+}
+
+void menu::start_new_game() {
+
+	//Do something extra, next time we are here we will be on 
+	//the main level, "continue".option.
 	enter_main();
 	main_option=main_option_continue;
 	push_state(state_main);
