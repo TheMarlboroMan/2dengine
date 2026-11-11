@@ -6,7 +6,10 @@ next steps:
 
 	NEXT:
 
+		skip intro? or at least disable going back to the menu in the intro??
 		weird wiggling when blocks come from below???
+			I don't think this has a solution short of revamping the whole
+			thing
 		well_008 spikes make no sound... why?
 		toggle_blocks should have their own unique appearance, it is confusing right now.
 
@@ -26,7 +29,6 @@ next steps:
 
 	IDEAS:
 		- text on three keyhole color room, whatever it was that was calling me blah blah.
-		- intro: first a fully black room, with just text.
 		- the input system DOES NOT SAVE ESCAPE KEYS. And it should...
 		- background with moon and moving shapes for book dream.
 			maybe the moon moves and does shit... Or follows an orbit. Or something.
@@ -48,7 +50,6 @@ next steps:
 			so that the game does not break?????
 		- particles for facing and toggle blocks going away / coming in ??
 		- design the last dream level (the book one).
-		- design the last furnace level xD.
 		- Check all levels that begin with a ladder!. Use the "defeat"
 		command.
 		- make death pits aesthetically the same (do not see player bounce!)

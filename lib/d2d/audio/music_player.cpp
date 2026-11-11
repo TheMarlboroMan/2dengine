@@ -50,16 +50,19 @@ void music_player::stop(
 	int _fade
 ) {
 
+	lm::log(log).debug()<<"<d2d::audio::music_player> stopping current music with fade of "<<_fade<<std::endl;
 	audio().stop_music(_fade);
 }
 
 void music_player::pause() {
 
+	lm::log(log).debug()<<"<d2d::audio::music_player> pausing music"<<std::endl;
 	audio().pause_music();
 }
 
 void music_player::resume() {
 
+	lm::log(log).debug()<<"<d2d::audio::music_player> resuming music"<<std::endl;
 	audio().resume_music();
 }
 
@@ -72,8 +75,7 @@ void music_player::swap(
 
 	if(_music_id_to_enqueue==playing_id) {
 
-		next_id=_music_id_to_enqueue;
-		lm::log(log).debug()<<"<d2d::audio::music_player> asked for the same playing piece, will play after ramp down"<<std::endl;
+		lm::log(log).debug()<<"<d2d::audio::music_player> asked for the same playing piece"<<std::endl;
 		return;
 	}
 

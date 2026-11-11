@@ -57,7 +57,7 @@ class menu:
 	void                        ready_main();
 	void                        ready_slot_select();
 	void                        ready_skill_select();
-	void                        ready_new_game_transition();
+	void                        ready_enter_game_transition();
 	void                        set_visible_main(bool);
 	void                        set_visible_slot_select(bool);
 	void                        set_visible_skill_select(bool);
@@ -65,7 +65,7 @@ class menu:
 	void                        attempt_to_continue();
 	void                        choose_slot();
 	void                        choose_skill();
-	void                        start_new_game();
+	void                        start_game();
 	void                        load_game();
 	//helpers
 	void                        refresh();
@@ -83,7 +83,7 @@ class menu:
 
 	app::automap_game           automap_interface;
 	ldtools::view_composer      view;
-	enum class levels{main, slot, skill, confirm_delete, new_game_transition} 
+	enum class levels{main, slot, skill, confirm_delete, enter_game_transition} 
 	                            curlevel{levels::main};
 
 	enum main_options{

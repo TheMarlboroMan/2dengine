@@ -32,7 +32,7 @@ menu::menu(
 	music_player{_sp.get_music_player()},
 	savegame_manager{_sp.get_savegame_manager()},
 	game_module{_sp.get_game_module()},
-	transition_timeout{5.0, 0, true},
+	transition_timeout{1.0, 0, true},
 	automap_interface{sp.get_automap()}
 {
 
@@ -93,7 +93,8 @@ void menu::awake(
 		}
 	}
 
-	music_player.swap(app::music_title, 100);
+	lm::log(logger).debug()<<"awakening menu controller, play main theme...\n";
+	music_player.swap(app::music_title, 500);
 	savegame_manager.load();
 	refresh();
 	refresh_save_slots();
@@ -121,13 +122,13 @@ void menu::loop(
 	}
 
 	//While the transition is active no other output is accepted.
-	if(levels::new_game_transition==curlevel) {
+	if(levels::enter_game_transition==curlevel) {
 
 		transition_timeout.tic(_lid.delta);
 		if(transition_timeout.is_finished()) {
 
 			transition_timeout.reset();
-			start_new_game();
+			start_game();
 		}
 
 		return;
@@ -241,7 +242,7 @@ void menu::next() {
 		case levels::confirm_delete:
 			exit_confirm_delete();
 			return;
-		case levels::new_game_transition:
+		case levels::enter_game_transition:
 			return;
 	}
 
@@ -271,7 +272,7 @@ void menu::prev() {
 		case levels::confirm_delete:
 			exit_confirm_delete();
 			return;
-		case levels::new_game_transition:
+		case levels::enter_game_transition:
 			return;
 	}
 
@@ -333,7 +334,7 @@ void menu::select() {
 			exit_confirm_delete();
 			return;
 
-		case levels::new_game_transition:
+		case levels::enter_game_transition:
 			return;
 	}
 }
@@ -362,7 +363,7 @@ void menu::back() {
 			exit_confirm_delete();
 			return;
 
-		case levels::new_game_transition:
+		case levels::enter_game_transition:
 			return;
 	}
 }
@@ -415,7 +416,7 @@ void menu::ready_slot_select() {
 	refresh();
 }
 
-void menu::ready_new_game_transition() {
+void menu::ready_enter_game_transition() {
 
 	set_visible_slot_select(false);
 	set_visible_main(false);
@@ -616,7 +617,7 @@ void menu::refresh() {
 		}
 
 		case levels::confirm_delete:
-		case levels::new_game_transition:
+		case levels::enter_game_transition:
 			return;
 	}
 }
@@ -657,22 +658,23 @@ void menu::choose_skill() {
 
 	//After the skill is chosen we enter a new transition... play a sound,
 	//ramp down the music for a second, show nothing and start a timer.
-	curlevel=levels::new_game_transition;
+	curlevel=levels::enter_game_transition;
 	sound_player.play_once(app::snd_thunder);
+	lm::log(logger).debug()<<"skill chosen, silence main theme...\n";
 	music_player.stop(1000);
-	ready_new_game_transition();
-	transition_timeout.restart();
-
+	ready_enter_game_transition();
+	transition_timeout.target(5.0).restart();
+	action_signal=signals::new_game;
 }
 
-void menu::start_new_game() {
+void menu::start_game() {
 
+	//This is "start a new game" or "start a loaded game".
 	//Do something extra, next time we are here we will be on 
 	//the main level, "continue".option.
 	enter_main();
 	main_option=main_option_continue;
 	push_state(state_main);
-	action_signal=signals::new_game;
 }
 
 void menu::refresh_save_slots() {
@@ -707,9 +709,14 @@ void menu::refresh_save_slots() {
 
 void menu::load_game() {
 
-	enter_main();
-	main_option=main_option_continue;
-	push_state(state_main);
+	//After the slot is chosen we enter a new transition. Play a sound, 
+	//ramp down the music for a second, show nothing and start a timer.
+	curlevel=levels::enter_game_transition;
+	sound_player.play_once(app::snd_secret);
+	lm::log(logger).debug()<<"slot chosen, silence main theme...\n";
+	music_player.stop(1000);
+	ready_enter_game_transition();
+	transition_timeout.target(3.0).restart();
 	action_signal=signals::load_game;
 }
 
